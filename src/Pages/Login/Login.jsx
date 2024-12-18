@@ -1,7 +1,6 @@
 import { 
     HStack, 
     Box, 
-    Button,
     VStack,
     Heading,
     Stack 
@@ -9,24 +8,35 @@ import {
 import { Field  } from "../../components/ui/field";
 import { PasswordInput } from "../../components/ui/password-input"
 import { Alert } from "../../components/ui/alert"
+import { Button } from "../../components/ui/button"
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { loginUser } from "../../services/authService";
 import './login.css'
 
 function Login() {
     const navigate = useNavigate();
+    const [loading, setloading] = useState(false);
     const [error, setError] = useState("");
     const { register, handleSubmit, formState: { errors }, } = useForm();
     
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         setError("");
+        setloading(true);
 
-        if(data.email === 'user@example.com' && data.password === 'password') {
-            navigate('/home');
-        } else {
-            setError('Credenciales incorrectas');
+        try {
+            const { token } = await loginUser(data.email, data.password);
+            setloading(false);
+            
+            if(token) {
+                navigate('/home');
+            }
+        } catch (error) {
+            setloading(false);
+            setError(error.message);
         }
+
     }
 
     return(
@@ -93,7 +103,7 @@ function Login() {
                                 </Field>
 
                                 <div className="buttonContainer">
-                                    <Button size="md" type="submit" colorPalette="teal" variant="surface">Login</Button>
+                                    <Button loading={loading} size="md" type="submit" colorPalette="teal" variant="surface">Login</Button>
                                 </div>
 
                             </Stack>
