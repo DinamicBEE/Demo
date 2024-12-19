@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Login from './pages/Login/Login';
-import { AuthProvider } from './context/AutContext';
+import { ContextProvider } from './context/ContextProvider';
 
 function App() {
   return (
-    <AuthProvider>
+    <ContextProvider>
       <Router>
         <Routes>
           <Route path='/' element={<Login/>} />
         </Routes>
       </Router>
-    </AuthProvider>
+    </ContextProvider>
   )
 }
 
