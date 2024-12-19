@@ -14,9 +14,11 @@ import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { loginUser } from "../../services/authService";
 import './login.css'
+import { useAuth } from "../../context/AutContext";
 
 function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [loading, setloading] = useState(false);
     const [error, setError] = useState("");
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -30,6 +32,12 @@ function Login() {
             setloading(false);
             
             if(token) {
+                login({
+                    token: token,
+                    email: data.email,
+                    password: data.password,
+                    role: 1
+                });
                 navigate('/home');
             }
         } catch (error) {
