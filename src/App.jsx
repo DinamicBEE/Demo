@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ContextProvider } from './context/ContextProvider';
-import { PublicRoute } from './components/ProtectedRoutes';
+import ProtectedRoute, { PublicRoute } from './components/ProtectedRoutes';
 import Login from './pages/Login/Login';
+import Layout from './components/Layout';
 import Home from './pages/Home/Home';
 import EmptyPage from './pages/Empty/EmptyPage';
 import './App.css'
@@ -18,9 +19,25 @@ function App() {
             </PublicRoute> } 
           />
 
-          <Route path="/home" element={<Home />} />
+          <Route path='/*' element={
+            <ProtectedRoute allowedRoles={[1,2]}>
+              <Layout />
+            </ProtectedRoute>
+          }>
 
-          <Route path="/emptyPage" element={<EmptyPage />}  />
+            <Route path="home" element={
+                <ProtectedRoute allowedRoles={[1,2]}>
+                  <Home />
+                </ProtectedRoute>  
+              } />
+
+            <Route path="emptyPage" element={
+                <ProtectedRoute allowedRoles={[]}>
+                  <EmptyPage />
+                </ProtectedRoute>
+              }  />
+
+          </Route>
 
         </Routes>
       </Router>

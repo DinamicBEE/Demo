@@ -9,7 +9,7 @@ function ProtectedRoute({ children, allowedRoles  }) {
     if (!isAuthenticated) return <Navigate to="/" />;
     
     if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/home" />;
+        return <Navigate to="/emptyPage" />;
     }
 
     return children;

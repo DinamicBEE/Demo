@@ -33,12 +33,14 @@ function Login() {
             const token = await loginUser(data.email, data.password);
             
             if(token) {
+                
                 const userData = await fetcUser(token);
-                setloading(false);
-                const newUser = {...userData, role: 1}
-                console.log(newUser);
-                login(newUser);
-                navigate('/home');
+                
+                if(userData){
+                    setloading(false);
+                    login(token);
+                    navigate('/home');
+                }
             }
         } catch (error) {
             setloading(false);

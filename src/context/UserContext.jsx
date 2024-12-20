@@ -15,7 +15,11 @@ export const UserProvider = ({ children }) => {
         try {
             
             const userInfo = await getUserInfo(currentToken || token);
-            setUser(userInfo.data);
+            
+            setUser({
+                ...userInfo.data,
+                role: 1
+            });
             
             return userInfo.data;
             
