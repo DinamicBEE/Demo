@@ -3,11 +3,62 @@
   height: 100vh;
 }
 
+.menuContainer {
+  background-color: #66bb6a !important;
+  color: white;
+  width: 250px;
+  padding: 20px;
+}
+
+.body {
+  padding: 8px 0px;
+}
+
+.menu-link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  gap: 12px;
+  border-radius: 5px;
+  transition: color 0.3s ease;
+}
+
+.menu-link:hover {
+  background-color: #64b5f6;
+  box-shadow: 0 0 10px rgba(100, 181, 246, 0.5); /* Efecto de brillo */
+  color: white;
+}
+
+.logout-button {
+  margin-top: 20px;
+  background-color: #64b5f6;
+  border: none;
+  color: white;
+  padding: 10px 15px !important;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #2e7d32;
+  box-shadow: 0 0 10px rgba(46, 125, 50, 0.5); /* Efecto de brillo */
+}
+
 .menuButton-container {
   display: flex;
   flex-direction: column;
   padding-top: 8px;
   gap: 8px;
+}
+
+.menuButton:hover {
+  background-color: #64b5f6;
+  box-shadow: 0 0 10px rgba(100, 181, 246, 0.5); /* Efecto de brillo */
+  color: white;
 }
 
 .main-content {
