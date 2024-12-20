@@ -35,12 +35,9 @@ function Login() {
             if(token) {
                 const userData = await fetcUser(token);
                 setloading(false);
-
-                console.log(userData);
-                login({
-                    ...userData,
-                    role: 1
-                });
+                const newUser = {...userData, role: 1}
+                console.log(newUser);
+                login(newUser);
                 navigate('/home');
             }
         } catch (error) {
