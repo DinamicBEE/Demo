@@ -66,4 +66,6 @@
   padding: 20px;
   background-color: #f4f4f4;
   overflow-y: auto;
+  background: rgb(223,243,227);
+  background: linear-gradient(180deg, rgba(223,243,227,0.5) 0%, rgba(46,125,50,0.5) 100%);
 }
