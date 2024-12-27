@@ -8,11 +8,38 @@ import {
     SelectTrigger,
     SelectValueText,
   } from "../../components/ui/select"
+//import { Alert } from "../../components/ui/alert"
 import './Home.css'
+import { useList } from '../../context/home/listsContext';
+//import { getSubsidiaries, getStores } from '../../services/catalogService';
 
 function Home() {
-    const [subsidiary, setSubsidiary] = useState("");
-    const [location, setLocation] = useState("");
+    const [subsidiary2, setSubsidiary2] = useState("");
+    const [location2, setLocation2] = useState("");
+
+    const {
+        subsidiary,
+        setSubsidiary,
+        store,
+        setStore,
+        isLoading,
+        error,
+        getData,
+      } = useList();
+
+    // useEffect(()=>{
+    //     if (!subsidiary) {
+    //       getData(getSubsidiaries, setSubsidiary);
+    //     }
+    //     if (!store) {
+    //       getData(getStores, setStore);
+    //     }
+    // },[subsidiary,setSubsidiary,store,setStore,getData])
+
+    // function getGeneralInfo () {
+    //     console.log(subsidiary2, location2)
+    // }
+
 
     return (
         <Box
@@ -24,6 +51,18 @@ function Home() {
                  
             <VStack spacing={4} align="start">
                 <Heading size="md">Selecciona Subsidiaria y Restaurante</Heading>
+                {/* {isLoading && (
+                    <VStack colorPalette="teal">
+                        <Spinner color="colorPalette.600" />
+                        <Text color="colorPalette.600">Loading...</Text>
+                    </VStack>
+                )}
+
+                {error && (
+                    <Alert status="error">
+                    {error}
+                    </Alert>
+                )} */}
                 <HStack w="100%">
                     <Grid
                         templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} 
@@ -32,26 +71,26 @@ function Home() {
                         w="100%"
                     >
 
-                        <SelectRoot collection={frameworks}
-                            value={subsidiary}
-                            onValueChange={(e) => setSubsidiary(e.value)}
+                        {/* <SelectRoot collection={frameworks}
+                            value={subsidiary2}
+                            onValueChange={(e) => setSubsidiary2(e.value)}
                         >
                             <SelectLabel>Selecciona Subsidiaria</SelectLabel>
                             <SelectTrigger>
                                 <SelectValueText placeholder="Selecciona Subsidiaria" />
                             </SelectTrigger>
                             <SelectContent>
-                                {frameworks.items.map((movie) => (
-                                    <SelectItem item={movie} key={movie.value}>
-                                        {movie.label}
+                                {frameworks.items.map((item) => (
+                                    <SelectItem item={item} key={item.value}>
+                                        {item.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
-                        </SelectRoot>
+                        </SelectRoot> */}
 
-                        <SelectRoot collection={frameworks} 
+                        {/* <SelectRoot collection={frameworks} 
                             value={location}
-                            onValueChange={(e) => setLocation(e.value)}
+                            onValueChange={(e) => setLocation2(e.value)}
                         >
                             <SelectLabel>Selecciona Centro de consumo</SelectLabel>
                             <SelectTrigger>
@@ -64,7 +103,7 @@ function Home() {
                                     </SelectItem>
                                 ))}
                             </SelectContent>
-                        </SelectRoot>
+                        </SelectRoot> */}
 
                         
                         <Button className='primary-button'>
@@ -82,8 +121,8 @@ function Home() {
                     gap={4} 
                     mb={4}
                 >
-                    <Text>Subsidiaria: {subsidiary || "No seleccionada"}</Text>
-                    <Text>Restaurante: {location || "No seleccionado"}</Text>
+                    <Text>Subsidiaria: {subsidiary2 || "No seleccionada"}</Text>
+                    <Text>Restaurante: {location2 || "No seleccionado"}</Text>
                     <Text>Fecha: {new Date().toLocaleDateString()}</Text>
                     <Text>Hora: {new Date().toLocaleTimeString()}</Text>
                     <Text>Total Ventas: $2000</Text>

@@ -1,15 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy } from 'react';
 import { ContextProvider } from './context/ContextProvider';
 import ProtectedRoute, { PublicRoute } from './components/ProtectedRoutes';
-import Login from './pages/Login/Login';
 import Layout from './components/Layout';
-import Home from './pages/Home/Home';
-import EmptyPage from './pages/Empty/EmptyPage';
-import CashClosing from './pages/CashClosing/CashClosing'
-import LotClosure from './pages/LotClosure/LotClosure'
-import Approvals from './pages/Approvals/Approvals'
-import Requests from './pages/Requests/Requests'
 import './App.css'
+import routesConfig from './routes/routesConfig';
+
+const Login = lazy (() => import('./pages/Login/Login'));
 
 function App() {
   return (
@@ -28,42 +25,20 @@ function App() {
               <Layout />
             </ProtectedRoute>
           }>
-
-            <Route path="home" element={
-                <ProtectedRoute allowedRoles={[1,2]}>
-                  <Home />
-                </ProtectedRoute>  
-              } />
-
-            <Route path='cashClosing' element={
-                <ProtectedRoute allowedRoles={[1]}>
-                  <CashClosing />
-                </ProtectedRoute>
-              } />
-
-            <Route path='lotClosure' element={
-                <ProtectedRoute allowedRoles={[1, 2]}>
-                  <LotClosure />
-                </ProtectedRoute>
-              } />
-
-            <Route path='request' element={
-                <ProtectedRoute allowedRoles={[2]}>
-                  <Requests />
-                </ProtectedRoute>
-              } />
-
-            <Route path='approvals' element={
-                <ProtectedRoute allowedRoles={[1]}>
-                  <Approvals />
-                </ProtectedRoute>
-              } />
-
-            <Route path="emptyPage" element={
-                <ProtectedRoute allowedRoles={[]}>
-                  <EmptyPage />
-                </ProtectedRoute>
-              }  />
+            {
+              routesConfig.map(({path, element: Element, roles}) => (
+                <Route
+                  key={path}
+                  path={path.replace('/','')}
+                  element={
+                    <ProtectedRoute allowedRoles={roles}>
+                      <Element />
+                    </ProtectedRoute>
+                  }
+                
+                />
+              ))
+            }
 
           </Route>
 

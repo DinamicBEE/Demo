@@ -2,6 +2,11 @@ import axios from "axios";
 
 const BASE_URL = "https://reqres.in/api";
 
+/**
+ * 
+ * @param {*} token 
+ * @returns {Promise<Object>}
+ */
 export const getUserInfo = async (token) => {
     try {
         
