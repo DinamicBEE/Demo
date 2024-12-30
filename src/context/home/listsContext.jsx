@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState, useMemo } from 'react';
+
 
 const listContext = createContext();
 
@@ -11,11 +12,12 @@ export function ListProvider({ children }){
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getData = async (getFunction, setter) => {
+  const getData = useCallback(async (getFunction, setter) => {
+    const controller = new AbortController();
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getFunction();
+      const data = await getFunction({signal: controller.signal});
       setter(data);
     } catch (err) {
       setError('Error al cargar los datos.');
@@ -23,21 +25,24 @@ export function ListProvider({ children }){
     } finally {
       setIsLoading(false);
     }
-  };
+  },[]);
 
-    return(
-        <listContext.Provider
-            value={{
-                subsidiary,
-                setSubsidiary,
-                store,
-                setStore,
-                isLoading,
-                error,
-                getData,
-            }}
-        >
-            {children}
-        </listContext.Provider>
-    );
+  const value = useMemo(
+    () => ({
+      subsidiary,
+      setSubsidiary,
+      store,
+      setStore,
+      isLoading,
+      error,
+      getData,
+    }),
+    [subsidiary, store, isLoading, error, getData]
+  );
+
+  return(
+      <listContext.Provider value={value}>
+          {children}
+      </listContext.Provider>
+  );
 }
