@@ -12,11 +12,15 @@ import { Alert } from "../../components/ui/alert"
 import './Home.css'
 import { useList } from '../../context/home/listsContext';
 import { getSubsidiaries, getStores } from '../../services/catalogService';
+import { getGeneralInfo } from '../../services/homeService'
 
 function Home() {
     const [SubSelect, setSubSelect] = useState("");
     const [location, setLocation] = useState("");
     const [storeBySub, setStoreBySub] = useState(null);
+
+    const [header, setHeader] = useState(null);
+    const [dataTable, setdataTable] = useState(null);
 
     const {
         subsidiary,
@@ -40,8 +44,17 @@ function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
-    function getGeneralInfo () {
+    async function getInfo () {
         console.log(SubSelect, location)
+        const response = await getGeneralInfo(SubSelect, location)
+
+        console.log(response)
+        setHeader(response.header)
+        setdataTable(response.employees)
+    }
+
+    function exportCSV() {
+
     }
 
     function filterStore(subSelect) {
@@ -137,7 +150,7 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        <Button className='primary-button' onClick={getGeneralInfo}>
+                        <Button className='primary-button' onClick={getInfo}>
                             Buscar
                         </Button>
 
@@ -145,26 +158,24 @@ function Home() {
                 </HStack>
             </VStack>
 
-            <Box mb={6}>
+            {header!=null && <Box mb={6}>
 
                 <Grid 
                     templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} 
                     gap={4} 
                     mb={4}
                 >
-                    <Text>Subsidiaria: {SubSelect || "No seleccionada"}</Text>
-                    <Text>Restaurante: {location || "No seleccionado"}</Text>
-                    <Text>Fecha: {new Date().toLocaleDateString()}</Text>
-                    <Text>Hora: {new Date().toLocaleTimeString()}</Text>
-                    <Text>Total Ventas: $2000</Text>
-                    <Text>Total Ventas Registradas: $1980</Text>
-                    <Text>Diferencia: $20</Text>
-                    <Text>Estado: Sincronizado</Text>
+                    <Text>Subsidiaria: {header.subsidiaryName || "No seleccionada"}</Text>
+                    <Text>Restaurante: {header.storeName || "No seleccionado"}</Text>
+                    <Text>Fecha: {header.date}</Text>
+                    <Text>Hora: {header.time}</Text>
+                    <Text>Total Ventas: {header.totalPOS}</Text>
+                    <Text>Total Ventas Registradas: {header.totalClousing}</Text>
+                    <Text>Diferencia: {header.difference}</Text>
+                    <Text></Text>
                 </Grid>
 
-
-
-            </Box>
+            </Box>}
 
             <Box>
                 
@@ -175,11 +186,11 @@ function Home() {
                     w="100%"
                 >
 
-                    <Button className='secondary-button'>
+                    <Button className='secondary-button' onClick={exportCSV}>
                         Exportar a CSV
                     </Button>
 
-                    <Button className='primary-button'>
+                    <Button className='primary-button' onClick={getInfo}>
                         Actualizar Información
                     </Button>
                 
@@ -187,46 +198,64 @@ function Home() {
 
             </Box>
 
-            <Box>
+            {dataTable!=null && <Box>
 
-                <Table.ScrollArea rounded="md" borderWidth="1px" maxW="xl">
+                <Table.ScrollArea rounded="md" borderWidth="1px" >
                     <Table.Root size="sm" variant="outline" striped>
                         <Table.Header>
                             <Table.Row>
-                            <Table.ColumnHeader>Product</Table.ColumnHeader>
-                            <Table.ColumnHeader>Category</Table.ColumnHeader>
-                            <Table.ColumnHeader textAlign="end">Price</Table.ColumnHeader>
+                                <Table.ColumnHeader>Vendedor</Table.ColumnHeader>
+                                <Table.ColumnHeader>Total POS</Table.ColumnHeader>
+                                <Table.ColumnHeader>Total Físico</Table.ColumnHeader>
+                                <Table.ColumnHeader>Diferencia</Table.ColumnHeader>
+                                <Table.ColumnHeader>Estatus</Table.ColumnHeader>
+                                <Table.ColumnHeader>Extas</Table.ColumnHeader>
+                                <Table.ColumnHeader>MXN</Table.ColumnHeader>
+                                <Table.ColumnHeader>USD</Table.ColumnHeader>
+                                <Table.ColumnHeader>EUR</Table.ColumnHeader>
+                                <Table.ColumnHeader>LIB</Table.ColumnHeader>
+                                <Table.ColumnHeader>CAN</Table.ColumnHeader>
+                                <Table.ColumnHeader>Clientes General</Table.ColumnHeader>
+                                <Table.ColumnHeader>Clientes Especiales</Table.ColumnHeader>
+                                <Table.ColumnHeader>Prepago</Table.ColumnHeader>
+                                <Table.ColumnHeader>CXC Empleados</Table.ColumnHeader>
+                                <Table.ColumnHeader>Intercompañia</Table.ColumnHeader>
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
-                            {items.map((item) => (
+                            {dataTable.map((item) => (
                             <Table.Row key={item.id}>
                                 <Table.Cell>
                                     <Link variant="plain" href="#">
-                                        {item.name}
+                                        {item.employe}
                                     </Link>
                                 </Table.Cell>
-                                <Table.Cell>{item.category}</Table.Cell>
-                                <Table.Cell textAlign="end">{item.price}</Table.Cell>
+                                <Table.Cell>{item.totalPOS}</Table.Cell>
+                                <Table.Cell>{item.totalClousing}</Table.Cell>
+                                <Table.Cell>{item.difference}</Table.Cell>
+                                <Table.Cell>{item.status}</Table.Cell>
+                                <Table.Cell>{item.mxm}</Table.Cell>
+                                <Table.Cell>{item.mxm}</Table.Cell>
+                                <Table.Cell>{item.usd}</Table.Cell>
+                                <Table.Cell>{item.eur}</Table.Cell>
+                                <Table.Cell>{item.lib}</Table.Cell>
+                                <Table.Cell>{item.can}</Table.Cell>
+                                <Table.Cell>{item.generalCXC}</Table.Cell>
+                                <Table.Cell>{item.specialCXC}</Table.Cell>
+                                <Table.Cell>{item.prepaid}</Table.Cell>
+                                <Table.Cell>{item.employetotal}</Table.Cell>
+                                <Table.Cell>{item.intercompany}</Table.Cell>
                             </Table.Row>
                             ))}
                         </Table.Body>
                     </Table.Root>
                 </Table.ScrollArea>
 
-            </Box>
+            </Box>}
 
         </Box>
         
     );
 }
-
-  const items = [
-    { id: 1, name: "Laptop", category: "Electronics", price: 999.99 },
-    { id: 2, name: "Coffee Maker", category: "Home Appliances", price: 49.99 },
-    { id: 3, name: "Desk Chair", category: "Furniture", price: 150.0 },
-    { id: 4, name: "Smartphone", category: "Electronics", price: 799.99 },
-    { id: 5, name: "Headphones", category: "Accessories", price: 199.99 },
-  ]
 
 export default Home;

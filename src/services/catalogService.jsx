@@ -10,8 +10,8 @@ const BASE_URL = 'https://run.mocky.io/v3';
  */
 export const getSubsidiaries = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/dcd0ee88-ae43-465d-90cd-08fdd26fd0e8`);
-        console.log(response)
+        const response = await axios.get(`${BASE_URL}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
+        
         let list = response.data.map((item)=>({
             value: item.id,
             label: item.name,
@@ -34,13 +34,10 @@ export const getSubsidiaries = async () => {
  */
 export const getStores = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/0d835073-c0f9-492f-8678-8d3a66d5aa9e`);
-        console.log(response.data)
+        const response = await axios.get(`${BASE_URL}/ccdc1956-02d0-4917-abab-8021fb1a53fc`);
+        
         return response.data
-        // .map((item) =>({
-        //     value: item.id,
-        //     label: item.name,
-        // }));
+
     } catch (error) {
         console.error('Error al obtener las tiendas:', error);
         return [];
