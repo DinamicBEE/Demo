@@ -20,7 +20,7 @@ function Home() {
     const [storeBySub, setStoreBySub] = useState(null);
 
     const [header, setHeader] = useState(null);
-    const [dataTable, setdataTable] = useState(null);
+    const [dataTable, setdataTable] = useState([]);
 
     const {
         subsidiary,
@@ -54,7 +54,32 @@ function Home() {
     }
 
     function exportCSV() {
+        const csvString = [
+            ["Vendedor", "Total POS", "Total Físico", "Diferencia",
+             "Estatus", "Extras", "MXN", "USD", "EUR", "LIB", "CAN",
+             "Clientes General", "Clientes Especiales", "Prepago",
+             "CXC Empleados", "Intercompañia"
+            ],
+            ...dataTable.map(item => [
+                item.employe, item.totalPOS, item.totalClousing, 
+                item.difference, item.status, item.mxm, item.mxm,
+                item.usd, item.eur, item.lib, item.can, item.generalCXC,
+                item.specialCXC, item.prepaid, item.employetotal,
+                item.intercompany 
+            ])
+        ]
+        .map(row => row.join(","))
+        .join("\n");
 
+        const blob = new Blob([csvString], {type: 'text/csv'});
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${header.subsidiaryName}_${header.storeName}_${header.date}`;        document.body.appendChild(link)
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 
     function filterStore(subSelect) {
@@ -177,7 +202,7 @@ function Home() {
 
             </Box>}
 
-            <Box>
+            {dataTable.length>1 && <Box>
                 
                 <Grid 
                     templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} 
@@ -186,7 +211,7 @@ function Home() {
                     w="100%"
                 >
 
-                    <Button className='secondary-button' onClick={exportCSV}>
+                    <Button className='secondary-button' onClick={()=>{exportCSV()}}>
                         Exportar a CSV
                     </Button>
 
@@ -196,9 +221,9 @@ function Home() {
                 
                 </Grid>
 
-            </Box>
+            </Box>}
 
-            {dataTable!=null && <Box>
+            {dataTable.length>1 && <Box>
 
                 <Table.ScrollArea rounded="md" borderWidth="1px" >
                     <Table.Root size="sm" variant="outline" striped>
