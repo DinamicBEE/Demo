@@ -10,7 +10,6 @@ import { API_USER } from "./settings";
  */
 export const getUserInfo = async (token) => {
     try {
-        
         const response = await axios.get(`${API_USER}/users/2`,{
             headers: {
                 Authorization: `Bearer ${token}`,

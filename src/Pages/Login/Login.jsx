@@ -35,7 +35,7 @@ function Login() {
             if(token) {
                 
                 const userData = await fetcUser(token);
-                
+                console.log(userData)
                 if(userData){
                     setloading(false);
                     login(token);

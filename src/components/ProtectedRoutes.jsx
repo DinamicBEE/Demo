@@ -1,10 +1,15 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
+import Loading from '@components/Loading';
 
 function ProtectedRoute({ children, allowedRoles  }) {
-    const { isAuthenticated } = useAuth();
-    const { user } = useUser();
+    const { isAuthenticated, isLoading } = useAuth();
+    const { user, loading } = useUser();
+
+    if (loading || isLoading) {
+        return <Loading />;
+    }
         
     if (!isAuthenticated) return <Navigate to="/" />;
     

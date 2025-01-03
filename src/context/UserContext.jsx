@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { getUserInfo } from "../services/userService";
 import { useAuth } from "./AuthContext";
 
@@ -10,6 +10,7 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
     const { token } = useAuth();
     const [ user, setUser ] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const fetcUser = async ( currentToken ) => {
         try {
@@ -32,8 +33,26 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+    useEffect(() => {
+        
+        const initializeUser = async () => {
+            if (token) {
+                try {
+                    await fetcUser();
+                } catch {
+                    setUser(null);
+                } finally{
+                    setLoading(false);
+                }
+            }
+            
+        };
+        initializeUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [token]);
+
     return (
-        <UserContext.Provider value={{ user, fetcUser }}>
+        <UserContext.Provider value={{ user, fetcUser, loading }}>
             {children}
         </UserContext.Provider>
     );

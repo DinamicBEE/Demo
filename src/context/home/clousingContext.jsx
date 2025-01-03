@@ -14,8 +14,8 @@ export function ClousingProvider({ children }) {
 
   
   const getInfo = useCallback(async (subsidiary, store) => {
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await getGeneralInfo(subsidiary, store);
       setHeader(response.header);
       setData(response.employees);

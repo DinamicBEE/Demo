@@ -20,7 +20,7 @@ export default function TableOfTotals({ subsidiary, store }) {
           </Alert>
       )}
 
-      {data!=null && loading && <Loading />}
+      {loading && <Loading />}
 
       {data!=null && <Box>
         <Box mb={6}>
