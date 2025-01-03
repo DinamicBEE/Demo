@@ -11,25 +11,18 @@ import {
 import { Alert } from "@components/ui/alert"
 import { getSubsidiaries, getStores } from '@services/catalogService';
 import { useList } from '@context/Home/listsContext';
+import { useClousing } from '@context/home/clousingContext';
 import TableOfTotals from './components/TableOfTotals';
 import './Home.css'
-import { useClousing } from '@context/home/clousingContext';
 
 function Home() {
     const [SubSelect, setSubSelect] = useState("");
     const [location, setLocation] = useState("");
     const [storeBySub, setStoreBySub] = useState(null);
-    const { data, getInfo } = useClousing();
+    const { getInfo } = useClousing();
  
-    const {
-        subsidiary,
-        setSubsidiary,
-        store,
-        setStore,
-        isLoading,
-        error,
-        getData,
-      } = useList();
+    const { subsidiary, setSubsidiary, store,
+        setStore, isLoading, error, getData, } = useList();
 
     useEffect(()=>{
         if (!subsidiary) {
@@ -142,12 +135,8 @@ function Home() {
                 </HStack>
             </VStack>
 
-            {data!=null && data.length>1 && <TableOfTotals subsidiary={SubSelect} store={location} />}
-            
-            {data!=null && data.length===0 && <h2>
-                    No hay data
-                </h2>}
-        
+            <TableOfTotals subsidiary={SubSelect} store={location} />
+                
         </Box>
         
     );

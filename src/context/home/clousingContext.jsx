@@ -9,11 +9,12 @@ export const useClousing = () => useContext(clousingContext)
 export function ClousingProvider({ children }) {
   const [header, setHeader] = useState(null);
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   
   const getInfo = useCallback(async (subsidiary, store) => {
+    setLoading(true);
     try {
       const response = await getGeneralInfo(subsidiary, store);
       setHeader(response.header);
