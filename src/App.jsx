@@ -28,13 +28,13 @@ function App() {
               </ProtectedRoute>
             }>
               {
-                routesConfig.map(({path, element: Element, roles}) => (
+                routesConfig.map(({path, element: Element, roles, wrapper}) => (
                   <Route
                     key={path}
                     path={path.replace('/','')}
                     element={
                       <ProtectedRoute allowedRoles={roles}>
-                        <Element />
+                        {wrapper ? wrapper(()=><Element />) : <Element />}
                       </ProtectedRoute>
                     }
                   

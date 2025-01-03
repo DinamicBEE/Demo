@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_USER } from "./settings";
 
-const BASE_URL = "https://reqres.in/api";
+//const BASE_URL = "https://reqres.in/api";
 
 /**
  * 
@@ -10,7 +11,7 @@ const BASE_URL = "https://reqres.in/api";
 export const getUserInfo = async (token) => {
     try {
         
-        const response = await axios.get(`${BASE_URL}/users/2`,{
+        const response = await axios.get(`${API_USER}/users/2`,{
             headers: {
                 Authorization: `Bearer ${token}`,
             },

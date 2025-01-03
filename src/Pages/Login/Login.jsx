@@ -5,17 +5,17 @@ import {
     Heading,
     Stack 
 } from "@chakra-ui/react";
-import { Field  } from "../../components/ui/field";
-import { PasswordInput } from "../../components/ui/password-input"
-import { Alert } from "../../components/ui/alert"
-import { Button } from "../../components/ui/button"
+import { Field  } from "@components/ui/field";
+import { PasswordInput } from "@components/ui/password-input"
+import { Alert } from "@components/ui/alert"
+import { Button } from "@components/ui/button"
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { loginUser } from "../../services/authService";
+import { loginUser } from "@services/authService";
 import './login.css'
-import { useAuth } from "../../context/AuthContext";
-import { useUser } from "../../context/UserContext";
+import { useAuth } from "@context/AuthContext";
+import { useUser } from "@context/UserContext";
 
 function Login() {
     const navigate = useNavigate();
@@ -43,8 +43,9 @@ function Login() {
                 }
             }
         } catch (error) {
-            setloading(false);
             setError(error.message);
+        } finally {
+            setloading(false);
         }
 
     }

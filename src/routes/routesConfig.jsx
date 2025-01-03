@@ -1,10 +1,16 @@
 import { lazy } from 'react';
+import { HomeProvider } from '../context/home/homeProvider';
 
 const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../pages/Home/Home')),
       roles: [1, 2],
+      wrapper: (Component) => (
+        <HomeProvider>
+          <Component />
+        </HomeProvider>
+      ),
     },
     {
       path: '/cashClosing',
