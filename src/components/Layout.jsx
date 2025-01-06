@@ -14,7 +14,7 @@ import {
   } from "./ui/drawer"
 import { IconButton } from "@chakra-ui/react"
 import { LuAlignJustify, LuClipboardCheck, LuClipboardList, 
-    LuContainer, LuStore, LuHouse, LuLogOut } from "react-icons/lu";
+    LuContainer, LuHouse, LuLogOut } from "react-icons/lu";
 
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
@@ -28,7 +28,6 @@ function Layout() {
 
     const menuItems = [
         { name: 'Inicio', path: '/home', icon:<LuHouse />, roles: [1, 2] },
-        { name: 'Corte de caja', path: '/cashClosing', icon:<LuStore />, roles: [1] },
         { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [1, 2] },
         { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: [2] },
         { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: [1] },

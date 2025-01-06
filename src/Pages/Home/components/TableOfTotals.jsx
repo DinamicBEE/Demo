@@ -1,16 +1,30 @@
-import { Box, Button, Grid, Table, Link, Text } from '@chakra-ui/react'
+import { useState } from 'react';
+import { Box, Button, Grid, Table, Text } from '@chakra-ui/react'
 import { Alert } from "@components/ui/alert"
 import { exportCSV } from '@services/homeService'
 import { useClousing } from '@context/home/clousingContext';
 import Loading from '@components/loading';
+import ClousingLayout from './ClousingLayout';
 
 export default function TableOfTotals({ subsidiary, store }) {
 
     const { data, loading, error, header, getInfo } = useClousing();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
     
     function handleExportCSV() {
         exportCSV({data,header})
     }
+
+    const openDialog = (item) => {
+      setSelectedEmployee(item);
+      setIsDialogOpen(true);
+    }
+
+    const closeDialog = () => {
+      setSelectedEmployee(null);
+      setIsDialogOpen(false);
+    };
 
   return (
     <>
@@ -87,9 +101,15 @@ export default function TableOfTotals({ subsidiary, store }) {
                 {data.map((item) => (
                   <Table.Row key={item.id}>
                     <Table.Cell>
-                      <Link variant="plain" href="#">
+                      <Text 
+                        as="span"
+                        cursor="pointer"
+                        textDecoration="underline"
+                        color="blue.500"
+                        onClick={() => openDialog(item)}
+                      >
                         {item.employe}
-                      </Link>
+                      </Text>
                     </Table.Cell>
                     <Table.Cell>{item.totalPOS}</Table.Cell>
                     <Table.Cell>{item.totalClousing}</Table.Cell>
@@ -117,6 +137,8 @@ export default function TableOfTotals({ subsidiary, store }) {
                     No hay data
                 </h2>}
       </Box>}
+
+      <ClousingLayout isOpen={isDialogOpen} employee={selectedEmployee} onClose={closeDialog}></ClousingLayout>
     </>
   );
 }

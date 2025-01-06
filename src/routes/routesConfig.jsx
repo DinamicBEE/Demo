@@ -5,17 +5,12 @@ const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../pages/Home/Home')),
-      roles: [1, 2],
+      roles: [1],
       wrapper: (Component) => (
         <HomeProvider>
           <Component />
         </HomeProvider>
       ),
-    },
-    {
-      path: '/cashClosing',
-      element: lazy(() => import('../pages/CashClosing/CashClosing')),
-      roles: [1],
     },
     {
       path: '/lotClosure',
