@@ -1,7 +1,9 @@
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger } from "@components/ui/dialog";
 import { Tabs, Box } from "@chakra-ui/react"
-import { Button } from "@components/ui/button"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
+import { Button } from "@components/ui/button"
+import HeaderClousing from "./HeaderClousing"
+import CashClousing from "./CashClousing"
 
 const ClousingLayout = ({ isOpen, onClose, employee}) => {
 
@@ -15,11 +17,11 @@ const ClousingLayout = ({ isOpen, onClose, employee}) => {
                 <DialogBody>
 
                     <Box>
-
+                        <HeaderClousing data={employee}></HeaderClousing>
                     </Box>
                     
                     
-                    <Tabs.Root variant="outline" defaultValue="members" unmountOnExit justify="center" size="lg">
+                    <Tabs.Root variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
                             <Tabs.Trigger value="cash">
                                 <LuUser />
@@ -52,23 +54,29 @@ const ClousingLayout = ({ isOpen, onClose, employee}) => {
                         </Tabs.List>
 
                         <Tabs.Content value="cash">
-                            Tab 1: Content Efectivo
+                            <CashClousing></CashClousing>
                         </Tabs.Content>
+
                         <Tabs.Content value="tdc">
                             Tab 2: Content TDC
                         </Tabs.Content>
+
                         <Tabs.Content value="customers">
                             Tab 3: Content Clientes
                         </Tabs.Content>
-                        <Tabs.Content value="sepecial-customers">
+
+                        <Tabs.Content value="special-customers">
                             Tab 4: Content Clientes especiales
                         </Tabs.Content>
+
                         <Tabs.Content value="prepaid">
                             Tab 5: Content Prepago
                         </Tabs.Content>
+
                         <Tabs.Content value="employees">
                             Tab 6: Content Empleados
                         </Tabs.Content>
+
                         <Tabs.Content value="inter-company">
                             Tab 7: Content Intercompañias
                         </Tabs.Content>
