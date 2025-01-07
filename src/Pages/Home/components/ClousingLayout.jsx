@@ -8,7 +8,7 @@ import CashClousing from "./CashClousing"
 const ClousingLayout = ({ isOpen, onClose, employee}) => {
 
     return (
-        <DialogRoot size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+        <DialogRoot size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false} scrollBehavior="outside">
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
