@@ -3,7 +3,8 @@ import { Tabs, Box } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
-import CashClousing from "./CashClousing"
+//import { lazy } from "react";
+//const CashClousing = lazy(() => import("./CashClousing"));
 
 const ClousingLayout = ({ isOpen, onClose, employee}) => {
 
@@ -54,7 +55,7 @@ const ClousingLayout = ({ isOpen, onClose, employee}) => {
                         </Tabs.List>
 
                         <Tabs.Content value="cash">
-                            <CashClousing></CashClousing>
+                            {/* <CashClousing></CashClousing> */}
                         </Tabs.Content>
 
                         <Tabs.Content value="tdc">

@@ -14,14 +14,14 @@ const CashClousing = () => {
           gap={4}
           mb={4}
         >
-          <Group attached>
+          <Group>
             <InputAddon>Propina electrónica</InputAddon>
             <Skeleton loading={loading}>
               <Input value={9622.32} placeholder="Empleado" />
             </Skeleton>
           </Group>
 
-          <Group attached>
+          <Group>
             <InputAddon>Propina de fondo</InputAddon>
             <Skeleton loading={loading}>
               <Input value={9119.32} placeholder="Empleado" />
@@ -76,17 +76,17 @@ const CashClousing = () => {
           flexDir={{ base: "column", md: "row" }}
         >
           <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
-            <Group attached>
+            <Group >
               <InputAddon>Total POS</InputAddon>
               <Input value={9622.32} placeholder="Empleado" />
             </Group>
 
-            <Group attached>
+            <Group >
               <InputAddon>Total físico</InputAddon>
               <Input value={9119.32} placeholder="Empleado" />
             </Group>
 
-            <Group attached>
+            <Group >
               <InputAddon>Diferencia</InputAddon>
               <Input value={0} placeholder="Empleado" />
             </Group>
