@@ -18,11 +18,41 @@ export const getCashClousing = async (clousingId, employeeId) => {
     console.log(clousingId, employeeId)
     try {
         const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+
+        const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
+        const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
+
+        const data = {
+            ...response.data,
+            globalTotalPOS: newTotalPOS,
+            globalTotalFisico: newTotalFisico,
+            globalDifference: newTotalPOS - newTotalFisico,
+            tips: 0
+        }
         
-        return response.data
+        return data
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
+        return [];
+    }
+}
+
+export const sendCashClousing = async (data) => {
+    console.log(data)
+    const body = {
+        ...data,
+        clousingType: 1
+    }
+    console.log(body)
+    try {
+        //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
+        const response = {success: true}
+
+        return response
+
+    } catch (error) {
+        console.error('Error al enviar los valores generales:', error);
         return [];
     }
 }

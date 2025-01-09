@@ -86,14 +86,14 @@ const HeaderClousing = ({ data }) => {
                 <Group>
                     <InputAddon>Descuento + IVA POS</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={data?.discountPOS || ""} placeholder="Descuento + IVA POS" readOnly />
+                        <Input value={header?.discountPOS || ""} placeholder="Descuento + IVA POS" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Descuento físico</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={data?.discountClousing || ""} placeholder="Descuento físico" readOnly />
+                        <Input value={header?.discountClousing || ""} placeholder="Descuento físico" readOnly />
                     </Skeleton>
                 </Group>
 
