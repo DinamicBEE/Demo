@@ -5,7 +5,7 @@ import { Button } from "@components/ui/button"
 import { useHeaders } from "@context/clousing/headerContext";
 import { useEffect } from "react";
 
-const HeaderClousing = ({ data }) => {
+function HeaderClousing ({ data }) {
     const [header, setHeader] = useState();
     const {loading, getHeader} = useHeaders();
 

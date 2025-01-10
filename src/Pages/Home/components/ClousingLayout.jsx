@@ -5,8 +5,10 @@ import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
 import { lazy } from "react";
 const CashClousing = lazy(() => import("./CashClousing"));
+const TDCClousing = lazy(() => import("./TDCClousing"));
+const CustomersClousing = lazy(() => import("./CustomersClousing"));
 
-const ClousingLayout = ({ isOpen, onClose, employee}) => {
+function ClousingLayout({ isOpen, onClose, employee}) {
 
     return (
         <DialogRoot size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false} scrollBehavior="outside">
@@ -59,11 +61,11 @@ const ClousingLayout = ({ isOpen, onClose, employee}) => {
                         </Tabs.Content>
 
                         <Tabs.Content value="tdc">
-                            Tab 2: Content TDC
+                            <TDCClousing />
                         </Tabs.Content>
 
                         <Tabs.Content value="customers">
-                            Tab 3: Content Clientes
+                            <CustomersClousing />
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">

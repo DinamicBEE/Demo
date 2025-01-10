@@ -6,7 +6,7 @@ import { useHandleCashData } from "../../../hook/cashClousing/useHandleCashData"
 import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
 import FooterClousing from "./FooterClousing";
 
-const CashClousing = ({ data }) => {
+function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
     const { handleInputChange, handleChangeTips, sendClousing } =  useHandleCashData(cashData, setCashData);

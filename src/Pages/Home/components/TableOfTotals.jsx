@@ -6,7 +6,7 @@ import { useClousing } from '@context/home/clousingContext';
 import Loading from '@components/loading';
 import ClousingLayout from './ClousingLayout';
 
-export default function TableOfTotals({ subsidiary, store }) {
+function TableOfTotals({ subsidiary, store }) {
 
     const { data, loading, error, header, getInfo } = useClousing();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -142,3 +142,5 @@ export default function TableOfTotals({ subsidiary, store }) {
     </>
   );
 }
+
+export default TableOfTotals;
