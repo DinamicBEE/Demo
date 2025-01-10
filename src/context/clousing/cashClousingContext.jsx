@@ -14,7 +14,7 @@ export function CashClousingProvider({ children }) {
     
     const getCashData = useCallback(async (clousingId, employeeId) => {
         setCashLoading(true);
-        console.log(cashClousing[employeeId]);
+        //console.log(cashClousing[employeeId]);
         if(cashClousing[employeeId]) {
             setCashLoading(false);
             return cashClousing[employeeId];
@@ -22,7 +22,7 @@ export function CashClousingProvider({ children }) {
     
         try {
             const response = await getCashClousing(clousingId, employeeId);
-            console.log(response);
+            //console.log(response);
             setCashClousing((prev) => ({
                 ...prev,
                 [employeeId]: response,
