@@ -1,7 +1,7 @@
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger } from "@components/ui/dialog";
-import { Tabs, Box } from "@chakra-ui/react"
+import { Tabs, Box, Button } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
-import { Button } from "@components/ui/button"
+//import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
 import { lazy } from "react";
 const CashClousing = lazy(() => import("./CashClousing"));
@@ -11,7 +11,7 @@ const CustomersClousing = lazy(() => import("./CustomersClousing"));
 function ClousingLayout({ isOpen, onClose, employee}) {
 
     return (
-        <DialogRoot size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false} scrollBehavior="outside">
+        <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
@@ -26,7 +26,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                     
                     <Tabs.Root variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
-                            <Tabs.Trigger value="cash">
+                            <Tabs.Trigger >
                                 <LuUser />
                                 Efectivo
                             </Tabs.Trigger>
@@ -56,7 +56,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             </Tabs.Trigger>
                         </Tabs.List>
 
-                        <Tabs.Content value="cash">
+                        <Tabs.Content>
                             <CashClousing data={employee} />
                         </Tabs.Content>
 

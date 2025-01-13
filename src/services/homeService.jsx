@@ -1,5 +1,5 @@
-import axios from "axios";
-import { API_HOME } from "./settings";
+// import axios from "axios";
+// import { API_HOME } from "./settings";
 
 //const BASE_URL = "https://run.mocky.io/v3";
 
@@ -8,10 +8,12 @@ export const getGeneralInfo = async (subsidiary, store) => {
     
     try {
         console.log(subsidiary, store)
-        const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
+        //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
+        const response = homeData;
 
         console.log(response)
-        return response.data
+        //return response.data
+        return response
         
     } catch (error) {
         console.error('Error al obtener las Subsidiarias: ', error)
@@ -48,4 +50,90 @@ export function exportCSV({data, header}) {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
+}
+
+const homeData = {
+    "header": {
+      "subsidiaryName": "Sub 01",
+      "storeName": "Tienda 01",
+      "date": "30/12/24",
+      "time": "15:40",
+      "totalPOS": 15000,
+      "totalClousing": 15000,
+      "difference": 0
+    },
+    "employees": [
+      {
+        "id":1,
+        "employe": "Mario Vásquez",
+        "totalPOS": 2500,
+        "totalClousing": 2500,
+        "difference": 0,
+        "status": "Abierto",
+        "mxm": 0,
+        "usd": 0,
+        "eur": 0,
+        "lib": 0,
+        "can": 0,
+        "generalCXC": 0,
+        "specialCXC": 0,
+        "prepaid": 0,
+        "employetotal": 0,
+        "intercompany": 0
+      },
+      {
+        "id":2,
+        "employe": "Franklin Cardona",
+        "totalPOS": 2500,
+        "totalClousing": 2500,
+        "difference": 0,
+        "status": "Abierto",
+        "mxm": 0,
+        "usd": 0,
+        "eur": 0,
+        "lib": 0,
+        "can": 0,
+        "generalCXC": 0,
+        "specialCXC": 0,
+        "prepaid": 0,
+        "employetotal": 0,
+        "intercompany": 0
+      },
+      {
+        "id":3,
+        "employe": "Luis Castillo",
+        "totalPOS": 2500,
+        "totalClousing": 2500,
+        "difference": 0,
+        "status": "Abierto",
+        "mxm": 0,
+        "usd": 0,
+        "eur": 0,
+        "lib": 0,
+        "can": 0,
+        "generalCXC": 0,
+        "specialCXC": 0,
+        "prepaid": 0,
+        "employetotal": 0,
+        "intercompany": 0
+      },
+      {
+        "id":4,
+        "employe": "Gerardo Flores",
+        "totalPOS": 2500,
+        "totalClousing": 2500,
+        "difference": 0,
+        "status": "Abierto",
+        "mxm": 0,
+        "usd": 0,
+        "eur": 0,
+        "lib": 0,
+        "can": 0,
+        "generalCXC": 0,
+        "specialCXC": 0,
+        "prepaid": 0,
+        "employetotal": 0,
+        "intercompany": 0
+      }
+    ]
 }

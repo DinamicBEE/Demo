@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { Button } from "@components/ui/button"
 import { CurrencyInput } from "@components/NumericInput";
+import type { FooterClousing } from "@models/common.clousing.model";
 
-function FooterClousing({data, loading, onChange}) {
+function FooterClousing({data, loading, onChange}: FooterClousing) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -13,7 +14,7 @@ function FooterClousing({data, loading, onChange}) {
       mb={2}
       mt={4}
       gap="4"
-      justify="space-between"
+      
       display="flex"
       flexDir={{ base: "column", md: "row" }}
     >

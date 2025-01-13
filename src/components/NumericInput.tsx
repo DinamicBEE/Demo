@@ -1,8 +1,9 @@
 import { Group, Input, InputAddon } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
+import { CurrencyInputProps, TableInputProps } from "@models/common.model";
 import { NumericFormat } from 'react-number-format';
 
-function CurrencyInput({ name, value, loading }) {
+function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
@@ -24,7 +25,7 @@ function CurrencyInput({ name, value, loading }) {
     );
 };
 
-function EditableCurrencyInput({ name, value, loading, onChange }) {
+function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInputProps) {
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
@@ -41,7 +42,9 @@ function EditableCurrencyInput({ name, value, loading, onChange }) {
                     placeholder={name}
                     onValueChange={(values) => {
                         const { value } = values;
-                        onChange(value);
+                        if (onChange) {
+                            onChange(value);
+                        }
                     }}
                 />
             </Skeleton>    
@@ -49,7 +52,7 @@ function EditableCurrencyInput({ name, value, loading, onChange }) {
     );
 }
 
-function TableInput({value, id, onChange}){
+function TableInput({value, id, onChange}: TableInputProps){
     return(
         <NumericFormat
         customInput={Input}
@@ -60,7 +63,10 @@ function TableInput({value, id, onChange}){
         decimalScale={2} fixedDecimalScale
         value={value  || 0}
         onChange={(event) => {
-            onChange(id, event.target.value)}
+            if (onChange) {
+                const eventValue = event.target.value;
+                onChange(id, eventValue);
+            }}
         }
       />
     );

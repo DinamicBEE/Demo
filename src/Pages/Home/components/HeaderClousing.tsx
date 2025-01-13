@@ -3,7 +3,7 @@ import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
 import { useHeaders } from "@context/clousing/headerContext";
 import { useEffect } from "react";
-import { HeaderClousingProps, HeaderData } from "@models/common.model"
+import { HeaderClousingProps, HeaderData } from "@models/common.clousing.model"
 
 function HeaderClousing ({ id, employe }: HeaderClousingProps) {
     const [header, setHeader] = useState<HeaderData | undefined>();

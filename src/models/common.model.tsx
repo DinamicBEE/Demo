@@ -1,29 +1,12 @@
-export interface HeaderClousingProps {
-  id: number;
-  employe: string;
-}
-
-export interface HeaderData {
-  cdc?: string;
-  location?: string;
-  subsidiary?: string;
-  date?: string;
-  totalPOS?: string;
-  totalClousing?: string;
-  difference?: string;
-  service?: string;
-  discountPOS?: string;
-  discountClousing?: string;
-}
-
-export interface FooterClousing {
-  data: ClousingTotals;
+export interface CurrencyInputProps {
+  value: number;
   loading: boolean;
-  onChange: () => Promise<boolean>;
+  name?: string;
+  onChange?: (value: string) => void;
 }
 
-export interface ClousingTotals {
-  globalTotalPOS: number;
-  globalTotalFisico: number;
-  globalDifference: number;
+export interface TableInputProps {
+  value: number;
+  id: number;
+  onChange?: (id: number, eventValue: string) => void;
 }
