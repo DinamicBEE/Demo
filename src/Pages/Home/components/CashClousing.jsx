@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Grid, Table, Text, FormatNumber  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
-import { useHandleCashData } from "../../../hook/cashClousing/useHandleCashData";
+import { useHandleCashData } from "../../../hooks/cashClousing/useHandleCashData";
 import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
 import FooterClousing from "./FooterClousing";
 

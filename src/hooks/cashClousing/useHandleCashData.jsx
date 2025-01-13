@@ -1,6 +1,6 @@
 import { sendCashClousing } from "@services/clousingService";
 import { toaster } from "@components/ui/toaster";
-import { ALERTCLOUSING_MODEL } from "../../model/constants.model";
+import { ALERTCLOUSING_MODEL } from "../../models/constants.model";
 
 export const useHandleCashData = (cashData, setCashData) => {
   

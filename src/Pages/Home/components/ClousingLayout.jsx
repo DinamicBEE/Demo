@@ -20,7 +20,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                 <DialogBody>
 
                     <Box>
-                        <HeaderClousing data={employee}></HeaderClousing>
+                        <HeaderClousing id={employee?.id} employe={employee?.employe}></HeaderClousing>
                     </Box>
                     
                     

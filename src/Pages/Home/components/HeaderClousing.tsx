@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { Box, Grid, Group, Input, InputAddon  } from "@chakra-ui/react";
+import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
-import { Button } from "@components/ui/button"
 import { useHeaders } from "@context/clousing/headerContext";
 import { useEffect } from "react";
+import { HeaderClousingProps, HeaderData } from "@models/common.model"
 
-function HeaderClousing ({ data }) {
-    const [header, setHeader] = useState();
+function HeaderClousing ({ id, employe }: HeaderClousingProps) {
+    const [header, setHeader] = useState<HeaderData | undefined>();
     const {loading, getHeader} = useHeaders();
 
 
     useEffect(()=>{
         async function fetchData() {
-        const header = await getHeader(data.id, data.employe);
+        const header = await getHeader(id, employe);
         console.log(header);
         setHeader(header);
         }
-        fetchData(data.id, data.employe);
+        fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
@@ -97,7 +97,7 @@ function HeaderClousing ({ data }) {
                     </Skeleton>
                 </Group>
 
-                <Button size="sm">
+                <Button size="sm" className="primary-button">
                     Toggle
                 </Button>
             </Grid>
