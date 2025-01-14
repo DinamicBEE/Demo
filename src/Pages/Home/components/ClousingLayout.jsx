@@ -4,9 +4,13 @@ import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 //import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
 import { lazy } from "react";
-const CashClousing = lazy(() => import("./CashClousing"));
-const TDCClousing = lazy(() => import("./TDCClousing"));
-const CustomersClousing = lazy(() => import("./CustomersClousing"));
+const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
+const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
+const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
+const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
+const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
+const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
+const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
 
@@ -69,19 +73,19 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">
-                            Tab 4: Content Clientes especiales
+                            <SpecialCustomersClousing />
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
-                            Tab 5: Content Prepago
+                            <PrepaidClousing />
                         </Tabs.Content>
 
                         <Tabs.Content value="employees">
-                            Tab 6: Content Empleados
+                            <EmployeesClousing />
                         </Tabs.Content>
 
                         <Tabs.Content value="inter-company">
-                            Tab 7: Content Intercompañias
+                            <IntercompanyClousing />
                         </Tabs.Content>
 
                     </Tabs.Root>

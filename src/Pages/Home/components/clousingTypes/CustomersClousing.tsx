@@ -1,6 +1,15 @@
+import { useState } from "react";
 import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
+import FooterClousing from "../FooterClousing";
+import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 
 function CustomersClousing() {
+  const [tdc2Data, setCashData] = useState() //Cambiar por funcion propia
+  const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
+  const { sendClousing } =  useHandleCashData(customer, setCashData); //Cambiar por funcion propia
+    
+
   return (
         <Box>
           {/* <Toaster /> */}
@@ -26,9 +35,9 @@ function CustomersClousing() {
                       <Text>{item.customers}</Text>
                     </Table.Cell>
     
-                    <Table.Cell textAlign="end">
+                    <Table.Cell textAlign="center">
                       <Text>
-                        <FormatNumber value={item.coupons} style="currency" currency="USD" />
+                        <FormatNumber value={item.coupons} />
                       </Text>
                     </Table.Cell>
     
@@ -66,7 +75,7 @@ function CustomersClousing() {
             </Table.Root>
           </Table.ScrollArea>
     
-          {/* <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} /> */}
+          <FooterClousing data={customer} loading={cashLoading} onChange={sendClousing} />
     
         </Box>
   )
@@ -77,6 +86,9 @@ export default CustomersClousing;
 const customer = {
   "id": 1,
   "employeId": 150,
+  "globalTotalPOS": 9622.32,
+  "globalTotalFisico": 9622.32,
+  "globalDifference": 0,
   "currencies": [
       {"id":1, "customers": "AIR CANADA", "coupons": 59, "currency": "MXN", "valuePAX": 300, "amount": 17700.00, "exchangeRate": 1.0, "amountMXN": 17700.00},
       {"id":2, "customers": "BRITISH ", "coupons": 2, "currency": "MXN", "valuePAX": 344, "amount": 688.00, "exchangeRate": 1.0, "amountMXN": 688.00},

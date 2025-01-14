@@ -2,11 +2,15 @@ import { useState } from "react";
 import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
 import { LuEye } from "react-icons/lu";
 import { Toaster } from "@components/ui/toaster";
-import FooterClousing from "./FooterClousing";
+import FooterClousing from "../FooterClousing";
 import { TDCModel } from "@models/tdc.model";
+import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 
 function TDCClousing() {
-  //const [tdcData, setCashData] = useState<TDCModel>()
+  const [tdc2Data, setCashData] = useState<TDCModel>()
+  const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
+  const { sendClousing } =  useHandleCashData(tdcData, setCashData); //Cambiar por funcion propia
   
   return (
     <Box>
@@ -43,9 +47,9 @@ function TDCClousing() {
                   </Text>
                 </Table.Cell>
 
-                <Table.Cell textAlign="end">
+                <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.voucherAmount} style="currency" currency="USD" />
+                    <FormatNumber value={item.voucherAmount} />
                   </Text>
                 </Table.Cell>
 
@@ -62,7 +66,7 @@ function TDCClousing() {
         </Table.Root>
       </Table.ScrollArea>
 
-      {/* <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} /> */}
+      <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} />
 
     </Box>
   );
