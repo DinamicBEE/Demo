@@ -131,7 +131,7 @@ function CustomersClousing() {
     
                     <Table.Cell textAlign="center">
                       <Text>
-                        <TableInput value={item.coupons} id={item.id} onChange={handleCoupons} />
+                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCoupons} />
                       </Text>
                     </Table.Cell>
     
@@ -159,7 +159,7 @@ function CustomersClousing() {
     
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valuePAX} id={item.id} onChange={handleAmountPAX} />
+                        <TableInput value={item.valuePAX} id={item.id} currency={true} onChange={handleAmountPAX} />
                       </Text>
                     </Table.Cell>
 

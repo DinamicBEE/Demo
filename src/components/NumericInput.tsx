@@ -52,15 +52,15 @@ function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInput
     );
 }
 
-function TableInput({value, id, onChange}: TableInputProps){
+function TableInput({value, id, currency, onChange}: TableInputProps){
     return(
         <NumericFormat
         customInput={Input}
         thousandSeparator=","
         decimalSeparator="."
-        prefix="$" 
+        prefix={currency ? "$": ""} 
         textAlign="end"
-        decimalScale={2} fixedDecimalScale
+        decimalScale={currency ? 2 : 0} fixedDecimalScale
         value={value  || 0}
         onChange={(event) => {
             if (onChange) {

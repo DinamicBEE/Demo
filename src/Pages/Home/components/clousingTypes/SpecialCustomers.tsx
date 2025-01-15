@@ -50,7 +50,7 @@ function SpecialCustomersClousing() {
                     </Table.Cell>
     
                     <Table.Cell textAlign="end">
-                    <FormatNumber value={item.priceCuopon} style="currency" currency="USD" />
+                      <FormatNumber value={item.priceCuopon} style="currency" currency="USD" />
                     </Table.Cell>
     
                     <Table.Cell textAlign="end">
@@ -79,13 +79,13 @@ function SpecialCustomersClousing() {
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <FormatNumber value={item.folioCuopon} />
+                        {item.folioCuopon}
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <FormatNumber value={item.folioCuoponUSD} />
+                        {item.folioCuoponUSD}
                       </Text>
                     </Table.Cell> 
 
@@ -141,16 +141,16 @@ const customer = {
   "globalDifference": 0,
   "currencies": [
       {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 1, "folioCuopon": 1, "folioCuoponUSD": 1, "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
       },
       {"id":2, "Check": 400, "consumption": 500.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 1, "folioCuopon": 1, "folioCuoponUSD": 1, "value": 1, "valueUSD": 1, "flight": "OGCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OGCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
       },
       {"id":3, "Check": 120, "consumption": 150.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 17.00, "client": "AMERICAN AIRLINES",
-        "PAX": 1, "folioCuopon": 1, "folioCuoponUSD": 1, "value": 1, "valueUSD": 1, "flight": "OFCIP", "passengerName": "JUAN PEREZ", "amountMXN": 1
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCIP", "passengerName": "JUAN PEREZ", "amountMXN": 1
       },
       {"id":4, "Check": 150, "consumption": 200.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 1, "folioCuopon": 1, "folioCuoponUSD": 1, "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
       }
   ]
 }

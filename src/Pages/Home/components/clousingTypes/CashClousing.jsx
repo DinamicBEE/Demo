@@ -63,7 +63,7 @@ function CashClousing ({ data }) {
                   </Table.Cell>
 
                   <Table.Cell>
-                    <TableInput value={item.totalFisico} id={item.id} onChange={handleInputChange} />
+                    <TableInput value={item.totalFisico} id={item.id}  currency={true} onChange={handleInputChange} />
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
