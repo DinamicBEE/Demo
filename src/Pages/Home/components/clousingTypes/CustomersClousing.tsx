@@ -159,7 +159,7 @@ function CustomersClousing() {
     
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valuePAX} id={item.id} currency={true} onChange={handleAmountPAX} />
+                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} />
                       </Text>
                     </Table.Cell>
 
