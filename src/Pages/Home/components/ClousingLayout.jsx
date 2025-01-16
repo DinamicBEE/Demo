@@ -69,7 +69,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="customers">
-                            <CustomersClousing />
+                            <CustomersClousing data={employee} />
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">

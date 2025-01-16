@@ -28,3 +28,14 @@ export interface ClousingTotals {
   globalDifference: number;
 }
 
+export interface TotalModel {
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+}
+
+export interface CurrencyModel {
+  label: string;
+  value: number;
+  exchangeRate: number;
+}

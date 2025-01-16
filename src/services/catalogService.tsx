@@ -48,6 +48,21 @@ export const getStores = async () => {
     }
 }
 
+export const getCurrencies = async () => {
+    try {
+
+        //const response = await axios.get(`${API_CATALOG}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
+        const response = currenciesS;     
+
+        return response
+
+        
+    } catch (error) {
+        console.error('Error al obtener las Subsidiarias: ', error)
+        return [];
+    }
+}
+
 const sub = [
     {
     "name": "Sub1",
@@ -112,4 +127,11 @@ const store = [
           "id": "SUB-03"
       }
     }
+  ]
+
+const currenciesS = [
+    {value:1, label: "MXN", exchangeRate: 1.0},
+    {value:2, label: "USD", exchangeRate: 17.0},
+    {value:3, label: "CAN", exchangeRate: 13.0},
+    {value:4, label: "EUR", exchangeRate: 23.0}
   ]
