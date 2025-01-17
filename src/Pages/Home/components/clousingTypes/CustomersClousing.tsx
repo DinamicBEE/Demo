@@ -14,8 +14,9 @@ function CustomersClousing({data}: any) {
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
   const customerContext = useCustomerContext();
-  const { sendClousing } =  useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
+  const handleCashData = useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
   
+  const sendClousing = handleCashData?.sendClousing ?? (() => Promise.resolve(false));
   const customerLoading = customerContext?.customerLoading ?? false;
   const getCustomerData = customerContext?.getCustomerData;
   
@@ -196,7 +197,7 @@ function CustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
     
-          {/* <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} /> */}
+          <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} />
     
         </Box>
   )

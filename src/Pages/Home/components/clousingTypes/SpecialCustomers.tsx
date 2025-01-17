@@ -125,7 +125,7 @@ function SpecialCustomersClousing() {
             </Table.Root>
           </Table.ScrollArea>
     
-          <FooterClousing data={customer} loading={cashLoading} onChange={sendClousing} />
+          {/* <FooterClousing data={customer} loading={cashLoading} onChange={sendClousing} /> */}
     
         </Box>
   )

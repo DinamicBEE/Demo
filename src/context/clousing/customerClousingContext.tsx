@@ -4,7 +4,6 @@ import { getCustomerClousing } from '@services/clousingService';
 import { CustomerContextType } from '@models/customer.model';
 
 
-
 const customerContext = createContext<CustomerContextType | undefined>(undefined);
 
 export const useCustomerContext = () => useContext(customerContext);
@@ -31,7 +30,7 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
                 ...prevCustomer,
                 [employeeId]: data,
             }));
-            
+            console.log(customer)
             return data;
 
         } catch (error) {

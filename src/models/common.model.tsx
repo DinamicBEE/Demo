@@ -1,5 +1,5 @@
 export interface CurrencyInputProps {
-  value: number;
+  value: number | undefined;
   loading: boolean;
   name?: string;
   onChange?: (value: string) => void;

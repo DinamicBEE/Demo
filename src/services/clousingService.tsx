@@ -37,9 +37,11 @@ export const getCashClousing = async (clousingId: number, employeeId: number) =>
         const data = {
             //...response.data,
             ...response,
-            globalTotalPOS: newTotalPOS,
-            globalTotalFisico: newTotalFisico,
-            globalDifference: newTotalPOS - newTotalFisico,
+            total:{
+                totalPOS: newTotalPOS,
+                totalPhysical: newTotalFisico,
+                difference: newTotalPOS - newTotalFisico,
+            },
             tips: 0
         }
         
@@ -153,19 +155,28 @@ export const sendCashClousing = async (data:any) => {
 export const HeaderData = {
     "cdc": "No seleccionada",
     "location": "No seleccionado",
-    "subsidiary": "2021-10-10",
-    "date": "10:00",
-    "totalPOS": 1000,
-    "totalClousing": 2000,
-    "difference": 1000,
+    "subsidiary": "No seleccionado",
+    "date": "2021-10-10 10:00",
+    "totalPOS": 3500,
+    "totalClousing": 3500,
+    "difference": 3500,
     "service": 1000,
     "discountPOS": 1000,
-    "discountClousing": 2000
+    "discountClousing": 2000,
+    "closures":{
+        "cash": {totalPOS:500, totalPhysical:500, difference:0},
+        "customer": {totalPOS:500, totalPhysical:500, difference:0},
+        "specialCustomer": {totalPOS:500, totalPhysical:500, difference:0},
+        "tdc": {totalPOS:500, totalPhysical:500, difference:0},
+        "employee": {totalPOS:500, totalPhysical:500, difference:0},
+        "prepaid": {totalPOS:500, totalPhysical:500, difference:0},
+        "intercompany": {totalPOS:500, totalPhysical:500, difference:0}
+    }
 }
 
 export const CashData = {
     "id": 1,
-    "employeId": 150,
+    "employeId": 5,
     "electronicTips": 9622.32,
     "currencies": [
         {"id":1, "currency": "MXN", "totalPOS": 1000, "totalFisico": 1000, "difference": 0, "exchangeRate": 1, "originalCurrency": 20},

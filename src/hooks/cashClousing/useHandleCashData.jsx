@@ -1,8 +1,15 @@
 import { sendCashClousing } from "@services/clousingService";
 import { toaster } from "@components/ui/toaster";
-import { ALERTCLOUSING_MODEL } from "../../models/constants.model";
+import { ALERTCLOUSING_MODEL, CLOUSING_KEY } from "@models/constants.model";
+import { useHeaders } from "@context/clousing/headerContext"
 
 export const useHandleCashData = (cashData, setCashData) => {
+
+  const headerContext = useHeaders();
+  if (!headerContext) {
+    return null;
+  }
+  const { updateTotal } = headerContext;
   
   const handleInputChange = (itemId, value) => {
     
@@ -22,13 +29,20 @@ export const useHandleCashData = (cashData, setCashData) => {
       (acc, curr) => acc + curr.totalFisico,
       0
     );
+
+    const newDifference = cashData.total.totalPOS - newTotalFisico;
     
     setCashData((prevState) => ({
       ...prevState,
-      globalTotalFisico: newTotalFisico,
-      globalDifference: cashData.globalTotalPOS - newTotalFisico,
       currencies: updatedData,
+      total:{
+        totalPOS: cashData.total.totalPOS,
+        totalPhysical: newTotalFisico,
+        difference: newDifference,
+      }
     }));
+
+    updateTotal(newTotalFisico, newDifference, cashData.employeId, CLOUSING_KEY.CASH)
 
   };
 

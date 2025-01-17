@@ -22,19 +22,19 @@ function FooterClousing({data, loading, onChange}: FooterClousing) {
         
         <CurrencyInput
           name={"Total POS"}
-          value={data.globalTotalPOS}
+          value={data?.totalPOS}
           loading={loading}
         />
 
         <CurrencyInput
           name={"Total físico"}
-          value={data.globalTotalFisico}
+          value={data?.totalPhysical}
           loading={loading}
         />
 
         <CurrencyInput
           name={"Diferencia"}
-          value={data.globalDifference}
+          value={data?.difference}
           loading={loading}
         />
       </Flex>
