@@ -2,27 +2,37 @@ import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import FooterClousing from "../FooterClousing";
-import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { TableInput } from "@components/NumericInput";
+import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { getCurrencies } from "@services/catalogService";
+import { CurrencyModel } from "@models/common.clousing.model";
 
-function CustomersClousing() {
+function CustomersClousing({data}: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
-  const [tdcData, setTDCData] = useState<any>({})
-  const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-  const { sendClousing } =  useHandleCashData(TDCMOCKData, setTDCData); //Cambiar por funcion propia
+  const [currencies, setCurrencies] = useState<CurrencyModel[]>()
+  const [CustomersData, setCustomersData] = useState<CustomerModel>()
+  const customerContext = useCustomerContext();
+  const handleCashData = useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
+  
+  const sendClousing = handleCashData?.sendClousing ?? (() => Promise.resolve(false));
+  const customerLoading = customerContext?.customerLoading ?? false;
+  const getCustomerData = customerContext?.getCustomerData;
   
   useEffect(()=>{
     async function fetchData() {
-      //const tdcData = await getCashData(data.id, data.employe);
-      const tdcData = TDCMOCKData;
+      const customers = getCustomerData ? await getCustomerData(data.id, data.employe) : {};
+
+      const currencies = await getCurrencies()
 
       let createCurrenciList = createListCollection({
-        items: currenciesS
+        items: currencies
       })
 
-      setTDCData(tdcData);
-      setcurrenciesForSelect(createCurrenciList)
+      setCustomersData(customers);
+      setcurrenciesForSelect(createCurrenciList);
+      setCurrencies(currencies);
     }
     fetchData();
   
@@ -31,10 +41,12 @@ function CustomersClousing() {
   function SelectCurrency(value:any, id:number) {
     const selectValue = value[0];
     
-    const newCurrency = currenciesS.filter(item => item.value === selectValue)[0].label
-    const newExchangeRage = currenciesS.filter(currency => currency.value === selectValue)[0].exchangeRate
+    const newCurrency = currencies?.filter((item:CurrencyModel) => item.value === selectValue)[0]?.label || "";
+    const newExchangeRage = currencies?.filter((currency:CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
 
-    const updatedCurrencies = tdcData.currencies.map((item: any) =>
+    if (!CustomersData) return;
+
+    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
       item.id === id
         ? {
             ...item,
@@ -47,15 +59,16 @@ function CustomersClousing() {
         : item
     );
 
-    setTDCData({ ...tdcData, currencies: updatedCurrencies });
+    setCustomersData({ ...CustomersData, lines: updatedCurrencies });
   }
 
   function handleCoupons(id:number, value:string){
     
     value = value.replace(/[^\d.]/g, "");
-    console.log(value)
 
-    const updatedCurrencies = tdcData.currencies.map((item: any) =>
+    if (!CustomersData) return;
+
+    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
       item.id === id
         ? {
             ...item,
@@ -70,19 +83,18 @@ function CustomersClousing() {
         : item
     );
 
-    tdcData.currencies = updatedCurrencies;
+    CustomersData.lines = updatedCurrencies;
 
-    console.log(tdcData)
-
-    setTDCData({...tdcData})
+    setCustomersData({...CustomersData})
   }
 
   function handleAmountPAX(id:number, value:string){
     
     value = value.replace(/[^\d.]/g, "");
-    console.log(value)
 
-    const updatedCurrencies = tdcData.currencies.map((item: any) =>
+    if (!CustomersData) return;
+
+    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
       item.id === id
         ? {
             ...item,
@@ -97,11 +109,9 @@ function CustomersClousing() {
         : item
     );
 
-    tdcData.currencies = updatedCurrencies;
+  CustomersData.lines = updatedCurrencies;
 
-    console.log(tdcData)
-
-    setTDCData({...tdcData})
+    setCustomersData({...CustomersData})
   }
 
   return (
@@ -122,7 +132,7 @@ function CustomersClousing() {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {tdcData?.currencies?.map((item: any) => (
+                {CustomersData?.lines?.map((item: CustomerLines) => (
                   <Table.Row key={item.id}>
                     
                     <Table.Cell textAlign="center">
@@ -187,7 +197,7 @@ function CustomersClousing() {
             </Table.Root>
           </Table.ScrollArea>
     
-          <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} />
+          <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} />
     
         </Box>
   )
@@ -195,23 +205,4 @@ function CustomersClousing() {
 
 export default CustomersClousing;
 
-const TDCMOCKData = {
-  "id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
-      {"id":1, "customers": "AIR CANADA", "coupons": 0, "currency": "", "valuePAX": 0, "amount": 0, "exchangeRate": 0, "amountMXN": 0},
-      {"id":2, "customers": "BRITISH ", "coupons": 0, "currency": "", "valuePAX": 0, "amount": 0, "exchangeRate": 0, "amountMXN": 0},
-      {"id":3, "customers": "SUNWING", "coupons": 0, "currency": "", "valuePAX": 0, "amount": 0, "exchangeRate": 0, "amountMXN": 0},
-      {"id":4, "customers": "VIVA AEROBUS", "coupons": 0, "currency": "", "valuePAX": 0, "amount": 0, "exchangeRate": 0, "amountMXN": 0},
-  ]
-}
 
-const currenciesS = [
-  {value:1, label: "MXN", exchangeRate: 1.0},
-  {value:2, label: "USD", exchangeRate: 17.0},
-  {value:3, label: "CAN", exchangeRate: 13.0},
-  {value:4, label: "EUR", exchangeRate: 23.0}
-]

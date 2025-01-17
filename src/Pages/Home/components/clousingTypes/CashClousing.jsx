@@ -90,7 +90,7 @@ function CashClousing ({ data }) {
           </Table.Root>
         </Table.ScrollArea>
 
-        <FooterClousing data={cashData} loading={cashLoading} onChange={sendClousing} />
+        <FooterClousing data={cashData.total} loading={cashLoading} onChange={sendClousing} />
 
       </Box>
     );

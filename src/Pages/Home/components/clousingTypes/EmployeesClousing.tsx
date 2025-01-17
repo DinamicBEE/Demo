@@ -62,11 +62,11 @@ function EmployeesClousing() {
         </Table.Root>
       </Table.ScrollArea>
       
-      <FooterClousing
+      {/* <FooterClousing
         data={tdcData}
         loading={cashLoading}
         onChange={sendClousing}
-      />
+      /> */}
     </Box>
   );
 }

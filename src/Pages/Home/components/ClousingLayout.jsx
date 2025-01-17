@@ -1,5 +1,5 @@
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger } from "@components/ui/dialog";
-import { Tabs, Box, Button } from "@chakra-ui/react"
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger } from "@components/ui/dialog";
+import { Tabs, Box } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 //import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
@@ -15,16 +15,16 @@ const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClo
 function ClousingLayout({ isOpen, onClose, employee}) {
 
     return (
-        <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+        <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
+                    <DialogTitle>Corte de Caja {employee?.Id} </DialogTitle>
                 </DialogHeader>
 
                 <DialogBody>
 
                     <Box>
-                        <HeaderClousing id={employee?.id} employe={employee?.employe}></HeaderClousing>
+                        <HeaderClousing id={employee?.id} employe={employee?.employeId}></HeaderClousing>
                     </Box>
                     
                     
@@ -69,7 +69,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="customers">
-                            <CustomersClousing />
+                            <CustomersClousing data={employee} />
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">
@@ -92,9 +92,9 @@ function ClousingLayout({ isOpen, onClose, employee}) {
 
                 </DialogBody>
 
-                <DialogFooter>
+                {/* <DialogFooter>
                    <Button>Save</Button>
-                </DialogFooter>
+                </DialogFooter> */}
 
                 <DialogCloseTrigger />
 

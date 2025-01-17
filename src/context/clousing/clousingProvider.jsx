@@ -1,9 +1,12 @@
 import { CashClousingProvider } from "./cashClousingContext"
+import { CustomerClousingProvider } from "./customerClousingContext"
 
 export const ClousingDataProvider = ({ children }) => {
     return(
         <CashClousingProvider>
-            {children}
+            <CustomerClousingProvider>
+                {children}
+            </CustomerClousingProvider>
         </CashClousingProvider>
     )
 }

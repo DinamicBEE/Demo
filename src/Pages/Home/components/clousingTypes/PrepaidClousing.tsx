@@ -79,7 +79,7 @@ function PrepaidClousing() {
         </Table.Root>
       </Table.ScrollArea>
 
-      <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} />
+      {/* <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} /> */}
 
     </Box>
   );
