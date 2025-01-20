@@ -2,20 +2,29 @@ import { sendCashClousing } from "@services/clousingService";
 import { toaster } from "@components/ui/toaster";
 import { ALERTCLOUSING_MODEL, CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/clousing/headerContext"
+import { useFooter } from "@context/clousing/footerClousingContext";
+import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 
-export const useHandleCashData = (cashData, setCashData) => {
+//TODO: TIPAR TIPO EFECTIVO
+export const useHandleCashData = (cashData:any, setCashData:any) => {
 
   const headerContext = useHeaders();
+  const footerContext = useFooter();
   if (!headerContext) {
     return null;
   }
+  if (!footerContext) {
+    return null;
+  }
   const { updateTotal } = headerContext;
+  const {setFooterData} = footerContext;
   
-  const handleInputChange = (itemId, value) => {
+  const handleInputChange = (itemId: number, value:string) => {
     
     value = value.replace(/[^\d.]/g, "");
     
-    const updatedData = cashData.currencies.map((item) =>
+    //TODO: TIPAR TIPO EFECTIVO
+    const updatedData = cashData.currencies.map((item: any) =>
       item.id === itemId
         ? {
             ...item,
@@ -26,29 +35,33 @@ export const useHandleCashData = (cashData, setCashData) => {
     );
     
     const newTotalFisico = updatedData.reduce(
-      (acc, curr) => acc + curr.totalFisico,
+      (acc: number, curr: { totalFisico: number; }) => acc + curr.totalFisico,
       0
     );
 
     const newDifference = cashData.total.totalPOS - newTotalFisico;
+
+    const newTotal: TotalModel ={
+      totalPOS: cashData.total.totalPOS,
+      totalPhysical: newTotalFisico,
+      difference: newDifference,
+    }
     
-    setCashData((prevState) => ({
+    setCashData((prevState: any) => ({
       ...prevState,
       currencies: updatedData,
-      total:{
-        totalPOS: cashData.total.totalPOS,
-        totalPhysical: newTotalFisico,
-        difference: newDifference,
-      }
+      total: newTotal
     }));
 
     updateTotal(newTotalFisico, newDifference, cashData.employeId, CLOUSING_KEY.CASH)
 
+    setFooterData(newTotal, cashData.id, "cash");
+
   };
 
-  function handleChangeTips(value) {
+  function handleChangeTips(value: string) {
     
-    setCashData((prevState) => ({
+    setCashData((prevState: any) => ({
       ...prevState,
       tips: parseFloat(value),
     }));
@@ -57,7 +70,7 @@ export const useHandleCashData = (cashData, setCashData) => {
 
   async function sendClousing() {
     
-    const response = await sendCashClousing(cashData);
+    const response:any = await sendCashClousing(cashData);
 
     if (response.success) {
       console.log('Corte de caja enviado correctamente');
@@ -70,7 +83,7 @@ export const useHandleCashData = (cashData, setCashData) => {
     return false;
   }
 
-  function showToast(alertModel, error) {
+  function showToast(alertModel:AlertClousing, error: string | null) {
     toaster.create({
       title: alertModel.title,
       type: alertModel.type,

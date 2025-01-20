@@ -3,7 +3,7 @@ import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, 
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import FooterClousing from "../FooterClousing";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
-import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
+//import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { TableInput } from "@components/NumericInput";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { getCurrencies } from "@services/catalogService";
@@ -14,10 +14,10 @@ function CustomersClousing({data}: any) {
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
   const customerContext = useCustomerContext();
-  const handleCashData = useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
+  //const handleCashData = useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
   
-  const sendClousing = handleCashData?.sendClousing ?? (() => Promise.resolve(false));
-  const customerLoading = customerContext?.customerLoading ?? false;
+  // const sendClousing = handleCashData?.sendClousing ?? (() => Promise.resolve(false));
+  // const customerLoading = customerContext?.customerLoading ?? false;
   const getCustomerData = customerContext?.getCustomerData;
   
   useEffect(()=>{
@@ -197,7 +197,7 @@ function CustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
     
-          <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} />
+          {/* <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} /> */}
     
         </Box>
   )

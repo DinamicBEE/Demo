@@ -6,7 +6,6 @@ import { CLOUSING_KEY } from '@models/constants.model';
 
 const headersContext = createContext<HeaderContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useHeaders = () => useContext(headersContext)
 
 export function HeadersProvider({ children }: { children: ReactNode }) {
@@ -22,7 +21,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   
   const getHeader = useCallback(async (clousingId:number, employeeId:number) => {
     setLoading(true);
-    console.log(headerRef.current[employeeId]);
+    
     if(headerRef.current[employeeId]) {
       setLoading(false);
       return headerRef.current[employeeId];
@@ -50,8 +49,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   const updateTotal = useCallback((newtotal: number, newDifference: number, employeeId:number, clousingType: CLOUSING_KEY)=>{
 
-    console.log(headerRef.current);
-    console.log(headerRef);
     headerRef.current[employeeId].totalClousing -= headerRef.current[employeeId].closures[clousingType].totalPhysical;
     headerRef.current[employeeId].difference -= headerRef.current[employeeId].closures[clousingType].difference;
 

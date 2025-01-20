@@ -38,9 +38,11 @@ export interface ClousingType{
 }
 
 export interface FooterClousing {
-  data: TotalModel | undefined;
-  loading: boolean;
-  onChange: () => Promise<boolean>;
+  clousingType: string;
+  clousingId: number;
+  data?: TotalModel | undefined;
+  loading?: boolean;
+  onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {
@@ -53,4 +55,16 @@ export interface CurrencyModel {
   label: string;
   value: number;
   exchangeRate: number;
+}
+
+export interface AlertClousing {
+  title:string;
+  description?: string;
+  type: string;
+}
+
+export interface FooterContextType {
+  setFooterData: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
+  getFooterData: (clousingId: number, clousingType: string) => Promise<TotalModel>;
+  updateFooter: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
 }

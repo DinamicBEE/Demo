@@ -1,9 +1,9 @@
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger } from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Tabs, Box } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
-//import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
-import { lazy } from "react";
+import { lazy, useState } from "react";
+import FooterClousing from "./FooterClousing";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
@@ -13,24 +13,26 @@ const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing")
 const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
+    const [value, setValue] = useState("")
 
     return (
         <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.Id} </DialogTitle>
-                </DialogHeader>
-
-                <DialogBody>
-
                     <Box>
                         <HeaderClousing id={employee?.id} employe={employee?.employeId}></HeaderClousing>
                     </Box>
+                </DialogHeader>
+
+                <DialogBody>                   
                     
-                    
-                    <Tabs.Root variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
+                    <Tabs.Root onValueChange={(e) => {
+                            console.log(e.value)
+                            setValue(e.value)
+                        }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
-                            <Tabs.Trigger >
+                            <Tabs.Trigger value="cash">
                                 <LuUser />
                                 Efectivo
                             </Tabs.Trigger>
@@ -60,7 +62,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             </Tabs.Trigger>
                         </Tabs.List>
 
-                        <Tabs.Content>
+                        <Tabs.Content value="cash">
                             <CashClousing data={employee} />
                         </Tabs.Content>
 
@@ -92,9 +94,9 @@ function ClousingLayout({ isOpen, onClose, employee}) {
 
                 </DialogBody>
 
-                {/* <DialogFooter>
-                   <Button>Save</Button>
-                </DialogFooter> */}
+                <DialogFooter>
+                   <FooterClousing clousingType={value} clousingId={employee?.id} />
+                </DialogFooter>
 
                 <DialogCloseTrigger />
 

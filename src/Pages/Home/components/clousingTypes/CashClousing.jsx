@@ -2,18 +2,22 @@ import { useEffect, useState } from "react";
 import { Box, Grid, Table, Text, FormatNumber  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { useFooter } from "@context/clousing/footerClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
-import FooterClousing from "../FooterClousing";
+//import FooterClousing from "../FooterClousing";
 
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
-    const { handleInputChange, handleChangeTips, sendClousing } =  useHandleCashData(cashData, setCashData);
+    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData);
+    const { setFooterData } = useFooter();
 
     useEffect(() => {
       async function fetchData() {
         const cashData = await getCashData(data.id, data.employe);
+
+        setFooterData(cashData.total, data.id, "cash");
 
         setCashData(cashData);
       }
@@ -90,7 +94,7 @@ function CashClousing ({ data }) {
           </Table.Root>
         </Table.ScrollArea>
 
-        <FooterClousing data={cashData.total} loading={cashLoading} onChange={sendClousing} />
+        {/* <FooterClousing data={cashData.total} loading={cashLoading} onChange={sendClousing} /> */}
 
       </Box>
     );

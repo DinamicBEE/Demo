@@ -11,7 +11,6 @@ export const getGeneralInfo = async (subsidiary, store) => {
         //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
         const response = homeData;
 
-        console.log(response)
         //return response.data
         return response
         

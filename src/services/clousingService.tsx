@@ -191,8 +191,8 @@ export const CustomerMOCKData = {
     "id": 1,
     "employeId": 150,
     "total":{
-        "totalPOS": 9622.32,
-        "totalPhysical": 9622.32,
+        "totalPOS": 19622.32,
+        "totalPhysical": 19622.32,
         "difference": 0,
     },
     "lines": [

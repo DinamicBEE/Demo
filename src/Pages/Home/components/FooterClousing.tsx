@@ -1,12 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { Button } from "@components/ui/button"
 import { CurrencyInput } from "@components/NumericInput";
-import type { FooterClousing } from "@models/common.clousing.model";
+import { useFooter } from "@context/clousing/footerClousingContext";
+import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
 
-function FooterClousing({data, loading, onChange}: FooterClousing) {
+function FooterClousing({clousingType, clousingId, data, loading, onChange}: FooterClousing) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [footer, setFooter] = useState<TotalModel | null>(null);
+
+  const footerContext = useFooter();
+  if (!footerContext) {
+    throw new Error("FooterContext is undefined");
+  }
+  const { getFooterData } = footerContext;
+
+
+  useEffect(() => {
+    async function fetchFooterData() {
+      const data: TotalModel = await getFooterData(clousingId, clousingType);
+      setFooter(data);
+    }
+    fetchFooterData();
+  }, [clousingId, clousingType, getFooterData]);
 
   return (
     <Box
@@ -14,43 +31,43 @@ function FooterClousing({data, loading, onChange}: FooterClousing) {
       mb={2}
       mt={4}
       gap="4"
-      
-      display="flex"
       flexDir={{ base: "column", md: "row" }}
     >
       <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
         
         <CurrencyInput
           name={"Total POS"}
-          value={data?.totalPOS}
-          loading={loading}
+          value={footer?.totalPOS ?? 0}
+          loading={false}
         />
 
         <CurrencyInput
           name={"Total físico"}
-          value={data?.totalPhysical}
-          loading={loading}
+          value={footer?.totalPhysical ?? 0}
+          loading={false}
         />
 
         <CurrencyInput
           name={"Diferencia"}
-          value={data?.difference}
-          loading={loading}
+          value={footer?.difference ?? 0}
+          loading={false}
         />
-      </Flex>
 
-      <div>
         <Button loading={buttonLoading}
           className="secondary-button save-button"
-          onClick={async () => {
-            setButtonLoading(true);
-            const response = await onChange()
-            setButtonLoading(response);
-        }}
+        //   onClick={async () => {
+        //     setButtonLoading(true);
+        //     const response = await onChange()
+        //     setButtonLoading(response);
+        // }}
         >
           Confirmar Corte
         </Button>
-      </div>
+        
+      </Flex>
+
+      <Flex>
+      </Flex>
 
     </Box>
   );
