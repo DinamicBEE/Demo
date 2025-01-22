@@ -1,28 +1,36 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
-import { useCustomerContext } from "@context/clousing/customerClousingContext";
-import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { TableInput } from "@components/NumericInput";
-import { CustomerLines, CustomerModel } from "@models/customer.model";
+import Loading from "@components/Loading";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
+import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
+import { CustomerLines, CustomerModel } from "@models/customer.model";
 
 function CustomersClousing({data}: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
+  const footerContext = useFooter();
   const customerContext = useCustomerContext();
   const handleCustomer = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id, data?.employeId);
   
   const selectCurrency = handleCustomer?.selectCurrency;
   const handleCoupons = handleCustomer?.handleCoupons;
   const handleAmountPAX = handleCustomer?.handleAmountPAX;
+  const setFooterData = footerContext?.setFooterData;
   
   useEffect(()=>{
     async function fetchData() {
       const customers: CustomerModel | undefined = customerContext?.getCustomerData
             ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
+
+      if (customers?.total) {
+        setFooterData?.(customers.total, data.id, "customer");
+      }
 
       const currencies = await getCurrencies()
 
@@ -120,6 +128,8 @@ function CustomersClousing({data}: any) {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
+
+          {customerContext?.customerLoading && <Loading />}
     
         </Box>
   )

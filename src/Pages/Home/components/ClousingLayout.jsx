@@ -39,7 +39,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                                 <LuFolder />
                                 TDC
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="customers">
+                            <Tabs.Trigger value="customer">
                                 <LuSquareCheck />
                                 Clientes
                             </Tabs.Trigger>
@@ -77,8 +77,8 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="customers">
-                            {value === "customers" && (
+                        <Tabs.Content value="customer">
+                            {value === "customer" && (
                                 <Suspense fallback={<div>Cargando Clientes...</div>}>
                                     <CustomersClousing data={employee} />
                                 </Suspense>
