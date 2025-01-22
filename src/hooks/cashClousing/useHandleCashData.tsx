@@ -8,7 +8,7 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 
 //TODO: TIPAR TIPO EFECTIVO
-export const useHandleCashData = (cashData:any, setData:any) => {
+export const useHandleCashData = (cashData:any, setData:any, clousingId: number, employeId: number) => {
 
   const cashRef = useRef(cashData);
 
@@ -28,7 +28,6 @@ export const useHandleCashData = (cashData:any, setData:any) => {
   function handleInputChange(itemId: number, value:string) {
     
     value = value.replace(/[^\d.]/g, "");
-    console.error(cashData)
     
     //TODO: TIPAR TIPO EFECTIVO
     const updatedData = cashData.currencies.map((item: any) =>
@@ -66,9 +65,9 @@ export const useHandleCashData = (cashData:any, setData:any) => {
 
     updateTotal(newTotalFisico, newDifference, cashData.employeId, CLOUSING_KEY.CASH)
 
-    setFooterData(newTotal, cashData.id, "cash");
+    setFooterData(newTotal, clousingId, "cash");
 
-    setCashData(cashRef.current, cashData.employeId)
+    setCashData(cashRef.current, employeId, clousingId)
 
   };
 
@@ -78,8 +77,7 @@ export const useHandleCashData = (cashData:any, setData:any) => {
       ...cashData,
       tips: parseFloat(value),
     }
-    
-    console.log(updateCashdata)
+
     setData(updateCashdata);
     cashRef.current = updateCashdata
 

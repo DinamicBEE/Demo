@@ -10,17 +10,18 @@ import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/Nu
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
-    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData);
+    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id, data?.employeId);
     const { setFooterData } = useFooter();
 
     useEffect(() => {
       async function fetchData() {
+
         const cashData = await getCashData(data.id, data.employeId);
 
         setFooterData(cashData.total, data.id, "cash");
 
         setCashData(cashData);
-        console.log(cashData)
+
       }
       fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

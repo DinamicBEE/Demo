@@ -20,17 +20,22 @@ export function CashClousingProvider({ children }) {
     const getCashData = useCallback(async (clousingId, employeeId) => {
         setCashLoading(true);
 
-        if(cashRef.current[employeeId]) {
+        if(cashRef.current[clousingId]) {
             setCashLoading(false);
-            return cashRef.current[employeeId];
+            return cashRef.current[clousingId][employeeId];
         }
     
         try {
             const response = await getCashClousing(clousingId, employeeId);
 
+            const currentClousingData = cashRef.current[clousingId] || {};
+
             const updateCash = {
                 ...cashRef.current,
-                [employeeId]: response,
+                [clousingId]: {
+                    ...currentClousingData,
+                    [employeeId]: response
+                }
             }
             updateCashData(updateCash)
 
@@ -43,17 +48,19 @@ export function CashClousingProvider({ children }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[cashClousing])
 
-    const setCashData = useCallback((cashLine, employeeId) => {
-        console.log(cashLine)
+    const setCashData = useCallback((cashLine, employeeId, clousingId) => {
+
+        const currentClousingData = cashRef.current[clousingId] || {};
 
         const updateCash = {
             ...cashRef.current,
-            [employeeId]: cashLine,
+            [clousingId]: {
+                ...currentClousingData,
+                [employeeId]: cashLine
+            }
         }
 
         updateCashData(updateCash)
-
-        console.log(cashRef.current)
 
     }, []);
     

@@ -28,7 +28,6 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                 <DialogBody>                   
                     
                     <Tabs.Root onValueChange={(e) => {
-                            console.log(e.value)
                             setValue(e.value)
                         }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>

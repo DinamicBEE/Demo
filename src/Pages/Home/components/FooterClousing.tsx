@@ -20,7 +20,7 @@ function FooterClousing({clousingType, clousingId, data, loading, onChange}: Foo
   useEffect(() => {
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
-      console.log(data)
+
       setFooter(data);
     }
     fetchFooterData();

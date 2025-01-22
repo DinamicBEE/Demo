@@ -30,7 +30,7 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
                 ...prevCustomer,
                 [employeeId]: data,
             }));
-            console.log(customer)
+            
             return data;
 
         } catch (error) {

@@ -14,7 +14,6 @@ export function FooterProvider({ children }: { children: ReactNode }){
         
         const currentClousingData = footerRef.current[clousingId] || {};
 
-        console.warn(footerRef)
         const updatedFooterr  = {
             ...footerRef.current,
             [clousingId]: {
