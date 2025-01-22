@@ -6,9 +6,9 @@ import { useHeaders } from "@context/clousing/headerContext"
 import { useFooter } from "@context/clousing/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
+import { CashLines, CashModel } from "@models/cash.model";
 
-//TODO: TIPAR TIPO EFECTIVO
-export const useHandleCashData = (cashData:any, setData:any, clousingId: number, employeId: number) => {
+export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: number, employeId: number) => {
 
   const cashRef = useRef(cashData);
 
@@ -21,6 +21,9 @@ export const useHandleCashData = (cashData:any, setData:any, clousingId: number,
   if (!footerContext) {
     return null;
   }
+  if (!cashContext) {
+    return null;
+  }
   const { updateTotal } = headerContext;
   const { setFooterData } = footerContext;
   const { setCashData } = cashContext;
@@ -29,8 +32,7 @@ export const useHandleCashData = (cashData:any, setData:any, clousingId: number,
     
     value = value.replace(/[^\d.]/g, "");
     
-    //TODO: TIPAR TIPO EFECTIVO
-    const updatedData = cashData.currencies.map((item: any) =>
+    const updatedData = cashData.currencies.map((item: CashLines) =>
       item.id === itemId
         ? {
             ...item,
@@ -45,10 +47,10 @@ export const useHandleCashData = (cashData:any, setData:any, clousingId: number,
       0
     );
 
-    const newDifference = cashData.total.totalPOS - newTotalFisico;
+    const newDifference = (cashData.total?.totalPOS || 0) - newTotalFisico;
 
     const newTotal: TotalModel ={
-      totalPOS: cashData.total.totalPOS,
+      totalPOS: cashData.total?.totalPOS || 0,
       totalPhysical: newTotalFisico,
       difference: newDifference,
     }
