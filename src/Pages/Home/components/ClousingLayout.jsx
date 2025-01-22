@@ -2,12 +2,12 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, Dialo
 import { Tabs, Box } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 import HeaderClousing from "./HeaderClousing"
-import { lazy, useState } from "react";
+import { lazy, useState, Suspense } from "react";
 import FooterClousing from "./FooterClousing";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
-//const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
+const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
-//const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
+const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
 //const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
 //const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
 //const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
@@ -62,19 +62,35 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.List>
 
                         <Tabs.Content value="cash">
-                            <CashClousing data={employee} />
+                            {value === "cash" && (
+                                <Suspense fallback={<div>Cargando Efectivo...</div>}>
+                                    <CashClousing data={employee} />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="tdc">
-                            {/* <TDCClousing /> */}
+                            {value === "tdc" && (
+                                <Suspense fallback={<div>Cargando TDC...</div>}>
+                                  <TDCClousing />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="customers">
-                            <CustomersClousing data={employee} />
+                            {value === "customers" && (
+                                <Suspense fallback={<div>Cargando Clientes...</div>}>
+                                    <CustomersClousing data={employee} />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">
-                            {/* <SpecialCustomersClousing /> */}
+                            {value === "special-customers" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <SpecialCustomersClousing />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
