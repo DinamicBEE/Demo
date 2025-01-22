@@ -4,7 +4,6 @@ import { CashContext, CashContextType } from '@models/cash.model';
 
 const cashClousingContext = createContext<CashContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useCashClousing = () => useContext(cashClousingContext);
 
 export function CashClousingProvider({ children }: { children: ReactNode }) {

@@ -1,22 +1,31 @@
+import { useRef } from "react";
 import { useFooter } from "@context/clousing/footerClousingContext";
 import { useHeaders } from "@context/clousing/headerContext";
 import { CurrencyModel, TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import { CustomerLines } from "@models/customer.model";
+import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
 
 
-export const useHandleCustomer = (customerData: any, setCustomerData: any) => {
+export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any, clousingId: number, employeId: number) => {
   
-    const headerContext = useHeaders();
+  const customerRef = useRef(customerData);
+
+  const headerContext = useHeaders();
   const footerContext = useFooter();
+  const customerContext = useCustomerContext();
   if (!headerContext) {
     return null;
   }
   if (!footerContext) {
     return null;
   }
+  if (!customerContext) {
+    return null;
+  }
   const { updateTotal } = headerContext;
   const { setFooterData } = footerContext;
+  const { setCustomerData } = customerContext;
 
   function selectCurrency(value: any, id: number, currencies:CurrencyModel[] | undefined) {
     const selectValue = value[0];
@@ -38,7 +47,15 @@ export const useHandleCustomer = (customerData: any, setCustomerData: any) => {
         : item
     );
 
-    setCustomerData({ ...customerData, lines: updatedCurrencies });
+    const updateCustomerData = {
+      ...customerData, 
+      lines: updatedCurrencies
+    }
+    
+    setCustomer(updateCustomerData);
+    customerRef.current = updateCustomerData;
+    
+    setCustomerData(customerRef.current, employeId, clousingId)
   }
 
   function handleCoupons(id:number, value:string){
@@ -64,10 +81,10 @@ export const useHandleCustomer = (customerData: any, setCustomerData: any) => {
 
     customerData.lines = updatedCurrencies;
 
+    
+    setCustomer({...customerData});
+    customerRef.current = customerData
     updateContext(updatedCurrencies);
-
-    setCustomerData({...customerData});
-
   }
 
   function handleAmountPAX(id:number, value:string){
@@ -93,10 +110,10 @@ export const useHandleCustomer = (customerData: any, setCustomerData: any) => {
   
     customerData.lines = updatedCurrencies;
 
+    
+    setCustomer({ ...customerData });
+    customerRef.current = customerData
     updateContext(updatedCurrencies);
-
-    setCustomerData({ ...customerData });
-
   }
 
   function updateContext(updatedCurrencies: CustomerLines[]){
@@ -114,9 +131,16 @@ export const useHandleCustomer = (customerData: any, setCustomerData: any) => {
       difference: newDifference,
     };
 
-    //updateTotal(newTotalFisico, newDifference, customerData.employeId, CLOUSING_KEY.CUSTOMER);
+    const updateCustomerData ={
+      ...customerRef.current,
+      total: newTotal
+    }
 
-    setFooterData(newTotal, customerData.id, "customers");
+    updateTotal(newTotalFisico, newDifference, employeId, CLOUSING_KEY.CUSTOMER);
+
+    setFooterData(newTotal, clousingId, "customers");
+
+    setCustomerData(updateCustomerData, employeId, clousingId)
 
   }
 

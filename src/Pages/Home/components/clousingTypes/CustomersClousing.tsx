@@ -13,7 +13,7 @@ function CustomersClousing({data}: any) {
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
   const customerContext = useCustomerContext();
-  const handleCustomer = useHandleCustomer(CustomersData, setCustomersData);
+  const handleCustomer = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id, data?.employeId);
   
   const selectCurrency = handleCustomer?.selectCurrency;
   const handleCoupons = handleCustomer?.handleCoupons;
@@ -21,8 +21,8 @@ function CustomersClousing({data}: any) {
   
   useEffect(()=>{
     async function fetchData() {
-      const customers = customerContext?.getCustomerData
-            ? await customerContext?.getCustomerData(data.id, data.employeId) : {};
+      const customers: CustomerModel | undefined = customerContext?.getCustomerData
+            ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
 
       const currencies = await getCurrencies()
 
@@ -77,7 +77,7 @@ function CustomersClousing({data}: any) {
                       >
                         
                         <SelectTrigger>
-                          <SelectValueText placeholder="Seleccionar moneda" />
+                          <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
                         </SelectTrigger>
                         
                         <SelectContent>
