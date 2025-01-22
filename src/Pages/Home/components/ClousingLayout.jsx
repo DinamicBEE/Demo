@@ -5,12 +5,12 @@ import HeaderClousing from "./HeaderClousing"
 import { lazy, useState } from "react";
 import FooterClousing from "./FooterClousing";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
-const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
+//const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
-const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
-const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
-const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
-const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
+//const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
+//const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
+//const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
+//const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
     const [value, setValue] = useState("")
@@ -19,7 +19,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
         <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Corte de Caja {employee?.Id} </DialogTitle>
+                    <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
                     <Box>
                         <HeaderClousing id={employee?.id} employe={employee?.employeId}></HeaderClousing>
                     </Box>
@@ -67,7 +67,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="tdc">
-                            <TDCClousing />
+                            {/* <TDCClousing /> */}
                         </Tabs.Content>
 
                         <Tabs.Content value="customers">
@@ -75,19 +75,19 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="special-customers">
-                            <SpecialCustomersClousing />
+                            {/* <SpecialCustomersClousing /> */}
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
-                            <PrepaidClousing />
+                            {/* <PrepaidClousing /> */}
                         </Tabs.Content>
 
                         <Tabs.Content value="employees">
-                            <EmployeesClousing />
+                            {/* <EmployeesClousing /> */}
                         </Tabs.Content>
 
                         <Tabs.Content value="inter-company">
-                            <IntercompanyClousing />
+                            {/* <IntercompanyClousing /> */}
                         </Tabs.Content>
 
                     </Tabs.Root>

@@ -43,8 +43,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
 
-    
-
   },[header])
 
   const updateTotal = useCallback((newtotal: number, newDifference: number, employeeId:number, clousingType: CLOUSING_KEY)=>{

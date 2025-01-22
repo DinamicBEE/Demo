@@ -11,21 +11,20 @@ export function FooterProvider({ children }: { children: ReactNode }){
     const footerRef = useRef(footer);
 
     const setFooterData = (footerData: TotalModel, clousingId: number, clousingType: string) => {
+        
+        const currentClousingData = footerRef.current[clousingId] || {};
 
-        //TODO: Validar el guardado dinamico
-        //if(!footerRef.current[clousingId]) {
-
-            const updatedFooterr  = {
-                ...footerRef.current,
-                [clousingId]: {
-                    [clousingType]: footerData
-                }
-              }
+        console.warn(footerRef)
+        const updatedFooterr  = {
+            ...footerRef.current,
+            [clousingId]: {
+                ...currentClousingData,
+                [clousingType]: footerData
+            }
+          }
             
-            setFooter(updatedFooterr);
-            footerRef.current = updatedFooterr;
-
-        //}
+        setFooter(updatedFooterr);
+        footerRef.current = updatedFooterr;
 
     }
 
@@ -43,23 +42,9 @@ export function FooterProvider({ children }: { children: ReactNode }){
 
     }
 
-    const updateFooter = (footerData: TotalModel, clousingId: number, clousingType: string) => {
-
-        console.log(footerData)
-        setFooter((prev: any) => ({
-            ...prev,
-            [clousingId]: {
-                [clousingType]: footerData
-            }
-            
-        }))
-
-    } 
-
     const value = {
         getFooterData,
         setFooterData,
-        updateFooter
     }
 
     return (

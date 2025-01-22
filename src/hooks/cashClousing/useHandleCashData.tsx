@@ -1,15 +1,20 @@
+import { useRef } from "react"
 import { sendCashClousing } from "@services/clousingService";
 import { toaster } from "@components/ui/toaster";
 import { ALERTCLOUSING_MODEL, CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/clousing/headerContext"
 import { useFooter } from "@context/clousing/footerClousingContext";
+import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 
 //TODO: TIPAR TIPO EFECTIVO
-export const useHandleCashData = (cashData:any, setCashData:any) => {
+export const useHandleCashData = (cashData:any, setData:any) => {
+
+  const cashRef = useRef(cashData);
 
   const headerContext = useHeaders();
   const footerContext = useFooter();
+  const cashContext = useCashClousing();
   if (!headerContext) {
     return null;
   }
@@ -17,11 +22,13 @@ export const useHandleCashData = (cashData:any, setCashData:any) => {
     return null;
   }
   const { updateTotal } = headerContext;
-  const {setFooterData} = footerContext;
+  const { setFooterData } = footerContext;
+  const { setCashData } = cashContext;
   
-  const handleInputChange = (itemId: number, value:string) => {
+  function handleInputChange(itemId: number, value:string) {
     
     value = value.replace(/[^\d.]/g, "");
+    console.error(cashData)
     
     //TODO: TIPAR TIPO EFECTIVO
     const updatedData = cashData.currencies.map((item: any) =>
@@ -47,24 +54,34 @@ export const useHandleCashData = (cashData:any, setCashData:any) => {
       difference: newDifference,
     }
     
-    setCashData((prevState: any) => ({
-      ...prevState,
+    const updateCashdata = {
+      ...cashData,
       currencies: updatedData,
       total: newTotal
-    }));
+    };
+
+
+    setData(updateCashdata);
+    cashRef.current = updateCashdata
 
     updateTotal(newTotalFisico, newDifference, cashData.employeId, CLOUSING_KEY.CASH)
 
     setFooterData(newTotal, cashData.id, "cash");
 
+    setCashData(cashRef.current, cashData.employeId)
+
   };
 
   function handleChangeTips(value: string) {
     
-    setCashData((prevState: any) => ({
-      ...prevState,
+    const updateCashdata = {
+      ...cashData,
       tips: parseFloat(value),
-    }));
+    }
+    
+    console.log(updateCashdata)
+    setData(updateCashdata);
+    cashRef.current = updateCashdata
 
   }
 

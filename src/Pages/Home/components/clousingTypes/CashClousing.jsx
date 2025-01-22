@@ -15,11 +15,12 @@ function CashClousing ({ data }) {
 
     useEffect(() => {
       async function fetchData() {
-        const cashData = await getCashData(data.id, data.employe);
+        const cashData = await getCashData(data.id, data.employeId);
 
         setFooterData(cashData.total, data.id, "cash");
 
         setCashData(cashData);
+        console.log(cashData)
       }
       fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

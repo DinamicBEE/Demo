@@ -66,5 +66,4 @@ export interface AlertClousing {
 export interface FooterContextType {
   setFooterData: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
   getFooterData: (clousingId: number, clousingType: string) => Promise<TotalModel>;
-  updateFooter: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
 }
