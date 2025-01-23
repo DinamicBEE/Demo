@@ -9,7 +9,7 @@ import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 function EmployeesClousing() {
   const [tdc2Data, setCashData] = useState<TDCModel>()
   const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-  const { sendClousing } =  useHandleCashData(tdcData, setCashData); //Cambiar por funcion propia
+  //const { sendClousing } =  useHandleCashData(tdcData, setCashData); //Cambiar por funcion propia
   
   return (
     <Box>

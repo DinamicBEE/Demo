@@ -6,80 +6,98 @@ import { CLOUSING_KEY } from '@models/constants.model';
 
 const headersContext = createContext<HeaderContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useHeaders = () => useContext(headersContext)
 
 export function HeadersProvider({ children }: { children: ReactNode }) {
   const [header, setHeader] = useState<any>({});
-  const headerRef = useRef(header);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const headerRef = useRef(header);
   
   const updateHeaderState = (newHeader: any) => {
     setHeader(newHeader);
     headerRef.current = newHeader;
   };
   
-  const getHeader = useCallback(async (clousingId:number, employeeId:number) => {
+  const getHeader = async (clousingId:number, employeeId:number) => {
     setLoading(true);
-    console.log(headerRef.current[employeeId]);
-    if(headerRef.current[employeeId]) {
+    
+    if(headerRef.current[clousingId]?.[employeeId]) {
       setLoading(false);
-      return headerRef.current[employeeId];
+      return headerRef.current[clousingId][employeeId];
     }
 
     try {
-      const response = await getHeaders(clousingId, employeeId);
-
+      const data = await getHeaders(clousingId, employeeId);
+      
       const updatedHeader  = {
         ...headerRef.current,
-        [employeeId]: response,
+        [clousingId]: {
+          ...(headerRef.current[clousingId] || {}),
+          [employeeId]: data},
       }
+      
       updateHeaderState(updatedHeader);
 
-      return response;
+      return data;
     } catch (error) {
       setError(error instanceof Error ? error.message : String(error));
     } finally {
       setLoading(false);
     }
 
+  }
+
+  const updateTotal = (newTotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY)=>{
     
+    const currentHeader = headerRef.current;
+    const currentClousing = currentHeader[clousingId]?.[employeeId]?.closures[clousingType] || {};
+    console.log(currentClousing)
 
-  },[header])
+    const lastCashTotal = currentClousing.totalPOS || 0;
+    const lastCashDifference = currentClousing.difference || 0;
+    const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
 
-  const updateTotal = useCallback((newtotal: number, newDifference: number, employeeId:number, clousingType: CLOUSING_KEY)=>{
+    const lastDifference = (currentHeader[clousingId]?.[employeeId]?.difference || 0) - Math.abs(lastCashDifference);
+    const lastTotalClousing = (currentHeader[clousingId]?.[employeeId]?.totalClousing || 0) - lastCashPhysicalTotal;
 
-    console.log(headerRef.current);
-    console.log(headerRef);
-    headerRef.current[employeeId].totalClousing -= headerRef.current[employeeId].closures[clousingType].totalPhysical;
-    headerRef.current[employeeId].difference -= headerRef.current[employeeId].closures[clousingType].difference;
+    const newDifference = lastCashTotal - newTotal
 
-    headerRef.current[employeeId].closures[clousingType].totalPhysical = newtotal;
-    headerRef.current[employeeId].closures[clousingType].difference = newDifference;
+    console.log(lastDifference)
+    console.log(newDifference)
+    
+    const updatedHeader = {
+      ...currentHeader,
+      [clousingId]: {
+        ...(currentHeader[clousingId] || {}),
+        [employeeId]: {
+          ...(currentHeader[clousingId]?.[employeeId] || {}),
+          closures: {
+            ...(currentHeader[clousingId]?.[employeeId]?.closures || {}),
+            [clousingType]:{
+              totalPhysical: newTotal,
+              difference: Math.abs(newDifference),
+              totalPOS: lastCashTotal,
+            }
+          },
+          difference: lastDifference + Math.abs(newDifference),
+          totalClousing: lastTotalClousing + newTotal,
 
-    headerRef.current[employeeId].totalClousing += newtotal;
-    headerRef.current[employeeId].difference += newDifference;
-
-    const updatedHeader  = {
-      ...headerRef.current,
-      [employeeId]: headerRef.current[employeeId],
+        }
+      }
     }
 
     updateHeaderState(updatedHeader);
 
-  },[])
+  }
 
-  const value = useMemo(
-    () => ({
-      header,
-      updateTotal,
-      loading,
-      error,
-      getHeader
-    }),
-    [header, loading, error, getHeader, updateTotal ]
-  );
+  const value = {
+    header,
+    updateTotal,
+    loading,
+    error,
+    getHeader
+  }
 
   return (
     <headersContext.Provider value={value}>

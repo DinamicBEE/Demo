@@ -1,10 +1,17 @@
 import { TotalModel } from "./common.clousing.model";
 
 export interface CustomerContextType {
-    customer: CustomerModel;
+    customer: CustomerModel | {};
     customerLoading: boolean;
     error: string;
-    getCustomerData: (clousingId: number, employeeId: number) => Promise<any>;
+    getCustomerData: (clousingId: number, employeeId: number) => Promise<CustomerModel>;
+    setCustomerData: (customer:any, employeeId: number, clousingId: number) => void;
+}
+
+export interface CustomerContext {
+    [key: number]: {
+        [key: number]: any
+    }
 }
 
 export interface CustomerLines {

@@ -5,7 +5,7 @@ export interface HeaderContextType {
   error: string;
   loading: boolean;
   getHeader: (clousingId: number, employeeId: number) => Promise<any>;
-  updateTotal: (newtotal: number, newDifference: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
+  updateTotal: (newtotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
 }
 
 export interface HeaderClousingProps {
@@ -21,8 +21,8 @@ export interface HeaderData {
   totalPOS?: number;
   totalClousing?: number;
   difference?: number;
-  service?: number;
-  discountPOS?: number;
+  service: number;
+  discountPOS: number;
   discountClousing?: number;
   closures: ClousingType
 }
@@ -38,9 +38,11 @@ export interface ClousingType{
 }
 
 export interface FooterClousing {
-  data: TotalModel | undefined;
-  loading: boolean;
-  onChange: () => Promise<boolean>;
+  clousingType: string;
+  clousingId: number;
+  data?: TotalModel | undefined;
+  loading?: boolean;
+  onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {
@@ -53,4 +55,15 @@ export interface CurrencyModel {
   label: string;
   value: number;
   exchangeRate: number;
+}
+
+export interface AlertClousing {
+  title:string;
+  description?: string;
+  type: string;
+}
+
+export interface FooterContextType {
+  setFooterData: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
+  getFooterData: (clousingId: number, clousingType: string) => Promise<TotalModel>;
 }

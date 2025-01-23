@@ -1,28 +1,36 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
-import FooterClousing from "../FooterClousing";
-import { useCustomerContext } from "@context/clousing/customerClousingContext";
-import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { TableInput } from "@components/NumericInput";
-import { CustomerLines, CustomerModel } from "@models/customer.model";
+import Loading from "@components/Loading";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
+import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
+import { CustomerLines, CustomerModel } from "@models/customer.model";
 
 function CustomersClousing({data}: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
+  const footerContext = useFooter();
   const customerContext = useCustomerContext();
-  const handleCashData = useHandleCashData(CustomersData, setCustomersData); //Cambiar por funcion propia
+  const handleCustomer = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id, data?.employeId);
   
-  const sendClousing = handleCashData?.sendClousing ?? (() => Promise.resolve(false));
-  const customerLoading = customerContext?.customerLoading ?? false;
-  const getCustomerData = customerContext?.getCustomerData;
+  const selectCurrency = handleCustomer?.selectCurrency;
+  const handleCoupons = handleCustomer?.handleCoupons;
+  const handleAmountPAX = handleCustomer?.handleAmountPAX;
+  const setFooterData = footerContext?.setFooterData;
   
   useEffect(()=>{
     async function fetchData() {
-      const customers = getCustomerData ? await getCustomerData(data.id, data.employe) : {};
+      const customers: CustomerModel | undefined = customerContext?.getCustomerData
+            ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
+
+      if (customers?.total) {
+        setFooterData?.(customers.total, data.id, "customer");
+      }
 
       const currencies = await getCurrencies()
 
@@ -37,82 +45,6 @@ function CustomersClousing({data}: any) {
     fetchData();
   
   }, [])
-
-  function SelectCurrency(value:any, id:number) {
-    const selectValue = value[0];
-    
-    const newCurrency = currencies?.filter((item:CurrencyModel) => item.value === selectValue)[0]?.label || "";
-    const newExchangeRage = currencies?.filter((currency:CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
-
-    if (!CustomersData) return;
-
-    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            currency: newCurrency,
-            exchangeRate: newExchangeRage,
-            amountMXN: item.amount > 0
-              ? (newExchangeRage * item.amount)
-              : item.amountMXN,
-          }
-        : item
-    );
-
-    setCustomersData({ ...CustomersData, lines: updatedCurrencies });
-  }
-
-  function handleCoupons(id:number, value:string){
-    
-    value = value.replace(/[^\d.]/g, "");
-
-    if (!CustomersData) return;
-
-    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            coupons: parseFloat(value),
-            amount: item.valuePAX > 0 
-              ? (parseFloat(value) * item.valuePAX)
-              : item.amount,
-            amountMXN: item.valuePAX > 0 && item.exchangeRate > 0
-              ? ((parseFloat(value) * item.valuePAX) * item.exchangeRate)
-              : item.amountMXN,
-          }
-        : item
-    );
-
-    CustomersData.lines = updatedCurrencies;
-
-    setCustomersData({...CustomersData})
-  }
-
-  function handleAmountPAX(id:number, value:string){
-    
-    value = value.replace(/[^\d.]/g, "");
-
-    if (!CustomersData) return;
-
-    const updatedCurrencies = CustomersData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            valuePAX: parseFloat(value),
-            amount: item.coupons > 0 
-              ? (parseFloat(value) * item.coupons)
-              : item.amount,
-            amountMXN: item.coupons > 0 && item.exchangeRate > 0
-              ? ((parseFloat(value) * item.coupons) * item.exchangeRate)
-              : item.amountMXN,
-          }
-        : item
-    );
-
-  CustomersData.lines = updatedCurrencies;
-
-    setCustomersData({...CustomersData})
-  }
 
   return (
         <Box>
@@ -149,11 +81,11 @@ function CustomersClousing({data}: any) {
                       <SelectRoot 
                          
                         collection={currenciesForSelect || createListCollection({ items: [] })} 
-                        onValueChange={(e) => {SelectCurrency(e.value, item.id)}}
+                        onValueChange={(e) => selectCurrency?.(e.value, item.id, currencies)}
                       >
                         
                         <SelectTrigger>
-                          <SelectValueText placeholder="Seleccionar moneda" />
+                          <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
                         </SelectTrigger>
                         
                         <SelectContent>
@@ -196,8 +128,8 @@ function CustomersClousing({data}: any) {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
-    
-          <FooterClousing data={CustomersData?.total} loading={customerLoading} onChange={sendClousing} />
+
+          {customerContext?.customerLoading && <Loading />}
     
         </Box>
   )

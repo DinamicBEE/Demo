@@ -6,12 +6,15 @@ export const getHeaders = async (clousingId: number, employeeId: number) => {
     try {
         //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
         const response = HeaderData;
+        const data = {
+            ...response
+        }
         
         //return response.data
         //return response
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve(response);
+                resolve(data);
             }, 5000);
         });
 
@@ -159,7 +162,7 @@ export const HeaderData = {
     "date": "2021-10-10 10:00",
     "totalPOS": 3500,
     "totalClousing": 3500,
-    "difference": 3500,
+    "difference": 0,
     "service": 1000,
     "discountPOS": 1000,
     "discountClousing": 2000,
@@ -191,8 +194,8 @@ export const CustomerMOCKData = {
     "id": 1,
     "employeId": 150,
     "total":{
-        "totalPOS": 9622.32,
-        "totalPhysical": 9622.32,
+        "totalPOS": 19622.32,
+        "totalPhysical": 19622.32,
         "difference": 0,
     },
     "lines": [
