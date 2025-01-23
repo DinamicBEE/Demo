@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
-import FooterClousing from "../FooterClousing";
-import { useCashClousing } from "@context/clousing/cashClousingContext";
-import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { TableInput } from "@components/NumericInput";
+import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
+import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 
-function SpecialCustomersClousing() {
-  const [specialCustomer, setSpecialCustomer] = useState<any>({}) 
-  //const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-  //const { sendClousing } =  useHandleCashData(specialCustomer, setSpecialCustomer); //Cambiar por funcion propia
-    
+function SpecialCustomersClousing({data}: any) {
+  const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
+
+  const footerContext = useFooter();
+  const handleSpecialCustomer = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id, data?.employeId)
+  
+  const handleInputTextData = handleSpecialCustomer?.handleInputTextData;
+  const handleUpdateAmountMXN = handleSpecialCustomer?.handleUpdateAmountMXN;
+  const setFooterData = footerContext?.setFooterData;
+
   useEffect(()=>{
     async function fetchData() {
       const specialCustomer = customer;
+
+      setFooterData?.(specialCustomer.total, data.id, "specialCustomer");
 
       setSpecialCustomer(specialCustomer)
     }
@@ -21,50 +28,6 @@ function SpecialCustomersClousing() {
 
   },[])
 
-  function handleInputTextData(value:string, id: number, key:string){
-
-    const updatedCurrencies = specialCustomer.currencies.map((item: any) =>
-      item.id === id
-        ? {
-            ...item,
-            [key]: value
-          }
-        : item
-    );
-
-    setSpecialCustomer({ ...specialCustomer, currencies: updatedCurrencies });
-
-    console.log(specialCustomer)
-  }
-
-  function handleUpdateAmountMXN(id: number, value: string, key?: string){
-
-    value = value.replace(/[^\d.]/g, "");
-    console.log(value)
-    let newAmoutn = 0
-
-    if(key === "value"){
-      newAmoutn = parseFloat(value)
-    } else {
-      newAmoutn = (parseFloat(value)*specialCustomer.currencies.filter((item:any) =>item.id === id)[0].exchangeRate)
-    }
-
-    const updatedCurrencies = specialCustomer.currencies.map((item: any) =>
-      item.id === id
-        ? {
-            ...item,
-            amountMXN: newAmoutn
-          }
-        : item
-    );
-
-    specialCustomer.currencies = updatedCurrencies;
-
-    setSpecialCustomer({...specialCustomer})
-    
-    console.log(specialCustomer)
-
-  }
 
   return (
         <Box>
@@ -91,7 +54,7 @@ function SpecialCustomersClousing() {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {specialCustomer?.currencies?.map((item: any) => (
+                {specialCustomer?.lines?.map((item: SpecialCustomerLines) => (
                   <Table.Row key={item.id}>
                     
                     <Table.Cell textAlign="center">
@@ -136,37 +99,37 @@ function SpecialCustomersClousing() {
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuopon")} />
+                        <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleInputTextData?.(e.target.value, item.id, "folioCuopon")} />
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuoponUSD")} />
+                        <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleInputTextData?.(e.target.value, item.id, "folioCuoponUSD")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.value} id={item.id} currency={false} key={"value"} onChange={handleUpdateAmountMXN} />
+                        <TableInput value={item.value} id={item.id} currency={false} keyValue={"value"} onChange={handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valueUSD} id={item.id} currency={false} key={"valueUSD"} onChange={handleUpdateAmountMXN} />
+                        <TableInput value={item.valueUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.flight} onChange={(e) => handleInputTextData(e.target.value, item.id, "flight")} />
+                        <Input textAlign="center" value={item.flight} onChange={(e) => handleInputTextData?.(e.target.value, item.id, "flight")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.passengerName} onChange={(e) => handleInputTextData(e.target.value, item.id, "passengerName")} />
+                        <Input textAlign="center" value={item.passengerName} onChange={(e) => handleInputTextData?.(e.target.value, item.id, "passengerName")} />
                       </Text>
                     </Table.Cell> 
 
@@ -182,8 +145,6 @@ function SpecialCustomersClousing() {
             </Table.Root>
           </Table.ScrollArea>
     
-          {/* <FooterClousing data={customer} loading={cashLoading} onChange={sendClousing} /> */}
-    
         </Box>
   )
 }
@@ -192,11 +153,13 @@ export default SpecialCustomersClousing;
 
 const customer = {
   "id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
+  "employeeId": 150,
+  "total":{
+    "totalPOS": 3500,
+    "totalPhysical": 3500,
+    "difference": 0,
+  },
+  "lines": [
       {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
         "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
       },

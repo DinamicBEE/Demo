@@ -43,7 +43,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                                 <LuSquareCheck />
                                 Clientes
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="special-customers">
+                            <Tabs.Trigger value="specialCustomer">
                                 <LuUser />
                                 Clientes especiales
                             </Tabs.Trigger>
@@ -85,10 +85,10 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="special-customers">
-                            {value === "special-customers" && (
+                        <Tabs.Content value="specialCustomer">
+                            {value === "specialCustomer" && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                                    <SpecialCustomersClousing />
+                                    <SpecialCustomersClousing data={employee}/>
                                 </Suspense>
                             )}
                         </Tabs.Content>

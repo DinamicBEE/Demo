@@ -216,7 +216,7 @@ export const SpecialCustomerMOCKDATA = {
     "totalPhysical": 3500,
     "difference": 0,
   },
-  "currencies": [
+  "lines": [
       {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
         "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
       },

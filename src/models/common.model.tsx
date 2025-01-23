@@ -8,7 +8,7 @@ export interface CurrencyInputProps {
 export interface TableInputProps {
   value: number;
   id: number;
-  key?: string;
+  keyValue?: string;
   currency: boolean;
   onChange?: (id: number, eventValue: string, key?:string) => void;
 }

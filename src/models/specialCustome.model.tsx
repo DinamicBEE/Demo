@@ -25,7 +25,7 @@ export interface SpecialCustomerLines {
     amountMXN: number;
 }
 
-export interface SpecialCustomer {
+export interface SpecialCustomerModel {
   id: number;
   employeeId: number;
   total: TotalModel;

@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { useFooter } from "@context/clousing/footerClousingContext";
 import { useHeaders } from "@context/clousing/headerContext";
+import { useFooter } from "@context/clousing/footerClousingContext";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { CurrencyModel, TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
-import { useCustomerContext } from "@context/clousing/customerClousingContext";
 
 
 export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any, clousingId: number, employeId: number) => {
@@ -112,7 +112,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
 
     
     setCustomer({ ...customerData });
-    customerRef.current = customerData
+    customerRef.current = customerData;
     updateContext(updatedCurrencies);
   }
 
