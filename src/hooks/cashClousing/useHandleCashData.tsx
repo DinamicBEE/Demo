@@ -65,7 +65,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
     setData(updateCashdata);
     cashRef.current = updateCashdata
 
-    updateTotal(newTotalFisico, newDifference, cashData.employeId, CLOUSING_KEY.CASH)
+    updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CASH)
 
     setFooterData(newTotal, clousingId, "cash");
 

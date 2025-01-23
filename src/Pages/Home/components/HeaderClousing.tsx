@@ -17,15 +17,15 @@ function HeaderClousing ({ id, employe }: HeaderClousingProps) {
 
     useEffect(()=>{
         async function fetchData() {
-            if(!header[employe]){
+            if(!header[id]){
                 const data = await getHeader(id, employe);
                 setLocalHeader(data);
             } else {
-                setLocalHeader(header[employe]);
+                setLocalHeader(header[id][employe]);
             }
         }
         fetchData()
-    },[]);
+    },[header]);
 
     return(
         <Box>

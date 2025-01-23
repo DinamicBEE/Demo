@@ -5,7 +5,7 @@ export interface HeaderContextType {
   error: string;
   loading: boolean;
   getHeader: (clousingId: number, employeeId: number) => Promise<any>;
-  updateTotal: (newtotal: number, newDifference: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
+  updateTotal: (newtotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
 }
 
 export interface HeaderClousingProps {
@@ -21,8 +21,8 @@ export interface HeaderData {
   totalPOS?: number;
   totalClousing?: number;
   difference?: number;
-  service?: number;
-  discountPOS?: number;
+  service: number;
+  discountPOS: number;
   discountClousing?: number;
   closures: ClousingType
 }
