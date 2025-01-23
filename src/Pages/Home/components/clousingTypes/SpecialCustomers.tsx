@@ -7,8 +7,8 @@ import { TableInput } from "@components/NumericInput";
 
 function SpecialCustomersClousing() {
   const [specialCustomer, setSpecialCustomer] = useState<any>({}) 
-  const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-  const { sendClousing } =  useHandleCashData(specialCustomer, setSpecialCustomer); //Cambiar por funcion propia
+  //const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
+  //const { sendClousing } =  useHandleCashData(specialCustomer, setSpecialCustomer); //Cambiar por funcion propia
     
   useEffect(()=>{
     async function fetchData() {

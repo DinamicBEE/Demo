@@ -110,9 +110,11 @@ export const getSpecialCustomerClousing = async (clousingId: number, employeeId:
         const data = {
             //...response.data,
             ...response,
-            globalTotalPOS: newTotalPOS,
-            globalTotalFisico: newTotalFisico,
-            globalDifference: newTotalPOS - newTotalFisico,
+            total: {
+                totalPOS: newTotalPOS,
+                totalPhysical: newTotalFisico,
+                difference: newTotalPOS - newTotalFisico,
+            }
         }
         
         //return data
@@ -205,3 +207,27 @@ export const CustomerMOCKData = {
         {"id":4, "customers": "VIVA AEROBUS", "coupons": 0, "currency": "", "valuePAX": 0, "amount": 0, "exchangeRate": 0, "amountMXN": 0},
     ]
   }
+
+export const SpecialCustomerMOCKDATA = {
+  "id": 1,
+  "employeId": 150,
+  "total":{
+    "totalPOS": 3500,
+    "totalPhysical": 3500,
+    "difference": 0,
+  },
+  "currencies": [
+      {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
+      },
+      {"id":2, "Check": 400, "consumption": 500.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OGCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
+      },
+      {"id":3, "Check": 120, "consumption": 150.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 17.00, "client": "AMERICAN AIRLINES",
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCIP", "passengerName": "JUAN PEREZ", "amountMXN": 1
+      },
+      {"id":4, "Check": 150, "consumption": 200.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
+        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
+      }
+  ]
+}
