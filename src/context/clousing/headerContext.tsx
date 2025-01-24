@@ -49,7 +49,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTotal = (newTotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY)=>{
-    
+    console.log(newTotal)
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.[employeeId]?.closures[clousingType] || {};
     console.log(currentClousing)
@@ -58,10 +58,12 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     const lastCashDifference = currentClousing.difference || 0;
     const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
 
+    const lastTotalPOS = currentHeader[clousingId]?.[employeeId]?.totalPOS
     const lastDifference = (currentHeader[clousingId]?.[employeeId]?.difference || 0) - Math.abs(lastCashDifference);
     const lastTotalClousing = (currentHeader[clousingId]?.[employeeId]?.totalClousing || 0) - lastCashPhysicalTotal;
 
     const newDifference = lastCashTotal - newTotal
+    const newTotalClousing = lastTotalClousing + newTotal;
 
     console.log(lastDifference)
     console.log(newDifference)
@@ -80,8 +82,8 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
               totalPOS: lastCashTotal,
             }
           },
-          difference: lastDifference + Math.abs(newDifference),
-          totalClousing: lastTotalClousing + newTotal,
+          difference: Math.abs(lastTotalPOS - newTotalClousing),
+          totalClousing: newTotalClousing,
 
         }
       }

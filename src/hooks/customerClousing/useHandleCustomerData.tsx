@@ -136,7 +136,9 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       total: newTotal
     }
 
-    updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
+    if(newTotalFisico>0){
+      updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
+    }
 
     setFooterData(newTotal, clousingId, "customer");
 
