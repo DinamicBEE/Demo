@@ -6,7 +6,7 @@ const routesConfig = [
       path: '/home',
       element: lazy(() => import('../pages/Home/Home')),
       roles: [1],
-      wrapper: (Component) => (
+      wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
         </HomeProvider>
