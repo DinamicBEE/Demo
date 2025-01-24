@@ -23,7 +23,7 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
     const getCustomerData = useCallback( async(clousingId:number, employeeId:number) => {
         setCustomerLoading(true);
 
-        if(customerRef.current[clousingId]){
+        if(customerRef.current[clousingId]?.[employeeId]){
             setCustomerLoading(false);
             return customerRef.current[clousingId][employeeId];
         }
@@ -42,7 +42,7 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
                 }
             }
             
-            setCustomer(updateCustomer);
+            updateCustomerData(updateCustomer);
             
             return data;
 

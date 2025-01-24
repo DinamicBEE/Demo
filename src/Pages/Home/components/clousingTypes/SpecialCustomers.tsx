@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
 import { TableInput } from "@components/NumericInput";
+import Loading from "@components/loading";
 import { useFooter } from "@context/clousing/footerClousingContext";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 
@@ -9,6 +11,7 @@ function SpecialCustomersClousing({data}: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
 
   const footerContext = useFooter();
+  const specialCustomerContext = useSpecialCustContext();
   const handleSpecialCustomer = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id, data?.employeId)
   
   const handleInputTextData = handleSpecialCustomer?.handleInputTextData;
@@ -17,11 +20,15 @@ function SpecialCustomersClousing({data}: any) {
 
   useEffect(()=>{
     async function fetchData() {
-      const specialCustomer = customer;
+      const specialCustomer: SpecialCustomerModel | undefined = specialCustomerContext?.getSpecialCustData
+            ? await specialCustomerContext?.getSpecialCustData(data?.id, data?.employeId) : undefined;
 
-      setFooterData?.(specialCustomer.total, data.id, "specialCustomer");
+      if (specialCustomer) {
+        setFooterData?.(specialCustomer.total, data.id, "specialCustomer");
+      }
 
       setSpecialCustomer(specialCustomer)
+
     }
 
     fetchData();
@@ -144,33 +151,11 @@ function SpecialCustomersClousing({data}: any) {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
+
+          {specialCustomerContext?.specialCustLoading && <Loading />}
     
         </Box>
   )
 }
 
 export default SpecialCustomersClousing;
-
-const customer = {
-  "id": 1,
-  "employeeId": 150,
-  "total":{
-    "totalPOS": 3500,
-    "totalPhysical": 3500,
-    "difference": 0,
-  },
-  "lines": [
-      {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":2, "Check": 400, "consumption": 500.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OGCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":3, "Check": 120, "consumption": 150.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 17.00, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCIP", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":4, "Check": 150, "consumption": 200.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      }
-  ]
-}

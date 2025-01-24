@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
 import { getCashClousing } from '@services/clousingService';
-import { CashContext, CashContextType } from '@models/cash.model';
+import { CashContext, CashContextType, CashLines } from '@models/cash.model';
 
 const cashClousingContext = createContext<CashContextType | undefined>(undefined);
 
@@ -48,7 +48,7 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[cashClousing])
 
-    const setCashData = useCallback((cashLine: any, employeeId: number, clousingId: number) => {
+    const setCashData = useCallback((cashLine: CashLines, employeeId: number, clousingId: number) => {
 
         const currentClousingData = cashRef.current[clousingId] || {};
 

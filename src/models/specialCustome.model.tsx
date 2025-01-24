@@ -1,5 +1,12 @@
 import { TotalModel } from "./common.clousing.model";
 
+export interface specialCustContextType {
+    specialCust: SpecialCustomerModel | {};
+    specialCustLoading: boolean;
+    error: string;
+    getSpecialCustData: (clousingId: number, employeeId: number) => Promise<SpecialCustomerModel>;
+    setSpecialCustData: (specialCustLine:any, employeeId: number, clousingId: number) => void;
+}
 
 export interface SpecialCustomerContext {
     [key: number]: {

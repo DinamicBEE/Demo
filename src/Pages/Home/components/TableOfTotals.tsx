@@ -4,8 +4,8 @@ import { exportCSV } from '@services/homeService'
 import { useClousing } from '@context/home/clousingContext';
 import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
-import Loading from '@components/Loading';
 import { CurrencyInput } from '@components/NumericInput';
+import Loading from '@components/loading';
 
 interface TableOfTotalsProps {
   subsidiary: number;

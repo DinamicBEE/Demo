@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import { TableInput } from "@components/NumericInput";
-import Loading from "@components/Loading";
+import Loading from "@components/loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useFooter } from "@context/clousing/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";

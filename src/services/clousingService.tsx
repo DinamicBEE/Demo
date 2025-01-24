@@ -99,22 +99,16 @@ export const getSpecialCustomerClousing = async (clousingId: number, employeeId:
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-        const response = CashData;
+        const response = SpecialCustomerMOCKDATA;
 
         // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
         // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
-
-        const newTotalPOS = response.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
-        const newTotalFisico = response.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
+        console.log(response)
 
         const data = {
             //...response.data,
             ...response,
-            total: {
-                totalPOS: newTotalPOS,
-                totalPhysical: newTotalFisico,
-                difference: newTotalPOS - newTotalFisico,
-            }
+
         }
         
         //return data
