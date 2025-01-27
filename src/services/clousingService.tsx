@@ -61,6 +61,52 @@ export const getCashClousing = async (clousingId: number, employeeId: number) =>
     }
 }
 
+export const getTDCClousing = async (clousingId: number, employeeId: number) => {
+    console.log(clousingId, employeeId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = TDCMOCKData;
+
+        const data = {
+            ...response,
+        }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [];
+    }
+}
+
+export const getTDCDetails = async (clousingId: number, lineId: number) => {
+    console.log(clousingId, lineId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = TDCDetailsMOCKData;
+
+        const data = {
+            ...response,
+        }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [];
+    }
+}
+
 export const getCustomerClousing = async (clousingId: number, employeeId: number) => {
     console.log(clousingId, employeeId)
     
@@ -112,6 +158,29 @@ export const getSpecialCustomerClousing = async (clousingId: number, employeeId:
         }
         
         //return data
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [];
+    }
+}
+
+export const getPrepaidClousing = async (clousingId: number, employeeId: number) => {
+    console.log(clousingId, employeeId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = PrepaidMOCKData;
+
+        const data = {
+            ...response,
+        }
+        
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
@@ -186,6 +255,40 @@ export const CashData = {
     ]
 }
 
+export const TDCMOCKData = {
+  "id": 1,
+  "employeId": 150,
+  "total":{
+    "totalPOS": 9622.32,
+    "totalPhysical": 9622.32,
+    "difference": 0,
+  },
+  "currencies": [
+    {"id": 1, "bank": "BBVA", "POS": 2784.56, "physical": 0, "voucherAmount": 10},
+    {"id": 2, "bank": "HSBC", "POS": 208.69,  "physical": 150, "voucherAmount": 1 },
+    {"id": 3, "bank": "BANREGIO", "POS": 856.32, "physical": 300, "voucherAmount": 5}
+  ]
+}
+
+export const TDCDetailsMOCKData = {
+    id: 1,
+    bankName: "BBVA bancomer",
+    total: 0,
+    details: [
+        {id: 101, date: "22/05/2024 11:16", check: "", amount: 386},
+        {id: 102, date: "22/05/2024 11:12", check: "", amount: 491.05},
+        {id: 103, date: "22/05/2024 11:02", check: "", amount: 323},
+        {id: 104, date: "22/05/2024 09:37", check: "", amount: 405.60},
+        {id: 105, date: "22/05/2024 09:26", check: "", amount: 104},
+        {id: 106, date: "22/05/2024 08:57", check: "", amount: 273.90},
+        {id: 107, date: "22/05/2024 08:54", check: "", amount: 203},
+        {id: 108, date: "22/05/2024 08:45", check: "", amount: 228.65},
+        {id: 109, date: "22/05/2024 07:36", check: "", amount: 95},
+        {id: 110, date: "22/05/2024 06:43", check: "", amount: 273.90}
+    ]
+
+}
+
 export const CustomerMOCKData = {
     "id": 1,
     "employeId": 150,
@@ -224,4 +327,22 @@ export const SpecialCustomerMOCKDATA = {
         "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
       }
   ]
+}
+
+export const PrepaidMOCKData = {
+    "id": 1,
+    "employeId": 150,
+    "total":{
+        "totalPOS": 2955.00,
+        "totalPhysical": 2955.00,
+        "difference": 0,
+    },
+    "currencies":[
+        {"id": 1, "client": "Thomas Moore", "quantity": 3, "quantitySupplements": 0, "unitPrice": 111.67, "POS": 335.56, "physical": 335.00, "difference": 0},
+        {"id": 2, "client": "SSIA", "quantity": 5, "quantitySupplements": 0, "unitPrice": 110.00, "POS": 550.00, "physical": 550.00, "difference": 0},
+        {"id": 3, "client": "SEASON TOURS", "quantity": 2, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 230.00, "physical": 230.00, "difference": 0},
+        {"id": 4, "client": "SEEK AND GO", "quantity": 8, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 920.00, "physical": 920.00, "difference": 0},
+        {"id": 5, "client": "AVENTOUR", "quantity": 4, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0},
+        {"id": 6, "client": "THE ONE", "quantity": 4, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0}
+    ]
 }

@@ -8,7 +8,7 @@ const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
 const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
-//const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
+const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
 //const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
 //const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
@@ -94,7 +94,11 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
-                            {/* <PrepaidClousing /> */}
+                            {value === "prepaid" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <PrepaidClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="employees">
