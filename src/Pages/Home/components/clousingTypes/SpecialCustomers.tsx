@@ -6,6 +6,7 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function SpecialCustomersClousing({data}: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
@@ -24,7 +25,7 @@ function SpecialCustomersClousing({data}: any) {
             ? await specialCustomerContext?.getSpecialCustData(data?.id, data?.employeId) : undefined;
 
       if (specialCustomer) {
-        setFooterData?.(specialCustomer.total, data.id, "specialCustomer");
+        setFooterData?.(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
       }
 
       setSpecialCustomer(specialCustomer);

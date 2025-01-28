@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber  } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Group, InputAddon, Input, Skeleton  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
-import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
-import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import Loading from "@components/loading";
+import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
+import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function PrepaidClousing({data}: any) {
   const [prepaid, setPrepaid] = useState<PrepaidModel>();
 
+  const footerContext = useFooter();
   const prepaidContext = usePrepaidContext();
+
+  const setFooterData = footerContext?.setFooterData;
 
   useEffect(()=>{
     async function fetchData(){
@@ -16,6 +21,10 @@ function PrepaidClousing({data}: any) {
             ? await prepaidContext?.getPrepaidData(data?.id, data?.employeId) : undefined;
 
       setPrepaid(prepaid);
+
+      if (prepaid?.total) {
+        setFooterData?.(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
+      }
 
     }
 
@@ -27,6 +36,13 @@ function PrepaidClousing({data}: any) {
   return (
     <Box>
       {/* <Toaster /> */}
+
+      <Group attached mb={4}>
+        <InputAddon>Código de Barras</InputAddon>
+        <Skeleton loading={prepaidContext?.prepaidLoading}>
+          <Input placeholder="Código de Barras" />
+        </Skeleton>
+      </Group>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline" striped>

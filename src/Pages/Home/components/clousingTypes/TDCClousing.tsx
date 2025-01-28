@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
 import { LuEye } from "react-icons/lu";
-import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { BankLineModel, TDCModel } from "@models/tdc.model";
+import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
 import Loading from "@components/loading";
 import TDCDetails from "./TDCDetails";
+import { useTDCContext } from "@context/clousing/tdcClousingContex";
+import { useFooter } from "@context/home/footerClousingContext";
+import { BankLineModel, TDCModel } from "@models/tdc.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function TDCClousing({data}: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null>(null);
   const [details, setDetails] = useState<boolean>(false);
 
+  const footerContext = useFooter();
   const tdcContext = useTDCContext();
+
+  const setFooterData = footerContext?.setFooterData;
 
   useEffect(()=>{
     async function fetchData() {
       const tdc: TDCModel | undefined = tdcContext?.getTDCData
             ? await tdcContext?.getTDCData(data?.id, data?.employeId) : undefined;
-      console.log(tdcContext?.tdcLoading)
+      
+      if(tdc?.total){
+        setFooterData?.(tdc.total, data.id, CLOUSING_KEY.TDC);
+      }
+
       setCashData(tdc);
 
     }

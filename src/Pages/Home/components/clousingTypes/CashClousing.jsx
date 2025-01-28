@@ -6,6 +6,7 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import Loading from '@components/loading';
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
@@ -18,7 +19,7 @@ function CashClousing ({ data }) {
 
         const cashData = await getCashData(data.id, data.employeId);
 
-        setFooterData(cashData.total, data.id, "cash");
+        setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
 
         setCashData(cashData);
 

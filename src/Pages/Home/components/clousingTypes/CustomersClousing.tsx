@@ -9,6 +9,7 @@ import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function CustomersClousing({data}: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
@@ -29,7 +30,7 @@ function CustomersClousing({data}: any) {
             ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
 
       if (customers?.total) {
-        setFooterData?.(customers.total, data.id, "customer");
+        setFooterData?.(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
       }
 
       const currencies = await getCurrencies()
