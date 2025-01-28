@@ -1,12 +1,42 @@
-import { Button, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle, FormatNumber, Input, Table, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Button, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/react";
+import { CurrencyInput } from "@components/NumericInput";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import { DetailsProp } from "@models/tdc.model";
 
-function TDCDetails({clousingId, lineId, isOpen}: {clousingId: number, lineId: number, isOpen:boolean}) {
+function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
+    const [details, setDetails] = useState<any>({}) 
+
+    useEffect(()=>{
+
+        setDetails(TDCDetailsMOCKData)
+
+    },[])
+
+    function handleInputData(value: string, id: number) {
+        const updateLines = TDCDetailsMOCKData.details.map((item:any) =>
+            item.id === id
+            ? {
+            ...item,
+            check: value
+            }
+            : item
+        );
+
+        setDetails({
+            ...details,
+            details: updateLines
+        })
+
+    }
     
     return (
         <DialogRoot 
             open={isOpen} 
             closeOnEscape={false} 
             closeOnInteractOutside={false}
+            scrollBehavior="inside"
+            onOpenChange={() => onClose()}
         >
             <DialogContent>
 
@@ -33,7 +63,7 @@ function TDCDetails({clousingId, lineId, isOpen}: {clousingId: number, lineId: n
                             </Table.Header>
 
                             <Table.Body>
-                                {TDCDetailsMOCKData?.details?.map((item:any)=>(
+                                {details?.details?.map((item:any)=>(
                                     <Table.Row key={item.id}>
                                         
                                         <Table.Cell textAlign="center">
@@ -42,7 +72,7 @@ function TDCDetails({clousingId, lineId, isOpen}: {clousingId: number, lineId: n
 
                                         <Table.Cell>
                                             <Text>
-                                                <Input textAlign="center" value={item.date}/>
+                                                <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id)}/>
                                             </Text>
                                         </Table.Cell>
 
@@ -62,10 +92,18 @@ function TDCDetails({clousingId, lineId, isOpen}: {clousingId: number, lineId: n
                 </DialogBody>
 
                 <DialogFooter>
-                    
-                    <Button className="secondary-button save-button">Gurdar</Button>
+
+                    <Flex gap={4}>
+
+                        <CurrencyInput value={500} name={"Total"} loading={false} />
+                        
+                        <Button className="secondary-button save-button">Guardar</Button>
+
+                    </Flex>
                     
                 </DialogFooter>
+
+                <DialogCloseTrigger />
                 
             </DialogContent>
         </DialogRoot>

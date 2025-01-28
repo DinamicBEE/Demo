@@ -4,7 +4,7 @@ import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import { TableInput } from "@components/NumericInput";
 import Loading from "@components/loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";

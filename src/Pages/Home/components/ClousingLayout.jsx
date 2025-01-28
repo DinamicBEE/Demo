@@ -9,8 +9,8 @@ const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
 const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
 const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
-//const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
-//const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
+const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
+const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
     const [value, setValue] = useState("")
@@ -72,7 +72,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         <Tabs.Content value="tdc">
                             {value === "tdc" && (
                                 <Suspense fallback={<div>Cargando TDC...</div>}>
-                                  <TDCClousing />
+                                  <TDCClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -102,11 +102,19 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="employees">
-                            {/* <EmployeesClousing /> */}
+                            {value === "employees" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <EmployeesClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="inter-company">
-                            {/* <IntercompanyClousing /> */}
+                            {value === "inter-company" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <IntercompanyClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                     </Tabs.Root>

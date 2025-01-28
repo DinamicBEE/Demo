@@ -2,8 +2,8 @@ import { useRef } from "react"
 import { sendCashClousing } from "@services/clousingService";
 import { toaster } from "@components/ui/toaster";
 import { ALERTCLOUSING_MODEL, CLOUSING_KEY } from "@models/constants.model";
-import { useHeaders } from "@context/clousing/headerContext"
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHeaders } from "@context/home/headerContext"
+import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 import { CashLines, CashModel } from "@models/cash.model";
@@ -42,16 +42,16 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
         : item
     );
     
-    const newTotalFisico = updatedData.reduce(
+    const newTotalPhysical = updatedData.reduce(
       (acc: number, curr: { totalFisico: number; }) => acc + curr.totalFisico,
       0
     );
 
-    const newDifference = (cashData.total?.totalPOS || 0) - newTotalFisico;
+    const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
 
     const newTotal: TotalModel ={
       totalPOS: cashData.total?.totalPOS || 0,
-      totalPhysical: newTotalFisico,
+      totalPhysical: newTotalPhysical,
       difference: newDifference,
     }
     
@@ -65,7 +65,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
     setData(updateCashdata);
     cashRef.current = updateCashdata
 
-    updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CASH)
+    updateTotal(newTotalPhysical, clousingId, employeId, CLOUSING_KEY.CASH)
 
     setFooterData(newTotal, clousingId, "cash");
 

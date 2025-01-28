@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
 import { TableInput } from "@components/NumericInput";
 import Loading from "@components/loading";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
@@ -27,7 +27,7 @@ function SpecialCustomersClousing({data}: any) {
         setFooterData?.(specialCustomer.total, data.id, "specialCustomer");
       }
 
-      setSpecialCustomer(specialCustomer)
+      setSpecialCustomer(specialCustomer);
 
     }
 

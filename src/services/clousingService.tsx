@@ -263,7 +263,7 @@ export const TDCMOCKData = {
     "totalPhysical": 9622.32,
     "difference": 0,
   },
-  "currencies": [
+  "lines": [
     {"id": 1, "bank": "BBVA", "POS": 2784.56, "physical": 0, "voucherAmount": 10},
     {"id": 2, "bank": "HSBC", "POS": 208.69,  "physical": 150, "voucherAmount": 1 },
     {"id": 3, "bank": "BANREGIO", "POS": 856.32, "physical": 300, "voucherAmount": 5}
@@ -337,12 +337,12 @@ export const PrepaidMOCKData = {
         "totalPhysical": 2955.00,
         "difference": 0,
     },
-    "currencies":[
-        {"id": 1, "client": "Thomas Moore", "quantity": 3, "quantitySupplements": 0, "unitPrice": 111.67, "POS": 335.56, "physical": 335.00, "difference": 0},
-        {"id": 2, "client": "SSIA", "quantity": 5, "quantitySupplements": 0, "unitPrice": 110.00, "POS": 550.00, "physical": 550.00, "difference": 0},
-        {"id": 3, "client": "SEASON TOURS", "quantity": 2, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 230.00, "physical": 230.00, "difference": 0},
-        {"id": 4, "client": "SEEK AND GO", "quantity": 8, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 920.00, "physical": 920.00, "difference": 0},
-        {"id": 5, "client": "AVENTOUR", "quantity": 4, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0},
-        {"id": 6, "client": "THE ONE", "quantity": 4, "quantitySupplements": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0}
+    "lines":[
+        {"id": 1, "client": "Thomas Moore", "quantity": 3, "supplementsQuantity": 0, "unitPrice": 111.67, "POS": 335.56, "physical": 335.00, "difference": 0},
+        {"id": 2, "client": "SSIA", "quantity": 5, "supplementsQuantity": 0, "unitPrice": 110.00, "POS": 550.00, "physical": 550.00, "difference": 0},
+        {"id": 3, "client": "SEASON TOURS", "quantity": 2, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 230.00, "physical": 230.00, "difference": 0},
+        {"id": 4, "client": "SEEK AND GO", "quantity": 8, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 920.00, "physical": 920.00, "difference": 0},
+        {"id": 5, "client": "AVENTOUR", "quantity": 4, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0},
+        {"id": 6, "client": "THE ONE", "quantity": 4, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0}
     ]
 }

@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { useHeaders } from "@context/clousing/headerContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHeaders } from "@context/home/headerContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { CurrencyModel, TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";

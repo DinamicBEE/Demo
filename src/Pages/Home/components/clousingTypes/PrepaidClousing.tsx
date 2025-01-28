@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
-import FooterClousing from "../FooterClousing";
-import { TDCModel } from "@models/tdc.model";
-import { useCashClousing } from "@context/clousing/cashClousingContext";
-import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
+import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
+import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
+import Loading from "@components/loading";
 
-function PrepaidClousing() {
-  const [tdc2Data, setCashData] = useState<TDCModel>()
-  // const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-  // const { sendClousing } =  useHandleCashData(tdcData, setCashData); //Cambiar por funcion propia
+function PrepaidClousing({data}: any) {
+  const [prepaid, setPrepaid] = useState<PrepaidModel>();
+
+  const prepaidContext = usePrepaidContext();
+
+  useEffect(()=>{
+    async function fetchData(){
+      const prepaid: PrepaidModel | undefined = prepaidContext?.getPrepaidData
+            ? await prepaidContext?.getPrepaidData(data?.id, data?.employeId) : undefined;
+
+      setPrepaid(prepaid);
+
+    }
+
+    fetchData();
+
+  },[])
+  
   
   return (
     <Box>
@@ -29,7 +42,7 @@ function PrepaidClousing() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {tdcData?.currencies?.map((item) => (
+            {prepaid?.lines?.map((item: PrepaidLineModel) => (
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
@@ -44,7 +57,7 @@ function PrepaidClousing() {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.quantitySupplements} />
+                    <FormatNumber value={item.supplementsQuantity} />
                   </Text>
                 </Table.Cell>
 
@@ -79,50 +92,10 @@ function PrepaidClousing() {
         </Table.Root>
       </Table.ScrollArea>
 
-      {/* <FooterClousing data={tdcData} loading={cashLoading} onChange={sendClousing} /> */}
+      {prepaidContext?.prepaidLoading && <Loading />}
 
     </Box>
   );
 }
 
 export default PrepaidClousing;
-
-const tdcData = {
-"id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
-    {
-      "id": 1,
-      "client": "Thomas Moore",
-      "quantity": 3,
-      "quantitySupplements": 0,
-      "unitPrice": 111.67,
-      "POS": 2784.56,
-      "physical": 0,
-      "difference": 10
-    },
-    {
-      "id": 2,
-      "client": "SSIA",
-      "quantity": 5,
-      "quantitySupplements": 0,
-      "unitPrice": 110.00,
-      "POS": 208.69,
-      "physical": 150,
-      "difference": 1
-    },
-    {
-      "id": 3,
-      "client": "SEEK AND GO",
-      "quantity": 8,
-      "quantitySupplements": 0,
-      "unitPrice": 115.00,
-      "POS": 856.32,
-      "physical": 300,
-      "difference": 5
-    }
-  ]
-}

@@ -1,7 +1,10 @@
 import { TotalModel } from "./common.clousing.model";
 
 export interface TDCContextType {
-
+    tdc: TDCModel | {};
+    tdcLoading: boolean;
+    error: string
+    getTDCData: (clousingId: number, employeeId: number) => Promise<TDCModel>;
 }
 
 export interface TDCContext {
@@ -22,7 +25,7 @@ export interface TDCModel {
     id: number;
     employeId: number;
     total: TotalModel
-    currencies: BankLineModel[];
+    lines: BankLineModel[];
 }
 
 export interface BankLineDetails {
@@ -30,4 +33,11 @@ export interface BankLineDetails {
     date: string;
     check: string;
     amount: number;
+}
+
+export interface DetailsProp {
+    clousingId: number, 
+    lineId: number | null, 
+    isOpen:boolean, 
+    onClose: () => void 
 }

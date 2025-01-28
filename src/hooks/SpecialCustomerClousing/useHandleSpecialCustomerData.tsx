@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { useHeaders } from "@context/clousing/headerContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHeaders } from "@context/home/headerContext";
+import { useFooter } from "@context/home/footerClousingContext";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 
 export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerModel, setSpecialCustomer: any, clousingId: number, employeId: number) =>{
 

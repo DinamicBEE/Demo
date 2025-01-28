@@ -1,5 +1,12 @@
 import { TotalModel } from "./common.clousing.model";
 
+export interface PrepaidContextType {
+    prepaid: PrepaidModel | {};
+    prepaidLoading: boolean;
+    error: string;
+    getPrepaidData: (clousingId: number, employeeId: number) => Promise<PrepaidModel>;
+}
+
 export interface PrepaidContext {
     [key: number]: {
         [key: number]: any
@@ -19,7 +26,7 @@ export interface PrepaidLineModel {
     quantity: number;
     supplementsQuantity:number;
     unitPrice:number;
-    totalPOS: number;
-    totalPhysical: number;
+    POS: number;
+    physical: number;
     difference: number;
 }
