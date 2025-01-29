@@ -1,20 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/react";
 import { CurrencyInput } from "@components/NumericInput";
+import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
-import { DetailsProp } from "@models/tdc.model";
+import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
 
 function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
-    const [details, setDetails] = useState<any>({}) 
+    const [details, setDetails] = useState<BankDetails>();
+
+     const tdcContext = useTDCContext();
+     //const detailsRef = useRef<BankDetails | undefined>(details)
 
     useEffect(()=>{
 
-        setDetails(TDCDetailsMOCKData)
+        async function fetchData() {
+            const detailsData: BankDetails | undefined = tdcContext?.getDetails
+                    ? await tdcContext?.getDetails(clousingId,lineId) : undefined;
+            
+            if (detailsData) {
+                setDetails(detailsData);
+                //detailsRef.current = detailsData;
+            }
+        }
 
-    },[])
+        fetchData()
+
+    },[lineId])
 
     function handleInputData(value: string, id: number) {
-        const updateLines = TDCDetailsMOCKData.details.map((item:any) =>
+        
+        if(lineId===null) return
+
+        const updateLines = details?.details.map((item:any) =>
             item.id === id
             ? {
             ...item,
@@ -23,10 +40,15 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
             : item
         );
 
-        setDetails({
-            ...details,
-            details: updateLines
-        })
+        const updateBankDetails: BankDetails = {
+            ...details!,
+            details: updateLines || []
+        }
+        
+        tdcContext?.setDetails(updateBankDetails,clousingId,lineId);
+        
+        setDetails(updateBankDetails)
+        //detailsRef.current = updateBankDetails;
 
     }
     
@@ -63,7 +85,7 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
                             </Table.Header>
 
                             <Table.Body>
-                                {details?.details?.map((item:any)=>(
+                                {details?.details?.map((item:BankLineDetails)=>(
                                     <Table.Row key={item.id}>
                                         
                                         <Table.Cell textAlign="center">

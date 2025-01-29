@@ -23,4 +23,22 @@ export const useHandleTDC = (tdcData: TDCModel, setSpecialCustomer: any, clousin
       const { updateTotal } = headerContext;
       const { setFooterData } = footerContext;
       //const { setSpecialCustData } = tdcContext;
+
+      function handleInputTextData(value: string, id: number, key: string){
+        // const updateLines = TDCDetailsMOCKData.details.map((item:any) =>
+        //     item.id === id
+        //     ? {
+        //     ...item,
+        //     check: value
+        //     }
+        //     : item
+        // );
+
+        // setDetails({
+        //     ...details,
+        //     details: updateLines
+        // })
+      }
+
+      return {handleInputTextData}
 }

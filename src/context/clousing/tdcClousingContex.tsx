@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
-import { getTDCClousing } from '@services/clousingService';
-import { TDCContext, TDCContextType } from '@models/tdc.model';
+import { getTDCClousing, getTDCDetails } from '@services/clousingService';
+import { BankDetails, BankLineDetails, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
 const tdcContext = createContext<TDCContextType | undefined>(undefined);
 
@@ -9,13 +9,22 @@ export const useTDCContext = () => useContext(tdcContext);
 
 export function TDCClousingProvider({ children }: { children: ReactNode }) {
     const [tdc, setTDC] = useState<TDCContext>({});
+    const [tdcDetails, setTDCDetails] = useState<TDCDetailsContext>({});
     const [tdcLoading, setTDCLoading] = useState(false);
+    const [detailsLoading, setDetailsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [detailsError, setDetailsError] = useState("");
     const tdcRef = useRef<TDCContext>(tdc);
+    const tdcDetailsRef = useRef<TDCDetailsContext>(tdcDetails)
 
     const updateTDCData = (newTDCData: TDCContext) => {
         setTDC(newTDCData);
         tdcRef.current = newTDCData;
+    }
+
+    const updateTDCDetails = (newDetails: TDCDetailsContext) => {
+        setTDCDetails(newDetails);
+        tdcDetailsRef.current = newDetails;
     }
 
     const getTDCData = useCallback( async(clousingId:number, employeeId:number)=>{
@@ -60,14 +69,79 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
     },[tdc]);
 
+    const getDetails = useCallback( async(clousingId:number, lineId:number | null)=>{
+        setDetailsLoading(true);
+
+        if (lineId === null) return Promise.resolve({ id: 0, bankName: '', total: 0, details: [] } as BankDetails);
+
+        if(tdcDetailsRef.current[clousingId]?.[lineId]) {
+            setDetailsLoading(false);
+            console.log(tdcDetailsRef.current[clousingId]?.[lineId])
+            return tdcDetailsRef.current[clousingId]?.[lineId];
+        }
+
+        try {
+
+            const data: BankDetails = await getTDCDetails(clousingId, lineId)
+
+            const currentClousingData = tdcDetailsRef.current[clousingId] || {};
+
+            const updateDetails = {
+                ...tdcDetailsRef.current,
+                [clousingId]:{
+                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
+                    [lineId]: data
+                }
+            }
+
+            updateTDCDetails(updateDetails)
+            
+            return data;
+            
+        } catch (error) {
+            
+            setDetailsError(error instanceof Error ? error.message : String(error));
+            
+            throw error;
+
+        } finally {
+
+            setDetailsLoading(false);
+
+        }
+
+    },[tdcDetails]);
+
+    const setDetails = useCallback( async(details: BankDetails, clousingId: number, lineId: number) => {
+
+        const currentLines = tdcDetailsRef.current[clousingId] || {};
+
+        const updateDetails: TDCDetailsContext = {
+            ...tdcDetailsRef.current,
+            [clousingId]:{
+                ...currentLines,
+                [lineId]: details as BankDetails
+            }
+        }
+
+        updateTDCDetails(updateDetails);
+        
+    }, []);
+
     const value = useMemo(
         ()=>({
             tdc,
+            tdcDetails,
             tdcLoading,
+            detailsLoading,
             error,
+            detailsError,
             getTDCData,
+            getDetails,
+            setDetails
         }),
-        [tdc, tdcLoading, error, getTDCData,]
+        [tdc, tdcDetails, tdcLoading, detailsLoading, error, detailsError, 
+            getTDCData, getDetails, setDetails]
     );
 
     return (
