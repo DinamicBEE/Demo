@@ -153,7 +153,11 @@ function SpecialCustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
 
-          {specialCustomerContext?.specialCustLoading && <Loading />}
+          {specialCustomerContext?.specialCustLoading && (
+            <Box position="fixed" top="50%" left="50%">
+              <Loading />
+            </Box>
+          )}
     
         </Box>
   )

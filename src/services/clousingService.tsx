@@ -109,6 +109,54 @@ export const getTDCDetails = async (clousingId: number, lineId: number): Promise
     }
 }
 
+export const validateDetails = async(clousingId: number, lineId: number, details: BankDetails): Promise<BankDetails> => {
+    console.log(clousingId, lineId)
+    
+    try {
+        //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
+
+        let data: BankDetails
+
+        if(lineId == 3) {
+            data = {
+                ...details,
+                details: details.details.map(detial => {
+                    return {
+                        ...detial,
+                        success: true,
+                        message: undefined 
+                    };
+                }),
+            }
+
+        } else {
+            data = {
+                ...details,
+                details: details.details.map(detial => {
+                    const success = Math.random() < 0.5;
+    
+                    return {
+                        ...detial,
+                        success,
+                        message: success ? undefined : "cheque caducado"
+                    };
+                }),
+            }
+        }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                return resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [] as unknown as BankDetails;
+    }
+
+}
+
 export const getCustomerClousing = async (clousingId: number, employeeId: number) => {
     console.log(clousingId, employeeId)
     

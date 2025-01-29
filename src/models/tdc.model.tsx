@@ -44,6 +44,8 @@ export interface BankLineDetails {
     date: string;
     check: string;
     amount: number;
+    success?: boolean;
+    message?: string;
 }
 
 export interface BankDetails {

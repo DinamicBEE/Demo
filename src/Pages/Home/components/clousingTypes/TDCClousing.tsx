@@ -106,7 +106,11 @@ function TDCClousing({data}: any) {
           </Table.Root>
         </Table.ScrollArea>
 
-        {tdcContext?.tdcLoading && <Loading />}
+        {tdcContext?.tdcLoading && (
+          <Box position="fixed" top="50%" left="50%">
+            <Loading />
+          </Box>
+        )}
 
       </Box>
 

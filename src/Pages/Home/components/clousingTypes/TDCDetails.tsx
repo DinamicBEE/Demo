@@ -1,15 +1,18 @@
-import { useEffect, useRef, useState } from "react";
-import { Button, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Field, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/react";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
+import Loading from "@components/loading";
+import { validateDetails } from "@services/clousingService";
+import { Button } from "@components/ui/button";
 
 function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
     const [details, setDetails] = useState<BankDetails>();
+    const [loading, setLoading] = useState<boolean>(false);
 
-     const tdcContext = useTDCContext();
-     //const detailsRef = useRef<BankDetails | undefined>(details)
+    const tdcContext = useTDCContext();
 
     useEffect(()=>{
 
@@ -19,7 +22,6 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
             
             if (detailsData) {
                 setDetails(detailsData);
-                //detailsRef.current = detailsData;
             }
         }
 
@@ -48,7 +50,24 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
         tdcContext?.setDetails(updateBankDetails,clousingId,lineId);
         
         setDetails(updateBankDetails)
-        //detailsRef.current = updateBankDetails;
+
+    }
+
+    async function saveDetails() {
+        setLoading(true)
+
+        if (lineId !== null && details !== undefined) {
+            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, details);
+
+            setDetails(detailsValidated);
+
+            const allSuccess = detailsValidated.details.every(item => item.success);
+
+            allSuccess ? onClose() : null;
+
+            setLoading(false)
+
+        }
 
     }
     
@@ -64,7 +83,7 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
 
                 <DialogHeader>
 
-                    <DialogTitle>{TDCDetailsMOCKData.bankName}</DialogTitle>
+                    <DialogTitle>{details?.bankName}</DialogTitle>
                     
                 </DialogHeader>
 
@@ -93,9 +112,10 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
                                         </Table.Cell>
 
                                         <Table.Cell>
-                                            <Text>
+                                            <Field.Root invalid={item.success!=undefined && !item.success}>
                                                 <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id)}/>
-                                            </Text>
+                                                <Field.ErrorText>{item.message}</Field.ErrorText>
+                                            </Field.Root>
                                         </Table.Cell>
 
                                         <Table.Cell textAlign="end">
@@ -110,16 +130,32 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
                             
                         </Table.Root>
                     </Table.ScrollArea>
+
+                    {tdcContext?.detailsLoading && (
+                        <Box position="fixed" top="50%" left="50%">
+                        <Loading />
+                        </Box>
+                    )}
                     
+                    {loading && (
+                        <Box position="fixed" top="50%" left="50%">
+                        <Loading />
+                        </Box>
+                    )}
+
                 </DialogBody>
 
                 <DialogFooter>
 
                     <Flex gap={4}>
 
-                        <CurrencyInput value={500} name={"Total"} loading={false} />
+                        <CurrencyInput value={details?.total} name={"Total"} loading={tdcContext?.detailsLoading || false} />
                         
-                        <Button className="secondary-button save-button">Guardar</Button>
+                        <Button 
+                            className="secondary-button save-button"
+                            loading={loading} 
+                            onClick={(()=>saveDetails())}
+                        >Guardar</Button>
 
                     </Flex>
                     
@@ -133,22 +169,3 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
 };
 
 export default TDCDetails;
-
-const TDCDetailsMOCKData = {
-    id: 1,
-    bankName: "BBVA bancomer",
-    total: 0,
-    details: [
-        {id: 101, date: "22/05/2024 11:16", check: "", amount: 386},
-        {id: 102, date: "22/05/2024 11:12", check: "", amount: 491.05},
-        {id: 103, date: "22/05/2024 11:02", check: "", amount: 323},
-        {id: 104, date: "22/05/2024 09:37", check: "", amount: 405.60},
-        {id: 105, date: "22/05/2024 09:26", check: "", amount: 104},
-        {id: 106, date: "22/05/2024 08:57", check: "", amount: 273.90},
-        {id: 107, date: "22/05/2024 08:54", check: "", amount: 203},
-        {id: 108, date: "22/05/2024 08:45", check: "", amount: 228.65},
-        {id: 109, date: "22/05/2024 07:36", check: "", amount: 95},
-        {id: 110, date: "22/05/2024 06:43", check: "", amount: 273.90}
-    ]
-
-}

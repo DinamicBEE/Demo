@@ -130,7 +130,11 @@ function CustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
 
-          {customerContext?.customerLoading && <Loading />}
+          {customerContext?.customerLoading && (
+            <Box position="fixed" top="50%" left="50%">
+              <Loading />
+            </Box>
+          )}
     
         </Box>
   )

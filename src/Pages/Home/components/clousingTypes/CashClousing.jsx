@@ -97,7 +97,11 @@ function CashClousing ({ data }) {
           </Table.Root>
         </Table.ScrollArea>
 
-        {cashLoading && <Loading />}
+        {cashLoading && (
+          <Box position="fixed" top="50%" left="50%">
+            <Loading />
+          </Box>
+        )}
 
       </Box>
     );

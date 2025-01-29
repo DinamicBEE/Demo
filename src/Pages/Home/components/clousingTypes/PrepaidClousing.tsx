@@ -108,7 +108,11 @@ function PrepaidClousing({data}: any) {
         </Table.Root>
       </Table.ScrollArea>
 
-      {prepaidContext?.prepaidLoading && <Loading />}
+      {prepaidContext?.prepaidLoading && (
+        <Box position="fixed" top="50%" left="50%">
+          <Loading />
+        </Box>
+      )}
 
     </Box>
   );
