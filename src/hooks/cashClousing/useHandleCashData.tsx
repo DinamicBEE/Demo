@@ -15,19 +15,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
   const headerContext = useHeaders();
   const footerContext = useFooter();
   const cashContext = useCashClousing();
-  if (!headerContext) {
-    return null;
-  }
-  if (!footerContext) {
-    return null;
-  }
-  if (!cashContext) {
-    return null;
-  }
-  const { updateTotal } = headerContext;
-  const { setFooterData } = footerContext;
-  const { setCashData } = cashContext;
-  
+
   function handleInputChange(itemId: number, value:string) {
     
     value = value.replace(/[^\d.]/g, "");
@@ -65,11 +53,11 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
     setData(updateCashdata);
     cashRef.current = updateCashdata
 
-    updateTotal(newTotalPhysical, clousingId, employeId, CLOUSING_KEY.CASH)
+    headerContext?.updateTotal(newTotalPhysical, clousingId, employeId, CLOUSING_KEY.CASH)
 
-    setFooterData(newTotal, clousingId, "cash");
+    footerContext?.setFooterData(newTotal, clousingId, "cash");
 
-    setCashData(cashRef.current, employeId, clousingId)
+    cashContext?.setCashData(cashRef.current, employeId, clousingId)
 
   };
 
