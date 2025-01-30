@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { getTDCClousing, getTDCDetails } from '@services/clousingService';
-import { BankDetails, BankLineDetails, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
+import { BankDetails, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
 const tdcContext = createContext<TDCContextType | undefined>(undefined);
 
@@ -39,11 +39,11 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
         try {
 
-            const data = await getTDCClousing(clousingId, employeeId);
+            const data: TDCModel = await getTDCClousing(clousingId, employeeId);
 
             const currentClousingData = tdcRef.current[clousingId] || {};
 
-            const updateTDC = {
+            const updateTDC: TDCContext = {
                 ...tdcRef.current,
                 [clousingId]:{
                     ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
@@ -120,12 +120,29 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
             ...tdcDetailsRef.current,
             [clousingId]:{
                 ...currentLines,
-                [lineId]: details as BankDetails
+                [lineId]: details
             }
         }
 
         updateTDCDetails(updateDetails);
         
+    }, []);
+
+
+    const setTDCData = useCallback( async(tdc: TDCModel, clousingId: number, employeeId: number)=>{
+
+        const currentClousingData = tdcRef.current[clousingId] || {};
+
+        const updateTDC = {
+            ...tdcRef.current,
+            [clousingId]: {
+                ...currentClousingData,
+                [employeeId]: tdc
+            }
+        };
+
+        updateTDCData(updateTDC);
+
     }, []);
 
     const value = useMemo(
@@ -137,11 +154,12 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
             error,
             detailsError,
             getTDCData,
+            setTDCData,
             getDetails,
             setDetails
         }),
         [tdc, tdcDetails, tdcLoading, detailsLoading, error, detailsError, 
-            getTDCData, getDetails, setDetails]
+            getTDCData, setTDCData, getDetails, setDetails]
     );
 
     return (

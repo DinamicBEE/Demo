@@ -49,7 +49,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
 
     const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
 
-    const newTotal: TotalModel ={
+    const newTotal: TotalModel = {
       totalPOS: cashData.total?.totalPOS || 0,
       totalPhysical: newTotalPhysical,
       difference: newDifference,

@@ -1,20 +1,21 @@
 import { TotalModel } from "./common.clousing.model";
 
 export interface TDCContextType {
-    tdc: TDCModel | {};
+    tdc: TDCContext;
     tdcDetails: BankDetails | {};
     tdcLoading: boolean;
     detailsLoading: boolean;
     error: string
     detailsError: string
     getTDCData: (clousingId: number, employeeId: number) => Promise<TDCModel>;
+    setTDCData: (tdc: TDCModel, clousingId: number, employeeId: number) => void;
     getDetails: (clousingId: number, lineId: number | null) => Promise<BankDetails>;
-    setDetails: (details: any, clousingId: number, lineId: number) => void;
+    setDetails: (details: BankDetails, clousingId: number, lineId: number) => void;
 }
 
 export interface TDCContext {
     [key: number]: {
-        [key: number]: any
+        [key: number]: TDCModel
     }
 }
 
@@ -56,8 +57,9 @@ export interface BankDetails {
 }
 
 export interface DetailsProp {
-    clousingId: number, 
-    lineId: number | null, 
-    isOpen:boolean, 
-    onClose: () => void 
+    clousingId: number;
+    employeId: number; 
+    lineId: number | null; 
+    isOpen:boolean; 
+    onClose: () => void; 
 }

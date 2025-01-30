@@ -33,7 +33,7 @@ function TDCClousing({data}: any) {
 
     fetchData();
 
-  },[])
+  },[tdcContext?.tdc])
 
   const openDiaolog = (id: number) =>{
     setLineSeleted(id);
@@ -114,7 +114,7 @@ function TDCClousing({data}: any) {
 
       </Box>
 
-      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
+      <TDCDetails clousingId={data?.id} employeId={data?.employeId} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
     </>
   );
 }

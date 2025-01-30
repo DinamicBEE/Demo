@@ -3,16 +3,20 @@ import { Box, Field, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/r
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
-import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
+import { BankDetails, BankLineDetails, BankLineModel, DetailsProp, TDCModel } from "@models/tdc.model";
 import Loading from "@components/loading";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
+import { TotalModel } from "@models/common.clousing.model";
+import { useHeaders } from "@context/home/headerContext";
+import { CLOUSING_KEY } from "@models/constants.model";
 
-function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
+function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsProp) {
     const [details, setDetails] = useState<BankDetails>();
     const [loading, setLoading] = useState<boolean>(false);
 
     const tdcContext = useTDCContext();
+    const headerContext = useHeaders();
 
     useEffect(()=>{
 
@@ -56,18 +60,65 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
     async function saveDetails() {
         setLoading(true)
 
+        
         if (lineId !== null && details !== undefined) {
             const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, details);
-
+            
             setDetails(detailsValidated);
 
+            tdcContext?.setDetails(detailsValidated,clousingId,lineId);
+            
             const allSuccess = detailsValidated.details.every(item => item.success);
-
-            allSuccess ? onClose() : null;
+            
+            if(allSuccess) { 
+                updateLineClousing(detailsValidated)
+                onClose()
+            } 
 
             setLoading(false)
 
         }
+
+    }
+
+    function updateLineClousing(detailsValidated: BankDetails){
+
+        const tdcData = tdcContext?.tdc?.[clousingId]?.[employeId];
+        console.log(tdcData)
+
+        const newPhysical = detailsValidated.details.reduce((acc: number, curr: BankLineDetails) => acc + curr.amount,0);
+        
+        const updateLines = tdcData?.lines?.map((item:BankLineModel) =>
+            lineId === item.id
+                ? {
+                    ...item,
+                    voucherAmount: detailsValidated.details.length,
+                    physical: newPhysical
+                }
+                : item
+            );
+
+        const newTotalPhysical = updateLines?.reduce((acc:number, curr: BankLineModel) => acc + curr.physical,0);
+    
+        const newDifference = (tdcData?.total?.totalPOS || 0) - (newTotalPhysical || 0);
+
+        const newTotal: TotalModel = {
+          totalPOS: tdcData?.total?.totalPOS || 0,
+          totalPhysical: newTotalPhysical || 0,
+          difference: newDifference,
+        };
+
+
+        const updateTDCData: TDCModel = {
+            id: tdcData?.id || 0,
+            employeId: tdcData?.employeId || 0,
+            total: newTotal,
+            lines: updateLines || []
+        }
+
+        headerContext?.updateTotal(newTotalPhysical || 0, clousingId, employeId, CLOUSING_KEY.TDC);
+        
+        tdcContext?.setTDCData(updateTDCData,clousingId,employeId)     
 
     }
     

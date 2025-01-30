@@ -52,7 +52,6 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
 
     const setSpecialCustData = useCallback(async (specialCustLine:SpecialCustomerLines[], employeeId: number, clousingId: number)=>{
 
-        console.log(specialCustLine)
         const currentClousingData = specialCustRef.current[clousingId] || {};
 
         const updateSpecialCustomer = {

@@ -1,7 +1,7 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
 
-import { BankDetails, BankLineDetails } from "@models/tdc.model";
+import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
 
 export const getHeaders = async (clousingId: number, employeeId: number) => {
     console.log(clousingId, employeeId)
@@ -63,7 +63,7 @@ export const getCashClousing = async (clousingId: number, employeeId: number) =>
     }
 }
 
-export const getTDCClousing = async (clousingId: number, employeeId: number) => {
+export const getTDCClousing = async (clousingId: number, employeeId: number): Promise<TDCModel> => {
     console.log(clousingId, employeeId)
     
     try {
@@ -82,7 +82,7 @@ export const getTDCClousing = async (clousingId: number, employeeId: number) => 
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return [] as unknown as TDCModel;
     }
 }
 
