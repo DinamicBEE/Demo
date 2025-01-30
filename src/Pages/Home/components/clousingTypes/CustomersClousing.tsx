@@ -18,19 +18,14 @@ function CustomersClousing({data}: any) {
   const footerContext = useFooter();
   const customerContext = useCustomerContext();
   const handleCustomer = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id, data?.employeId);
-  
-  const selectCurrency = handleCustomer?.selectCurrency;
-  const handleCoupons = handleCustomer?.handleCoupons;
-  const handleAmountPAX = handleCustomer?.handleAmountPAX;
-  const setFooterData = footerContext?.setFooterData;
-  
+
   useEffect(()=>{
     async function fetchData() {
       const customers: CustomerModel | undefined = customerContext?.getCustomerData
             ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
 
       if (customers?.total) {
-        setFooterData?.(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
+        footerContext?.setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
       }
 
       const currencies = await getCurrencies()
@@ -74,7 +69,7 @@ function CustomersClousing({data}: any) {
     
                     <Table.Cell textAlign="center">
                       <Text>
-                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCoupons} />
+                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCustomer?.handleCoupons} />
                       </Text>
                     </Table.Cell>
     
@@ -82,7 +77,7 @@ function CustomersClousing({data}: any) {
                       <SelectRoot 
                          
                         collection={currenciesForSelect || createListCollection({ items: [] })} 
-                        onValueChange={(e) => selectCurrency?.(e.value, item.id, currencies)}
+                        onValueChange={(e) => handleCustomer?.selectCurrency?.(e.value, item.id, currencies)}
                       >
                         
                         <SelectTrigger>
@@ -102,7 +97,7 @@ function CustomersClousing({data}: any) {
     
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} />
+                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleCustomer?.handleAmountPAX} />
                       </Text>
                     </Table.Cell>
 
@@ -141,5 +136,3 @@ function CustomersClousing({data}: any) {
 }
 
 export default CustomersClousing;
-
-

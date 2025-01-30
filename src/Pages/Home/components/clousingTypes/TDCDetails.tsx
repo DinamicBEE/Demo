@@ -3,20 +3,19 @@ import { Box, Field, Flex, FormatNumber, Input, Table, Text } from "@chakra-ui/r
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
-import { BankDetails, BankLineDetails, BankLineModel, DetailsProp, TDCModel } from "@models/tdc.model";
+import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
 import Loading from "@components/loading";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
-import { TotalModel } from "@models/common.clousing.model";
-import { useHeaders } from "@context/home/headerContext";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
 
 function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsProp) {
     const [details, setDetails] = useState<BankDetails>();
     const [loading, setLoading] = useState<boolean>(false);
 
+    const useDetails = useHandleTDC(clousingId, lineId ?? 0)
+
     const tdcContext = useTDCContext();
-    const headerContext = useHeaders();
 
     useEffect(()=>{
 
@@ -33,33 +32,8 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
     },[lineId])
 
-    function handleInputData(value: string, id: number) {
-        
-        if(lineId===null) return
-
-        const updateLines = details?.details.map((item:any) =>
-            item.id === id
-            ? {
-            ...item,
-            check: value
-            }
-            : item
-        );
-
-        const updateBankDetails: BankDetails = {
-            ...details!,
-            details: updateLines || []
-        }
-        
-        tdcContext?.setDetails(updateBankDetails,clousingId,lineId);
-        
-        setDetails(updateBankDetails)
-
-    }
-
     async function saveDetails() {
         setLoading(true)
-
         
         if (lineId !== null && details !== undefined) {
             const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, details);
@@ -71,54 +45,13 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
             const allSuccess = detailsValidated.details.every(item => item.success);
             
             if(allSuccess) { 
-                updateLineClousing(detailsValidated)
+                useDetails.updateLineClousing(detailsValidated, employeId,)
                 onClose()
             } 
 
             setLoading(false)
 
         }
-
-    }
-
-    function updateLineClousing(detailsValidated: BankDetails){
-
-        const tdcData = tdcContext?.tdc?.[clousingId]?.[employeId];
-        console.log(tdcData)
-
-        const newPhysical = detailsValidated.details.reduce((acc: number, curr: BankLineDetails) => acc + curr.amount,0);
-        
-        const updateLines = tdcData?.lines?.map((item:BankLineModel) =>
-            lineId === item.id
-                ? {
-                    ...item,
-                    voucherAmount: detailsValidated.details.length,
-                    physical: newPhysical
-                }
-                : item
-            );
-
-        const newTotalPhysical = updateLines?.reduce((acc:number, curr: BankLineModel) => acc + curr.physical,0);
-    
-        const newDifference = (tdcData?.total?.totalPOS || 0) - (newTotalPhysical || 0);
-
-        const newTotal: TotalModel = {
-          totalPOS: tdcData?.total?.totalPOS || 0,
-          totalPhysical: newTotalPhysical || 0,
-          difference: newDifference,
-        };
-
-
-        const updateTDCData: TDCModel = {
-            id: tdcData?.id || 0,
-            employeId: tdcData?.employeId || 0,
-            total: newTotal,
-            lines: updateLines || []
-        }
-
-        headerContext?.updateTotal(newTotalPhysical || 0, clousingId, employeId, CLOUSING_KEY.TDC);
-        
-        tdcContext?.setTDCData(updateTDCData,clousingId,employeId)     
 
     }
     
@@ -164,7 +97,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                                         <Table.Cell>
                                             <Field.Root invalid={item.success!=undefined && !item.success}>
-                                                <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id)}/>
+                                                <Input textAlign="center" value={item.check} onChange={(e) => useDetails.handleInputData(e.target.value, item.id, details || {} as BankDetails, setDetails,)}/>
                                                 <Field.ErrorText>{item.message}</Field.ErrorText>
                                             </Field.Root>
                                         </Table.Cell>
