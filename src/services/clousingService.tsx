@@ -1,6 +1,9 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
 
+import { ResponseModel } from "@models/common.clousing.model";
+import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
+import { intercompanyModel } from "@models/intercompany.model";
 import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
 
 export const getHeaders = async (clousingId: number, employeeId: number) => {
@@ -243,6 +246,105 @@ export const getPrepaidClousing = async (clousingId: number, employeeId: number)
     }
 }
 
+/**
+ * 
+ * @param {number} clousingId 
+ * @param {number} employeeId 
+ * @returns {Promise<EmployeeModel>}
+ */
+export const getEmployeeClousing = async (clousingId: number, employeeId: number): Promise<EmployeeModel> => {
+    console.log(clousingId, employeeId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = EmployeeData;
+
+        const data = {
+            ...response,
+        }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [] as unknown as EmployeeModel;
+    }
+}
+
+/**
+ * 
+ * @param {number} clousingId 
+ * @param {number} newEmployee 
+ * @returns {Promise<ResponseModel>}
+ */
+export const sendNewEmployeeRegister = async (clousingId: number, newEmployee: NewEmployeeModel): Promise<ResponseModel> => {
+    console.log(clousingId, newEmployee)
+
+    const mock: EmployeeLine ={
+        id: Math.floor(Math.random() * (500 - 11)) + 11,
+        name: "mocky user",
+        lastName: "mocky user",
+        employeeCode: "mocky user"+ newEmployee.employeeId,
+        amount: newEmployee.amount,
+        reason: "mocky reason"+ newEmployee.reason,
+        ticket: newEmployee.ticket
+    }
+
+    const success = Math.random() < 0.5;
+
+    // ! cambiar el if else por try catch
+     if(success) { //try
+        const response: ResponseModel = {success: true, data: mock }
+
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(response);
+            }, 5000);
+        });
+    } else { //catch (error)
+        const response: ResponseModel = {
+            success: false, 
+            error: 'Codigo de error', 
+            message: 'Detalle del error => Error al registrar nueva linea: ' }
+        //console.error('Error al registrar nueva linea:', error);
+        return response;
+        
+    }
+}
+
+/**
+ * 
+ * @param {number} clousingId 
+ * @param {number} employeeId 
+ * @returns {Promise<intercompanyModel>}
+ */
+export const getIntercompanyClousing = async (clousingId: number, employeeId: number): Promise<intercompanyModel> => {
+    console.log(clousingId, employeeId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = intercompanyData;
+
+        const data = {
+            ...response,
+        }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(data);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [] as unknown as intercompanyModel;
+    }
+}
+
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
 export const sendCashClousing = async (data:any) => {
     const body = {
@@ -396,3 +498,78 @@ export const PrepaidMOCKData = {
         {"id": 6, "client": "THE ONE", "quantity": 4, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0}
     ]
 }
+
+export const EmployeeData = {
+  id: 1,
+  employeeId: 150,
+  total: {
+    totalPOS: 2955.0,
+    totalPhysical: 2955.0,
+    difference: 0,
+  },
+  lines: [
+    {
+      id: 1,
+      name: "Mario",
+      lastName: "Vásquez",
+      employeeCode: "0015",
+      amount: 125.0,
+      reason: "Diferencia de efectivo",
+      ticket: "---",
+    },
+    {
+      id: 2,
+      name: "Luis",
+      lastName: "Castillo",
+      employeeCode: "0029",
+      amount: 150.0,
+      reason: "Consumo empelado",
+      ticket: "123",
+    },
+    {
+      id: 3,
+      name: "Ramiro",
+      lastName: "Diaz",
+      employeeCode: "0105",
+      amount: 300.0,
+      reason: "Mala elaboración del producto",
+      ticket: "---",
+    },
+  ],
+};
+
+const intercompanyData = {
+  id: 1,
+  employeeId: 150,
+  total: {
+    totalPOS: 2955.0,
+    totalPhysical: 2955.0,
+    difference: 0,
+  },
+  lines: [
+    {
+      id: 1,
+      employeeName: "Mario Vásquez",
+      subsidiaryname: "ABT2",
+      amount: 125.0,
+      ticket: "654",
+      physicalAmount: 125.0,
+    },
+    {
+      id: 2,
+      employeeName: "Luis Castillo",
+      subsidiaryname: "ABT1",
+      amount: 150.0,
+      ticket: "123",
+      physicalAmount: 150.0,
+    },
+    {
+      id: 3,
+      employeeName: "Victor Garrido",
+      subsidiaryname: "ABT2",
+      amount: 300.0,
+      ticket: "789",
+      physicalAmount: 300.0,
+    },
+  ],
+};

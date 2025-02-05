@@ -10,10 +10,10 @@ export const useTDCContext = () => useContext(tdcContext);
 export function TDCClousingProvider({ children }: { children: ReactNode }) {
     const [tdc, setTDC] = useState<TDCContext>({});
     const [tdcDetails, setTDCDetails] = useState<TDCDetailsContext>({});
-    const [tdcLoading, setTDCLoading] = useState(false);
-    const [detailsLoading, setDetailsLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [detailsError, setDetailsError] = useState("");
+    const [tdcLoading, setTDCLoading] = useState<boolean>(false);
+    const [detailsLoading, setDetailsLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [detailsError, setDetailsError] = useState<string>("");
     const tdcRef = useRef<TDCContext>(tdc);
     const tdcDetailsRef = useRef<TDCDetailsContext>(tdcDetails)
 
@@ -29,8 +29,6 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
     const getTDCData = useCallback( async(clousingId:number, employeeId:number)=>{
         setTDCLoading(true);
-        
-        console.log(tdcLoading)
 
         if(tdcRef.current[clousingId]?.[employeeId]) {
             setTDCLoading(false);
@@ -76,7 +74,6 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
         if(tdcDetailsRef.current[clousingId]?.[lineId]) {
             setDetailsLoading(false);
-            console.log(tdcDetailsRef.current[clousingId]?.[lineId])
             return tdcDetailsRef.current[clousingId]?.[lineId];
         }
 

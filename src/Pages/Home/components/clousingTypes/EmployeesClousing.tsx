@@ -1,16 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Button  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
-import { TDCModel } from "@models/tdc.model";
+import { EmployeeLine, EmployeeModel } from "@models/employee.model";
+import AddEmployee from "./AddEmployee";
+import { useEmployeeContext } from "@context/clousing/employeeClousing";
+import Loading from "@components/loading";
+import { useFooter } from "@context/home/footerClousingContext";
+import { CLOUSING_KEY } from "@models/constants.model";
 
-function EmployeesClousing() {
-  const [tdc2Data, setCashData] = useState<TDCModel>()
+function EmployeesClousing({data}: any) {
+  const [employee, setEmployee] = useState<EmployeeModel>()
+  const [dialog, setDialog] = useState<boolean>(false);
+
+  const employeeContext = useEmployeeContext();
+  const footerContext = useFooter();
+
+  useEffect(()=>{
+    async function fetchData() {
+
+      const employeeData: EmployeeModel = await employeeContext.getEmployeetData(data?.id, data?.employeId);
+
+      if(employeeData){
+        console.log(employeeData.total)
+        footerContext?.setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
+      }
+      setEmployee(employeeData)
+
+    }
+
+    fetchData()
+    
+  },[employeeContext.employee])
+
+
+  const openDiaolog = () =>{
+    setDialog(true);
+  }
+
+  const closeDiaolog = () => {
+    setDialog(false);
+  }
   
   return (
     <Box>
       {/* <Toaster /> */}
 
-      <Button mb={2} >Agregar</Button>
+      <Button mb={2} onClick={() => openDiaolog()}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline" striped>
@@ -24,14 +59,14 @@ function EmployeesClousing() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {tdcData?.currencies?.map((item) => (
+            {employee?.lines?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text> {item.employee} </Text>
+                  <Text> {item.name + ' ' + item.lastName} </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text> {item.employeId} </Text>
+                  <Text> {item.employeeCode} </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
@@ -56,7 +91,14 @@ function EmployeesClousing() {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
-      
+
+      <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
+
+      {employeeContext.employeeLoading && (
+        <Box position="fixed" top="50%" left="50%">
+          <Loading />
+        </Box>
+      )}
 
     </Box>
   );

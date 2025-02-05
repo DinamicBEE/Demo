@@ -1,0 +1,159 @@
+import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
+import { getEmployees, getReasonClousing } from "@services/catalogService";
+import { Employee, EmployeeContext, EmployeeContextType, EmployeeLine, EmployeeModel, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
+import { getEmployeeClousing } from "@services/clousingService";
+import { TotalModel } from "@models/common.clousing.model";
+
+const employeeContext = createContext<EmployeeContextType>({} as EmployeeContextType);
+
+export const useEmployeeContext = () => useContext(employeeContext);
+
+export function EmployeeClousingProvider({children}: {children: ReactNode}) {
+    const [employee, setEmployee] = useState<EmployeeContext>({});
+    const [reasons, setReasons] = useState<ReasonsModel[]>();
+    const [employeeList, setEmployeeList] = useState<Employee[]>()
+    const [employeeLoading, setEmployeeLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+
+    const getEmployeetData = useCallback( async(clousingId:number, employeeId:number)=>{
+        setEmployeeLoading(true);
+
+        if(employee[clousingId]?.[employeeId]){
+            setEmployeeLoading(false);
+            return employee[clousingId]?.[employeeId];
+        }
+
+        try {
+
+            const data: EmployeeModel  = await getEmployeeClousing(clousingId, employeeId);
+
+            const updateEmployee: EmployeeContext = {
+                ...employee,
+                [clousingId]:{
+                    [employeeId]: data
+                }
+            } 
+
+            setEmployee(updateEmployee);
+
+            return data;
+            
+        } catch (error) {
+
+            setError(error instanceof Error ? error.message : String(error));
+            
+            throw error;
+            
+        } finally {
+
+            setEmployeeLoading(false);
+
+        }
+
+    },[employee]);
+
+    const getEmployeeList = useCallback( async()=>{
+        
+        if(employeeList){
+            return employeeList
+        }
+
+        try {
+
+            const data: Employee[] = await getEmployees();
+            
+            setEmployeeList(data);
+
+            return data;
+
+        } catch (error) {
+
+            setError(error instanceof Error ? error.message : String(error));
+            
+            throw error;
+            
+        } 
+
+    },[employeeList]);
+
+    const getReasonsList = useCallback( async()=>{
+        console.log(reasons)
+        if(reasons){
+            return reasons
+        }
+
+        try {
+
+            const data: ReasonsModel[] = await getReasonClousing();
+            console.log(data)
+            setReasons(data);
+            console.log(reasons)
+            return data;
+
+        } catch (error) {
+
+            setError(error instanceof Error ? error.message : String(error));
+            
+            throw error;
+            
+        } 
+
+    },[reasons]);
+
+    const setNewEmployee = useCallback( (newEmployee: EmployeeLine, clousingId:number, employeeId:number) => {
+        
+        const currentRegister = employee[clousingId]?.[employeeId];
+
+        const updateLines = [...currentRegister.lines, newEmployee];
+
+        const newTotalPhysical = updateLines?.reduce(
+          (acc: number, curr: EmployeeLine) => acc + curr.amount,
+          0
+        );
+
+        const newDifference =
+          (currentRegister.total?.totalPOS || 0) - (newTotalPhysical || 0);
+
+        const newTotal: TotalModel = {
+          totalPOS: currentRegister.total?.totalPOS || 0,
+          totalPhysical: newTotalPhysical || 0,
+          difference: newDifference,
+        };
+
+        const updateData: EmployeeContext = {
+            ...employee,
+            [clousingId]: {
+                ...employee[clousingId],
+                [employeeId]:{
+                    ... currentRegister,
+                    lines: updateLines,
+                    total: newTotal
+                }
+            }
+        }
+
+        setEmployee(updateData);
+
+    },[employee])
+
+    const value = useMemo(
+        ()=>({
+            employee,
+            employeeLoading,
+            error,
+            getEmployeetData,
+            getEmployeeList,
+            getReasonsList,
+            setNewEmployee
+        }),
+        [employee, employeeLoading, error, getEmployeetData, 
+            getEmployeeList, getReasonsList, setNewEmployee]
+    );
+
+    return (
+        <employeeContext.Provider value={value}>
+            {children}
+        </employeeContext.Provider>
+    );
+
+}

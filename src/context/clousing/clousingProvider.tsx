@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 import { CashClousingProvider } from "./cashClousingContext"
 import { CustomerClousingProvider } from "./customerClousingContext"
-import { FooterProvider } from "../home/footerClousingContext"
 import { SpecialcustomerProvider } from './specialCustClousingContext';
 import { TDCClousingProvider } from './tdcClousingContex';
 import { PrepaidClousingProvider } from './prepaidClousingContext';
+import { EmployeeClousingProvider } from './employeeClousing';
 
 export const ClousingDataProvider = ({ children }: { children: ReactNode }) => {
     return(
@@ -13,9 +13,9 @@ export const ClousingDataProvider = ({ children }: { children: ReactNode }) => {
                 <CustomerClousingProvider>
                     <SpecialcustomerProvider>
                         <PrepaidClousingProvider>                       
-                            {/* <FooterProvider> */}
+                            <EmployeeClousingProvider>
                                 {children}
-                            {/* </FooterProvider> */}
+                            </EmployeeClousingProvider>
                         </PrepaidClousingProvider>     
                     </SpecialcustomerProvider>
                 </CustomerClousingProvider>
