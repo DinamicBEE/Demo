@@ -1,0 +1,110 @@
+import { useState } from "react";
+import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
+import { Skeleton } from "@components/ui/skeleton";
+import { useHeaders } from "@context/clousing/headerContext";
+import { useEffect } from "react";
+import { HeaderClousingProps, HeaderData } from "@models/common.clousing.model"
+
+function HeaderClousing ({ id, employe }: HeaderClousingProps) {
+    const [header, setHeader] = useState<HeaderData | undefined>();
+    const {loading, getHeader} = useHeaders();
+
+
+    useEffect(()=>{
+        async function fetchData() {
+        const header = await getHeader(id, employe);
+        console.log(header);
+        setHeader(header);
+        }
+        fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
+    return(
+        <Box>
+            <Grid
+                templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+                gap={4}
+                mb={4}
+            >
+                <Group>
+                    <InputAddon>CDC</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.cdc || ""} placeholder="CDC" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Ubicación</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.location || ""} placeholder="Ubicación" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Empresa</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.subsidiary || ""} placeholder="Empresa" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Fecha</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.date || ""} placeholder="Fecha" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Corte POS</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.totalPOS || ""} placeholder="Corte POS" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Corte físico</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.totalClousing || ""} placeholder="Corte físico" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Diferencia</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.difference || ""} placeholder="Diferencia" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Servicio 10%</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.service || ""} placeholder="Servicio 10%" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Descuento + IVA POS</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.discountPOS || ""} placeholder="Descuento + IVA POS" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Group>
+                    <InputAddon>Descuento físico</InputAddon>
+                    <Skeleton loading={loading}>
+                        <Input value={header?.discountClousing || ""} placeholder="Descuento físico" readOnly />
+                    </Skeleton>
+                </Group>
+
+                <Button size="sm" className="primary-button">
+                    Toggle
+                </Button>
+            </Grid>
+
+        </Box>
+    );
+
+}
+
+export default HeaderClousing;

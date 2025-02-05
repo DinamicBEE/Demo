@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_AUTH } from "./settings";
 
-const BASE_URL = "https://reqres.in/api";
+//const BASE_URL = "https://reqres.in/api";
 
 /**
  * 
@@ -10,7 +11,7 @@ const BASE_URL = "https://reqres.in/api";
  */
 export const loginUser = async (email, password) => {
     try {
-      const response = await axios.post(`${BASE_URL}/login`, { email, password });
+      const response = await axios.post(`${API_AUTH}/login`, { email, password });
       return response.data;
     } catch (error) {
       throw new Error(

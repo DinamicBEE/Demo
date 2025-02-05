@@ -5,18 +5,22 @@ import {
     Heading,
     Stack 
 } from "@chakra-ui/react";
-import { Field  } from "../../components/ui/field";
-import { PasswordInput } from "../../components/ui/password-input"
-import { Alert } from "../../components/ui/alert"
-import { Button } from "../../components/ui/button"
+import { Field  } from "@components/ui/field";
+import { PasswordInput } from "@components/ui/password-input"
+import { Alert } from "@components/ui/alert"
+import { Button } from "@components/ui/button"
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { loginUser } from "../../services/authService";
+import { loginUser } from "@services/authService";
 import './login.css'
+import { useAuth } from "@context/AuthContext";
+import { useUser } from "@context/UserContext";
 
 function Login() {
     const navigate = useNavigate();
+    const { login } = useAuth();
+    const { fetcUser } = useUser();
     const [loading, setloading] = useState(false);
     const [error, setError] = useState("");
     const { register, handleSubmit, formState: { errors }, } = useForm();
@@ -26,15 +30,22 @@ function Login() {
         setloading(true);
 
         try {
-            const { token } = await loginUser(data.email, data.password);
-            setloading(false);
+            const token = await loginUser(data.email, data.password);
             
             if(token) {
-                navigate('/home');
+                
+                const userData = await fetcUser(token);
+                console.log(userData)
+                if(userData){
+                    setloading(false);
+                    login(token);
+                    navigate('/home');
+                }
             }
         } catch (error) {
-            setloading(false);
             setError(error.message);
+        } finally {
+            setloading(false);
         }
 
     }
