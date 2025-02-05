@@ -77,7 +77,7 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
     },[employeeList]);
 
     const getReasonsList = useCallback( async()=>{
-        console.log(reasons)
+
         if(reasons){
             return reasons
         }
@@ -85,9 +85,9 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
         try {
 
             const data: ReasonsModel[] = await getReasonClousing();
-            console.log(data)
+
             setReasons(data);
-            console.log(reasons)
+
             return data;
 
         } catch (error) {

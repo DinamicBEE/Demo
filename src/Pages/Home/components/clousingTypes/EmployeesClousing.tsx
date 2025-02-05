@@ -21,7 +21,6 @@ function EmployeesClousing({data}: any) {
       const employeeData: EmployeeModel = await employeeContext.getEmployeetData(data?.id, data?.employeId);
 
       if(employeeData){
-        console.log(employeeData.total)
         footerContext?.setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
       }
       setEmployee(employeeData)

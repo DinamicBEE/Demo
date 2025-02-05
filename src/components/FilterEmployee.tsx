@@ -19,8 +19,6 @@ function FilterEmployee({employees, onSelect}: EmployeeFilterProps){//
 
         setFilteredEmpleados(employeeCollection)
 
-        console.log(filteredEmpleados)
-
     },[employees])
 
     function handleSearch(event:string) {
