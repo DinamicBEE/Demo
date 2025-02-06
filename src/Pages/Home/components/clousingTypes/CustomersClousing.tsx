@@ -4,11 +4,12 @@ import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import { TableInput } from "@components/NumericInput";
 import Loading from "@components/loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function CustomersClousing({data}: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
@@ -17,19 +18,14 @@ function CustomersClousing({data}: any) {
   const footerContext = useFooter();
   const customerContext = useCustomerContext();
   const handleCustomer = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id, data?.employeId);
-  
-  const selectCurrency = handleCustomer?.selectCurrency;
-  const handleCoupons = handleCustomer?.handleCoupons;
-  const handleAmountPAX = handleCustomer?.handleAmountPAX;
-  const setFooterData = footerContext?.setFooterData;
-  
+
   useEffect(()=>{
     async function fetchData() {
       const customers: CustomerModel | undefined = customerContext?.getCustomerData
             ? await customerContext?.getCustomerData(data.id, data.employeId) : undefined;
 
       if (customers?.total) {
-        setFooterData?.(customers.total, data.id, "customer");
+        footerContext?.setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
       }
 
       const currencies = await getCurrencies()
@@ -73,7 +69,7 @@ function CustomersClousing({data}: any) {
     
                     <Table.Cell textAlign="center">
                       <Text>
-                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCoupons} />
+                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCustomer?.handleCoupons} />
                       </Text>
                     </Table.Cell>
     
@@ -81,7 +77,7 @@ function CustomersClousing({data}: any) {
                       <SelectRoot 
                          
                         collection={currenciesForSelect || createListCollection({ items: [] })} 
-                        onValueChange={(e) => selectCurrency?.(e.value, item.id, currencies)}
+                        onValueChange={(e) => handleCustomer?.selectCurrency?.(e.value, item.id, currencies)}
                       >
                         
                         <SelectTrigger>
@@ -101,7 +97,7 @@ function CustomersClousing({data}: any) {
     
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} />
+                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleCustomer?.handleAmountPAX} />
                       </Text>
                     </Table.Cell>
 
@@ -129,12 +125,14 @@ function CustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
 
-          {customerContext?.customerLoading && <Loading />}
+          {customerContext?.customerLoading && (
+            <Box position="fixed" top="50%" left="50%">
+              <Loading />
+            </Box>
+          )}
     
         </Box>
   )
 }
 
 export default CustomersClousing;
-
-

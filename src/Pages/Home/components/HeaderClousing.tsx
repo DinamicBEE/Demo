@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
-import { useHeaders } from "@context/clousing/headerContext";
+import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
 import { HeaderClousingProps, HeaderData } from "@models/common.clousing.model"
 import { CurrencyInput } from "@components/NumericInput";

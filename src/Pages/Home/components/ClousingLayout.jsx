@@ -8,9 +8,9 @@ const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
 const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
-//const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
-//const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
-//const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
+const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
+const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
+const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
     const [value, setValue] = useState("")
@@ -51,7 +51,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                                 <LuFolder />
                                 Prepago
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="employees">
+                            <Tabs.Trigger value="employee">
                                 <LuSquareCheck />
                                 empleados
                             </Tabs.Trigger>
@@ -72,7 +72,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         <Tabs.Content value="tdc">
                             {value === "tdc" && (
                                 <Suspense fallback={<div>Cargando TDC...</div>}>
-                                  <TDCClousing />
+                                  <TDCClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -94,15 +94,27 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
-                            {/* <PrepaidClousing /> */}
+                            {value === "prepaid" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <PrepaidClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="employees">
-                            {/* <EmployeesClousing /> */}
+                        <Tabs.Content value="employee">
+                            {value === "employee" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <EmployeesClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="inter-company">
-                            {/* <IntercompanyClousing /> */}
+                            {value === "inter-company" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <IntercompanyClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                     </Tabs.Root>

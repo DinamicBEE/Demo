@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { Button } from "@components/ui/button"
 import { CurrencyInput } from "@components/NumericInput";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
 
 function FooterClousing({clousingType, clousingId, data, loading, onChange}: FooterClousing) {

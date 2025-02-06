@@ -1,21 +1,15 @@
-import { 
-    HStack, 
-    Box, 
-    VStack,
-    Heading,
-    Stack 
-} from "@chakra-ui/react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { HStack, Box, VStack, Heading,Stack } from "@chakra-ui/react";
 import { Field  } from "@components/ui/field";
 import { PasswordInput } from "@components/ui/password-input"
 import { Alert } from "@components/ui/alert"
 import { Button } from "@components/ui/button"
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import { loginUser } from "@services/authService";
-import './login.css'
 import { useAuth } from "@context/AuthContext";
 import { useUser } from "@context/UserContext";
+import { loginUser } from "@services/authService";
+import './login.css'
 
 function Login() {
     const navigate = useNavigate();

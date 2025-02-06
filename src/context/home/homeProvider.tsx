@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 import { ListProvider } from "./listsContext";
 import { ClousingProvider } from "./clousingContext";
-import { HeadersProvider } from "../clousing/headerContext";
+import { HeadersProvider } from "./headerContext";
 import { ClousingDataProvider } from "../clousing/clousingProvider";
+import { FooterProvider } from './footerClousingContext';
 
 export const HomeProvider = ({ children }: { children: ReactNode }) => {
     
@@ -10,9 +11,11 @@ export const HomeProvider = ({ children }: { children: ReactNode }) => {
         <ListProvider>
             <ClousingProvider>
                 <HeadersProvider>
-                    <ClousingDataProvider>
-                        { children }
-                    </ClousingDataProvider>
+                    <FooterProvider>
+                        <ClousingDataProvider>
+                            { children }
+                        </ClousingDataProvider>
+                    </FooterProvider>
                 </HeadersProvider>
             </ClousingProvider>
         </ListProvider>

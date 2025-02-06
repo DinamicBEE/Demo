@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { useHeaders } from "@context/clousing/headerContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHeaders } from "@context/home/headerContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { CurrencyModel, TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
@@ -14,18 +14,6 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   const headerContext = useHeaders();
   const footerContext = useFooter();
   const customerContext = useCustomerContext();
-  if (!headerContext) {
-    return null;
-  }
-  if (!footerContext) {
-    return null;
-  }
-  if (!customerContext) {
-    return null;
-  }
-  const { updateTotal } = headerContext;
-  const { setFooterData } = footerContext;
-  const { setCustomerData } = customerContext;
 
   function selectCurrency(value: any, id: number, currencies:CurrencyModel[] | undefined) {
     const selectValue = value[0];
@@ -55,7 +43,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     setCustomer(updateCustomerData);
     customerRef.current = updateCustomerData;
     
-    setCustomerData(customerRef.current, employeId, clousingId)
+    customerContext?.setCustomerData(customerRef.current, employeId, clousingId)
   }
 
   function handleCoupons(id:number, value:string){
@@ -137,12 +125,12 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     }
 
     if(newTotalFisico>0){
-      updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
+      headerContext?.updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
     }
 
-    setFooterData(newTotal, clousingId, "customer");
+    footerContext?.setFooterData(newTotal, clousingId, "customer");
 
-    setCustomerData(updateCustomerData, employeId, clousingId)
+    customerContext?.setCustomerData(updateCustomerData, employeId, clousingId)
 
   }
 

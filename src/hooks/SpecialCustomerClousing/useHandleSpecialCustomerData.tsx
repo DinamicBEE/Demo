@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { useHeaders } from "@context/clousing/headerContext";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useHeaders } from "@context/home/headerContext";
+import { useFooter } from "@context/home/footerClousingContext";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 
 export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerModel, setSpecialCustomer: any, clousingId: number, employeId: number) =>{
 
@@ -13,18 +13,6 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
     const headerContext = useHeaders();
     const footerContext = useFooter();
     const specialCustContext = useSpecialCustContext();
-    if (!headerContext) {
-      return null;
-    }
-    if (!footerContext) {
-      return null;
-    }
-    if(!specialCustContext){
-      return null;
-    }
-    const { updateTotal } = headerContext;
-    const { setFooterData } = footerContext;
-    const { setSpecialCustData } = specialCustContext;
 
     function handleInputTextData(value: string, id: number, key: string) {
       const updatedCurrencies = specialCustomerData.lines.map((item: SpecialCustomerLines) =>
@@ -41,7 +29,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
         lines: updatedCurrencies,
       });
       specialCustRef.current = specialCustomerData;
-      setSpecialCustData(specialCustRef.current, employeId, clousingId);
+      specialCustContext?.setSpecialCustData(specialCustRef.current, employeId, clousingId);
 
     }
 
@@ -108,11 +96,11 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           total: newTotal
         }
 
-        updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.SPECIALCUSTOMER);
+        headerContext?.updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.SPECIALCUSTOMER);
 
-        setFooterData(newTotal, clousingId, "specialCustomer");
+        footerContext?.setFooterData(newTotal, clousingId, "specialCustomer");
 
-        setSpecialCustData(updateCustomerData, employeId, clousingId);
+        specialCustContext?.setSpecialCustData(updateCustomerData, employeId, clousingId);
 
     }
     

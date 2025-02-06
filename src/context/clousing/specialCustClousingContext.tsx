@@ -62,6 +62,8 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
             }
         };
 
+        console.log(updateSpecialCustData);
+        
         updateSpecialCustData(updateSpecialCustomer);
         
     },[]);

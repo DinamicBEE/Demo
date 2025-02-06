@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Box, Grid, Table, Text, FormatNumber  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
 import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
-import { useFooter } from "@context/clousing/footerClousingContext";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import Loading from '@components/loading';
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
@@ -18,7 +19,7 @@ function CashClousing ({ data }) {
 
         const cashData = await getCashData(data.id, data.employeId);
 
-        setFooterData(cashData.total, data.id, "cash");
+        setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
 
         setCashData(cashData);
 
@@ -96,7 +97,11 @@ function CashClousing ({ data }) {
           </Table.Root>
         </Table.ScrollArea>
 
-        {cashLoading && <Loading />}
+        {cashLoading && (
+          <Box position="fixed" top="50%" left="50%">
+            <Loading />
+          </Box>
+        )}
 
       </Box>
     );

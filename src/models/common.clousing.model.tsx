@@ -67,3 +67,10 @@ export interface FooterContextType {
   setFooterData: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
   getFooterData: (clousingId: number, clousingType: string) => Promise<TotalModel>;
 }
+
+export interface ResponseModel {
+  success: boolean;
+  data?: any;
+  error?: string;
+  message?: string
+}
