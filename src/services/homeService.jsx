@@ -11,7 +11,6 @@ export const getGeneralInfo = async (subsidiary, store) => {
         //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
         const response = homeData;
 
-        console.log(response)
         //return response.data
         return response
         
@@ -66,6 +65,7 @@ const homeData = {
       {
         "id":1,
         "employe": "Mario Vásquez",
+        "employeId": 5,
         "totalPOS": 2500,
         "totalClousing": 2500,
         "difference": 0,
@@ -84,6 +84,7 @@ const homeData = {
       {
         "id":2,
         "employe": "Franklin Cardona",
+        "employeId": 15,
         "totalPOS": 2500,
         "totalClousing": 2500,
         "difference": 0,
@@ -102,6 +103,7 @@ const homeData = {
       {
         "id":3,
         "employe": "Luis Castillo",
+        "employeId": 13,
         "totalPOS": 2500,
         "totalClousing": 2500,
         "difference": 0,
@@ -120,6 +122,7 @@ const homeData = {
       {
         "id":4,
         "employe": "Gerardo Flores",
+        "employeId": 26,
         "totalPOS": 2500,
         "totalClousing": 2500,
         "difference": 0,

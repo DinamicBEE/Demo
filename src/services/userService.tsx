@@ -8,7 +8,7 @@ import { API_USER } from "./settings";
  * @param {*} token 
  * @returns {Promise<Object>}
  */
-export const getUserInfo = async (token) => {
+export const getUserInfo = async (token: string) => {
     try {
         const response = await axios.get(`${API_USER}/users/2`,{
             headers: {
@@ -20,8 +20,9 @@ export const getUserInfo = async (token) => {
         
     } catch (error) {
         
+        const err = error as any;
         throw new Error(
-            error.response?.data?.error || "Error al obtener información del usuario"
+            err.response?.data?.error || "Error al obtener información del usuario"
         );
              
     }
