@@ -3,7 +3,7 @@ import { EmployeeFilterProps } from "@models/employee.model";
 import { Box, createListCollection, ListCollection, SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@chakra-ui/react";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
-function FilterEmployee({employees, onSelect}: EmployeeFilterProps){//
+function FilterEmployee({employees, label, itemId, onSelect}: EmployeeFilterProps){//
     const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
     const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
     const searchRef = useRef<string>('')
@@ -57,8 +57,10 @@ function FilterEmployee({employees, onSelect}: EmployeeFilterProps){//
         
         const employeeSelect = employees.find((employee) => employee.id === selectedId);
 
-        if (employeeSelect) {
+        if (employeeSelect && itemId === undefined) {
             onSelect(employeeSelect);
+        } else if(employeeSelect && itemId != undefined) {
+            onSelect(employeeSelect, itemId);
         }
 
     }
@@ -66,7 +68,7 @@ function FilterEmployee({employees, onSelect}: EmployeeFilterProps){//
     return (
         <Box>
             <SelectRoot collection={filteredEmpleados} onKeyUp={(e)=>handleSearch(e.key)} onValueChange={(event) => handleSelect(event)}>
-                <SelectLabel>Empleado</SelectLabel>
+                {label && <SelectLabel>Empleado</SelectLabel>}
                 <SelectTrigger>
                     <SelectValueText placeholder={searchQuery} />
                 </SelectTrigger>

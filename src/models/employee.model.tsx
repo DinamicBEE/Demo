@@ -55,7 +55,9 @@ export interface NewEmployeeModel {
 
 export interface EmployeeFilterProps {
     employees: Employee[]
-    onSelect: (empleado: Employee ) => void;
+    label: boolean;
+    itemId?: number
+    onSelect: (empleado: Employee, itemId?: number ) => void;
 }
 
 export interface AddEmployeeProp {

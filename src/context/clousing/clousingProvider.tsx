@@ -5,6 +5,7 @@ import { SpecialcustomerProvider } from './specialCustClousingContext';
 import { TDCClousingProvider } from './tdcClousingContex';
 import { PrepaidClousingProvider } from './prepaidClousingContext';
 import { EmployeeClousingProvider } from './employeeClousing';
+import { IntercompanyClousingProvider } from './intercompanyContext';
 
 export const ClousingDataProvider = ({ children }: { children: ReactNode }) => {
     return(
@@ -14,7 +15,9 @@ export const ClousingDataProvider = ({ children }: { children: ReactNode }) => {
                     <SpecialcustomerProvider>
                         <PrepaidClousingProvider>                       
                             <EmployeeClousingProvider>
-                                {children}
+                                <IntercompanyClousingProvider>
+                                    {children}
+                                </IntercompanyClousingProvider>
                             </EmployeeClousingProvider>
                         </PrepaidClousingProvider>     
                     </SpecialcustomerProvider>

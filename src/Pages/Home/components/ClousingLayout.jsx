@@ -4,6 +4,7 @@ import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
 import HeaderClousing from "./HeaderClousing"
 import { lazy, useState, Suspense } from "react";
 import FooterClousing from "./FooterClousing";
+import { CLOUSING_KEY } from "@models/constants.model";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
@@ -31,86 +32,86 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             setValue(e.value)
                         }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
-                            <Tabs.Trigger value="cash">
+                            <Tabs.Trigger value={CLOUSING_KEY.CASH}>
                                 <LuUser />
                                 Efectivo
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="tdc">
+                            <Tabs.Trigger value={CLOUSING_KEY.TDC}>
                                 <LuFolder />
                                 TDC
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="customer">
+                            <Tabs.Trigger value={CLOUSING_KEY.CUSTOMER}>
                                 <LuSquareCheck />
                                 Clientes
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="specialCustomer">
+                            <Tabs.Trigger value={CLOUSING_KEY.SPECIALCUSTOMER}>
                                 <LuUser />
                                 Clientes especiales
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="prepaid">
+                            <Tabs.Trigger value={CLOUSING_KEY.PREPAID}>
                                 <LuFolder />
                                 Prepago
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="employee">
+                            <Tabs.Trigger value={CLOUSING_KEY.EMPLOYEE}>
                                 <LuSquareCheck />
                                 empleados
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="inter-company">
+                            <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
                                 <LuSquareCheck />
                                 Intercompañias
                             </Tabs.Trigger>
                         </Tabs.List>
 
-                        <Tabs.Content value="cash">
-                            {value === "cash" && (
+                        <Tabs.Content value={CLOUSING_KEY.CASH}>
+                            {value === CLOUSING_KEY.CASH && (
                                 <Suspense fallback={<div>Cargando Efectivo...</div>}>
                                     <CashClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="tdc">
-                            {value === "tdc" && (
+                        <Tabs.Content value={CLOUSING_KEY.TDC}>
+                            {value === CLOUSING_KEY.TDC && (
                                 <Suspense fallback={<div>Cargando TDC...</div>}>
                                   <TDCClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="customer">
-                            {value === "customer" && (
+                        <Tabs.Content value={CLOUSING_KEY.CUSTOMER}>
+                            {value === CLOUSING_KEY.CUSTOMER && (
                                 <Suspense fallback={<div>Cargando Clientes...</div>}>
                                     <CustomersClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="specialCustomer">
-                            {value === "specialCustomer" && (
+                        <Tabs.Content value={CLOUSING_KEY.SPECIALCUSTOMER}>
+                            {value === CLOUSING_KEY.SPECIALCUSTOMER && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
                                     <SpecialCustomersClousing data={employee}/>
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="prepaid">
-                            {value === "prepaid" && (
+                        <Tabs.Content value={CLOUSING_KEY.PREPAID}>
+                            {value === CLOUSING_KEY.PREPAID && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
                                     <PrepaidClousing data={employee}/>
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="employee">
-                            {value === "employee" && (
+                        <Tabs.Content value={CLOUSING_KEY.EMPLOYEE}>
+                            {value === CLOUSING_KEY.EMPLOYEE && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
                                     <EmployeesClousing data={employee}/>
                                 </Suspense>
                             )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="inter-company">
-                            {value === "inter-company" && (
+                        <Tabs.Content value={CLOUSING_KEY.INTERCOMPANY}>
+                            {value === CLOUSING_KEY.INTERCOMPANY && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
                                     <IntercompanyClousing data={employee}/>
                                 </Suspense>

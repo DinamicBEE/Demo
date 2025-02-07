@@ -3,7 +3,7 @@
 
 import { ResponseModel } from "@models/common.clousing.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
-import { intercompanyModel } from "@models/intercompany.model";
+import { IntercompanyModel } from "@models/intercompany.model";
 import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
 
 export const getHeaders = async (clousingId: number, employeeId: number) => {
@@ -247,7 +247,8 @@ export const getPrepaidClousing = async (clousingId: number, employeeId: number)
 }
 
 /**
- * 
+ * This function gets the list of 
+ * closures from the employees section
  * @param {number} clousingId 
  * @param {number} employeeId 
  * @returns {Promise<EmployeeModel>}
@@ -276,7 +277,9 @@ export const getEmployeeClousing = async (clousingId: number, employeeId: number
 }
 
 /**
- * 
+ * This function sends the log 
+ * information of closing a new 
+ * employee for the employees section
  * @param {number} clousingId 
  * @param {number} newEmployee 
  * @returns {Promise<ResponseModel>}
@@ -317,12 +320,13 @@ export const sendNewEmployeeRegister = async (clousingId: number, newEmployee: N
 }
 
 /**
- * 
+ * This function gets the list of 
+ * closures from the inter-company section
  * @param {number} clousingId 
  * @param {number} employeeId 
- * @returns {Promise<intercompanyModel>}
+ * @returns {Promise<IntercompanyModel>}
  */
-export const getIntercompanyClousing = async (clousingId: number, employeeId: number): Promise<intercompanyModel> => {
+export const getIntercompanyClousing = async (clousingId: number, employeeId: number): Promise<IntercompanyModel> => {
     console.log(clousingId, employeeId)
     
     try {
@@ -341,7 +345,7 @@ export const getIntercompanyClousing = async (clousingId: number, employeeId: nu
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [] as unknown as intercompanyModel;
+        return [] as unknown as IntercompanyModel;
     }
 }
 
@@ -549,27 +553,33 @@ const intercompanyData = {
   lines: [
     {
       id: 1,
-      employeeName: "Mario Vásquez",
-      subsidiaryname: "ABT2",
+      employeeId: 0,
+      employeeName: "",
+      subsidiaryId: 0,
+      subsidiaryname: "",
       amount: 125.0,
       ticket: "654",
-      physicalAmount: 125.0,
+      physicalAmount: 0,
     },
     {
       id: 2,
-      employeeName: "Luis Castillo",
-      subsidiaryname: "ABT1",
+      employeeId: 0,
+      employeeName: "",
+      subsidiaryId: 0,
+      subsidiaryname: "",
       amount: 150.0,
       ticket: "123",
-      physicalAmount: 150.0,
+      physicalAmount: 0,
     },
     {
       id: 3,
-      employeeName: "Victor Garrido",
-      subsidiaryname: "ABT2",
+      employeeId: 0,
+      employeeName: "",
+      subsidiaryId: 0,
+      subsidiaryname: "",
       amount: 300.0,
       ticket: "789",
-      physicalAmount: 300.0,
+      physicalAmount: 0,
     },
   ],
 };

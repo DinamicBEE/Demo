@@ -1,6 +1,7 @@
 //import axios from 'axios';
 import { createListCollection } from "@chakra-ui/react"
 import { CurrencyModel } from "@models/common.clousing.model";
+import { StoreModel } from "@models/common.model";
 import { Employee, ReasonsModel } from "@models/employee.model";
 //import { API_CATALOG } from "./settings"
 
@@ -36,7 +37,7 @@ export const getSubsidiaries = async () => {
  * 
  * @returns {Promise<Array>}
  */
-export const getStores = async () => {
+export const getStores = async (): Promise<StoreModel[]> => {
     try {
         //const response = await axios.get(`${API_CATALOG}/ccdc1956-02d0-4917-abab-8021fb1a53fc`);
         const response = store;
@@ -137,50 +138,50 @@ const sub = [
 const store = [
   {
     name: "Tienda 1",
-    id: "STO-01",
-    parent: {
-      subsidiary: "Sub1",
-      id: "SUB-01",
+    id: 1,
+    subsidiary: {
+      name: "Sub1",
+      id: 1,
     },
   },
   {
     name: "Tienda 2",
-    id: "STO-02",
-    parent: {
-      subsidiary: "Sub1",
-      id: "SUB-01",
+    id: 2,
+    subsidiary: {
+      name: "Sub1",
+      id: 1,
     },
   },
   {
     name: "Tienda 3",
-    id: "STO-03",
-    parent: {
-      subsidiary: "Sub2",
-      id: "SUB-02",
+    id: 3,
+    subsidiary: {
+      name: "Sub2",
+      id: 2,
     },
   },
   {
     name: "Tienda 4",
-    id: "STO-04",
-    parent: {
-      subsidiary: "Sub2",
-      id: "SUB-02",
+    id: 4,
+    subsidiary: {
+      name: "Sub2",
+      id: 2,
     },
   },
   {
     name: "Tienda 5",
-    id: "STO-05",
-    parent: {
-      subsidiary: "Sub2",
-      id: "SUB-02",
+    id: 5,
+    subsidiary: {
+      name: "Sub2",
+      id: 2,
     },
   },
   {
     name: "Tienda 6",
-    id: "STO-06",
-    parent: {
-      subsidiary: "Sub3",
-      id: "SUB-03",
+    id: 6,
+    subsidiary: {
+      name: "Sub3",
+      id: 3,
     },
   },
 ];

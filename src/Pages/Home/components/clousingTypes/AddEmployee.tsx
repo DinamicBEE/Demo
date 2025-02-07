@@ -99,7 +99,7 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
           <DialogBody>
             <Stack gap="6">
                 
-              <FilterEmployee employees={employees} onSelect={setSelectEmployee} />
+              <FilterEmployee employees={employees} label={true} onSelect={setSelectEmployee} />
 
               <Group attached>
                 <InputAddon>Monto</InputAddon>

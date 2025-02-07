@@ -104,37 +104,3 @@ function EmployeesClousing({data}: any) {
 }
 
 export default EmployeesClousing;
-
-const tdcData = {
-"id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
-    {
-      "id": 1,
-      "employee": "Mario Vásquez",
-      "employeId": "0015",
-      "amount": 125.00,
-      "reason": "Diferencia de efectivo",
-      "ticket": "---"
-    },
-    {
-      "id": 2,
-      "employee": "Luis Castillo",
-      "employeId": "0029",
-      "amount": 150.00,
-      "reason": "Consumo empelado",
-      "ticket": "123"
-    },
-    {
-      "id": 3,
-      "employee": "BANREGIO",
-      "employeId": "0105",
-      "amount": 300.00,
-      "reason": "Mala elaboración del producto",
-      "ticket": "---"
-    }
-  ]
-}
