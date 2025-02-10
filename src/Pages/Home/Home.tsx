@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Grid, VStack, HStack, Heading, Text, Spinner, createListCollection } from '@chakra-ui/react'
+import { Box, Button, Grid, VStack, HStack, Heading, createListCollection, ListCollection } from '@chakra-ui/react'
 import {
     SelectContent,
     SelectItem,
@@ -9,38 +9,62 @@ import {
     SelectValueText,
   } from "@components/ui/select"
 import { Alert } from "@components/ui/alert"
-import { getSubsidiaries, getStores } from '@services/catalogService';
-import { useList } from '@context/Home/listsContext';
+import { useList } from '@context/home/listsContext';
 import { useClousing } from '@context/home/clousingContext';
 import TableOfTotals from './components/TableOfTotals';
 import './Home.css'
+import { StoreModel } from '@models/common.model';
+import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
+import Loading from '@components/loading';
 
 function Home() {
-    const [SubSelect, setSubSelect] = useState("");
-    const [location, setLocation] = useState("");
-    const [storeBySub, setStoreBySub] = useState(null);
+    const [subsidiary, setSubsidiary] = useState<ListCollection>(createListCollection({ items: [] }));
+    const [SubSelect, setSubSelect] = useState<number>(0);
+    const [stores, setStores] = useState<StoreModel[]>([])
+    const [storeBySub, setStoreBySub] = useState<ListCollection>(createListCollection({ items: [] }));
+    const [location, setLocation] = useState<number>(0);
+    const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
     const { getInfo } = useClousing();
  
-    const { subsidiary, setSubsidiary, store,
-        setStore, isLoading, error, getData, } = useList();
+    const { getStoresData, error, getSubsidiariesData } = useList();
 
     useEffect(()=>{
-        if (!subsidiary) {
-          getData(getSubsidiaries, setSubsidiary);
+
+        async function fetchData() {
+
+            setCatalogLoading(true);
+
+            const subsidiariesData = await getSubsidiariesData();
+
+            const subList = createListCollection({
+                items: subsidiariesData.map(item =>({
+                    value: item.id,
+                    label: item.name
+                }))
+            })
+            
+            setSubsidiary(subList);
+
+            const storeData = await getStoresData()
+
+            setStores(storeData);
+
+            setCatalogLoading(false);
+
         }
-        if (!store) {
-          getData(getStores, setStore);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        fetchData();
+
     },[])
 
-    function filterStore(subSelect) {
+    function filterStore(event: ValueChangeDetails<any>) {
+      const subSelect = Number(event.value[0]);
 
       setSubSelect(subSelect)
-      const selectedId = subSelect[0];
+      const selectedId = subSelect;
 
-      let storeBySubsidiary = store.filter(
-        (item) => item.parent.id === selectedId
+      let storeBySubsidiary = stores.filter(
+        (item) => item.subsidiary.id === selectedId
       );
 
       if (storeBySubsidiary.length > 0) {
@@ -70,13 +94,12 @@ function Home() {
             bg="white"
         >
                  
-            <VStack spacing={4} align="start">
+            <VStack spaceY={4} align="start">
                 <Heading size="md">Selecciona Subsidiaria y Restaurante</Heading>
-                {isLoading && (
-                    <VStack colorPalette="teal">
-                        <Spinner color="colorPalette.600" />
-                        <Text color="colorPalette.600">Loading...</Text>
-                    </VStack>
+                {catalogLoading && (
+                    <Box position="fixed" top="50%" left="50%">
+                    <Loading />
+                    </Box>
                 )}
 
                 {error && (
@@ -92,9 +115,8 @@ function Home() {
                         w="100%"
                     >
 
-                        {subsidiary!=null && <SelectRoot collection={subsidiary}
-                            value={SubSelect}
-                            onValueChange={(e) => filterStore(e.value)}
+                        {!catalogLoading && <SelectRoot collection={subsidiary}
+                            onValueChange={(event) => filterStore(event)}
                         >
                             <SelectLabel>Selecciona Subsidiaria</SelectLabel>
                             <SelectTrigger>
@@ -109,9 +131,8 @@ function Home() {
                             </SelectContent>
                         </SelectRoot>}
 
-                        {storeBySub!=null && <SelectRoot collection={storeBySub} 
-                            value={location}
-                            onValueChange={(e) => setLocation(e.value)}
+                        {SubSelect!=0 && <SelectRoot collection={storeBySub} 
+                            onValueChange={(event) => setLocation(Number(event.value[0]))}
                         >
                             <SelectLabel>Selecciona Centro de consumo</SelectLabel>
                             <SelectTrigger>
@@ -127,9 +148,9 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        <Button className='primary-button' onClick={()=>{getInfo(SubSelect, location)}}>
+                        {location!=0 && <Button className='primary-button' onClick={()=>{getInfo(SubSelect, location)}}>
                             Buscar
-                        </Button>
+                        </Button>}
 
                     </Grid>
                 </HStack>

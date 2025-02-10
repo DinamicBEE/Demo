@@ -25,10 +25,7 @@ export interface StoreModel {
 }
 
 export interface ListContextType {
-  isLoading: boolean;
   error: string;
-  getData: (getFunction: any, setter: any) => void;
-
-  //getSubsidiariesData: () => Promise<SubsidiaryModal[]>;
+  getSubsidiariesData: () => Promise<SubsidiaryModal[]>;
   getStoresData: () => Promise<StoreModel[]>;
 }

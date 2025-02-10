@@ -1,40 +1,45 @@
 import { createContext, useCallback, useContext, useState, useMemo, ReactNode } from 'react';
 import { ListContextType, StoreModel, SubsidiaryModal } from '@models/common.model';
-import { getStores } from '@services/catalogService';
+import { getStores, getSubsidiaries } from '@services/catalogService';
 
 
 const listContext = createContext<ListContextType>({} as ListContextType);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useList = () => useContext(listContext)
 
 export function ListProvider({ children }: {children: ReactNode}){
   const [subsidiaries, setSubsidiaries] = useState<SubsidiaryModal[]>([]);
   const [stores, setStores] = useState<StoreModel[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  const getData = useCallback(async (getFunction: any, setter: any) => {
-    const controller = new AbortController();
-    setIsLoading(true);
-    setError('');
-    try {
-      const data = await getFunction({signal: controller.signal});
-      setter(data);
-    } catch (err) {
-      setError('Error al cargar los datos.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
+  const getSubsidiariesData = useCallback( async()=>{
+    
+    if(subsidiaries.length>1){
+      return subsidiaries;
     }
-  },[]);
 
-  const getSubsidiariesData = useCallback(()=>{},[subsidiaries])
+    try {
+
+      const subsidiariesData = await getSubsidiaries();
+
+      setSubsidiaries(subsidiariesData);
+
+      return subsidiariesData;
+      
+    } catch (error) {
+
+      setError(error instanceof Error ? error.message : String(error));
+            
+      throw error;
+      
+    }
+
+  },[subsidiaries])
 
   const getStoresData = useCallback( async()=>{
 
-    if(stores){
-      return stores
+    if(stores.length>1){
+      return stores;
     }
 
     try {
@@ -57,13 +62,11 @@ export function ListProvider({ children }: {children: ReactNode}){
 
   const value = useMemo(
     () => ({
-      isLoading,
       error,
-      getData,
-      //getSubsidiariesData,
+      getSubsidiariesData,
       getStoresData
     }),
-    [isLoading, error, getData, getStoresData]// getSubsidiariesData,
+    [error, getSubsidiariesData, getStoresData] 
   );
 
   return(
