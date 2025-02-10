@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useMemo, useCallback } from 'react
 import { getTDCClousing, getTDCDetails } from '@services/clousingService';
 import { BankDetails, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
-const tdcContext = createContext<TDCContextType | undefined>(undefined);
+const tdcContext = createContext<TDCContextType>({} as TDCContextType);
 
 export const useTDCContext = () => useContext(tdcContext);
 

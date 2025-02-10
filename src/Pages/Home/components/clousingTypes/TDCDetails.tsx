@@ -10,21 +10,21 @@ import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
 
 function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsProp) {
-    const [details, setDetails] = useState<BankDetails>();
+    const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
     const [loading, setLoading] = useState<boolean>(false);
 
     const useDetails = useHandleTDC(clousingId, lineId ?? 0)
 
-    const tdcContext = useTDCContext();
+    const {getDetails, detailsLoading, setDetails} = useTDCContext();
 
     useEffect(()=>{
 
         async function fetchData() {
-            const detailsData: BankDetails | undefined = tdcContext?.getDetails
-                    ? await tdcContext?.getDetails(clousingId,lineId) : undefined;
+            const detailsData: BankDetails | undefined = getDetails
+                    ? await getDetails(clousingId,lineId) : undefined;
             
             if (detailsData) {
-                setDetails(detailsData);
+                setDetailsLocal(detailsData);
             }
         }
 
@@ -35,12 +35,12 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
     async function saveDetails() {
         setLoading(true)
         
-        if (lineId !== null && details !== undefined) {
-            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, details);
+        if (lineId !== null && detailsLocal !== undefined) {
+            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, detailsLocal);
             
-            setDetails(detailsValidated);
+            setDetailsLocal(detailsValidated);
 
-            tdcContext?.setDetails(detailsValidated,clousingId,lineId);
+            setDetails(detailsValidated,clousingId,lineId);
             
             const allSuccess = detailsValidated.details.every(item => item.success);
             
@@ -67,7 +67,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                 <DialogHeader>
 
-                    <DialogTitle>{details?.bankName}</DialogTitle>
+                    <DialogTitle>{detailsLocal?.bankName}</DialogTitle>
                     
                 </DialogHeader>
 
@@ -88,7 +88,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
                             </Table.Header>
 
                             <Table.Body>
-                                {details?.details?.map((item:BankLineDetails)=>(
+                                {detailsLocal?.details?.map((item:BankLineDetails)=>(
                                     <Table.Row key={item.id}>
                                         
                                         <Table.Cell textAlign="center">
@@ -97,7 +97,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                                         <Table.Cell>
                                             <Field.Root invalid={item.success!=undefined && !item.success}>
-                                                <Input textAlign="center" value={item.check} onChange={(e) => useDetails.handleInputData(e.target.value, item.id, details || {} as BankDetails, setDetails,)}/>
+                                                <Input textAlign="center" value={item.check} onChange={(e) => useDetails.handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)}/>
                                                 <Field.ErrorText>{item.message}</Field.ErrorText>
                                             </Field.Root>
                                         </Table.Cell>
@@ -115,7 +115,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
                         </Table.Root>
                     </Table.ScrollArea>
 
-                    {tdcContext?.detailsLoading && (
+                    {detailsLoading && (
                         <Box position="fixed" top="50%" left="50%">
                         <Loading />
                         </Box>
@@ -133,7 +133,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                     <Flex gap={4}>
 
-                        <CurrencyInput value={details?.total} name={"Total"} loading={tdcContext?.detailsLoading || false} />
+                        <CurrencyInput value={detailsLocal?.total} name={"Total"} loading={detailsLoading || false} />
                         
                         <Button 
                             className="secondary-button save-button"
