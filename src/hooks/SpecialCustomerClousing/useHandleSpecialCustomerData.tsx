@@ -10,8 +10,8 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     const specialCustRef = useRef(specialCustomerData);
 
-    const headerContext = useHeaders();
-    const footerContext = useFooter();
+    const { updateTotal } = useHeaders();
+    const { setFooterData } = useFooter();
     const specialCustContext = useSpecialCustContext();
 
     function handleInputTextData(value: string, id: number, key: string) {
@@ -96,9 +96,9 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           total: newTotal
         }
 
-        headerContext?.updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.SPECIALCUSTOMER);
+        updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.SPECIALCUSTOMER);
 
-        footerContext?.setFooterData(newTotal, clousingId, "specialCustomer");
+        setFooterData(newTotal, clousingId, "specialCustomer");
 
         specialCustContext?.setSpecialCustData(updateCustomerData, employeId, clousingId);
 

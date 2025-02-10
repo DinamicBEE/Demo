@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode, useRef } from 'react';
 import { FooterContextType, TotalModel } from '@models/common.clousing.model';
 
-const footerContext = createContext<FooterContextType | undefined>(undefined);
+const footerContext = createContext<FooterContextType>({} as FooterContextType);
 
 export const useFooter = () => useContext(footerContext);
 

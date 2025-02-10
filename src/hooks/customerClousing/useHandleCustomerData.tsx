@@ -11,8 +11,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   
   const customerRef = useRef(customerData);
 
-  const headerContext = useHeaders();
-  const footerContext = useFooter();
+  const { updateTotal } = useHeaders();
+  const { setFooterData } = useFooter();
   const customerContext = useCustomerContext();
 
   function selectCurrency(value: any, id: number, currencies:CurrencyModel[] | undefined) {
@@ -125,10 +125,10 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     }
 
     if(newTotalFisico>0){
-      headerContext?.updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
+      updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
     }
 
-    footerContext?.setFooterData(newTotal, clousingId, "customer");
+    setFooterData(newTotal, clousingId, "customer");
 
     customerContext?.setCustomerData(updateCustomerData, employeId, clousingId)
 

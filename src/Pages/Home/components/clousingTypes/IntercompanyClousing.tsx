@@ -12,6 +12,8 @@ import FilterEmployee from "@components/FilterEmployee";
 import { TableInput } from "@components/NumericInput";
 import { useList } from "@context/home/listsContext";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
+import { TotalModel } from "@models/common.clousing.model";
+import { useHeaders } from "@context/home/headerContext";
 
 function IntercompanyClousing({data}: any) {
   const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
@@ -22,7 +24,8 @@ function IntercompanyClousing({data}: any) {
   const { getIntercompanyData, setIntercompanyData } = useIntercompanyContext();
   const { getEmployeeList } = useEmployeeContext();
   const { getSubsidiariesData } = useList();
-  const footerContext = useFooter();
+  const { updateTotal } = useHeaders();
+  const { setFooterData } = useFooter();
 
   useEffect( ()=>{
     async function fetchData() {
@@ -32,7 +35,7 @@ function IntercompanyClousing({data}: any) {
       const subsidiariesData = await getSubsidiariesData();
 
       if(intercompanyData){
-        footerContext?.setFooterData(intercompanyData.total, data.id, CLOUSING_KEY.INTERCOMPANY);
+        setFooterData(intercompanyData.total, data.id, CLOUSING_KEY.INTERCOMPANY);
       }
 
       setIntercompany(intercompanyData);
@@ -57,6 +60,19 @@ function IntercompanyClousing({data}: any) {
 
   function updateIntercompany(updateLine: IntercompanyLine[]){
 
+    const newTotalFisico = updateLine.reduce(
+      (acc: number, curr: { physicalAmount: number }) => acc + curr.physicalAmount,
+      0
+    );
+
+    const newDifference = intercompany.total.totalPOS - newTotalFisico;
+
+    const newTotal: TotalModel = {
+      totalPOS: intercompany.total.totalPOS,
+      totalPhysical: newTotalFisico,
+      difference: newDifference,
+    };
+
     const intercompanyData: IntercompanyModel = {
       ...intercompany,
       lines: updateLine
@@ -64,7 +80,11 @@ function IntercompanyClousing({data}: any) {
 
     setIntercompany(intercompanyData);
 
-    setIntercompanyData(intercompanyData, data?.id, data?.employeId)
+    setIntercompanyData(intercompanyData, data?.id, data?.employeId);
+
+    updateTotal(newTotalFisico, data.id, data.employeId, CLOUSING_KEY.INTERCOMPANY);
+
+    setFooterData(newTotal, data.id, CLOUSING_KEY.INTERCOMPANY);
 
   }
 

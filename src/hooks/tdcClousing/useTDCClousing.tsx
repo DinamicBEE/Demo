@@ -6,7 +6,7 @@ import { CLOUSING_KEY } from "@models/constants.model";
 
 export const useHandleTDC = (clousingId: number, lineId: number) => {
 
-    const headerContext = useHeaders();
+    const { updateTotal } = useHeaders();
     const tdcContext = useTDCContext();
 
     function handleInputData(value: string, id: number, details: BankDetails, setDetails: any,) {
@@ -71,7 +71,7 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
         lines: updateLines || [],
       };
 
-      headerContext?.updateTotal(
+      updateTotal(
         newTotalPhysical || 0,
         clousingId,
         employeId,

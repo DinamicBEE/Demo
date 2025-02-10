@@ -4,7 +4,7 @@ import { getHeaders } from '@services/clousingService';
 import { HeaderContextType } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/constants.model';
 
-const headersContext = createContext<HeaderContextType | undefined>(undefined);
+const headersContext = createContext<HeaderContextType>({} as HeaderContextType);
 
 export const useHeaders = () => useContext(headersContext)
 
