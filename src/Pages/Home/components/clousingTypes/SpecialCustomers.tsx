@@ -1,14 +1,38 @@
-import { useState } from "react";
-import { Box, Table, Text, FormatNumber  } from "@chakra-ui/react";
-import FooterClousing from "../FooterClousing";
-import { useCashClousing } from "@context/clousing/cashClousingContext";
-import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
+import { useEffect, useState } from "react";
+import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
+import { TableInput } from "@components/NumericInput";
+import Loading from "@components/loading";
+import { useFooter } from "@context/home/footerClousingContext";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
+import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
+import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
+import { CLOUSING_KEY } from "@models/constants.model";
 
-function SpecialCustomersClousing() {
-  const [tdc2Data, setCashData] = useState() //Cambiar por funcion propia
-    const { cashLoading } = useCashClousing(); //Cambiar por funcion propia
-    const { sendClousing } =  useHandleCashData(customer, setCashData); //Cambiar por funcion propia
-    
+function SpecialCustomersClousing({data}: any) {
+  const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
+
+  const footerContext = useFooter();
+  const specialCustomerContext = useSpecialCustContext();
+  const handleSpecialCustomer = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id, data?.employeId)
+
+  useEffect(()=>{
+    async function fetchData() {
+      const specialCustomer: SpecialCustomerModel | undefined = specialCustomerContext?.getSpecialCustData
+            ? await specialCustomerContext?.getSpecialCustData(data?.id, data?.employeId) : undefined;
+
+      if (specialCustomer) {
+        footerContext?.setFooterData?.(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
+      }
+
+      setSpecialCustomer(specialCustomer);
+
+    }
+
+    fetchData();
+
+  },[])
+
+
   return (
         <Box>
           {/* <Toaster /> */}
@@ -34,7 +58,7 @@ function SpecialCustomersClousing() {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {customer?.currencies?.map((item) => (
+                {specialCustomer?.lines?.map((item: SpecialCustomerLines) => (
                   <Table.Row key={item.id}>
                     
                     <Table.Cell textAlign="center">
@@ -79,37 +103,37 @@ function SpecialCustomersClousing() {
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        {item.folioCuopon}
+                        <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "folioCuopon")} />
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        {item.folioCuoponUSD}
+                        <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "folioCuoponUSD")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.value} style="currency" currency="USD" />
+                        <TableInput value={item.value} id={item.id} currency={false} keyValue={"value"} onChange={handleSpecialCustomer?.handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.valueUSD} style="currency" currency="USD" />
+                        <TableInput value={item.valueUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleSpecialCustomer?.handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        {item.flight}
+                        <Input textAlign="center" value={item.flight} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "flight")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        {item.passengerName}
+                        <Input textAlign="center" value={item.passengerName} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "passengerName")} />
                       </Text>
                     </Table.Cell> 
 
@@ -124,33 +148,15 @@ function SpecialCustomersClousing() {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
-    
-          <FooterClousing data={customer} loading={cashLoading} onChange={sendClousing} />
+
+          {specialCustomerContext?.specialCustLoading && (
+            <Box position="fixed" top="50%" left="50%">
+              <Loading />
+            </Box>
+          )}
     
         </Box>
   )
 }
 
 export default SpecialCustomersClousing;
-
-const customer = {
-  "id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
-      {"id":1, "Check": 420, "consumption": 258.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":2, "Check": 400, "consumption": 500.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OGCEM", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":3, "Check": 120, "consumption": 150.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 17.00, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "OFCIP", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      },
-      {"id":4, "Check": 150, "consumption": 200.00, "priceCuopon": 0, "difference": 0, "exchangeRate": 1.0, "client": "AMERICAN AIRLINES",
-        "PAX": 0, "folioCuopon": "0", "folioCuoponUSD": "0", "value": 1, "valueUSD": 1, "flight": "PFTRE", "passengerName": "JUAN PEREZ", "amountMXN": 1
-      }
-  ]
-}

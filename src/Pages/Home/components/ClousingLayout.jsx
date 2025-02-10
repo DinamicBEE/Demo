@@ -1,9 +1,9 @@
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger } from "@components/ui/dialog";
-import { Tabs, Box, Button } from "@chakra-ui/react"
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import { Tabs, Box } from "@chakra-ui/react"
 import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
-//import { Button } from "@components/ui/button"
 import HeaderClousing from "./HeaderClousing"
-import { lazy } from "react";
+import { lazy, useState, Suspense } from "react";
+import FooterClousing from "./FooterClousing";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
@@ -13,24 +13,25 @@ const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing")
 const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
 function ClousingLayout({ isOpen, onClose, employee}) {
+    const [value, setValue] = useState("")
 
     return (
-        <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+        <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
+                    <Box>
+                        <HeaderClousing id={employee?.id} employe={employee?.employeId}></HeaderClousing>
+                    </Box>
                 </DialogHeader>
 
-                <DialogBody>
-
-                    <Box>
-                        <HeaderClousing id={employee?.id} employe={employee?.employe}></HeaderClousing>
-                    </Box>
+                <DialogBody>                   
                     
-                    
-                    <Tabs.Root variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
+                    <Tabs.Root onValueChange={(e) => {
+                            setValue(e.value)
+                        }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
-                            <Tabs.Trigger >
+                            <Tabs.Trigger value="cash">
                                 <LuUser />
                                 Efectivo
                             </Tabs.Trigger>
@@ -38,11 +39,11 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                                 <LuFolder />
                                 TDC
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="customers">
+                            <Tabs.Trigger value="customer">
                                 <LuSquareCheck />
                                 Clientes
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="special-customers">
+                            <Tabs.Trigger value="specialCustomer">
                                 <LuUser />
                                 Clientes especiales
                             </Tabs.Trigger>
@@ -50,7 +51,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                                 <LuFolder />
                                 Prepago
                             </Tabs.Trigger>
-                            <Tabs.Trigger value="employees">
+                            <Tabs.Trigger value="employee">
                                 <LuSquareCheck />
                                 empleados
                             </Tabs.Trigger>
@@ -60,32 +61,60 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                             </Tabs.Trigger>
                         </Tabs.List>
 
-                        <Tabs.Content>
-                            <CashClousing data={employee} />
+                        <Tabs.Content value="cash">
+                            {value === "cash" && (
+                                <Suspense fallback={<div>Cargando Efectivo...</div>}>
+                                    <CashClousing data={employee} />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="tdc">
-                            <TDCClousing />
+                            {value === "tdc" && (
+                                <Suspense fallback={<div>Cargando TDC...</div>}>
+                                  <TDCClousing data={employee} />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="customers">
-                            <CustomersClousing />
+                        <Tabs.Content value="customer">
+                            {value === "customer" && (
+                                <Suspense fallback={<div>Cargando Clientes...</div>}>
+                                    <CustomersClousing data={employee} />
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="special-customers">
-                            <SpecialCustomersClousing />
+                        <Tabs.Content value="specialCustomer">
+                            {value === "specialCustomer" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <SpecialCustomersClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="prepaid">
-                            <PrepaidClousing />
+                            {value === "prepaid" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <PrepaidClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
-                        <Tabs.Content value="employees">
-                            <EmployeesClousing />
+                        <Tabs.Content value="employee">
+                            {value === "employee" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <EmployeesClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                         <Tabs.Content value="inter-company">
-                            <IntercompanyClousing />
+                            {value === "inter-company" && (
+                                <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
+                                    <IntercompanyClousing data={employee}/>
+                                </Suspense>
+                            )}
                         </Tabs.Content>
 
                     </Tabs.Root>
@@ -93,7 +122,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                 </DialogBody>
 
                 <DialogFooter>
-                   <Button>Save</Button>
+                   <FooterClousing clousingType={value} clousingId={employee?.id} />
                 </DialogFooter>
 
                 <DialogCloseTrigger />

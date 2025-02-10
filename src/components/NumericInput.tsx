@@ -52,7 +52,7 @@ function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInput
     );
 }
 
-function TableInput({value, id, currency, onChange}: TableInputProps){
+function TableInput({value, id, currency, keyValue, onChange}: TableInputProps){
     return(
         <NumericFormat
         customInput={Input}
@@ -65,7 +65,7 @@ function TableInput({value, id, currency, onChange}: TableInputProps){
         onChange={(event) => {
             if (onChange) {
                 const eventValue = event.target.value;
-                onChange(id, eventValue);
+                onChange(id, eventValue, keyValue);
             }}
         }
       />

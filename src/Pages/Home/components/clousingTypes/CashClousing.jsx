@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
 import { Box, Grid, Table, Text, FormatNumber  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
+import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
+import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
-import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/NumericInput";
-import FooterClousing from "../FooterClousing";
+import Loading from '@components/loading';
+import { CLOUSING_KEY } from "@models/constants.model";
 
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
-    const { handleInputChange, handleChangeTips, sendClousing } =  useHandleCashData(cashData, setCashData);
+    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id, data?.employeId);
+    const { setFooterData } = useFooter();
 
     useEffect(() => {
       async function fetchData() {
-        const cashData = await getCashData(data.id, data.employe);
+
+        const cashData = await getCashData(data.id, data.employeId);
+
+        setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
 
         setCashData(cashData);
+
       }
       fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +97,11 @@ function CashClousing ({ data }) {
           </Table.Root>
         </Table.ScrollArea>
 
-        <FooterClousing data={cashData} loading={cashLoading} onChange={sendClousing} />
+        {cashLoading && (
+          <Box position="fixed" top="50%" left="50%">
+            <Loading />
+          </Box>
+        )}
 
       </Box>
     );

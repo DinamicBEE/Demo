@@ -1,24 +1,31 @@
 import { useState } from "react";
 import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
-import { useHeaders } from "@context/clousing/headerContext";
+import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
 import { HeaderClousingProps, HeaderData } from "@models/common.clousing.model"
+import { CurrencyInput } from "@components/NumericInput";
 
 function HeaderClousing ({ id, employe }: HeaderClousingProps) {
-    const [header, setHeader] = useState<HeaderData | undefined>();
-    const {loading, getHeader} = useHeaders();
+    const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
+    const headerContext = useHeaders()
+    if (!headerContext) {
+        return null;
+    }
+    const {loading, header, getHeader} = headerContext;
 
 
     useEffect(()=>{
         async function fetchData() {
-        const header = await getHeader(id, employe);
-        console.log(header);
-        setHeader(header);
+            if(!header[id]){
+                const data = await getHeader(id, employe);
+                setLocalHeader(data);
+            } else {
+                setLocalHeader(header[id][employe]);
+            }
         }
-        fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+        fetchData()
+    },[header]);
 
     return(
         <Box>
@@ -30,75 +37,45 @@ function HeaderClousing ({ id, employe }: HeaderClousingProps) {
                 <Group>
                     <InputAddon>CDC</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={header?.cdc || ""} placeholder="CDC" readOnly />
+                        <Input value={localHeader?.cdc || ""} placeholder="CDC" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Ubicación</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={header?.location || ""} placeholder="Ubicación" readOnly />
+                        <Input value={localHeader?.location || ""} placeholder="Ubicación" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Empresa</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={header?.subsidiary || ""} placeholder="Empresa" readOnly />
+                        <Input value={localHeader?.subsidiary || ""} placeholder="Empresa" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Fecha</InputAddon>
                     <Skeleton loading={loading}>
-                        <Input value={header?.date || ""} placeholder="Fecha" readOnly />
+                        <Input value={localHeader?.date || ""} placeholder="Fecha" readOnly />
                     </Skeleton>
                 </Group>
 
-                <Group>
-                    <InputAddon>Corte POS</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.totalPOS || ""} placeholder="Corte POS" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.totalPOS} name={"Corte POS"} loading={loading} />
 
-                <Group>
-                    <InputAddon>Corte físico</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.totalClousing || ""} placeholder="Corte físico" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.totalClousing} name={"Corte físico"} loading={loading} />
 
-                <Group>
-                    <InputAddon>Diferencia</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.difference || ""} placeholder="Diferencia" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.difference} name={"Diferencia"} loading={loading} />
 
-                <Group>
-                    <InputAddon>Servicio 10%</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.service || ""} placeholder="Servicio 10%" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={loading} />
 
-                <Group>
-                    <InputAddon>Descuento + IVA POS</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.discountPOS || ""} placeholder="Descuento + IVA POS" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.discountPOS} name={"Descuento + IVA POS"} loading={loading} />
 
-                <Group>
-                    <InputAddon>Descuento físico</InputAddon>
-                    <Skeleton loading={loading}>
-                        <Input value={header?.discountClousing || ""} placeholder="Descuento físico" readOnly />
-                    </Skeleton>
-                </Group>
+                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={loading} />
 
                 <Button size="sm" className="primary-button">
-                    Toggle
+                    Actualizar
                 </Button>
             </Grid>
 

@@ -9,11 +9,11 @@ import { API_AUTH } from "./settings";
  * @param {String} password 
  * @returns {Promise<Object>}
  */
-export const loginUser = async (email, password) => {
+export const loginUser = async (email: string, password: string) => {
     try {
       const response = await axios.post(`${API_AUTH}/login`, { email, password });
       return response.data;
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(
         error.response?.data?.error || "Error al intentar iniciar sesión"
       );
