@@ -2,7 +2,6 @@ import { TotalModel } from "./common.clousing.model";
 
 export interface IntercompanyContextType {
     intercompany: IntercompanyModel | {};
-    intercompanyLoading: boolean;
     error: string;
     getIntercompanyData: (clousingId: number, employeeId: number) => Promise<IntercompanyModel>;
     setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number, employeeId:number) => void;

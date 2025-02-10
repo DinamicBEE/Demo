@@ -9,14 +9,11 @@ export const useIntercompanyContext = () => useContext(intercompanyContext);
 
 export function IntercompanyClousingProvider({children}: {children: ReactNode}) {
     const [intercompany, setIntercompany] = useState<IntercompanyContext>({})
-    const [intercompanyLoading, setIntercompanyLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     const getIntercompanyData = useCallback( async(clousingId:number, employeeId:number)=>{
-        setIntercompanyLoading(true);
 
         if(intercompany[clousingId]?.[employeeId]){
-            setIntercompanyLoading(false);
             return intercompany[clousingId]?.[employeeId];
         }
 
@@ -41,10 +38,6 @@ export function IntercompanyClousingProvider({children}: {children: ReactNode}) 
             
             throw error;
             
-        } finally {
-
-            setIntercompanyLoading(false);
-
         }
 
     },[intercompany]);
@@ -88,12 +81,11 @@ export function IntercompanyClousingProvider({children}: {children: ReactNode}) 
     const value = useMemo(
         ()=>({
             intercompany,
-            intercompanyLoading,
             error,
             getIntercompanyData,
             setIntercompanyData
         }), 
-        [intercompany, intercompanyLoading, error, getIntercompanyData, setIntercompanyData]
+        [intercompany, error, getIntercompanyData, setIntercompanyData]
     );
 
     return (

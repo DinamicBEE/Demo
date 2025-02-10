@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Button  } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, ListCollection, createListCollection, SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem  } from "@chakra-ui/react";
 import { Toaster } from "@components/ui/toaster";
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
@@ -10,19 +10,26 @@ import { Employee } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import FilterEmployee from "@components/FilterEmployee";
 import { TableInput } from "@components/NumericInput";
+import { useList } from "@context/home/listsContext";
+import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
 function IntercompanyClousing({data}: any) {
   const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [subsidiary, setSubsidiary] = useState<ListCollection>(createListCollection({ items: [] }));
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const intercompanyContext = useIntercompanyContext();
-  const employeeContext = useEmployeeContext();
+  const { getIntercompanyData, setIntercompanyData } = useIntercompanyContext();
+  const { getEmployeeList } = useEmployeeContext();
+  const { getSubsidiariesData } = useList();
   const footerContext = useFooter();
 
   useEffect( ()=>{
     async function fetchData() {
-      const intercompanyData: IntercompanyModel = await intercompanyContext.getIntercompanyData(data?.id, data?.employeId);
-      const employeeList: Employee[] =  await employeeContext.getEmployeeList();
+      setLoading(true)
+      const intercompanyData: IntercompanyModel = await getIntercompanyData(data?.id, data?.employeId);
+      const employeeList: Employee[] =  await getEmployeeList();
+      const subsidiariesData = await getSubsidiariesData();
 
       if(intercompanyData){
         footerContext?.setFooterData(intercompanyData.total, data.id, CLOUSING_KEY.INTERCOMPANY);
@@ -30,6 +37,17 @@ function IntercompanyClousing({data}: any) {
 
       setIntercompany(intercompanyData);
       setEmployees(employeeList);
+
+      const subList = createListCollection({
+          items: subsidiariesData.map(item =>({
+              value: item.id,
+              label: item.name
+          }))
+      })
+      
+      setSubsidiary(subList);
+
+      setLoading(false)
 
     }
 
@@ -46,7 +64,7 @@ function IntercompanyClousing({data}: any) {
 
     setIntercompany(intercompanyData);
 
-    intercompanyContext.setIntercompanyData(intercompanyData, data?.id, data?.employeId)
+    setIntercompanyData(intercompanyData, data?.id, data?.employeId)
 
   }
 
@@ -83,7 +101,22 @@ function IntercompanyClousing({data}: any) {
 
   }
 
-  function handleSubsidiary(){
+  function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number){
+    
+    const subSelect = Number(event.value[0]);
+    const subName = subsidiary.items.find(item => item.value === event.value[0]).label;
+
+    const updateLine: IntercompanyLine[] = intercompany?.lines.map((item:IntercompanyLine) => 
+      item.id === itemId
+        ? {
+          ...item,
+          subsidiaryId: subSelect,
+          subsidiaryname: subName
+        }
+        : item
+    )
+
+    updateIntercompany(updateLine);
     
   }
   
@@ -107,11 +140,25 @@ function IntercompanyClousing({data}: any) {
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
-                  <FilterEmployee employees={employees}  label={false} itemId={item.id} onSelect={handleEmployeeData} />
+                  <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} onSelect={handleEmployeeData} />
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text> {item.subsidiaryname} </Text>
+                  <SelectRoot collection={subsidiary}
+                            onValueChange={(event) => handleSubsidiary(event, item.id)}>
+                    <SelectTrigger>
+                      <SelectValueText placeholder={item.subsidiaryname || "Selecciona Subsidiaria"} />
+                    </SelectTrigger>
+                    
+                    <SelectContent>
+                        {subsidiary.items.map((item) => (
+                            <SelectItem item={item} key={item.value}>
+                                {item.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+
+                  </SelectRoot>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
@@ -138,7 +185,7 @@ function IntercompanyClousing({data}: any) {
         </Table.Root>
       </Table.ScrollArea>
 
-      {intercompanyContext.intercompanyLoading && (
+      {loading && (
         <Box position="fixed" top="50%" left="50%">
           <Loading />
         </Box>
