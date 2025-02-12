@@ -185,8 +185,8 @@ function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
                 </Flex>
                 {data.items.length > 0 &&
                   data.items.map((item) => (
-                    <Box>
-                      <Text fontWeight="medium" marginBottom={2}>
+                    <Box key={item.bank}>
+                      <Text fontWeight="bold" marginBottom={2}>
                         {item.bank}
                       </Text>
 
@@ -249,7 +249,7 @@ function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
             </GridItem>
             <GridItem>
               <Flex direction="column" gap={2}>
-                <Text fontWeight="medium">Número de lotes</Text>
+                <Text fontWeight="extrabold" textStyle="lg">Número de lotes</Text>
                 <Table.ScrollArea rounded="md" borderWidth="1px">
                   <Table.Root size="sm" variant="outline" striped>
                     <Table.Header>

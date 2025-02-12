@@ -10,10 +10,10 @@ import {
   Spinner,
   createListCollection,
   Input,
-  Field,
   Flex,
+  Field,
 } from "@chakra-ui/react";
-
+import DatePicker from "./components/DatePicker";
 import {
   SelectContent,
   SelectItem,
@@ -24,7 +24,6 @@ import {
 } from "@components/ui/select";
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { Alert } from "@components/ui/alert";
-
 
 const companies = createListCollection({
   items: [
@@ -59,8 +58,6 @@ function LotClosure() {
   const [location, setLocation] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
-  /* const [value, setValue] = useState<[Date | null, Date | null]>([null, null]);
-   */
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack spacing={4} align="start">
@@ -89,16 +86,6 @@ function LotClosure() {
               </SelectContent>
             </SelectRoot>
 
-            {/* <DatePicker
-              selectsRange={true}
-              startDate={startDate}
-              endDate={endDate}
-              onChange={(update) => {
-                setDateRange(update);
-              }}
-              isClearable={true}
-            /> */}
-
             <SelectRoot collection={locations} size="sm">
               <SelectLabel>Centro de consumo</SelectLabel>
               <SelectTrigger>
@@ -112,6 +99,15 @@ function LotClosure() {
                 ))}
               </SelectContent>
             </SelectRoot>
+
+            <Field.Root>
+              <Field.Label>Rango de fechas</Field.Label>
+              <DatePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={setDateRange}
+              />
+            </Field.Root>
             <Flex align="center" justify="center">
               <Button className="primary-button">Buscar</Button>
             </Flex>
