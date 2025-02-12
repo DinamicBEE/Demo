@@ -5,17 +5,17 @@ import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
 import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
 
-function FooterClousing({clousingType, clousingId, data, loading, onChange}: FooterClousing) {
+function FooterClousing({clousingType, clousingId}: FooterClousing) {//, data, loading, onChange
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
 
-  const footerContext = useFooter();
-  if (!footerContext) {
-    throw new Error("FooterContext is undefined");
-  }
-  const { getFooterData } = footerContext;
-
+  // const footerContext = useFooter();
+  // if (!footerContext) {
+  //   throw new Error("FooterContext is undefined");
+  // }
+  // const { getFooterData } = footerContext;3
+  const { getFooterData } = useFooter();
 
   useEffect(() => {
     async function fetchFooterData() {

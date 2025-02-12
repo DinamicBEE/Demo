@@ -6,6 +6,7 @@ import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
 import Loading from '@components/loading';
+import { ClousingLinesModel } from '@models/common.clousing.model';
 
 interface TableOfTotalsProps {
   subsidiary: number;
@@ -19,7 +20,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     
     function handleExportCSV() {
-        exportCSV({data,header})
+        exportCSV(data,header)
     }
 
     const openDialog = (item: any) => {
@@ -42,7 +43,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
       {loading && <Loading />}
 
-      {data!=null && <Box>
+      <Box>
         <Box mb={6}>
           <Grid
             templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
@@ -54,7 +55,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
             <Text>Fecha: {header.date}</Text>
             <Text>Hora: {header.time}</Text>
             <CurrencyInput name={"Total Ventas"} value={header.totalPOS} loading={false} />
-            <CurrencyInput name={"Total Ventas Registradas"} value={header.totalClousing} loading={false} />
+            <CurrencyInput name={"Total Ventas Registradas"} value={header.totalPhysical} loading={false} />
             <CurrencyInput name={"Diferencia"} value={header.difference} loading={false} />
 
             <Text></Text>
@@ -105,7 +106,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {data.map((item: any) => (
+                {data.map((item: ClousingLinesModel) => (
                   <Table.Row key={item.id}>
                     <Table.Cell textAlign="center">
                       <Text 
@@ -127,7 +128,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.totalClousing} style="currency" currency="USD" />
+                        <FormatNumber value={item.totalPhysical} style="currency" currency="USD" />
                       </Text>
                     </Table.Cell>
                     
@@ -145,7 +146,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.mxm} style="currency" currency="USD" />
+                        <FormatNumber value={item.extra} style="currency" currency="USD" />
                       </Text>
                     </Table.Cell>
 
@@ -181,13 +182,13 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.generalCXC} style="currency" currency="USD" />
+                        <FormatNumber value={item.customer} style="currency" currency="USD" />
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.specialCXC} style="currency" currency="USD" />
+                        <FormatNumber value={item.specialCustomer} style="currency" currency="USD" />
                       </Text>
                     </Table.Cell>
 
@@ -199,7 +200,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <FormatNumber value={item.employetotal} style="currency" currency="USD" />
+                        <FormatNumber value={item.employees} style="currency" currency="USD" />
                       </Text>
                     </Table.Cell>
 
@@ -219,7 +220,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
         {data.length===0 && <h2>
                     No hay data
                 </h2>}
-      </Box>}
+      </Box>
 
       <ClousingLayout isOpen={isDialogOpen} employee={selectedEmployee} onClose={closeDialog}></ClousingLayout>
     </>

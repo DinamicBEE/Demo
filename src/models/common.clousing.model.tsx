@@ -1,5 +1,51 @@
 import { CLOUSING_KEY } from "./constants.model";
 
+export interface ClousingModel {
+  header: HeaderClousingModel;
+  clousingLines: ClousingLinesModel[];
+}
+
+export interface HeaderClousingModel {
+  subsidiaryName: string;
+  storeName: string;
+  date: string;
+  time:string;
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+}
+
+export interface ClousingLinesModel {
+  id: number;
+  employe: string;
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+  status: string;
+  extra: number;
+  mxm: number;
+  usd: number;
+  eur: number;
+  lib: number;
+  can: number;
+  customer: number;
+  specialCustomer: number;
+  prepaid: number;
+  employees: number;
+  intercompany: number;
+  service: number;
+  discount: number;
+  iva: number;
+}
+
+export interface ClousingContextType {
+  header: HeaderClousingModel;
+  data: ClousingLinesModel[];
+  loading: boolean;
+  error: string;
+  getInfo: (subsidiary: number, store: number) => void;
+}
+
 export interface HeaderContextType {
   header: any
   error: string;
@@ -38,11 +84,11 @@ export interface ClousingType{
 }
 
 export interface FooterClousing {
-  clousingType: string;
+  clousingType: CLOUSING_KEY;
   clousingId: number;
-  data?: TotalModel | undefined;
-  loading?: boolean;
-  onChange?: () => Promise<boolean>;
+  // data?: TotalModel | undefined;
+  // loading?: boolean;
+  // onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {

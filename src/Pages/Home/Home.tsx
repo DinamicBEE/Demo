@@ -24,6 +24,7 @@ function Home() {
     const [storeBySub, setStoreBySub] = useState<ListCollection>(createListCollection({ items: [] }));
     const [location, setLocation] = useState<number>(0);
     const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
+    const [showTable, setShowTable] = useState<boolean>(false);
     const { getInfo } = useClousing();
  
     const { getStoresData, error, getSubsidiariesData } = useList();
@@ -148,7 +149,10 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        {location!=0 && <Button className='primary-button' onClick={()=>{getInfo(SubSelect, location)}}>
+                        {location!=0 && <Button className='primary-button' onClick={()=>{
+                                setShowTable(true)
+                                getInfo(SubSelect, location)}
+                            }>
                             Buscar
                         </Button>}
 
@@ -156,7 +160,7 @@ function Home() {
                 </HStack>
             </VStack>
 
-            <TableOfTotals subsidiary={SubSelect} store={location} />
+            {showTable && <TableOfTotals subsidiary={SubSelect} store={location} />}
                 
         </Box>
         

@@ -1,9 +1,9 @@
-//import axios from 'axios';
+import axios from 'axios';
 import { createListCollection } from "@chakra-ui/react"
 import { CurrencyModel } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { Employee, ReasonsModel } from "@models/employee.model";
-//import { API_CATALOG } from "./settings"
+import { API_CATALOG } from "./settings"
 
 //const BASE_URL = 'https://run.mocky.io/v3';
 

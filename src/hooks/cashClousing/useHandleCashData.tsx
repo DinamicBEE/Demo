@@ -73,20 +73,20 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
 
   }
 
-  async function sendClousing() {
+  // async function sendClousing() {
     
-    const response:any = await sendCashClousing(cashData);
+  //   const response:any = await sendCashClousing(cashData);
 
-    if (response.success) {
-      console.log('Corte de caja enviado correctamente');
-      showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
-    } else{
-      console.log('Error al enviar el corte de caja');
-      showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
-    }
+  //   if (response.success) {
+  //     console.log('Corte de caja enviado correctamente');
+  //     showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
+  //   } else{
+  //     console.log('Error al enviar el corte de caja');
+  //     showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   function showToast(alertModel:AlertClousing, error: string | null) {
     toaster.create({
@@ -97,5 +97,5 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
     })
   }
   
-  return { handleInputChange, handleChangeTips, sendClousing };
+  return { handleInputChange, handleChangeTips,  };//sendClousing
 };
