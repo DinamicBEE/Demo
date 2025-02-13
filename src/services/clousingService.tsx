@@ -7,6 +7,7 @@ import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
 import { IntercompanyModel } from "@models/intercompany.model";
+import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
 
 /**
@@ -178,7 +179,7 @@ export const validateDetails = async(clousingId: number, lineId: number, details
 
 /**
  * This feature gets the information 
- * of the selected box cut cash section
+ * of the selected box cut customer section
  * @param {number} clousingId 
  * @returns {Promise<CustomerModel>}
  */
@@ -215,8 +216,14 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
     }
 }
 
-export const getSpecialCustomerClousing = async (clousingId: number, employeeId: number) => {
-    console.log(clousingId, employeeId)
+/**
+ * This feature gets the information 
+ * of the selected box specialcustomer cash section
+ * @param {number} clousingId 
+ * @returns {Promise<CustomerModel>}
+ */
+export const getSpecialCustomerClousing = async (clousingId: number): Promise<SpecialCustomerModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -224,7 +231,6 @@ export const getSpecialCustomerClousing = async (clousingId: number, employeeId:
 
         // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
         // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
-        console.log(response)
 
         const data = {
             //...response.data,
@@ -241,7 +247,7 @@ export const getSpecialCustomerClousing = async (clousingId: number, employeeId:
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return {} as SpecialCustomerModel;
     }
 }
 
@@ -419,7 +425,7 @@ export const HeaderDataMocky = {
 
 export const CashData = {
     "id": 1,
-    "employeId": 5,
+    "employeeId": 5,
     "electronicTips": 9622.32,
     "currencies": [
         {"id":1, "currency": "MXN", "totalPOS": 1000, "totalFisico": 1000, "difference": 0, "exchangeRate": 1, "originalCurrency": 20},
@@ -482,7 +488,7 @@ export const CustomerMOCKData = {
 
 export const SpecialCustomerMOCKDATA = {
   "id": 1,
-  "employeId": 150,
+  "employeeId": 150,
   "total":{
     "totalPOS": 3500,
     "totalPhysical": 3500,

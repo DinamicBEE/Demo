@@ -6,13 +6,13 @@ import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCusto
 import { TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 
-export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerModel, setSpecialCustomer: any, clousingId: number, employeId: number) =>{
+export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerModel, setSpecialCustomer: any, clousingId: number) =>{
 
     const specialCustRef = useRef(specialCustomerData);
 
     const { updateTotal } = useHeaders();
     const { setFooterData } = useFooter();
-    const specialCustContext = useSpecialCustContext();
+    const { setSpecialCustData } = useSpecialCustContext();
 
     function handleInputTextData(value: string, id: number, key: string) {
       const updatedCurrencies = specialCustomerData.lines.map((item: SpecialCustomerLines) =>
@@ -29,7 +29,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
         lines: updatedCurrencies,
       });
       specialCustRef.current = specialCustomerData;
-      specialCustContext?.setSpecialCustData(specialCustRef.current, employeId, clousingId);
+      setSpecialCustData(specialCustRef.current, clousingId);
 
     }
 
@@ -98,9 +98,9 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
         updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);
 
-        setFooterData(newTotal, clousingId, "specialCustomer");
+        setFooterData(newTotal, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);
 
-        specialCustContext?.setSpecialCustData(updateCustomerData, employeId, clousingId);
+        setSpecialCustData(updateCustomerData, clousingId);
 
     }
     

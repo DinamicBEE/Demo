@@ -11,17 +11,16 @@ import { CLOUSING_KEY } from "@models/constants.model";
 function SpecialCustomersClousing({data}: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
 
-  const footerContext = useFooter();
-  const specialCustomerContext = useSpecialCustContext();
-  const handleSpecialCustomer = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id, data?.employeId)
+  const { setFooterData } = useFooter();
+  const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
+  const { handleInputTextData, handleUpdateAmountMXN } = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id)
 
   useEffect(()=>{
     async function fetchData() {
-      const specialCustomer: SpecialCustomerModel | undefined = specialCustomerContext?.getSpecialCustData
-            ? await specialCustomerContext?.getSpecialCustData(data?.id, data?.employeId) : undefined;
+      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id);
 
       if (specialCustomer) {
-        footerContext?.setFooterData?.(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
+        setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
       }
 
       setSpecialCustomer(specialCustomer);
@@ -103,37 +102,37 @@ function SpecialCustomersClousing({data}: any) {
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "folioCuopon")} />
+                        <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuopon")} />
                       </Text>
                     </Table.Cell>
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "folioCuoponUSD")} />
+                        <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuoponUSD")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.value} id={item.id} currency={false} keyValue={"value"} onChange={handleSpecialCustomer?.handleUpdateAmountMXN} />
+                        <TableInput value={item.value} id={item.id} currency={false} keyValue={"value"} onChange={handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="end">
                       <Text>
-                        <TableInput value={item.valueUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleSpecialCustomer?.handleUpdateAmountMXN} />
+                        <TableInput value={item.valueUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleUpdateAmountMXN} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.flight} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "flight")} />
+                        <Input textAlign="center" value={item.flight} onChange={(e) => handleInputTextData(e.target.value, item.id, "flight")} />
                       </Text>
                     </Table.Cell> 
 
                     <Table.Cell textAlign="center">
                       <Text>
-                        <Input textAlign="center" value={item.passengerName} onChange={(e) => handleSpecialCustomer?.handleInputTextData?.(e.target.value, item.id, "passengerName")} />
+                        <Input textAlign="center" value={item.passengerName} onChange={(e) => handleInputTextData(e.target.value, item.id, "passengerName")} />
                       </Text>
                     </Table.Cell> 
 
@@ -149,7 +148,7 @@ function SpecialCustomersClousing({data}: any) {
             </Table.Root>
           </Table.ScrollArea>
 
-          {specialCustomerContext?.specialCustLoading && (
+          {specialCustLoading && (
             <Box position="fixed" top="50%" left="50%">
               <Loading />
             </Box>

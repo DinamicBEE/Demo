@@ -15,7 +15,7 @@ export interface CashContext {
 
 export interface CashModel {
     id: number;
-    employeId: number;
+    employeeId: number;
     electronicTips: number;
     tips?: number;
     currencies: CashLines[];
