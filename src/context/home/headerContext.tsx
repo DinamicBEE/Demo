@@ -50,10 +50,9 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY)=>{
-    console.log(newTotal)
+    
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
-    console.log(currentClousing)
 
     const lastCashTotal = currentClousing.totalPOS || 0;
     const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
