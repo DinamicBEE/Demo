@@ -12,6 +12,7 @@ import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
 import { exportCSV } from "../../utils/exportCSV";
+import { lotClosure } from "@models/lotClosure.model";
 
 interface TableOfTotalsProps {
   company: number;
@@ -26,7 +27,11 @@ function TableOfLotClosure({
 }: TableOfTotalsProps) {
   const { lotsClosure, fetchLotClosureData } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [selectedCompany, setSelectedCompany] = useState<lotClosure>(
+    {} as lotClosure
+  );
+  const [status, setStatus] = useState<STATUS>(STATUS.OPEN);
+
   const statusColor = (status: STATUS) => {
     switch (status) {
       case STATUS.CLOSED:
@@ -65,10 +70,11 @@ function TableOfLotClosure({
   const openDialog = (item: any) => {
     setSelectedCompany(item);
     setIsDialogOpen(true);
+    setStatus(item.status);
   };
 
   const closeDialog = () => {
-    setSelectedCompany(null);
+    setSelectedCompany({} as lotClosure);
     setIsDialogOpen(false);
   };
 
@@ -203,7 +209,8 @@ function TableOfLotClosure({
       )}
       <LoteClosureDialog
         isOpen={isDialogOpen}
-        company={""}
+        company={selectedCompany}
+        status={status}
         onClose={closeDialog}
       />
     </>

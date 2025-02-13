@@ -1,7 +1,6 @@
 import { STATUS } from "@models/status.model";
 import { table } from "console";
 
-
 export const getLotsClosure = async (
   dateRange: string,
   locationId: number,
@@ -88,22 +87,75 @@ const lotsClosure = [
   },
 ];
 
-const lotClosure = {
-  id: 1,
-  location: "Location 1",
-  company: "Company 1",
-  dateClosed: "2021-09-01",
-  lotsNumbers: [
-    {
-      id: 1,
-      lotNumber: "123456",
-      amount: 100,
-    }
-  ],
-  total:{
-    totalPos: 100,
-    totalClousing: 200,
-    totalDifference: 100
+const companies = [
+  {
+    id: 1,
+    subsidiary: "Sub1",
+    location: "1",
+    closedLot: "22/09/2021",
+    lostNumbers: [
+      {
+        id: 1,
+        lotNumber: "123456",
+        amount: 100,
+      },
+    ],
+    totals: {
+      totalPos: 100,
+      totalClosing: 200,
+      totalDifference: 100,
+    },
+    lines: [
+      {
+        id: 1,
+        bank: "BBVA",
+        pos: 100,
+        closing: 200,
+        lot: 100,
+        difference: 100,
+        afiliates: [
+          {
+            id: 1,
+            afiliate: "Afiliate 1",
+            amount: 100,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    subsidiary: "Sub2",
+    location: "2",
+    closedLot: "22/09/2021",
+    lostNumbers: [
+      {
+        id: 1,
+        lotNumber: "123456",
+        amount: 100,
+      },
+    ],
+    totals: {
+      totalPos: 100,
+      totalClosing: 200,
+      totalDifference: 100,
+    },
+    lines: [
+      {
+        id: 1,
+        bank: "Banamex",
+        pos: 100,
+        closing: 200,
+        lot: 100,
+        difference: 100,    
+        afiliates: [
+          {
+            id: 1,
+            afiliate: "Afiliate 1",
+            amount: 100,
+          },
+        ],
+      },
+    ],
   }
-
-}
+];

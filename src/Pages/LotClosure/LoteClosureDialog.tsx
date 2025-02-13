@@ -19,11 +19,13 @@ import {
   DialogFooter,
 } from "@components/ui/dialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
+import { lotClosure } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
 interface LoteClosureDialog {
   isOpen: boolean;
   onClose: () => void;
-  company: string;
+  company: lotClosure;
+  status: STATUS;
 }
 
 const data = createListCollection({
@@ -132,7 +134,7 @@ const data = createListCollection({
   ],
 });
 
-function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
+function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDialog) {
   const { updateStatus } = useLotClosureList();
 
   const handleUpdateStatus = (lotId: number, status: STATUS) => {
@@ -293,23 +295,25 @@ function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
         <DialogFooter>
           <Flex gap={2} wrap={"wrap"}>
             <Button
-              onClick={() => handleUpdateStatus(1, STATUS.CLOSED)}
+              onClick={() => handleUpdateStatus(company.id, STATUS.CLOSED)}
+              disabled={status === STATUS.CLOSED}
               className="primary-button"
               width={"auto !important"}
             >
               Cerrar lote
             </Button>
             <Button
-              onClick={() => handleUpdateStatus(1, STATUS.REOPENED)}
+              onClick={() => handleUpdateStatus(company.id, STATUS.REOPENED)}
               className="primary-button"
               width={"auto !important"}
             >
               Reabrir lote
             </Button>
             <Button
-              onClick={() => handleUpdateStatus(1, STATUS.WITH_DIFFERENCE)}
+              onClick={() => handleUpdateStatus(company.id, STATUS.WITH_DIFFERENCE)}
               className="primary-button"
               width={"auto !important"}
+              disabled={status === STATUS.CLOSED}
             >
               Guardar
             </Button>
