@@ -6,10 +6,15 @@ import Layout from './components/Layout';
 import './App.css'
 import routesConfig from './routes/routesConfig';
 import Loading from './components/Loading';
+import ErrorDialog from '@components/ErrorDialog';
+import { useInterceptor } from '@hooks/useInterceptor';
+import { AxiosInterceptor } from './AxiosInterceptor';
 
 const Login = lazy (() => import('./pages/Login/Login'));
 
 function App() {
+  useInterceptor();
+  
   return (
     <ContextProvider>
       <Router>
@@ -47,6 +52,8 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
+      <ErrorDialog />
+      <AxiosInterceptor />
     </ContextProvider>
   )
 }

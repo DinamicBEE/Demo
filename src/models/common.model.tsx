@@ -29,3 +29,10 @@ export interface ListContextType {
   getSubsidiariesData: () => Promise<SubsidiaryModal[]>;
   getStoresData: () => Promise<StoreModel[]>;
 }
+
+export interface ErrorDialogContextType {
+  isOpen: boolean;
+  errorMessage: string;
+  showErrorDialog: (message: string) => void;
+  closeErrorDialog: () => void;
+}
