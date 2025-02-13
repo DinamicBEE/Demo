@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react';
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { getHeaders } from '@services/clousingService';
-import { HeaderContextType } from '@models/common.clousing.model'
+import { HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/constants.model';
 
 const headersContext = createContext<HeaderContextType>({} as HeaderContextType);
@@ -9,7 +9,7 @@ const headersContext = createContext<HeaderContextType>({} as HeaderContextType)
 export const useHeaders = () => useContext(headersContext)
 
 export function HeadersProvider({ children }: { children: ReactNode }) {
-  const [header, setHeader] = useState<any>({});
+  const [header, setHeader] = useState<HeaderContext>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const headerRef = useRef(header);
@@ -19,22 +19,20 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     headerRef.current = newHeader;
   };
   
-  const getHeader = async (clousingId:number, employeeId:number) => {
+  const getHeader = async (clousingId:number) => {
     setLoading(true);
     
-    if(headerRef.current[clousingId]?.[employeeId]) {
+    if(headerRef.current[clousingId]) {
       setLoading(false);
-      return headerRef.current[clousingId][employeeId];
+      return headerRef.current[clousingId];
     }
 
     try {
-      const data = await getHeaders(clousingId, employeeId);
+      const data = await getHeaders(clousingId);
       
       const updatedHeader  = {
         ...headerRef.current,
-        [clousingId]: {
-          ...(headerRef.current[clousingId] || {}),
-          [employeeId]: data},
+        [clousingId]: data,
       }
       
       updateHeaderState(updatedHeader);
@@ -42,52 +40,46 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
       return data;
     } catch (error) {
       setError(error instanceof Error ? error.message : String(error));
+      
+      return {} as HeaderData
+
     } finally {
       setLoading(false);
     }
 
   }
 
-  const updateTotal = (newTotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY)=>{
+  const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY)=>{
     console.log(newTotal)
     const currentHeader = headerRef.current;
-    const currentClousing = currentHeader[clousingId]?.[employeeId]?.closures[clousingType] || {};
+    const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
     console.log(currentClousing)
 
     const lastCashTotal = currentClousing.totalPOS || 0;
-    const lastCashDifference = currentClousing.difference || 0;
     const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
 
-    const lastTotalPOS = currentHeader[clousingId]?.[employeeId]?.totalPOS
-    const lastDifference = (currentHeader[clousingId]?.[employeeId]?.difference || 0) - Math.abs(lastCashDifference);
-    const lastTotalClousing = (currentHeader[clousingId]?.[employeeId]?.totalClousing || 0) - lastCashPhysicalTotal;
+    const lastTotalPOS = (currentHeader[clousingId]?.totalPOS || 0);
+    const lastTotalClousing = (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal;
 
     const newDifference = lastCashTotal - newTotal
     const newTotalClousing = lastTotalClousing + newTotal;
 
-    console.log(lastDifference)
-    console.log(newDifference)
-    
     const updatedHeader = {
       ...currentHeader,
       [clousingId]: {
         ...(currentHeader[clousingId] || {}),
-        [employeeId]: {
-          ...(currentHeader[clousingId]?.[employeeId] || {}),
-          closures: {
-            ...(currentHeader[clousingId]?.[employeeId]?.closures || {}),
-            [clousingType]:{
-              totalPhysical: newTotal,
-              difference: Math.abs(newDifference),
-              totalPOS: lastCashTotal,
-            }
+        closures: {
+          ...(currentHeader[clousingId]?.closures || {}),
+          [clousingType]: {
+            totalPhysical: newTotal,
+            difference: Math.abs(newDifference),
+            totalPOS: lastCashTotal,
           },
-          difference: Math.abs(lastTotalPOS - newTotalClousing),
-          totalClousing: newTotalClousing,
-
-        }
-      }
-    }
+        },
+        difference: Math.abs(lastTotalPOS - newTotalClousing),
+        totalClousing: newTotalClousing,
+      },
+    };
 
     updateHeaderState(updatedHeader);
 

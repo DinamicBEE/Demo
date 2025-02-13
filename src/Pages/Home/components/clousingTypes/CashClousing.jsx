@@ -17,7 +17,7 @@ function CashClousing ({ data }) {
     useEffect(() => {
       async function fetchData() {
 
-        const cashData = await getCashData(data.id, data.employeId);
+        const cashData = await getCashData(data.id);
 
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
 

@@ -3,17 +3,17 @@
 
 //import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { CashModel } from "@models/cash.model";
-import { ResponseModel } from "@models/common.clousing.model";
+import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
 import { IntercompanyModel } from "@models/intercompany.model";
 import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
 
-export const getHeaders = async (clousingId: number, employeeId: number) => {
-    console.log(clousingId, employeeId)
+export const getHeaders = async (clousingId: number): Promise<HeaderData> => {//, employeeId: number
+    console.log(clousingId)
     try {
         //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
-        const response = HeaderData;
+        const response = HeaderDataMocky;
         const data = {
             ...response
         }
@@ -28,7 +28,7 @@ export const getHeaders = async (clousingId: number, employeeId: number) => {
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return {} as HeaderData;
     }
 }
 
@@ -395,27 +395,27 @@ export const sendCashClousing = async (body:any) => { //, clousingId: number
 
 
 
-export const HeaderData = {
-    "cdc": "No seleccionada",
-    "location": "No seleccionado",
-    "subsidiary": "No seleccionado",
-    "date": "2021-10-10 10:00",
-    "totalPOS": 3500,
-    "totalClousing": 3500,
-    "difference": 0,
-    "service": 1000,
-    "discountPOS": 1000,
-    "discountClousing": 2000,
-    "closures":{
-        "cash": {totalPOS:500, totalPhysical:500, difference:0},
-        "customer": {totalPOS:500, totalPhysical:500, difference:0},
-        "specialCustomer": {totalPOS:500, totalPhysical:500, difference:0},
-        "tdc": {totalPOS:500, totalPhysical:500, difference:0},
-        "employee": {totalPOS:500, totalPhysical:500, difference:0},
-        "prepaid": {totalPOS:500, totalPhysical:500, difference:0},
-        "intercompany": {totalPOS:500, totalPhysical:500, difference:0}
-    }
-}
+export const HeaderDataMocky = {
+  cdc: "No seleccionada",
+  location: "No seleccionado",
+  subsidiary: "No seleccionado",
+  date: "2021-10-10 10:00",
+  totalPOS: 3500,
+  totalClousing: 3500,
+  difference: 0,
+  service: 1000,
+  discountPOS: 1000,
+  discountClousing: 2000,
+  closures: {
+    cash: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    customer: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    specialCustomer: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    tdc: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    employee: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    prepaid: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+    intercompany: { totalPOS: 500, totalPhysical: 500, difference: 0 },
+  },
+};
 
 export const CashData = {
     "id": 1,

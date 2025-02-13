@@ -47,16 +47,15 @@ export interface ClousingContextType {
 }
 
 export interface HeaderContextType {
-  header: any
+  header: HeaderContext
   error: string;
   loading: boolean;
-  getHeader: (clousingId: number, employeeId: number) => Promise<any>;
-  updateTotal: (newtotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
+  getHeader: (clousingId: number) => Promise<HeaderData>;
+  updateTotal: (newtotal: number, clousingId: number, clousingType: CLOUSING_KEY) => void;
 }
 
-export interface HeaderClousingProps {
-  id: number;
-  employe: number;
+export interface HeaderContext {
+   [key: number]: HeaderData
 }
 
 export interface HeaderData {

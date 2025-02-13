@@ -74,7 +74,6 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
       updateTotal(
         newTotalPhysical || 0,
         clousingId,
-        employeId,
         CLOUSING_KEY.TDC
       );
 

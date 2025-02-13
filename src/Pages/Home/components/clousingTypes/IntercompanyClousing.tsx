@@ -82,7 +82,7 @@ function IntercompanyClousing({data}: any) {
 
     setIntercompanyData(intercompanyData, data?.id, data?.employeId);
 
-    updateTotal(newTotalFisico, data.id, data.employeId, CLOUSING_KEY.INTERCOMPANY);
+    updateTotal(newTotalFisico, data.id, CLOUSING_KEY.INTERCOMPANY);
 
     setFooterData(newTotal, data.id, CLOUSING_KEY.INTERCOMPANY);
 

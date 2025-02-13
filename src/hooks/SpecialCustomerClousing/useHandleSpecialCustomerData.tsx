@@ -96,7 +96,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           total: newTotal
         }
 
-        updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.SPECIALCUSTOMER);
+        updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);
 
         setFooterData(newTotal, clousingId, "specialCustomer");
 
