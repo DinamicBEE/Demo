@@ -22,7 +22,7 @@ export const useApprovalsList = () => {
 
 export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => {
   const [approvalsList, setApprovalsList] = useState<Approval[]>([]);
-  const [dataApproval, setDataApproval] = useState<Approval>({ id: 0, date: "", state: "", typeRequest: "", reasons: "", comment: "" });
+  const [dataApproval, setDataApproval] = useState<Approval>({ id: 0, date: "", state: "", typeRequest: "", reasons: "", comment: "", status: false });
 
   // Cargar datos de la API sin sobrescribir los registros agregados manualmente
   const fectApprovals = (approvals: Approval[]) => {

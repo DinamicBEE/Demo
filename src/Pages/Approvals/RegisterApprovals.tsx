@@ -4,21 +4,21 @@ import { Temporal } from "@js-temporal/polyfill";
 import { createListCollection, NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { Approval, RequestOpening } from "@models/approvals.model";
+import { Approval, RequestOpeningForm } from "@models/approvals.model";
 import { Field } from "@components/ui/field";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 
 interface RegisterApprovalsProps {
-  isOpen: any;
-  onClose: any;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, onClose }) => {
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RequestOpening>();
+  const { register, handleSubmit, formState: { errors } } = useForm<RequestOpeningForm>();
   const { addOrUpdateApprovalList } = useApprovalsList()
 
-  const onSubmitForm: SubmitHandler<RequestOpening> = (data: RequestOpening) => {
+  const onSubmitForm: SubmitHandler<RequestOpeningForm> = (data: RequestOpeningForm) => {
 
     const responseOpening: Approval = {
       id: getRandomExcluding(),
@@ -26,7 +26,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, on
       state: 'Abierto',
       typeRequest: '',
       reasons: data.reason,
-      comment: data.comment
+      comment: data.comment,
+      status: false
     };
 
     addOrUpdateApprovalList(responseOpening);
@@ -115,7 +116,7 @@ const reasons = createListCollection({
   ],
 });
 
-const getRandomExcluding = ()  => {
+const getRandomExcluding = () => {
   let num;
   do {
     num = Math.floor(Math.random() * 100) + 1; // Número entre 1 y 100
