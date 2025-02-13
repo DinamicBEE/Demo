@@ -3,14 +3,12 @@ import { TotalModel } from "./common.clousing.model";
 export interface IntercompanyContextType {
     intercompany: IntercompanyModel | {};
     error: string;
-    getIntercompanyData: (clousingId: number, employeeId: number) => Promise<IntercompanyModel>;
-    setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number, employeeId:number) => void;
+    getIntercompanyData: (clousingId: number) => Promise<IntercompanyModel>;
+    setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
 }
 
 export interface IntercompanyContext {
-    [key: number]: {
-        [key: number]: IntercompanyModel
-    }
+    [key: number]: IntercompanyModel
 }
 
 export interface IntercompanyModel{

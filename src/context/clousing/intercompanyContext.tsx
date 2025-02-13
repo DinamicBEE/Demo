@@ -11,21 +11,20 @@ export function IntercompanyClousingProvider({children}: {children: ReactNode}) 
     const [intercompany, setIntercompany] = useState<IntercompanyContext>({})
     const [error, setError] = useState<string>("");
 
-    const getIntercompanyData = useCallback( async(clousingId:number, employeeId:number)=>{
+    const getIntercompanyData = useCallback( async(clousingId:number)=>{
 
-        if(intercompany[clousingId]?.[employeeId]){
-            return intercompany[clousingId]?.[employeeId];
+        if(intercompany[clousingId]){
+            return intercompany[clousingId];
         }
 
         try {
 
-            const data: IntercompanyModel = await getIntercompanyClousing(clousingId, employeeId);
+            const data: IntercompanyModel = await getIntercompanyClousing(clousingId);
 
             const updateIntercompany: IntercompanyContext = {
               ...intercompany,
-              [clousingId]: {
-                [employeeId]: data,
-              },
+              [clousingId]: data,
+
             };
 
             setIntercompany(updateIntercompany);
@@ -42,9 +41,9 @@ export function IntercompanyClousingProvider({children}: {children: ReactNode}) 
 
     },[intercompany]);
 
-    const setIntercompanyData = useCallback( (intercompanyData: IntercompanyModel, clousingId:number, employeeId:number)=>{
+    const setIntercompanyData = useCallback( (intercompanyData: IntercompanyModel, clousingId:number)=>{
 
-        const currentRegister = intercompany[clousingId]?.[employeeId];
+        const currentRegister = intercompany[clousingId];
 
         const updateLines = intercompanyData.lines;
 
@@ -65,12 +64,10 @@ export function IntercompanyClousingProvider({children}: {children: ReactNode}) 
         const updateData: IntercompanyContext = {
             ...intercompany,
             [clousingId]: {
-                ...intercompany[clousingId],
-                [employeeId]:{
-                    ... currentRegister,
-                    lines: updateLines,
-                    total: newTotal
-                }
+                ... currentRegister,
+                lines: updateLines,
+                total: newTotal
+
             }
         }
         

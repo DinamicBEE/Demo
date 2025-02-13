@@ -4,7 +4,7 @@ import { DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogHe
 
 function ErrorDialog(){
     const { isOpen, errorMessage, closeErrorDialog } = useErrorContext()
-    console.log(isOpen)
+
     return (
         <DialogRoot
         open={isOpen}

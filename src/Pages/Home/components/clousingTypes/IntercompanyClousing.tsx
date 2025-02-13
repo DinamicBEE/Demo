@@ -30,7 +30,7 @@ function IntercompanyClousing({data}: any) {
   useEffect( ()=>{
     async function fetchData() {
       setLoading(true)
-      const intercompanyData: IntercompanyModel = await getIntercompanyData(data?.id, data?.employeId);
+      const intercompanyData: IntercompanyModel = await getIntercompanyData(data?.id);
       const employeeList: Employee[] =  await getEmployeeList();
       const subsidiariesData = await getSubsidiariesData();
 
@@ -80,7 +80,7 @@ function IntercompanyClousing({data}: any) {
 
     setIntercompany(intercompanyData);
 
-    setIntercompanyData(intercompanyData, data?.id, data?.employeId);
+    setIntercompanyData(intercompanyData, data?.id);
 
     updateTotal(newTotalFisico, data.id, CLOUSING_KEY.INTERCOMPANY);
 

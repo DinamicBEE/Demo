@@ -1,7 +1,6 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
 
-//import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { CashModel } from "@models/cash.model";
 import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
@@ -353,8 +352,8 @@ export const sendNewEmployeeRegister = async (clousingId: number, newEmployee: N
  * @param {number} employeeId 
  * @returns {Promise<IntercompanyModel>}
  */
-export const getIntercompanyClousing = async (clousingId: number, employeeId: number): Promise<IntercompanyModel> => {
-    console.log(clousingId, employeeId)
+export const getIntercompanyClousing = async (clousingId: number): Promise<IntercompanyModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -377,7 +376,7 @@ export const getIntercompanyClousing = async (clousingId: number, employeeId: nu
 }
 
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
-export const sendCashClousing = async (body:any) => { //, clousingId: number
+export const sendCashClousing = async (body:any) => {
 
     console.log(body)
     try {
