@@ -10,6 +10,7 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
+import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 
 function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
@@ -22,6 +23,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   const { getCustomerData } = useCustomerContext();
   const { getSpecialCustData } = useSpecialCustContext();
   const { getEmployeetData } = useEmployeeContext();
+  const { getIntercompanyData } = useIntercompanyContext();
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -75,7 +77,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
       
       case CLOUSING_KEY.INTERCOMPANY:
 
-        body = await getCashData(clousingId);
+        body = await getIntercompanyData(clousingId);
 
         break;
       default:
