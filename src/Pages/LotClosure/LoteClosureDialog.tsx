@@ -18,6 +18,8 @@ import {
   DialogCloseTrigger,
   DialogFooter,
 } from "@components/ui/dialog";
+import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
+import { STATUS } from "@models/status.model";
 interface LoteClosureDialog {
   isOpen: boolean;
   onClose: () => void;
@@ -131,6 +133,14 @@ const data = createListCollection({
 });
 
 function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
+  const { updateStatus } = useLotClosureList();
+
+  const handleUpdateStatus = (lotId: number, status: STATUS) => {
+    updateStatus(lotId, status);
+    onClose();
+  };
+
+  
   return (
     <DialogRoot
       scrollBehavior="inside"
@@ -249,7 +259,9 @@ function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
             </GridItem>
             <GridItem>
               <Flex direction="column" gap={2}>
-                <Text fontWeight="extrabold" textStyle="lg">Número de lotes</Text>
+                <Text fontWeight="extrabold" textStyle="lg">
+                  Número de lotes
+                </Text>
                 <Table.ScrollArea rounded="md" borderWidth="1px">
                   <Table.Root size="sm" variant="outline" striped>
                     <Table.Header>
@@ -281,21 +293,21 @@ function LoteClosureDialog({ isOpen, onClose, company }: LoteClosureDialog) {
         <DialogFooter>
           <Flex gap={2} wrap={"wrap"}>
             <Button
-              onClick={onClose}
+              onClick={() => handleUpdateStatus(1, STATUS.CLOSED)}
               className="primary-button"
               width={"auto !important"}
             >
               Cerrar lote
             </Button>
             <Button
-              onClick={onClose}
+              onClick={() => handleUpdateStatus(1, STATUS.REOPENED)}
               className="primary-button"
               width={"auto !important"}
             >
               Reabrir lote
             </Button>
             <Button
-              onClick={onClose}
+              onClick={() => handleUpdateStatus(1, STATUS.WITH_DIFFERENCE)}
               className="primary-button"
               width={"auto !important"}
             >

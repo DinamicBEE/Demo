@@ -24,7 +24,7 @@ import {
 } from "@components/ui/select";
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { Alert } from "@components/ui/alert";
-
+import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 const companies = createListCollection({
   items: [
     { value: 1, label: "Empresa 1" },
@@ -45,19 +45,23 @@ const locations = createListCollection({
   ],
 });
 
-const dateRange = [
-  { value: 1, label: "Hoy" },
-  { value: 2, label: "Ayer" },
-  { value: 3, label: "Últimos 7 días" },
-  { value: 4, label: "Últimos 30 días" },
-  { value: 5, label: "Personalizado" },
-];
 
 function LotClosure() {
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
+  const { fetchLotClosureData, lotsClosure } = useLotClosureList();
+
+  const search = () => {
+    fetchLotClosureData({
+      company,
+      location,
+      startDate,
+      endDate,
+    });
+  };
+
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack spacing={4} align="start">
@@ -72,7 +76,11 @@ function LotClosure() {
             mb={4}
             w="100%"
           >
-            <SelectRoot collection={companies} size="sm">
+            <SelectRoot
+              collection={companies}
+              size="sm"
+              onChange={(value) => setCompany(value)}
+            >
               <SelectLabel>Empresa</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder="Selecciona una empresa" />
@@ -86,7 +94,11 @@ function LotClosure() {
               </SelectContent>
             </SelectRoot>
 
-            <SelectRoot collection={locations} size="sm">
+            <SelectRoot
+              collection={locations}
+              size="sm"
+              onChange={(value) => setLocation(value)}
+            >
               <SelectLabel>Centro de consumo</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder="Selecciona un centro de consumo" />
@@ -109,7 +121,13 @@ function LotClosure() {
               />
             </Field.Root>
             <Flex align="center" justify="center">
-              <Button className="primary-button">Buscar</Button>
+              <Button
+                className="primary-button"
+                onClick={search}
+                disabled={!company || !location || !startDate || !endDate}
+              >
+                Buscar
+              </Button>
             </Flex>
           </Grid>
         </HStack>

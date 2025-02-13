@@ -1,98 +1,65 @@
 import { useState } from "react";
-import { Box, Button, FormatNumber, Grid, Table, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormatNumber,
+  Grid,
+  Table,
+  Tag,
+  Text,
+} from "@chakra-ui/react";
 import LoteClosureDialog from "./LoteClosureDialog";
+import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
+import { STATUS } from "@models/status.model";
+import { exportCSV } from "../../utils/exportCSV";
+
 interface TableOfTotalsProps {
-  subsidiary: number;
-  store: number;
+  company: number;
+  location: number;
+  dateRange: string;
 }
 
-const data = [
-  {
-    id: 1,
-    location: "Location 1",
-    company: "Company 1",
-    lotNumber: "123456",
-    status: "Status 1",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 1",
-  },
-  {
-    id: 2,
-    location: "Location 2",
-    company: "Company 2",
-    lotNumber: "123456",
-    status: "Status 2",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 2",
-  },
-  {
-    id: 3,
-    location: "Location 3",
-    company: "Company 3",
-    lotNumber: "123456",
-    status: "Status 3",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 3",
-  },
-  {
-    id: 4,
-    location: "Location 4",
-    company: "Company 4",
-    lotNumber: "123456",
-    status: "Status 4",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 4",
-  },
-  {
-    id: 5,
-    location: "Location 5",
-    company: "Company 5",
-    lotNumber: "123456",
-    status: "Status 5",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 5",
-  },
-  {
-    id: 6,
-    location: "Location 6",
-    company: "Company 6",
-    lotNumber: "123456",
-    status: "Status 6",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 6",
-  },
-  {
-    id: 7,
-    location: "Location 7",
-    company: "Company 7",
-    lotNumber: "123456",
-    status: "Status 7",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    employe: "Employee 7",
-
-    },
-];
-
-function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
+function TableOfLotClosure({
+  company,
+  location,
+  dateRange,
+}: TableOfTotalsProps) {
+  const { lotsClosure, fetchLotClosureData } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
+  const statusColor = (status: STATUS) => {
+    switch (status) {
+      case STATUS.CLOSED:
+        return "green";
+      case STATUS.REOPENED:
+        return "yellow";
+      case STATUS.WITH_DIFFERENCE:
+        return "red";
+      case STATUS.OPEN:
+        return "gray";
+      default:
+        return "gray";
+    }
+  };
 
   function handleExportCSV() {
-    /* exportCSV({ data, header }); */
+
+    exportCSV(
+      {
+        heders: [
+          { label: "Ubicación", key: "location" },
+          { label: "Empresa", key: "company" },
+          { label: "Numero de lote", key: "lotNumber" },
+          { label: "Estado", key: "status" },
+          { label: "Total POS", key: "totalPOS" },
+          { label: "Total Lote", key: "totalClousing" },
+          { label: "Diferencia", key: "difference" },
+          { label: "Empleado (Realizado por)", key: "employe" },
+        ],
+        data: lotsClosure,
+      },
+      "lotes-cierre"
+    );
   }
 
   const openDialog = (item: any) => {
@@ -107,7 +74,7 @@ function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
 
   return (
     <>
-      {data != null && (
+      {lotsClosure.length > 0 && (
         <Box>
           <Box>
             <Grid
@@ -127,13 +94,16 @@ function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
 
               <Button
                 className="primary-button"
+                onClick={() => {
+                  fetchLotClosureData(dateRange, location, company);
+                }}
               >
                 Actualizar Información
               </Button>
             </Grid>
           </Box>
 
-          {data.length > 1 && (
+          {lotsClosure.length > 1 && (
             <Box>
               <Table.ScrollArea rounded="md" borderWidth="1px">
                 <Table.Root size="sm" variant="outline" striped>
@@ -166,7 +136,7 @@ function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                    {data.map((item: any) => (
+                    {lotsClosure.map((item: any) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
                           <Text>{item.location}</Text>
@@ -186,7 +156,9 @@ function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
                           <Text>{item.lotNumber}</Text>
                         </Table.Cell>
                         <Table.Cell textAlign="end">
-                          <Text>{item.status}</Text>
+                          <Tag.Root colorPalette={statusColor(item.status)}>
+                            <Tag.Label>{item.status}</Tag.Label>
+                          </Tag.Root>
                         </Table.Cell>
                         <Table.Cell textAlign="end">
                           <Text>
@@ -226,10 +198,14 @@ function TableOfLotClosure({ subsidiary, store }: TableOfTotalsProps) {
             </Box>
           )}
 
-          {data.length === 0 && <h2>No hay data</h2>}
+          {lotsClosure.length === 0 && <h2>No hay data</h2>}
         </Box>
       )}
-      <LoteClosureDialog isOpen={isDialogOpen} company={''} onClose={closeDialog}/>
+      <LoteClosureDialog
+        isOpen={isDialogOpen}
+        company={""}
+        onClose={closeDialog}
+      />
     </>
   );
 }
