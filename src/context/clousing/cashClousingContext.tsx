@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
 import { getCashClousing } from '@services/clousingService';
-import { CashContext, CashContextType, CashLines } from '@models/cash.model';
+import { CashContext, CashContextType, CashModel } from '@models/cash.model';
 
-const cashClousingContext = createContext<CashContextType | undefined>(undefined);
+const cashClousingContext = createContext<CashContextType>({} as CashContextType);
 
 export const useCashClousing = () => useContext(cashClousingContext);
 
@@ -17,47 +17,37 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         cashRef.current = newCashData
     }
 
-    const getCashData = useCallback(async (clousingId: number, employeeId: number) => {
+    const getCashData = useCallback(async (clousingId: number) => {
         setCashLoading(true);
 
         if(cashRef.current[clousingId]) {
             setCashLoading(false);
-            return cashRef.current[clousingId][employeeId];
+            return cashRef.current[clousingId];
         }
     
         try {
-            const response = await getCashClousing(clousingId, employeeId);
+            const response = await getCashClousing(clousingId);
 
-            const currentClousingData = cashRef.current[clousingId] || {};
-
-            const updateCash = {
+            const updateCash: CashContext = {
                 ...cashRef.current,
-                [clousingId]: {
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [employeeId]: response
-                }
+                [clousingId]: response
             }
             updateCashData(updateCash)
 
             return response;
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
+            return {} as CashModel;
         } finally {
             setCashLoading(false);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[cashClousing])
 
-    const setCashData = useCallback((cashLine: CashLines, employeeId: number, clousingId: number) => {
-
-        const currentClousingData = cashRef.current[clousingId] || {};
+    const setCashData = useCallback((cashLine: CashModel, clousingId: number) => {// employeeId: number,
 
         const updateCash = {
             ...cashRef.current,
-            [clousingId]: {
-                ...currentClousingData,
-                [employeeId]: cashLine
-            }
+            [clousingId]: cashLine
         }
 
         updateCashData(updateCash)

@@ -57,7 +57,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
 
     setFooterData(newTotal, clousingId, "cash");
 
-    cashContext?.setCashData(cashRef.current, employeId, clousingId)
+    cashContext?.setCashData(cashRef.current,  clousingId)
 
   };
 

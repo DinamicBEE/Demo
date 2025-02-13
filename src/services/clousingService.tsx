@@ -1,6 +1,8 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
 
+//import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { CashModel } from "@models/cash.model";
 import { ResponseModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
@@ -30,8 +32,8 @@ export const getHeaders = async (clousingId: number, employeeId: number) => {
     }
 }
 
-export const getCashClousing = async (clousingId: number, employeeId: number) => {
-    console.log(clousingId, employeeId)
+export const getCashClousing = async (clousingId: number): Promise<CashModel> => {//, employeeId: number
+    console.log(clousingId) //employeeId
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -63,7 +65,7 @@ export const getCashClousing = async (clousingId: number, employeeId: number) =>
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return {} as CashModel;
     }
 }
 
@@ -351,12 +353,28 @@ export const getIntercompanyClousing = async (clousingId: number, employeeId: nu
 }
 
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
-export const sendCashClousing = async (clousingType:CLOUSING_KEY, clousingId: number) => {
-    // const body = {
-    //     ...data,
-    //     clousingType: 1
+export const sendCashClousing = async (body:any) => { //, clousingId: number
+
+    // let body;
+    
+    // switch (clousingType) {
+    //     case CLOUSING_KEY.CASH:
+            
+    //         const { getCashData } = useCashClousing();
+
+    //         body = getCashData(clousingId)
+
+    //         break;
+    
+    //     default:
+    //         break;
     // }
-    // console.log(body)
+    
+    // // const body = {
+    // //     ...data,
+    // //     clousingType: 1
+    // // }
+    console.log(body)
     try {
         //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
         const response = {success: true}

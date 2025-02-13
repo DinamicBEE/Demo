@@ -4,17 +4,15 @@ import { Button } from "@components/ui/button"
 import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
 import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
+import { sendCashClousing } from "@services/clousingService";
+import { CLOUSING_KEY } from "@models/constants.model";
+import { useCashClousing } from "@context/clousing/cashClousingContext";
 
-function FooterClousing({clousingType, clousingId}: FooterClousing) {//, data, loading, onChange
+function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
 
-  // const footerContext = useFooter();
-  // if (!footerContext) {
-  //   throw new Error("FooterContext is undefined");
-  // }
-  // const { getFooterData } = footerContext;3
   const { getFooterData } = useFooter();
 
   useEffect(() => {
@@ -25,6 +23,36 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {//, data, l
     }
     fetchFooterData();
   }, [clousingId, clousingType, getFooterData]);
+
+  // async function sendClousing() {
+    
+  //   let body;
+
+  //   switch (clousingType) {
+  //     case CLOUSING_KEY.CASH:
+  //       const { getCashData } = useCashClousing();
+
+  //       body = getCashData(clousingId);
+
+  //       break;
+
+  //     default:
+  //       break;
+  //   }
+  //   console.log(body)
+
+  //   const response: any = await sendCashClousing(body);//, clousingId
+
+  //   if (response.success) {
+  //     console.log("Corte de caja enviado correctamente");
+  //     //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
+  //   } else {
+  //     console.log("Error al enviar el corte de caja");
+  //     //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
+  //   }
+
+  //   return false;
+  // }
 
   return (
     <Box
@@ -58,7 +86,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {//, data, l
           className="secondary-button save-button"
         //   onClick={async () => {
         //     setButtonLoading(true);
-        //     const response = await onChange()
+        //     const response = await sendClousing()
         //     setButtonLoading(response);
         // }}
         >
