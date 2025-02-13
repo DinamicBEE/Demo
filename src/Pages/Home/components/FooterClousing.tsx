@@ -8,6 +8,7 @@ import { sendCashClousing } from "@services/clousingService";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 
 function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
@@ -18,6 +19,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   const { getCashData } = useCashClousing();
   //const {}
   const { getCustomerData } = useCustomerContext();
+  const { getSpecialCustData } = useSpecialCustContext();
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -53,7 +55,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
       
       case CLOUSING_KEY.SPECIALCUSTOMER:
 
-        body = await getCashData(clousingId);
+        body = await getSpecialCustData(clousingId);
 
         break;
 
