@@ -4,12 +4,19 @@
 //import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { CashModel } from "@models/cash.model";
 import { HeaderData, ResponseModel } from "@models/common.clousing.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CustomerModel } from "@models/customer.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
 import { IntercompanyModel } from "@models/intercompany.model";
-import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
+import { BankDetails, TDCModel } from "@models/tdc.model";
 
-export const getHeaders = async (clousingId: number): Promise<HeaderData> => {//, employeeId: number
+/**
+ * This function gets the totals 
+ * of the selected closure and the 
+ * totals by section of the box cut
+ * @param {number} clousingId 
+ * @returns {Promise<HeaderData>}
+ */
+export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
     console.log(clousingId)
     try {
         //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
@@ -32,7 +39,13 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {//
     }
 }
 
-export const getCashClousing = async (clousingId: number): Promise<CashModel> => {//, employeeId: number
+/**
+ * This feature gets the information 
+ * of the selected box cut cash section
+ * @param {number} clousingId 
+ * @returns {Promise<CashModel>}
+ */
+export const getCashClousing = async (clousingId: number): Promise<CashModel> => {
     console.log(clousingId) //employeeId
     
     try {
@@ -163,8 +176,14 @@ export const validateDetails = async(clousingId: number, lineId: number, details
 
 }
 
-export const getCustomerClousing = async (clousingId: number, employeeId: number) => {
-    console.log(clousingId, employeeId)
+/**
+ * This feature gets the information 
+ * of the selected box cut cash section
+ * @param {number} clousingId 
+ * @returns {Promise<CustomerModel>}
+ */
+export const getCustomerClousing = async (clousingId: number): Promise<CustomerModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -192,7 +211,7 @@ export const getCustomerClousing = async (clousingId: number, employeeId: number
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return {} as CustomerModel;
     }
 }
 
@@ -355,25 +374,6 @@ export const getIntercompanyClousing = async (clousingId: number, employeeId: nu
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
 export const sendCashClousing = async (body:any) => { //, clousingId: number
 
-    // let body;
-    
-    // switch (clousingType) {
-    //     case CLOUSING_KEY.CASH:
-            
-    //         const { getCashData } = useCashClousing();
-
-    //         body = getCashData(clousingId)
-
-    //         break;
-    
-    //     default:
-    //         break;
-    // }
-    
-    // // const body = {
-    // //     ...data,
-    // //     clousingType: 1
-    // // }
     console.log(body)
     try {
         //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
@@ -466,7 +466,7 @@ export const TDCDetailsMOCKData = {
 
 export const CustomerMOCKData = {
     "id": 1,
-    "employeId": 150,
+    "employeeId": 150,
     "total":{
         "totalPOS": 19622.32,
         "totalPhysical": 19622.32,

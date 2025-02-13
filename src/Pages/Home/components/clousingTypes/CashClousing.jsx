@@ -11,7 +11,7 @@ import { CLOUSING_KEY } from "@models/constants.model";
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
-    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id, data?.employeId);
+    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id);
     const { setFooterData } = useFooter();
 
     useEffect(() => {
