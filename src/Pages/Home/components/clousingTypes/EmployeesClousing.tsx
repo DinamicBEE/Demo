@@ -9,19 +9,19 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
 
 function EmployeesClousing({data}: any) {
-  const [employee, setEmployee] = useState<EmployeeModel>()
+  const [employeeLocal, setEmployee] = useState<EmployeeModel>()
   const [dialog, setDialog] = useState<boolean>(false);
 
-  const employeeContext = useEmployeeContext();
-  const footerContext = useFooter();
+  const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
+  const { setFooterData } = useFooter();
 
   useEffect(()=>{
     async function fetchData() {
 
-      const employeeData: EmployeeModel = await employeeContext.getEmployeetData(data?.id, data?.employeId);
+      const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
       if(employeeData){
-        footerContext?.setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
+        setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
       }
       setEmployee(employeeData)
 
@@ -29,7 +29,7 @@ function EmployeesClousing({data}: any) {
 
     fetchData()
     
-  },[employeeContext.employee])
+  },[employee])
 
 
   const openDiaolog = () =>{
@@ -58,7 +58,7 @@ function EmployeesClousing({data}: any) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {employee?.lines?.map((item: EmployeeLine) => (
+            {employeeLocal?.lines?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <Text> {item.name + ' ' + item.lastName} </Text>
@@ -93,7 +93,7 @@ function EmployeesClousing({data}: any) {
 
       <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
 
-      {employeeContext.employeeLoading && (
+      {employeeLoading && (
         <Box position="fixed" top="50%" left="50%">
           <Loading />
         </Box>

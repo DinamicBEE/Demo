@@ -278,11 +278,10 @@ export const getPrepaidClousing = async (clousingId: number, employeeId: number)
  * This function gets the list of 
  * closures from the employees section
  * @param {number} clousingId 
- * @param {number} employeeId 
  * @returns {Promise<EmployeeModel>}
  */
-export const getEmployeeClousing = async (clousingId: number, employeeId: number): Promise<EmployeeModel> => {
-    console.log(clousingId, employeeId)
+export const getEmployeeClousing = async (clousingId: number): Promise<EmployeeModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
