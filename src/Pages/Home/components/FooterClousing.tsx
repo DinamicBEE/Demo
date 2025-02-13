@@ -14,6 +14,9 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   const [footer, setFooter] = useState<TotalModel | null>(null);
 
   const { getFooterData } = useFooter();
+  const { getCashData } = useCashClousing();
+
+  //const {}
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -24,35 +27,69 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
     fetchFooterData();
   }, [clousingId, clousingType, getFooterData]);
 
-  // async function sendClousing() {
+  async function sendClousing() {
     
-  //   let body;
+    let body;
 
-  //   switch (clousingType) {
-  //     case CLOUSING_KEY.CASH:
-  //       const { getCashData } = useCashClousing();
+    switch (clousingType) {
+      case CLOUSING_KEY.CASH:
 
-  //       body = getCashData(clousingId);
+        body = await getCashData(clousingId);
 
-  //       break;
+        break;
+      
+      case CLOUSING_KEY.TDC:
+        //Validar que se envia 
+        body = await getCashData(clousingId);
 
-  //     default:
-  //       break;
-  //   }
-  //   console.log(body)
+        break;
 
-  //   const response: any = await sendCashClousing(body);//, clousingId
+      case CLOUSING_KEY.CUSTOMER:
 
-  //   if (response.success) {
-  //     console.log("Corte de caja enviado correctamente");
-  //     //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
-  //   } else {
-  //     console.log("Error al enviar el corte de caja");
-  //     //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
-  //   }
+        body = await getCashData(clousingId);
 
-  //   return false;
-  // }
+        break;
+      
+      case CLOUSING_KEY.SPECIALCUSTOMER:
+
+        body = await getCashData(clousingId);
+
+        break;
+
+      case CLOUSING_KEY.EMPLOYEE:
+
+        body = await getCashData(clousingId);
+
+        break;
+
+      case CLOUSING_KEY.PREPAID:
+
+        body = await getCashData(clousingId);
+
+        break;
+      
+      case CLOUSING_KEY.INTERCOMPANY:
+
+        body = await getCashData(clousingId);
+
+        break;
+      default:
+        break;
+    }
+    console.log(body)
+
+    const response: any = await sendCashClousing(body);//, clousingId
+
+    if (response.success) {
+      console.log("Corte de caja enviado correctamente");
+      //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
+    } else {
+      console.log("Error al enviar el corte de caja");
+      //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
+    }
+
+    return false;
+  }
 
   return (
     <Box
@@ -84,11 +121,11 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
         <Button loading={buttonLoading}
           className="secondary-button save-button"
-        //   onClick={async () => {
-        //     setButtonLoading(true);
-        //     const response = await sendClousing()
-        //     setButtonLoading(response);
-        // }}
+          onClick={async () => {
+            setButtonLoading(true);
+            const response = await sendClousing()
+            setButtonLoading(response);
+        }}
         >
           Confirmar Corte
         </Button>
