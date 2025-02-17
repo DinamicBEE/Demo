@@ -1,16 +1,19 @@
 import React, { ReactNode } from "react";
 import { LotClosureProvider } from "./lotClosureListContext";
+import { LotCatalogProvider } from "./catalogsProviders";
 
 interface LotClosureProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
-export const ClosureProvider: React.FC<LotClosureProviderProps> = ({ children }) => {
+export const ClosureProvider: React.FC<LotClosureProviderProps> = ({
+  children,
+}) => {
   return (
     <>
-      <LotClosureProvider>
-        {children}
-      </LotClosureProvider>
+      <LotCatalogProvider>
+        <LotClosureProvider>{children}</LotClosureProvider>
+      </LotCatalogProvider>
     </>
-  )
-}
+  );
+};

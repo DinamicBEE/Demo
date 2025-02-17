@@ -1,8 +1,7 @@
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 import ReactDatePicker from "react-datepicker";
 import {
   Button,
-  createListCollection,
   HStack,
   Input,
   NativeSelectField,
@@ -13,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { es } from "date-fns/locale/es";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
-
+import { DatePickerProps } from "@models/lotClosure.model";
 
 const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
   <Input
@@ -28,15 +27,8 @@ customDateInput.displayName = "DateInput";
 
 const CustomInput = forwardRef(customDateInput);
 
-interface Props {
-  isClearable?: boolean;
-  onChange: (dates: [Date | null, Date | null]) => void;
-  endDate: Date | null;
-  startDate: Date | null;
-  showPopperArrow?: boolean;
-}
 
-const DatePicker = ({ endDate, startDate, onChange }: Props) => {
+const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
   const months = [
     "Enero",
     "Febrero",

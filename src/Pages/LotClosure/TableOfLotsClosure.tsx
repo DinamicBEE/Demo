@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import {
   Box,
   Button,
@@ -12,43 +12,25 @@ import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
 import { exportCSV } from "../../utils/exportCSV";
-import { lotClosure } from "@models/lotClosure.model";
-
-interface TableOfTotalsProps {
-  company: number;
-  location: number;
-  dateRange: string;
-}
+import { LotClosure } from "@models/lotClosure.model";
+import Loading from "@components/loading";
+import { TableLotsClosureProps } from "@models/lotClosure.model";
+import { getStatusColor } from "../../utils/getStatusColor";
 
 function TableOfLotClosure({
-  company,
-  location,
+  companyId,
+  locationId,
   dateRange,
-}: TableOfTotalsProps) {
-  const { lotsClosure, fetchLotClosureData } = useLotClosureList();
+}: TableLotsClosureProps) {
+  const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState<lotClosure>(
-    {} as lotClosure
-  );
-  const [status, setStatus] = useState<STATUS>(STATUS.OPEN);
+  const [selectedLot, setSelectedLot] = useState<LotClosure>({} as LotClosure);
 
-  const statusColor = (status: STATUS) => {
-    switch (status) {
-      case STATUS.CLOSED:
-        return "green";
-      case STATUS.REOPENED:
-        return "yellow";
-      case STATUS.WITH_DIFFERENCE:
-        return "red";
-      case STATUS.OPEN:
-        return "gray";
-      default:
-        return "gray";
-    }
-  };
+  function statusColor(status: STATUS) {
+    return getStatusColor(status);
+  }
 
   function handleExportCSV() {
-
     exportCSV(
       {
         heders: [
@@ -67,19 +49,20 @@ function TableOfLotClosure({
     );
   }
 
-  const openDialog = (item: any) => {
-    setSelectedCompany(item);
+  const openDialog = (item: LotClosure) => {
+    setSelectedLot(item);
     setIsDialogOpen(true);
-    setStatus(item.status);
   };
 
   const closeDialog = () => {
-    setSelectedCompany({} as lotClosure);
+    setSelectedLot({} as LotClosure);
     setIsDialogOpen(false);
   };
 
   return (
     <>
+      {loading && <Loading />}
+
       {lotsClosure.length > 0 && (
         <Box>
           <Box>
@@ -101,7 +84,7 @@ function TableOfLotClosure({
               <Button
                 className="primary-button"
                 onClick={() => {
-                  fetchLotClosureData(dateRange, location, company);
+                  fetchLotClosureData(dateRange, locationId, companyId);
                 }}
               >
                 Actualizar Información
@@ -109,7 +92,7 @@ function TableOfLotClosure({
             </Grid>
           </Box>
 
-          {lotsClosure.length > 1 && (
+          {lotsClosure.length > 0 && (
             <Box>
               <Table.ScrollArea rounded="md" borderWidth="1px">
                 <Table.Root size="sm" variant="outline" striped>
@@ -142,10 +125,10 @@ function TableOfLotClosure({
                     </Table.Row>
                   </Table.Header>
                   <Table.Body>
-                    {lotsClosure.map((item: any) => (
+                    {lotsClosure.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
-                          <Text>{item.location}</Text>
+                          <Text>{item.location.name}</Text>
                         </Table.Cell>
                         <Table.Cell textAlign="end">
                           <Text
@@ -155,7 +138,7 @@ function TableOfLotClosure({
                             color="blue.500"
                             onClick={() => openDialog(item)}
                           >
-                            {item.company}
+                            {item.company.name}
                           </Text>
                         </Table.Cell>
                         <Table.Cell textAlign="end">
@@ -203,16 +186,15 @@ function TableOfLotClosure({
               </Table.ScrollArea>
             </Box>
           )}
-
-          {lotsClosure.length === 0 && <h2>No hay data</h2>}
         </Box>
       )}
-      <LoteClosureDialog
-        isOpen={isDialogOpen}
-        company={selectedCompany}
-        status={status}
-        onClose={closeDialog}
-      />
+      <Suspense>
+        <LoteClosureDialog
+          isOpen={isDialogOpen}
+          lot={selectedLot}
+          onClose={closeDialog}
+        />
+      </Suspense>
     </>
   );
 }

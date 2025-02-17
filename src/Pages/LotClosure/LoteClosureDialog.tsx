@@ -7,8 +7,9 @@ import {
   createListCollection,
   Grid,
   GridItem,
+  Spinner,
 } from "@chakra-ui/react";
-import { CurrencyInput } from "@components/NumericInput";
+import { CurrencyInput, TableInput } from "@components/NumericInput";
 import {
   DialogRoot,
   DialogContent,
@@ -19,130 +20,29 @@ import {
   DialogFooter,
 } from "@components/ui/dialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
-import { lotClosure } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
-interface LoteClosureDialog {
-  isOpen: boolean;
-  onClose: () => void;
-  company: lotClosure;
-  status: STATUS;
-}
+import { LotClosureDialogProps } from "@models/lotClosure.model";
+import { useEffect } from "react";
 
-const data = createListCollection({
-  items: [
-    {
-      bank: "Banco 1",
-      pos: 100,
-      corteCaja: 9000,
-      lote: -10,
-      diferencia: -10,
-      table: [
-        {
-          afiliacion: "Vendedor 1",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 2",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 3",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 4",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 5",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 6",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 7",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 8",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 9",
-          monto: 100,
-        },
-        {
-          afiliacion: "Vendedor 10",
-          monto: 100,
-        },
-      ],
-    },
-    {
-      bank: "Banco 2",
-      pos: 100,
-      corteCaja: 9000,
-      lote: -10,
-      diferencia: -10,
-      table: [
-        {
-          afiliacion: "Vendedor 1",
-          monto: 100,
-        },
-      ],
-    },
-    {
-      bank: "Banco 3",
-      pos: 100,
-      corteCaja: 9000,
-      lote: -10,
-      diferencia: -10,
-      table: [
-        {
-          afiliacion: "Vendedor 1",
-          monto: 100,
-        },
-      ],
-    },
-    {
-      bank: "Banco 4",
-      pos: 100,
-      corteCaja: 9000,
-      lote: -10,
-      diferencia: -10,
-      table: [
-        {
-          afiliacion: "Vendedor 1",
-          monto: 100,
-        },
-      ],
-    },
-    {
-      bank: "Banco 5",
-      pos: 100,
-      corteCaja: 9000,
-      lote: -10,
-      diferencia: -10,
-      table: [
-        {
-          afiliacion: "Vendedor 1",
-          monto: 100,
-        },
-      ],
-    },
-  ],
-});
-
-function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDialog) {
-  const { updateStatus } = useLotClosureList();
-
+function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
+  const {
+    updateStatus,
+    banks,
+    fetchBanks,
+    updateBankAfilations,
+    loadingBanks,
+  } = useLotClosureList();
   const handleUpdateStatus = (lotId: number, status: STATUS) => {
     updateStatus(lotId, status);
     onClose();
   };
 
-  
+  useEffect(() => {
+    if (isOpen) {
+      fetchBanks(lot.id);
+    }
+  }, [isOpen]);
+
   return (
     <DialogRoot
       scrollBehavior="inside"
@@ -162,9 +62,9 @@ function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDial
               direction={{ base: "column", sm: "row" }}
               gap={2}
             >
-              <Text>Subsidiaria </Text>
-              <Text> Ubicación: 1</Text>
-              <Text>Cierre Lote: 22/01/24</Text>
+              <Text>{lot?.company?.name}</Text>
+              <Text> Ubicación: {lot?.location?.name}</Text>
+              <Text>Cierre Lote: {lot?.dateClosed}</Text>
             </Flex>
           </DialogTitle>
           <DialogCloseTrigger />
@@ -181,46 +81,47 @@ function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDial
                 <Flex gap={2} direction={{ base: "column", md: "row" }}>
                   <CurrencyInput
                     name={"Total Micros"}
-                    value={1000}
+                    value={lot?.totalPOS}
                     loading={false}
                   />
                   <CurrencyInput
                     name={"Total lote"}
-                    value={1000}
+                    value={lot?.totalClousing}
                     loading={false}
                   />
                   <CurrencyInput
                     name={"Diferencia"}
-                    value={0}
+                    value={lot?.difference}
                     loading={false}
                   />
                 </Flex>
-                {data.items.length > 0 &&
-                  data.items.map((item) => (
-                    <Box key={item.bank}>
+                {banks.length > 0 &&
+                  !loadingBanks &&
+                  banks.map((bank) => (
+                    <Box key={bank.id}>
                       <Text fontWeight="bold" marginBottom={2}>
-                        {item.bank}
+                        {bank.bank}
                       </Text>
 
                       <Flex gap={2} direction={{ base: "column", md: "row" }}>
                         <CurrencyInput
                           name={"POS"}
-                          value={100}
+                          value={bank.totalPOS}
                           loading={false}
                         />
                         <CurrencyInput
                           name={"Corte caja"}
-                          value={item.corteCaja}
+                          value={bank.totalClousing}
                           loading={false}
                         />
                         <CurrencyInput
                           name={"Lote"}
-                          value={-10}
+                          value={bank.lot}
                           loading={false}
                         />
                         <CurrencyInput
                           name={"Diferencia"}
-                          value={item.diferencia}
+                          value={bank.difference}
                           loading={false}
                         />
                       </Flex>
@@ -242,13 +143,24 @@ function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDial
                             </Table.Row>
                           </Table.Header>
                           <Table.Body>
-                            {item.table.map((row, index) => (
-                              <Table.Row key={index}>
+                            {bank.afilations.map((affiliation) => (
+                              <Table.Row key={affiliation.id}>
                                 <Table.Cell textAlign="center">
-                                  {row.afiliacion}
+                                  <Text>{affiliation.name}</Text>
                                 </Table.Cell>
                                 <Table.Cell textAlign="center">
-                                  {row.monto}
+                                  <TableInput
+                                    value={affiliation.amount}
+                                    id={affiliation.id}
+                                    currency={false}
+                                    onChange={(value) =>
+                                      updateBankAfilations(
+                                        bank.id,
+                                        affiliation.id,
+                                        value
+                                      )
+                                    }
+                                  />
                                 </Table.Cell>
                               </Table.Row>
                             ))}
@@ -257,6 +169,17 @@ function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDial
                       </Table.ScrollArea>
                     </Box>
                   ))}
+                {loadingBanks && (
+                  <Spinner
+                    color={"#66BB6A"}
+                    alignSelf="center"
+                    size={"xl"}
+                    justifyContent={"center"}
+                  />
+                )}
+                {banks.length === 0 && !loadingBanks && (
+                  <Text>No hay bancos registrados</Text>
+                )}
               </Flex>
             </GridItem>
             <GridItem>
@@ -295,25 +218,17 @@ function LoteClosureDialog({ isOpen, onClose, company, status }: LoteClosureDial
         <DialogFooter>
           <Flex gap={2} wrap={"wrap"}>
             <Button
-              onClick={() => handleUpdateStatus(company.id, STATUS.CLOSED)}
-              disabled={status === STATUS.CLOSED}
+              onClick={() => handleUpdateStatus(lot.id, STATUS.WITH_DIFFERENCE)}
               className="primary-button"
               width={"auto !important"}
-            >
-              Cerrar lote
-            </Button>
-            <Button
-              onClick={() => handleUpdateStatus(company.id, STATUS.REOPENED)}
-              className="primary-button"
-              width={"auto !important"}
-            >
-              Reabrir lote
-            </Button>
-            <Button
-              onClick={() => handleUpdateStatus(company.id, STATUS.WITH_DIFFERENCE)}
-              className="primary-button"
-              width={"auto !important"}
-              disabled={status === STATUS.CLOSED}
+              disabled={
+                banks.length === 0 ||
+                banks.some((bank) => {
+                  return bank.afilations.some(
+                    (afiliation) => afiliation.amount === 0
+                  );
+                })
+              }
             >
               Guardar
             </Button>
