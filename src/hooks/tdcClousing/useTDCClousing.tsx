@@ -31,9 +31,8 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
       setDetails(updateBankDetails, clousingId, lineId);
     }
 
-    function updateLineClousing(detailsValidated: BankDetails, employeId: number,) {
-      const tdcData = tdc?.[clousingId]?.[employeId];
-      console.log(tdcData);
+    function updateLineClousing(detailsValidated: BankDetails) {
+      const tdcData = tdc?.[clousingId];
 
       const newPhysical = detailsValidated.details.reduce(
         (acc: number, curr: BankLineDetails) => acc + curr.amount,
@@ -77,7 +76,7 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
         CLOUSING_KEY.TDC
       );
 
-      setTDCData(updateTDCData, clousingId, employeId);
+      setTDCData(updateTDCData, clousingId);
     }
 
     return { handleInputData, updateLineClousing };

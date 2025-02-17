@@ -13,18 +13,15 @@ function TDCClousing({data}: any) {
   const [lineSelected, setLineSeleted] = useState<number | null>(null);
   const [details, setDetails] = useState<boolean>(false);
 
-  const footerContext = useFooter();
-  const tdcContext = useTDCContext();
-
-  const setFooterData = footerContext?.setFooterData;
+  const { setFooterData } = useFooter();
+  const { getTDCData, tdc, tdcLoading } = useTDCContext();
 
   useEffect(()=>{
     async function fetchData() {
-      const tdc: TDCModel | undefined = tdcContext?.getTDCData
-            ? await tdcContext?.getTDCData(data?.id, data?.employeId) : undefined;
+      const tdc: TDCModel = await getTDCData(data?.id,);
       
       if(tdc?.total){
-        setFooterData?.(tdc.total, data.id, CLOUSING_KEY.TDC);
+        setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
 
       setCashData(tdc);
@@ -33,7 +30,7 @@ function TDCClousing({data}: any) {
 
     fetchData();
 
-  },[tdcContext?.tdc])
+  },[tdc])
 
   const openDiaolog = (id: number) =>{
     setLineSeleted(id);
@@ -106,7 +103,7 @@ function TDCClousing({data}: any) {
           </Table.Root>
         </Table.ScrollArea>
 
-        {tdcContext?.tdcLoading && (
+        {tdcLoading && (
           <Box position="fixed" top="50%" left="50%">
             <Loading />
           </Box>
@@ -114,7 +111,7 @@ function TDCClousing({data}: any) {
 
       </Box>
 
-      <TDCDetails clousingId={data?.id} employeId={data?.employeId} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
+      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
     </>
   );
 }

@@ -9,19 +9,18 @@ import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
 
-function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsProp) {
+function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
     const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const useDetails = useHandleTDC(clousingId, lineId ?? 0)
+    const { updateLineClousing, handleInputData } = useHandleTDC(clousingId, lineId ?? 0)
 
     const {getDetails, detailsLoading, setDetails} = useTDCContext();
 
     useEffect(()=>{
 
         async function fetchData() {
-            const detailsData: BankDetails | undefined = getDetails
-                    ? await getDetails(clousingId,lineId) : undefined;
+            const detailsData: BankDetails = await getDetails(clousingId,lineId);
             
             if (detailsData) {
                 setDetailsLocal(detailsData);
@@ -45,7 +44,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
             const allSuccess = detailsValidated.details.every(item => item.success);
             
             if(allSuccess) { 
-                useDetails.updateLineClousing(detailsValidated, employeId,)
+                updateLineClousing(detailsValidated)
                 onClose()
             } 
 
@@ -97,7 +96,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                                         <Table.Cell>
                                             <Field.Root invalid={item.success!=undefined && !item.success}>
-                                                <Input textAlign="center" value={item.check} onChange={(e) => useDetails.handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)}/>
+                                                <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)}/>
                                                 <Field.ErrorText>{item.message}</Field.ErrorText>
                                             </Field.Root>
                                         </Table.Cell>

@@ -40,7 +40,7 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
 }
 
 /**
- * This feature gets the information 
+ * This function gets the information 
  * of the selected box cut cash section
  * @param {number} clousingId 
  * @returns {Promise<CashModel>}
@@ -82,8 +82,14 @@ export const getCashClousing = async (clousingId: number): Promise<CashModel> =>
     }
 }
 
-export const getTDCClousing = async (clousingId: number, employeeId: number): Promise<TDCModel> => {
-    console.log(clousingId, employeeId)
+/**
+ * This function gets the information 
+ * of the selected box cut tdc section
+ * @param {number} clousingId 
+ * @returns {Promise<TDCModel>}
+ */
+export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -105,6 +111,14 @@ export const getTDCClousing = async (clousingId: number, employeeId: number): Pr
     }
 }
 
+/**
+ * This feature retrieves the details 
+ * of card payments from the bank’s 
+ * consolidated account
+ * @param {number} clousingId 
+ * @param {number} lineId 
+ * @returns {Promise<BankDetails>}
+ */
 export const getTDCDetails = async (clousingId: number, lineId: number): Promise<BankDetails> => {
     console.log(clousingId, lineId)
     
