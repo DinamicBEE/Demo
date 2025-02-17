@@ -1,4 +1,6 @@
+import { createListCollection } from "@chakra-ui/react";
 import { Approval } from "@models/approvals.model";
+import { resolve } from "path";
 
 export const approvalsServices = {
 
@@ -8,7 +10,11 @@ export const approvalsServices = {
 
       const response = listApprovals
 
-      return response;
+      return new Promise((resolve) => {
+        setTimeout(() => { 
+          resolve(response);
+        }, 2000)
+      });
 
     } catch (error) {
 
@@ -19,20 +25,56 @@ export const approvalsServices = {
 
   },
 
-  async getListBox(): Promise<any> {
+  async getRequestApproval(id: number): Promise<any> {
     try {
 
-      const response = closingList
+      const response = listApprovals.find((item) => item.id === id);
 
-      return response
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(response);
+        }, 1000)
+      });
+
+    } catch (error) {
+      console.log(error)
+      return {}
+    }
+  },
+
+  async getClosingList(): Promise<any> {
+    try {
+      const response = closingList;
+
+      const collection = createListCollection({
+        items: response
+      });
+
+      return collection
 
     } catch (error) {
 
       console.log(error);
-      return {};
+      return [];
 
     }
-  }
+  },
+
+  async getReasonsList(): Promise<any> {
+    try {
+
+      const response = reasonsList;
+      const collection = createListCollection({
+        items: response
+      })
+
+      return collection
+
+    } catch (error) {
+      console.log(error)
+      return {}
+    }
+  },
 
 }
 
@@ -84,11 +126,16 @@ const listApprovals: Approval[] = [
   }
 ];
 
-const closingList = {
-  items: [
-    { label: "Corte caja 10/02/25 12:00 am", value: "Corte caja 10/02/25 12:00 am" },
-    { label: "Corte lote 12/02/25 10:00 am", value: "Corte lote 12/02/25 10:00 am" },
-    { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
-    { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
-  ],
-}
+const closingList = [
+  { label: "Corte caja 10/02/25 12:00 am", value: "Corte caja 10/02/25 12:00 am" },
+  { label: "Corte lote 12/02/25 10:00 am", value: "Corte lote 12/02/25 10:00 am" },
+  { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
+  { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
+];
+
+const reasonsList = [
+  { label: "Diferencia/ajustes en algún importe", value: "Diferencia/ajustes en algún importe" },
+  { label: "Ajustes en cupones", value: "Ajustes en cupones" },
+  { label: "Forma de pago", value: "Forma de pago" },
+  { label: "Diferencia en última actualización", value: "Diferencia en última actualización" },
+];

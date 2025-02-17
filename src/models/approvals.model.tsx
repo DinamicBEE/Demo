@@ -1,3 +1,5 @@
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+
 export interface Approval {
   id: number;
   date: string;
@@ -36,4 +38,10 @@ export interface TableApprovalsProps {
 
 export interface StateApprovalsProps {
   state: string
+}
+
+
+export interface ClosingListSelectProps {
+  register: UseFormRegister<any>; // Tipo genérico para `useForm`
+  errors: FieldErrors<any>; // Manejo de errores de `useForm`
 }

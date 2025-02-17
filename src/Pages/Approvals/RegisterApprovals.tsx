@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Temporal } from "@js-temporal/polyfill";
 import { createListCollection, NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
@@ -7,111 +7,107 @@ import { Button } from "@components/ui/button";
 import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
 import { Field } from "@components/ui/field";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { approvalsServices } from "@services/approvalsServices";
+import { useApi } from "@hooks/useApi";
 
-export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, onClose }) => {
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<RequestOpeningForm>();
-  const { addOrUpdateApprovalList } = useApprovalsList();
+export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
+  ({ isOpen, onClose }) => {
 
-  const onSubmitForm: SubmitHandler<RequestOpeningForm> = (data: RequestOpeningForm) => {
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<RequestOpeningForm>();
+    const { addOrUpdateApprovalList } = useApprovalsList();
+    const { data: closingList } = useApi(approvalsServices.getClosingList);
+    const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
-    const responseOpening: Approval = {
-      id: getRandomExcluding(),
-      date: formatDate(),
-      state: 'Abierto',
-      typeRequest: '',
-      reasons: data.reason,
-      comment: data.comment,
-      status: false
-    };
+    const onSubmitForm: SubmitHandler<RequestOpeningForm> = (data: RequestOpeningForm) => {
 
-    addOrUpdateApprovalList(responseOpening);
-    reset();
-    onClose();
+      const responseOpening: Approval = {
+        id: getRandomExcluding(),
+        date: formatDate(),
+        state: 'Abierto',
+        typeRequest: '',
+        reasons: data.reason,
+        comment: data.comment,
+        status: false
+      };
+
+      addOrUpdateApprovalList(responseOpening);
+      reset();
+      onClose();
+    }
+
+    return (
+      <>
+        <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+
+          <DialogContent>
+
+            <form onSubmit={handleSubmit(onSubmitForm)}>
+
+              <DialogHeader>
+                <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
+              </DialogHeader>
+
+              <DialogBody pb="4">
+
+                <Stack gap="4">
+
+                  <Field label="Lista de cierre de cajas / cierre de lotes*">
+
+                    <NativeSelectRoot size="md">
+                      <NativeSelectField placeholder="Seleccione una opcion" {...register('name', { required: 'Este campo es requerido' })}>
+                        {
+                          closingList != undefined &&
+                          closingList.items.map((item: any) => (<option key={item.value} value={item.value}>{item.label}</option>))
+                        }
+                      </NativeSelectField>
+                    </NativeSelectRoot>
+
+                    {errors.name && <small className="text-red-600">{errors.name?.message}</small>}
+                  </Field>
+
+                  <Field label="Motivo*">
+
+                    <NativeSelectRoot size="md">
+                      <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
+                        {
+                          reasonsList != undefined &&
+                          reasonsList.items.map((item: any) => (<option key={item.value} value={item.value}>{item.label}</option>))
+                        }
+                      </NativeSelectField>
+                    </NativeSelectRoot>
+
+                    {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
+                  </Field>
+
+                  <Field label="Comentario*">
+                    <Textarea variant="outline" {...register('comment', { required: 'Este campo es requerido' })} />
+                    {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
+                  </Field>
+
+                </Stack>
+
+              </DialogBody>
+
+              <DialogFooter>
+
+                <DialogActionTrigger asChild>
+                  <Button rounded='full' size='sm'>Cancelar</Button>
+                </DialogActionTrigger>
+
+                <Button type="submit" colorPalette="green" size='sm' rounded='full'>Guardar</Button>
+
+              </DialogFooter>
+
+            </form>
+
+          </DialogContent>
+        </DialogRoot>
+      </>
+    );
+
   }
-
-  return (
-    <>
-      <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
-
-        <DialogContent>
-
-          <form onSubmit={handleSubmit(onSubmitForm)}>
-
-            <DialogHeader>
-              <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
-            </DialogHeader>
-
-            <DialogBody pb="4">
-
-              <Stack gap="4">
-
-                <Field label="Lista de cierre de cajas / cierre de lotes*">
-
-                  <NativeSelectRoot size="md">
-                    <NativeSelectField placeholder="Seleccione una opcion" {...register('name', { required: 'Este campo es requerido' })}>
-                      {closingList.items.map((item) => (<option key={item.value} value={item.value}>{item.label}</option>))}
-                    </NativeSelectField>
-                  </NativeSelectRoot>
-
-                  {errors.name && <small className="text-red-600">{errors.name?.message}</small>}
-                </Field>
-
-                <Field label="Motivo*">
-
-                  <NativeSelectRoot size="md">
-                    <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
-                      {reasons.items.map((item) => (<option key={item.value} value={item.value}>{item.label}</option>))}
-                    </NativeSelectField>
-                  </NativeSelectRoot>
-
-                  {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
-                </Field>
-
-                <Field label="Comentario*">
-                  <Textarea variant="outline" {...register('comment', { required: 'Este campo es requerido' })} />
-                  {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
-                </Field>
-
-              </Stack>
-
-            </DialogBody>
-
-            <DialogFooter>
-
-              <DialogActionTrigger asChild>
-                <Button rounded='full' size='sm'>Cancelar</Button>
-              </DialogActionTrigger>
-
-              <Button type="submit" colorPalette="green" size='sm' rounded='full'>Guardar</Button>
-
-            </DialogFooter>
-
-          </form>
-
-        </DialogContent>
-      </DialogRoot>
-    </>
-  )
-}
-
-const closingList = createListCollection({
-  items: [
-    { label: "Corte caja 10/02/25 12:00 am", value: "Corte caja 10/02/25 12:00 am" },
-    { label: "Corte lote 12/02/25 10:00 am", value: "Corte lote 12/02/25 10:00 am" },
-    { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
-    { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
-  ],
-});
-
-const reasons = createListCollection({
-  items: [
-    { label: "Diferencia/ajustes en algún importe", value: "Diferencia/ajustes en algún importe" },
-    { label: "Ajustes en cupones", value: "Ajustes en cupones" },
-    { label: "Forma de pago", value: "Forma de pago" },
-    { label: "Diferencia en última actualización", value: "Diferencia en última actualización" },
-  ],
-});
+)
 
 const getRandomExcluding = () => {
   let num;

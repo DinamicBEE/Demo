@@ -15,13 +15,13 @@ const Approvals: React.FC = () => {
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
-
 	const openDialog = useCallback(() => setIsDialogOpen(true), []);
 
 	const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		setDataApproval(approval);
+		//seteamos el valor global de approbal para que el componente de Edit pueda tomar el registro.
+		setDataApproval(approval); 
 		setIsDialogEditOpen(true);
 	}, []);
 
