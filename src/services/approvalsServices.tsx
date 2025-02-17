@@ -5,11 +5,11 @@ export const approvalsServices = {
   async getListApprovals(): Promise<any> {
 
     try {
-      
+
       const response = listApprovals
 
       return response;
-      
+
     } catch (error) {
 
       console.log(error);
@@ -17,6 +17,21 @@ export const approvalsServices = {
 
     }
 
+  },
+
+  async getListBox(): Promise<any> {
+    try {
+
+      const response = closingList
+
+      return response
+
+    } catch (error) {
+
+      console.log(error);
+      return {};
+
+    }
   }
 
 }
@@ -67,4 +82,13 @@ const listApprovals: Approval[] = [
     comment: "Error en la asignación del pago con tarjeta.",
     status: false
   }
-]
+];
+
+const closingList = {
+  items: [
+    { label: "Corte caja 10/02/25 12:00 am", value: "Corte caja 10/02/25 12:00 am" },
+    { label: "Corte lote 12/02/25 10:00 am", value: "Corte lote 12/02/25 10:00 am" },
+    { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
+    { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
+  ],
+}

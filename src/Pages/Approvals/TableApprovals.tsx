@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
 import { Status, Table } from "@chakra-ui/react";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { useApi } from "@hooks/useApi";
 import { approvalsServices } from "@services/approvalsServices";
-import { Approval } from "@models/approvals.model";
+import { Approval, StateApprovalsProps, TableApprovalsProps } from "@models/approvals.model";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
+import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Button } from "@components/ui/button";
 
-interface TableApprovalsProps {
-  openEditDialog: (dataApproval: Approval) => void;
-}
 
 export const TableApprovals: React.FC<TableApprovalsProps> = ({ openEditDialog }) => {
 
@@ -26,6 +23,12 @@ export const TableApprovals: React.FC<TableApprovalsProps> = ({ openEditDialog }
   useEffect(() => {
     if (dataApproval.id) addOrUpdateApprovalList(dataApproval);
   }, [dataApproval]);
+
+  const handleSwitchChange = (data: Approval) => {
+    const updatedDataEdit: Approval = { ...data, status: data.status ? false : true };
+
+    addOrUpdateApprovalList(updatedDataEdit)
+  };
 
   return (
     <>
@@ -46,8 +49,6 @@ export const TableApprovals: React.FC<TableApprovalsProps> = ({ openEditDialog }
                 <Table.ColumnHeader textAlign={'center'}>Comentario Supervisor</Table.ColumnHeader>
               }
 
-              <Table.ColumnHeader textAlign={'center'}>Estatus</Table.ColumnHeader>
-
               {role === 'supervisor' && <Table.ColumnHeader textAlign={'center'}>Acciones</Table.ColumnHeader>}
 
             </Table.Row>
@@ -63,28 +64,17 @@ export const TableApprovals: React.FC<TableApprovalsProps> = ({ openEditDialog }
                   <Table.Cell textAlign={'center'}> {item.typeRequest} </Table.Cell>
                   <Table.Cell textAlign={'center'}> {item.reasons} </Table.Cell>
                   <Table.Cell textAlign={'center'}> {role === 'supervisor' ? item.comment : item.commentSupervisor} </Table.Cell>
-                  <Table.Cell textAlign={'center'}>
-                    {item.status ?
-                      (
-                        <Status.Root>
-                          <Status.Indicator colorPalette={'green'} />
-                          Aceptado
-                        </Status.Root>
-                      )
-                      :
-                      (
-                        <Status.Root>
-                          <Status.Indicator colorPalette={'red'} />
-                          Rechazado
-                        </Status.Root>
-                      )
-                    }
-                  </Table.Cell>
+
                   {role === 'supervisor' &&
                     <Table.Cell textAlign={'center'}>
-                      <Button size='xs' variant="surface" colorPalette='gray' rounded="full" onClick={() => openEditDialog(item)}>
+                      <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full" onClick={() => openEditDialog(item)}>
                         Editar Estatus
                       </Button>
+
+                      <Button marginLeft='10px' size='xs' variant="surface" colorPalette={item.status ? 'red' : 'green'} rounded="full" onClick={() => handleSwitchChange(item)}>
+                        {item.status ? 'Rechazar' : 'Aprobar'}
+                      </Button>
+
                     </Table.Cell>
                   }
                 </Table.Row>
@@ -96,10 +86,6 @@ export const TableApprovals: React.FC<TableApprovalsProps> = ({ openEditDialog }
       </Table.ScrollArea>
     </>
   );
-}
-
-interface StateApprovalsProps {
-  state: string
 }
 
 const StateApprovals: React.FC<StateApprovalsProps> = ({ state }) => {

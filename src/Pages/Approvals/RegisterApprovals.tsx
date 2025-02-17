@@ -2,21 +2,16 @@ import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Temporal } from "@js-temporal/polyfill";
 import { createListCollection, NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger, DialogActionTrigger } from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { Approval, RequestOpeningForm } from "@models/approvals.model";
+import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
 import { Field } from "@components/ui/field";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 
-interface RegisterApprovalsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, onClose }) => {
 
-  const { register, handleSubmit, formState: { errors } } = useForm<RequestOpeningForm>();
-  const { addOrUpdateApprovalList } = useApprovalsList()
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<RequestOpeningForm>();
+  const { addOrUpdateApprovalList } = useApprovalsList();
 
   const onSubmitForm: SubmitHandler<RequestOpeningForm> = (data: RequestOpeningForm) => {
 
@@ -31,6 +26,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, on
     };
 
     addOrUpdateApprovalList(responseOpening);
+    reset();
+    onClose();
   }
 
   return (
@@ -83,10 +80,10 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = ({ isOpen, on
             <DialogFooter>
 
               <DialogActionTrigger asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button rounded='full' size='sm'>Cancelar</Button>
               </DialogActionTrigger>
 
-              <Button type="submit">Save</Button>
+              <Button type="submit" colorPalette="green" size='sm' rounded='full'>Guardar</Button>
 
             </DialogFooter>
 
@@ -105,7 +102,7 @@ const closingList = createListCollection({
     { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
     { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
   ],
-})
+});
 
 const reasons = createListCollection({
   items: [

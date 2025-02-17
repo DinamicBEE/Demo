@@ -2,11 +2,11 @@ import React, { useCallback, useState } from "react";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
-import './Approvals.css';
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
 import { EditStatusApprovals } from "./EditStatusApprovals";
+import './Approvals.css';
 
 const Approvals: React.FC = () => {
 

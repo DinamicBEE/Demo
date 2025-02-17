@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { Approval } from "@models/approvals.model";
 
 interface ApprovalsContextType {

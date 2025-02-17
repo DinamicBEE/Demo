@@ -1,41 +1,24 @@
-import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { HiCheck, HiX } from "react-icons/hi";
-import { Badge, DataList, DialogActionTrigger, DialogTitle, Flex, List, Textarea, VStack } from "@chakra-ui/react";
+import { Badge, DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack } from "@chakra-ui/react";
 import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFooter, DialogBody } from "@components/ui/dialog";
 import { Field } from "@components/ui/field";
-import { Switch } from "@components/ui/switch";
 import { Button } from "@components/ui/button";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
-import { Approval, EditRequestForm } from "@models/approvals.model";
+import { Approval, EditRequestForm, EditStatusApprovalsProps } from "@models/approvals.model";
 
-
-interface EditStatusApprovalsProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
 
 export const EditStatusApprovals: React.FC<EditStatusApprovalsProps> = ({ isOpen, onClose }) => {
 
   const { dataApproval, addOrUpdateApprovalList } = useApprovalsList();
-  const { register, handleSubmit, formState: { errors } } = useForm<EditRequestForm>();
-  const [checked, setChecked] = useState<boolean>(false);
-
-  useEffect(() => setChecked(dataApproval.status), [dataApproval]);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<EditRequestForm>();
 
   const onSubmitForm: SubmitHandler<EditRequestForm> = (data: EditRequestForm) => {
-    const dataEdit: Approval = {
-      id: dataApproval.id,
-      date: dataApproval.date,
-      state: dataApproval.state,
-      typeRequest: dataApproval.typeRequest,
-      reasons: dataApproval.reasons,
-      comment: dataApproval.comment,
-      commentSupervisor: data.comment,
-      status: checked
-    }
 
-    addOrUpdateApprovalList(dataEdit)
+    const updatedDataEdit: Approval = { ...dataApproval, commentSupervisor: data.comment };
+
+    addOrUpdateApprovalList(updatedDataEdit);
+    reset();
+    onClose();
   }
 
   return (
@@ -99,16 +82,6 @@ export const EditStatusApprovals: React.FC<EditStatusApprovalsProps> = ({ isOpen
                   <Textarea {...register('comment', { required: 'Este campo es requerido' })} />
                   {errors.comment && <small className="text-red-600">{errors.comment?.message}</small>}
                 </Field>
-
-                <Flex justifyContent='start' paddingTop='20px'>
-                  <Switch size='lg' colorPalette='green'
-                    thumbLabel={{ on: <HiCheck color="green" />, off: <HiX color="red" /> }}
-                    checked={checked} onCheckedChange={(e) => setChecked(e.checked)}>
-
-                    {checked ? 'Aprobar' : 'Rechazar'}
-
-                  </Switch>
-                </Flex>
 
               </DialogBody>
 

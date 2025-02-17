@@ -19,3 +19,21 @@ export interface EditRequestForm {
   comment: string;
   status: boolean;
 }
+
+export interface EditStatusApprovalsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface RegisterApprovalsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface TableApprovalsProps {
+  openEditDialog: (dataApproval: Approval) => void;
+}
+
+export interface StateApprovalsProps {
+  state: string
+}
