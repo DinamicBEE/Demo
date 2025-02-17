@@ -8,7 +8,7 @@ export interface Approval {
   reasons: string;
   comment: string; //en esta atributo se guardaria el comentario del supervisor
   commentSupervisor?: string;
-  status: boolean
+  status: number
 }
 
 export interface RequestOpeningForm {
@@ -37,7 +37,7 @@ export interface TableApprovalsProps {
 }
 
 export interface StateApprovalsProps {
-  state: string
+  state: number
 }
 
 

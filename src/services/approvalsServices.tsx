@@ -86,7 +86,7 @@ const listApprovals: Approval[] = [
     typeRequest: "CORTE DE CAJA",
     reasons: "Diferencia/ajustes en algún importe",
     comment: "Revisar diferencias en caja principal.",
-    status: false
+    status: 2
   },
   {
     id: 2,
@@ -95,7 +95,7 @@ const listApprovals: Approval[] = [
     typeRequest: "CIERRE DE LOTE",
     reasons: "Forma de pago",
     comment: "Ajuste necesario en método de pago registrado.",
-    status: true
+    status: 2
   },
   {
     id: 3,
@@ -104,7 +104,7 @@ const listApprovals: Approval[] = [
     typeRequest: "CORTE DE CAJA",
     reasons: "Ajustes en cupones",
     comment: "Cupones no aplicados correctamente.",
-    status: false
+    status: 2
   },
   {
     id: 4,
@@ -113,7 +113,7 @@ const listApprovals: Approval[] = [
     typeRequest: "CIERRE DE LOTE",
     reasons: "Diferencia en última actualización",
     comment: "Revisión urgente por actualización incorrecta.",
-    status: false
+    status: 2
   },
   {
     id: 5,
@@ -122,7 +122,7 @@ const listApprovals: Approval[] = [
     typeRequest: "CORTE DE CAJA",
     reasons: "Forma de pago",
     comment: "Error en la asignación del pago con tarjeta.",
-    status: false
+    status: 2
   }
 ];
 

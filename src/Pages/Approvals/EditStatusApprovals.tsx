@@ -5,7 +5,7 @@ import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFoot
 import { Field } from "@components/ui/field";
 import { Button } from "@components/ui/button";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
-import { Approval, EditRequestForm, EditStatusApprovalsProps } from "@models/approvals.model";
+import { Approval, EditRequestForm, EditStatusApprovalsProps, StateApprovalsProps } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
 import Loading from "@components/loading";
@@ -76,13 +76,6 @@ export const EditStatusApprovals: React.FC<EditStatusApprovalsProps> = memo(({ i
                       <DataList.Item>
                         <DataList.ItemLabel>Motivo de Solicitud</DataList.ItemLabel>
                         <DataList.ItemValue>{fetchDataApproval.reasons}</DataList.ItemValue>
-                      </DataList.Item>
-
-                      <DataList.Item>
-                        <DataList.ItemLabel>Estatus Actual</DataList.ItemLabel>
-                        <DataList.ItemValue>
-                          {fetchDataApproval.status ? <Badge colorPalette="green">Aprovado</Badge> : <Badge colorPalette="red">Rechazado</Badge>}
-                        </DataList.ItemValue>
                       </DataList.Item>
 
                       <DataList.Item>

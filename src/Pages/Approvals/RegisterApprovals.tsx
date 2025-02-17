@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Temporal } from "@js-temporal/polyfill";
-import { createListCollection, NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
@@ -28,7 +28,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
         typeRequest: '',
         reasons: data.reason,
         comment: data.comment,
-        status: false
+        status: 2
       };
 
       addOrUpdateApprovalList(responseOpening);

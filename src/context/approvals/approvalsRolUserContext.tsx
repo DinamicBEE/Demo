@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useMemo, ReactNode } from "react";
 
 interface RoleContextType {
-  role: "cajero" | "supervisor"; // Los roles disponibles
+  role: 1 | 2; // Los roles disponibles
   switchRole: () => void; // Función para cambiar el rol
 }
 
@@ -17,11 +17,11 @@ export const useApprovalsRolUser = () => {
 
 // Provider que manejará el estado del rol
 export const ApprovalsRolUserProvider = ({ children }: { children: ReactNode }) => {
-  const [role, setRole] = useState<"cajero" | "supervisor">("cajero"); // Valor inicial
+  const [role, setRole] = useState<1 | 2>(2); // Valor inicial
 
   // Función para cambiar entre roles
   const switchRole = () => {
-    setRole((prevRole) => (prevRole === "cajero" ? "supervisor" : "cajero"));
+    setRole((prevRole) => (prevRole === 2  ? 1 : 2));
   };
 
   // Memoizamos el valor para evitar renders innecesarios
