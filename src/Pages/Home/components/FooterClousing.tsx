@@ -11,6 +11,7 @@ import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
+import { useTDCContext } from "@context/clousing/tdcClousingContex";
 
 function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
@@ -19,7 +20,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
   const { getFooterData } = useFooter();
   const { getCashData } = useCashClousing();
-  //const {}
+  const { getTDCData } = useTDCContext();
   const { getCustomerData } = useCustomerContext();
   const { getSpecialCustData } = useSpecialCustContext();
   const { getEmployeetData } = useEmployeeContext();
@@ -47,7 +48,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
       
       case CLOUSING_KEY.TDC:
         //Validar que se envia 
-        body = await getCashData(clousingId);
+        body = await getTDCData(clousingId);
 
         break;
 
