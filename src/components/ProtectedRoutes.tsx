@@ -1,9 +1,11 @@
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
-import Loading from '@components/Loading';
+import { ProtectedRouteProps } from '@models/common.model';
+import Loading from './loading';
 
-function ProtectedRoute({ children, allowedRoles  }) {
+function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
     const { isAuthenticated, isLoading } = useAuth();
     const { user, loading } = useUser();
 
@@ -20,7 +22,7 @@ function ProtectedRoute({ children, allowedRoles  }) {
     return children;
 }
 
-export function PublicRoute({ children }) {
+export function PublicRoute({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAuth();
   
     return isAuthenticated ? <Navigate to="/home" /> : children;

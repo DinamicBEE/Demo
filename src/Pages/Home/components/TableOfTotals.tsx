@@ -6,18 +6,15 @@ import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
 import Loading from '@components/loading';
-import { ClousingLinesModel } from '@models/common.clousing.model';
+import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
 
-interface TableOfTotalsProps {
-  subsidiary: number;
-  store: number;
-}
+
 
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
     const { data, loading, error, header, getInfo } = useClousing();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [selectedEmployee, setSelectedEmployee] = useState<ClousingLinesModel | null>(null);
     
     function handleExportCSV() {
         exportCSV(data,header)

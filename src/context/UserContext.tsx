@@ -1,18 +1,19 @@
+import { ReactNode } from "react";
 import { createContext, useState, useContext, useEffect } from "react";
 import { getUserInfo } from "../services/userService";
 import { useAuth } from "./AuthContext";
+import { UserContextType } from "@models/common.model";
 
-const UserContext = createContext();
+const UserContext = createContext<UserContextType>({} as UserContextType);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => useContext(UserContext);
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }: { children: ReactNode }) => {
     const { token } = useAuth();
     const [ user, setUser ] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
 
-    const fetcUser = async ( currentToken ) => {
+    const fetcUser = async ( currentToken:string ) => {
         try {
             
             const userInfo = await getUserInfo(currentToken || token);
@@ -38,7 +39,7 @@ export const UserProvider = ({ children }) => {
         const initializeUser = async () => {
             if (token) {
                 try {
-                    await fetcUser();
+                    await fetcUser(token);
                 } catch {
                     setUser(null);
                 } finally{
@@ -48,7 +49,6 @@ export const UserProvider = ({ children }) => {
             
         };
         initializeUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     return (

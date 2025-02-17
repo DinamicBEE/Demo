@@ -1,3 +1,16 @@
+import { ReactNode } from "react";
+
+export interface ProtectedRouteProps {
+  children: ReactNode;
+  allowedRoles?: string[];
+}
+
+export interface UserContextType {
+    user: any; // ! Modelo de datos del usuario
+    loading: boolean;
+    fetcUser: (currentToken: string) => Promise<any>; // ! Modelo de datos del usuario
+}
+
 export interface CurrencyInputProps {
   value: number | undefined;
   loading: boolean;

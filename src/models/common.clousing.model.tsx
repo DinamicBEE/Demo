@@ -119,3 +119,14 @@ export interface ResponseModel {
   error?: string;
   message?: string
 }
+
+export interface ClousingLayoutProps {
+  isOpen: boolean;
+  onClose: () => void;
+  employee: ClousingLinesModel | null
+}
+
+export interface TableOfTotalsProps {
+  subsidiary: number;
+  store: number;
+}

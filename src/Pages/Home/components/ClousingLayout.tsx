@@ -5,16 +5,17 @@ import HeaderClousing from "./HeaderClousing"
 import { lazy, useState, Suspense } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/constants.model";
+import { ClousingLayoutProps } from "@models/common.clousing.model";
+import IntercompanyClousing from "./clousingTypes/IntercompanyClousing";
+import SpecialCustomersClousing from "./clousingTypes/SpecialCustomers";
 const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
-const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));
-const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
+const CustomersClousing = lazy(() => import("./clousingTypes/CustomersClousing"));//const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
 const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
 const EmployeesClousing = lazy(() => import("./clousingTypes/EmployeesClousing"));
-const IntercompanyClousing = lazy (() => import("./clousingTypes/intercompanyClousing"))
 
-function ClousingLayout({ isOpen, onClose, employee}) {
-    const [value, setValue] = useState("")
+function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
+    const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH)
 
     return (
         <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
@@ -22,14 +23,14 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
                     <Box>
-                        <HeaderClousing id={employee?.id} employe={employee?.employeId}></HeaderClousing>
+                        <HeaderClousing id={employee?.id ?? 0}></HeaderClousing>
                     </Box>
                 </DialogHeader>
 
                 <DialogBody>                   
                     
                     <Tabs.Root onValueChange={(e) => {
-                            setValue(e.value)
+                            setValue(e.value as CLOUSING_KEY)
                         }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
                             <Tabs.Trigger value={CLOUSING_KEY.CASH}>
@@ -123,7 +124,7 @@ function ClousingLayout({ isOpen, onClose, employee}) {
                 </DialogBody>
 
                 <DialogFooter>
-                   <FooterClousing clousingType={value} clousingId={employee?.id} />
+                   <FooterClousing clousingType={value} clousingId={employee?.id ?? 0} />
                 </DialogFooter>
 
                 <DialogCloseTrigger />

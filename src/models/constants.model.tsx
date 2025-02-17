@@ -1,3 +1,5 @@
+import { LuClipboardCheck, LuClipboardList, LuContainer, LuHouse } from "react-icons/lu";
+
 export const ALERTCLOUSING_MODEL = {
     SUCCESS: { title: 'Envio exitoso', description: 'Corte de caja enviado correctamente', type: 'success' },
     ERROR: { title: 'Error al enviar el corte de caja', type: 'error' },
@@ -23,3 +25,10 @@ export enum CLOUSING_KEY {
   PREPAID = "prepaid",
   INTERCOMPANY = "intercompany"
 }
+
+export const menuItems = [
+  { name: 'Inicio', path: '/home', icon:<LuHouse />, roles: [1, 2] },
+  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [1, 2] },
+  { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: [2] },
+  { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: [1] },
+];
