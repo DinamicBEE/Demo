@@ -66,6 +66,7 @@ export interface LotClosureContextType {
   lotsClosure: LotClosure[];
   banks: Bank[];
   setBanks: (banks: Bank[]) => void;
+  setBankCache: (cache: { [key: number]: Bank[] }) => void;
   error: string;
   loading: boolean;
   loadingBanks: boolean;

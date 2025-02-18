@@ -26,7 +26,7 @@ import { Bank, LotClosureDialogProps } from "@models/lotClosure.model";
 import { useEffect, useState } from "react";
 
 function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
-  const { updateStatus, banks, fetchBanks, setBanks, loadingBanks } =
+  const { updateStatus, setBankCache, fetchBanks, setBanks, loadingBanks } =
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<Bank[]>([]);
   const handleUpdateStatus = (lotId: number, status: STATUS) => {
@@ -57,9 +57,8 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
   };
 
   const handleSave = () => {
-    console.log(localBanks);
-
     setBanks(localBanks);
+    setBankCache({ [lot.id]: localBanks });
     handleUpdateStatus(lot.id, STATUS.WITH_DIFFERENCE);
   };
 
@@ -197,8 +196,12 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                   ))}
                 {loadingBanks && (
                   <Box gap={4}>
-                    <Skeleton height={5} width={20}/>
-                    <Flex gap={2} direction={{ base: "column", md: "row" }} paddingTop={4}>
+                    <Skeleton height={5} width={20} />
+                    <Flex
+                      gap={2}
+                      direction={{ base: "column", md: "row" }}
+                      paddingTop={4}
+                    >
                       <CurrencyInput name={"POS"} value={0} loading={true} />
                       <CurrencyInput
                         name={"Corte caja"}
