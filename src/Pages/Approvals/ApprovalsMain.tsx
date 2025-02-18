@@ -5,7 +5,7 @@ import { RegisterApprovals } from "./RegisterApprovals";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
-import { EditStatusApprovals } from "./EditStatusApprovals";
+import { DetailApprovals } from "./DetailApprovals";
 import './Approvals.css';
 
 const Approvals: React.FC = () => {
@@ -33,7 +33,7 @@ const Approvals: React.FC = () => {
 			<Flex justifyContent='end' paddingBottom={'10px'}>
 				<Flex width={'250px'}>
 					<Button onClick={switchRole}>
-						Cambiar a {role === "cajero" ? "supervisor" : "cajero"}
+						Cambiar a {role === 2 ? "supervisor" : "cajero"}
 					</Button>
 				</Flex>
 			</Flex>
@@ -42,7 +42,7 @@ const Approvals: React.FC = () => {
 
 				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
 
-				{role == 'cajero' &&
+				{role == 2 &&
 					<Flex justifyContent='end'>
 
 						<Flex width={'250px'}>
@@ -60,7 +60,7 @@ const Approvals: React.FC = () => {
 
 			<RegisterApprovals isOpen={isDialogOpen} onClose={closeDialog} />
 
-			<EditStatusApprovals isOpen={isDialogEditOpen} onClose={closeDialogEdit} />
+			<DetailApprovals isOpen={isDialogEditOpen} onClose={closeDialogEdit} />
 		</>
 	)
 }

@@ -1,17 +1,17 @@
 import React, { memo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Badge, DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack } from "@chakra-ui/react";
+import { DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack } from "@chakra-ui/react";
 import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFooter, DialogBody } from "@components/ui/dialog";
 import { Field } from "@components/ui/field";
 import { Button } from "@components/ui/button";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
-import { Approval, EditRequestForm, EditStatusApprovalsProps, StateApprovalsProps } from "@models/approvals.model";
+import { Approval, EditRequestForm, DetailApprovalsProps } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
 import Loading from "@components/loading";
 
 
-export const EditStatusApprovals: React.FC<EditStatusApprovalsProps> = memo(({ isOpen, onClose }) => {
+export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, onClose }) => {
 
   const { addOrUpdateApprovalList, dataApproval } = useApprovalsList();
   const { register, handleSubmit, reset, formState: { errors } } = useForm<EditRequestForm>();

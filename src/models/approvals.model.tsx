@@ -22,7 +22,7 @@ export interface EditRequestForm {
   status: boolean;
 }
 
-export interface EditStatusApprovalsProps {
+export interface DetailApprovalsProps {
   isOpen: boolean;
   onClose: () => void;
 }

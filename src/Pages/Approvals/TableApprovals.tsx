@@ -1,8 +1,8 @@
 import React, { memo, useEffect } from "react";
-import { Status, Table } from "@chakra-ui/react";
+import { Table } from "@chakra-ui/react";
 import { useApi } from "@hooks/useApi";
 import { approvalsServices } from "@services/approvalsServices";
-import { Approval, StateApprovalsProps, TableApprovalsProps } from "@models/approvals.model";
+import { Approval, TableApprovalsProps } from "@models/approvals.model";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Button } from "@components/ui/button";
