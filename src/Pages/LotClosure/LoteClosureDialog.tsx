@@ -4,10 +4,11 @@ import {
   Text,
   Box,
   Table,
-  createListCollection,
   Grid,
   GridItem,
   Spinner,
+  Separator,
+  Skeleton,
 } from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
 import {
@@ -21,26 +22,55 @@ import {
 } from "@components/ui/dialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
-import { LotClosureDialogProps } from "@models/lotClosure.model";
-import { useEffect } from "react";
+import { Bank, LotClosureDialogProps } from "@models/lotClosure.model";
+import { useEffect, useState } from "react";
 
 function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
-  const {
-    updateStatus,
-    banks,
-    fetchBanks,
-    updateBankAfilations,
-    loadingBanks,
-  } = useLotClosureList();
+  const { updateStatus, banks, fetchBanks, setBanks, loadingBanks } =
+    useLotClosureList();
+  const [localBanks, setLocalBanks] = useState<Bank[]>([]);
   const handleUpdateStatus = (lotId: number, status: STATUS) => {
     updateStatus(lotId, status);
     onClose();
   };
 
+  const handleUpdateBankAfilations = (
+    id: number,
+    eventValue: string,
+    key?: string
+  ) => {
+    const cleanValue = Number(eventValue.replace(/[^\d.]/g, ""));
+    if (cleanValue < 0) return;
+    const updatedBanks = localBanks.map((bank) => {
+      if (bank.id === id) {
+        const updatedAfilations = bank.afilations.map((afiliation) => {
+          if (afiliation.id.toString() === key) {
+            return { ...afiliation, amount: cleanValue };
+          }
+          return afiliation;
+        });
+        return { ...bank, afilations: updatedAfilations };
+      }
+      return bank;
+    });
+    setLocalBanks(updatedBanks);
+  };
+
+  const handleSave = () => {
+    console.log(localBanks);
+
+    setBanks(localBanks);
+    handleUpdateStatus(lot.id, STATUS.WITH_DIFFERENCE);
+  };
+
   useEffect(() => {
-    if (isOpen) {
-      fetchBanks(lot.id);
-    }
+    const fetchData = async () => {
+      if (isOpen) {
+        const banks = await fetchBanks(lot.id);
+        setLocalBanks(banks);
+      }
+    };
+    fetchData();
   }, [isOpen]);
 
   return (
@@ -95,14 +125,14 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                     loading={false}
                   />
                 </Flex>
-                {banks.length > 0 &&
+                {localBanks.length > 0 &&
                   !loadingBanks &&
-                  banks.map((bank) => (
+                  localBanks.map((bank) => (
                     <Box key={bank.id}>
-                      <Text fontWeight="bold" marginBottom={2}>
+                      <Text fontWeight="bold" textStyle="md">
                         {bank.bank}
                       </Text>
-
+                      <Separator marginTop={4} marginBottom={4} size={"md"} />
                       <Flex gap={2} direction={{ base: "column", md: "row" }}>
                         <CurrencyInput
                           name={"POS"}
@@ -148,18 +178,14 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                                 <Table.Cell textAlign="center">
                                   <Text>{affiliation.name}</Text>
                                 </Table.Cell>
-                                <Table.Cell textAlign="center">
+                                <Table.Cell textAlign="center" width={"50%"}>
                                   <TableInput
                                     value={affiliation.amount}
-                                    id={affiliation.id}
-                                    currency={false}
-                                    onChange={(value) =>
-                                      updateBankAfilations(
-                                        bank.id,
-                                        affiliation.id,
-                                        value
-                                      )
-                                    }
+                                    onChange={handleUpdateBankAfilations}
+                                    currency={true}
+                                    keyValue={affiliation.id.toString()}
+                                    key={affiliation.id}
+                                    id={bank.id}
                                   />
                                 </Table.Cell>
                               </Table.Row>
@@ -170,14 +196,53 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                     </Box>
                   ))}
                 {loadingBanks && (
-                  <Spinner
-                    color={"#66BB6A"}
-                    alignSelf="center"
-                    size={"xl"}
-                    justifyContent={"center"}
-                  />
+                  <Box gap={4}>
+                    <Skeleton height={5} width={20}/>
+                    <Flex gap={2} direction={{ base: "column", md: "row" }} paddingTop={4}>
+                      <CurrencyInput name={"POS"} value={0} loading={true} />
+                      <CurrencyInput
+                        name={"Corte caja"}
+                        value={0}
+                        loading={true}
+                      />
+                      <CurrencyInput name={"Lote"} value={0} loading={true} />
+                      <CurrencyInput
+                        name={"Diferencia"}
+                        value={0}
+                        loading={true}
+                      />
+                    </Flex>
+                    <Table.ScrollArea
+                      rounded="md"
+                      borderWidth="1px"
+                      marginTop={6}
+                    >
+                      <Table.Root size="sm" variant="outline" striped>
+                        <Table.Header>
+                          <Table.Row>
+                            <Table.ColumnHeader textAlign="center">
+                              Afililiación
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader textAlign="center">
+                              Monto
+                            </Table.ColumnHeader>
+                          </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                          <Table.Row>
+                            <Table.Cell textAlign="center">
+                              <Skeleton height="20px" />
+                            </Table.Cell>
+                            <Table.Cell textAlign="center">
+                              <Skeleton height="20px" />
+                            </Table.Cell>
+                          </Table.Row>
+                        </Table.Body>
+                      </Table.Root>
+                    </Table.ScrollArea>
+                  </Box>
                 )}
-                {banks.length === 0 && !loadingBanks && (
+                {localBanks.length === 0 && !loadingBanks && (
                   <Text>No hay bancos registrados</Text>
                 )}
               </Flex>
@@ -218,12 +283,12 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
         <DialogFooter>
           <Flex gap={2} wrap={"wrap"}>
             <Button
-              onClick={() => handleUpdateStatus(lot.id, STATUS.WITH_DIFFERENCE)}
+              onClick={() => handleSave()}
               className="primary-button"
               width={"auto !important"}
               disabled={
-                banks.length === 0 ||
-                banks.some((bank) => {
+                localBanks.length === 0 ||
+                localBanks.some((bank) => {
                   return bank.afilations.some(
                     (afiliation) => afiliation.amount === 0
                   );

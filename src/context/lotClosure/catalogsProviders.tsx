@@ -11,6 +11,7 @@ import {
   LotCatalogContextType,
 } from "@models/lotClosure.model";
 import { createListCollection, ListCollection } from "@chakra-ui/react";
+
 const LotCatalogContext = createContext<LotCatalogContextType>(
   {} as LotCatalogContextType
 );
@@ -24,6 +25,9 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
   const [locations, setLocations] = useState<
     ListCollection<{ value: number; label: string }>
   >(createListCollection({ items: [] }));
+  const [cachedLocations, setCachedLocations] = useState<
+    { [key: number]: ListCollection<{ value: number; label: string }> }
+  >({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -49,42 +53,45 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
 
   const fetchLocations = useCallback(
     async (companyId: number) => {
-
-      if (locations.items.length > 0 && locations.items[0].value === companyId)
+      if (cachedLocations[companyId]) {
+        setLocations(cachedLocations[companyId]);
         return;
-
-
+      }
 
       setLoading(true);
       try {
         const response = await getLocations(companyId);
-        setLocations(
-          createListCollection({
-            items: response.map((location) => ({
-              value: location.id,
-              label: location.name,
-            })),
-          })
-        );
+        const newLocations = createListCollection({
+          items: response.map((location) => ({
+            value: location.id,
+            label: location.name,
+          })),
+        });
+        setLocations(newLocations);
+        setCachedLocations((prev) => ({
+          ...prev,
+          [companyId]: newLocations,
+        }));
       } catch (error) {
         setError(true);
       } finally {
         setLoading(false);
       }
     },
-    [locations]
+    [cachedLocations]
   );
 
   const value = useMemo(
     () => ({
       comapanies,
       locations,
+      setLocations,
       loading,
       error,
       fetchCompanies,
       fetchLocations,
     }),
-    [comapanies, locations, loading, error, fetchCompanies, fetchLocations]
+    [comapanies, locations, loading, error, fetchCompanies, fetchLocations, setLocations]
   );
 
   return (

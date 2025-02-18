@@ -31,19 +31,23 @@ function LotClosure() {
     null,
   ]);
   const [startDate, endDate] = dateRange;
-  const { fetchLotClosureData } = useLotClosureList();
+  const { fetchLotClosureData,lotsClosure } = useLotClosureList();
   const { fetchCompanies, fetchLocations, comapanies, locations, loading } =
     useLotCatalogList();
+    const [showTable, setShowTable] = useState(false);
 
   const search = () => {
+    if(lotsClosure.length === 0){
+      setShowTable(true);
+    }
+
     fetchLotClosureData(dateRange, locationId, companyId);
   };
 
   const onSelectedCompany = (companyIdSelected: string[]) => {
-    setCompanyId(Number(companyIdSelected));
-    if (companyId !== 0 && Number(companyIdSelected) !== companyId) {
+    if (Number(companyIdSelected) !== companyId) {
       setLocationId(0);
-      console.log(locationId);
+      setCompanyId(Number(companyIdSelected));
     }
   };
 
@@ -75,7 +79,7 @@ function LotClosure() {
                 {!loading ? (
                   comapanies.items.map((company) => (
                     <SelectItem item={company} key={company.value}>
-                      {company.value}
+                      {company.label}
                     </SelectItem>
                   ))
                 ) : (
@@ -87,6 +91,7 @@ function LotClosure() {
             </SelectRoot>
 
             <SelectRoot
+              key={companyId}
               collection={locations}
               size="sm"
               onOpenChange={() => fetchLocations(companyId)}
@@ -140,6 +145,7 @@ function LotClosure() {
         </HStack>
       </VStack>
       <TableOfLotClosure
+        showTable={showTable}
         companyId={companyId}
         locationId={locationId}
         dateRange={dateRange}

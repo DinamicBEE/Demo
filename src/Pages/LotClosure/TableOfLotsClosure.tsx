@@ -4,6 +4,7 @@ import {
   Button,
   FormatNumber,
   Grid,
+  Skeleton,
   Table,
   Tag,
   Text,
@@ -21,6 +22,7 @@ function TableOfLotClosure({
   companyId,
   locationId,
   dateRange,
+  showTable,
 }: TableLotsClosureProps) {
   const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,8 +64,7 @@ function TableOfLotClosure({
   return (
     <>
       {loading && <Loading />}
-
-      {lotsClosure.length > 0 && (
+      {showTable && (
         <Box>
           <Box>
             <Grid
@@ -77,6 +78,7 @@ function TableOfLotClosure({
                 onClick={() => {
                   handleExportCSV();
                 }}
+                disabled={lotsClosure.length === 0}
               >
                 Exportar a CSV
               </Button>
@@ -92,40 +94,76 @@ function TableOfLotClosure({
             </Grid>
           </Box>
 
-          {lotsClosure.length > 0 && (
-            <Box>
-              <Table.ScrollArea rounded="md" borderWidth="1px">
-                <Table.Root size="sm" variant="outline" striped>
-                  <Table.Header>
+          <Box>
+            <Table.ScrollArea rounded="md" borderWidth="1px">
+              <Table.Root size="sm" variant="outline" striped>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader textAlign="center">
+                      Ubicación
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Empresa
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Numero de lote
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Estado
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Total POS
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Total Lote
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Diferencia
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Empleado (Realizado por)
+                    </Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {loading && (
                     <Table.Row>
-                      <Table.ColumnHeader textAlign="center">
-                        Ubicación
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Empresa
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Numero de lote
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Estado
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Total POS
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Total Lote
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Diferencia
-                      </Table.ColumnHeader>
-                      <Table.ColumnHeader textAlign="center">
-                        Empleado (Realizado por)
-                      </Table.ColumnHeader>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
+                      <Table.Cell  textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
                     </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {lotsClosure.map((item) => (
+                  )}
+                  {lotsClosure.length === 0 && !loading && (
+                    <Table.Row>
+                      <Table.Cell colSpan={8} textAlign="center">
+                        <Text>No hay información disponible</Text>
+                      </Table.Cell>
+                    </Table.Row>
+                  )}
+                  {lotsClosure.length > 0 &&
+                    !loading &&
+                    lotsClosure.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
                           <Text>{item.location.name}</Text>
@@ -181,11 +219,10 @@ function TableOfLotClosure({
                         </Table.Cell>
                       </Table.Row>
                     ))}
-                  </Table.Body>
-                </Table.Root>
-              </Table.ScrollArea>
-            </Box>
-          )}
+                </Table.Body>
+              </Table.Root>
+            </Table.ScrollArea>
+          </Box>
         </Box>
       )}
       <Suspense>

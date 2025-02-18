@@ -61,14 +61,15 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
 
   const fetchBanks = useCallback(
     async (lotId: number) => {
-      if (banks.length > 0 && banks[0].lotClosureId === lotId) return;
-      console.log("fetchBanks");
+      if (banks.length > 0 && banks[0].lotClosureId === lotId) return banks;
       setLoadingBanks(true);
       try {
         const response = await getBanks(lotId);
         setBanks(response);
+        return response;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
+        return [];
       } finally {
         setLoadingBanks(false);
       }
@@ -77,20 +78,26 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const updateBankAfilations = useCallback(
-    (bankId: number, amount: number, afilationId: number) => {
-      const bank = banks.find((bank) => bank.id === bankId);
-      if (!bank) return;
-      const updatedAfilations = bank.afilations.map((afilation) =>
-        afilationId === afilation.id ? { ...afilation, amount } : afilation
-      );
+    (bankId: number, amount: string, afilationId: number) => {
+      const auxAmount = Number(amount.replace(/[^\d.]/g, ""));
+      if (auxAmount < 0) return;
 
-      const updatedBanks = banks.map((bank) =>
-        bank.id === bankId ? { ...bank, afilations: updatedAfilations } : bank
+      setBanks((prevBanks) =>
+        prevBanks.map((bank) =>
+          bank.id === bankId
+            ? {
+                ...bank,
+                afilations: bank.afilations.map((afilation) =>
+                  afilation.id === afilationId
+                    ? { ...afilation, amount: auxAmount }
+                    : afilation
+                ),
+              }
+            : bank
+        )
       );
-
-      setBanks(updatedBanks);
     },
-    [banks]
+    []
   );
 
   const value = useMemo(
@@ -98,6 +105,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       lotsClosure,
       loadingBanks,
       banks,
+      setBanks,
       error,
       loading,
       fetchLotClosureData,
@@ -109,6 +117,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       lotsClosure,
       loadingBanks,
       banks,
+      setBanks,
       loading,
       error,
       fetchLotClosureData,

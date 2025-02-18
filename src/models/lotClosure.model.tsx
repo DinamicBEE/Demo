@@ -45,6 +45,7 @@ export interface TableLotsClosureProps {
   companyId: number;
   locationId: number;
   dateRange: [Date | null, Date | null];
+  showTable: boolean;
 }
 
 export interface DatePickerProps {
@@ -64,6 +65,7 @@ export interface LotClosureDialogProps {
 export interface LotClosureContextType {
   lotsClosure: LotClosure[];
   banks: Bank[];
+  setBanks: (banks: Bank[]) => void;
   error: string;
   loading: boolean;
   loadingBanks: boolean;
@@ -72,11 +74,11 @@ export interface LotClosureContextType {
     locationId: number,
     companyId: number
   ) => Promise<void>;
-  fetchBanks: (lotId: number) => Promise<void>;
+  fetchBanks: (lotId: number) => Promise<Bank[]>;
   updateStatus: (lotId: number, status: STATUS) => void;
   updateBankAfilations: (
     bankId: number,
-    amount: number,
+    amount: string,
     afilationId: number
   ) => void;
 }
@@ -86,6 +88,9 @@ export interface LotCatalogContextType {
   locations: ListCollection<{ value: number; label: string }>;
   loading: boolean;
   error: boolean;
+  setLocations: (
+    locations: ListCollection<{ value: number; label: string }>
+  ) => void;
   fetchCompanies: () => Promise<void>;
   fetchLocations: (companyId: number) => Promise<void>;
 }
