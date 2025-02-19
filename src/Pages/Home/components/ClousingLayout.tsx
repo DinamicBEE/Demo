@@ -31,7 +31,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                     
                     <Tabs.Root onValueChange={(e) => {
                             setValue(e.value as CLOUSING_KEY)
-                        }} variant="outline" defaultValue="members" unmountOnExit colorPalette="green" justify="center" size="lg">
+                        }} variant="outline" defaultValue={value} unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
                             <Tabs.Trigger value={CLOUSING_KEY.CASH}>
                                 <LuUser />
@@ -55,7 +55,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.EMPLOYEE}>
                                 <LuSquareCheck />
-                                empleados
+                                Empleados
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
                                 <LuSquareCheck />

@@ -6,6 +6,7 @@ import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
 import { EmployeeLine, EmployeeModel, NewEmployeeModel } from "@models/employee.model";
 import { IntercompanyModel } from "@models/intercompany.model";
+import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
 
@@ -231,7 +232,7 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
 
 /**
  * This feature gets the information 
- * of the selected box specialcustomer cash section
+ * of the selected box specialcustomer section
  * @param {number} clousingId 
  * @returns {Promise<CustomerModel>}
  */
@@ -264,15 +265,31 @@ export const getSpecialCustomerClousing = async (clousingId: number): Promise<Sp
     }
 }
 
-export const getPrepaidClousing = async (clousingId: number, employeeId: number) => {
-    console.log(clousingId, employeeId)
+/**
+ * This feature gets the information 
+ * of the selected box prepaid section
+ * @param {number} clousingId 
+ * @returns {Promise<PrepaidModel>}
+ */
+export const getPrepaidClousing = async (clousingId: number): Promise<PrepaidModel> => {
+    console.log(clousingId)
     
     try {
         //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
         const response = PrepaidMOCKData;
 
+        const updateLines = response.lines.map((item:PrepaidLineModel)  => 
+            {
+                return {
+                    ...item,
+                    isEdit:false
+                }   
+            }
+        )
+
         const data = {
             ...response,
+            lines: updateLines
         }
         
         return new Promise((resolve) => {
@@ -283,7 +300,30 @@ export const getPrepaidClousing = async (clousingId: number, employeeId: number)
 
     } catch (error) {
         console.error('Error al obtener los valores generales:', error);
-        return [];
+        return {} as PrepaidModel;
+    }
+}
+
+export const getCouponCatalog = async (clousingId: number): Promise<CouponCatalogModel[]> => {
+    console.log(clousingId)
+    
+    try {
+        //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+        const response = couponCatalogMocky;
+
+        // const data = {
+        //     ...response,
+        // }
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(response);
+            }, 5000);
+        });
+
+    } catch (error) {
+        console.error('Error al obtener los valores generales:', error);
+        return [] as CouponCatalogModel[];
     }
 }
 
@@ -523,22 +563,21 @@ export const SpecialCustomerMOCKDATA = {
 }
 
 export const PrepaidMOCKData = {
-    "id": 1,
-    "employeId": 150,
-    "total":{
-        "totalPOS": 2955.00,
-        "totalPhysical": 2955.00,
-        "difference": 0,
-    },
-    "lines":[
-        {"id": 1, "client": "Thomas Moore", "quantity": 3, "supplementsQuantity": 0, "unitPrice": 111.67, "POS": 335.56, "physical": 335.00, "difference": 0},
-        {"id": 2, "client": "SSIA", "quantity": 5, "supplementsQuantity": 0, "unitPrice": 110.00, "POS": 550.00, "physical": 550.00, "difference": 0},
-        {"id": 3, "client": "SEASON TOURS", "quantity": 2, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 230.00, "physical": 230.00, "difference": 0},
-        {"id": 4, "client": "SEEK AND GO", "quantity": 8, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 920.00, "physical": 920.00, "difference": 0},
-        {"id": 5, "client": "AVENTOUR", "quantity": 4, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0},
-        {"id": 6, "client": "THE ONE", "quantity": 4, "supplementsQuantity": 0, "unitPrice": 115.00, "POS": 460.00, "physical": 460.00, "difference": 0}
-    ]
-}
+  id: 1,
+  employeeId: 150,
+  total: {
+    totalPOS: 2955.0,
+    totalPhysical: 2955.0,
+    difference: 0,
+  },
+  lines: [
+    { id: 1, client: "Thomas Moore", quantity:0, supplementsQuantity: 0, unitPrice: 0, totalPOS: 750.00, physical: 0, difference: 0},
+    { id: 2, client: "SSIA", quantity:0, supplementsQuantity: 0, unitPrice: 0, totalPOS: 525.00, physical: 0, difference: 0},
+    { id: 3, client: "SEASON TOURS", quantity:0, supplementsQuantity: 0, unitPrice: 0, totalPOS: 376.68, physical: 0, difference: 0},
+    { id: 4, client: "SEEK AND GO", quantity:0, supplementsQuantity: 0, unitPrice: 0, totalPOS: 700.77, physical: 0, difference: 0},
+    { id: 5, client: "AVENTOUR", quantity:0, supplementsQuantity: 0, unitPrice: 0, totalPOS: 812.7, physical: 0, difference: 0},
+  ],
+};
 
 export const EmployeeData = {
   id: 1,
@@ -620,3 +659,11 @@ const intercompanyData = {
     },
   ],
 };
+
+const couponCatalogMocky = [
+    { lineId: 1, folio: "1235", quantity: 5, unitPrice:150.00, isUsed: false },
+    { lineId: 2, folio: "9874", quantity: 3, unitPrice:175.00, isUsed: true },
+    { lineId: 3, folio: "1478", quantity: 3, unitPrice:125.56, isUsed: false },
+    { lineId: 4, folio: "3698", quantity: 2, unitPrice:233.59, isUsed: true },
+    { lineId: 5, folio: "4561", quantity: 6, unitPrice:135.45, isUsed: false }
+]

@@ -5,8 +5,8 @@ import { useClousing } from '@context/home/clousingContext';
 import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
-import Loading from '@components/loading';
 import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
+import Loading from '@components/Loading';
 
 
 
@@ -38,7 +38,11 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
           </Alert>
       )}
 
-      {loading && <Loading />}
+      {loading && (
+        <Box position="fixed" top="50%" left="50%">
+          <Loading />
+        </Box>
+      )}
 
       <Box>
         <Box mb={6}>

@@ -5,7 +5,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { Employee } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import FilterEmployee from "@components/FilterEmployee";
