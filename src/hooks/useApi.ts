@@ -31,6 +31,7 @@ export function useApi<T>(apiCall: () => Promise<T>, options: UseApiOptions<T> =
       setError(null);
       
       const result = await apiCall();
+      
       setData(result);
       onSuccess?.(result);
 

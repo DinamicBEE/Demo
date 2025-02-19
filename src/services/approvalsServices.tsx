@@ -1,9 +1,11 @@
 import { createListCollection } from "@chakra-ui/react";
-import { Approval } from "@models/approvals.model";
-import { resolve } from "path";
+import { Temporal } from "@js-temporal/polyfill";
+import { Approval, EditRequestForm, RequestOpeningForm } from "@models/approvals.model";
+
 
 export const approvalsServices = {
 
+  //obtiene toda los registros de las solicitudes.
   async getListApprovals(): Promise<any> {
 
     try {
@@ -11,29 +13,24 @@ export const approvalsServices = {
       const response = listApprovals
 
       return new Promise((resolve) => {
-        setTimeout(() => { 
-          resolve(response);
-        }, 2000)
+        setTimeout(() => resolve(response), 2000);
       });
 
     } catch (error) {
-
       console.log(error);
       return [];
-
     }
 
   },
 
+  //obtiene solo un registro por id
   async getRequestApproval(id: number): Promise<any> {
     try {
 
       const response = listApprovals.find((item) => item.id === id);
 
       return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(response);
-        }, 1000)
+        setTimeout(() => resolve(response), 1000);
       });
 
     } catch (error) {
@@ -42,6 +39,46 @@ export const approvalsServices = {
     }
   },
 
+  //Guarda un nueva solicitud
+  async saveDataRequest(data: RequestOpeningForm): Promise<any> {
+    try {
+
+      const response: Approval = {
+        id: getRandomExcluding(),
+        date: formatDate(),
+        state: 'Abierto',
+        typeRequest: '',
+        reasons: data.reason,
+        comment: data.comment,
+        status: 2
+      };
+
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(response), 1000);
+      })
+
+    } catch (error) {
+      console.log(error)
+      return {}
+    }
+  },
+
+  //Actualiza la solicitud.
+  async updateStatusRequest(data: EditRequestForm): Promise<any> {
+    try {
+
+      const response = data;
+
+      return new Promise((resolve) => {
+        setTimeout(() => resolve(response), 1000);
+      });
+
+    } catch (error) {
+
+    }
+  },
+
+  //obtiene el listado de las cajas y lotes.
   async getClosingList(): Promise<any> {
     try {
       const response = closingList;
@@ -60,6 +97,7 @@ export const approvalsServices = {
     }
   },
 
+  // obtiene el listado de los motivos.
   async getReasonsList(): Promise<any> {
     try {
 
@@ -77,6 +115,27 @@ export const approvalsServices = {
   },
 
 }
+
+const getRandomExcluding = () => {
+  let num;
+  do {
+    num = Math.floor(Math.random() * 100) + 1; // Número entre 1 y 100
+  } while ([1, 2, 3, 4, 5].includes(num));
+  return num;
+}
+
+const formatDate = () => {
+  const now = Temporal.Now.plainDateTimeISO();
+
+  return now.toLocaleString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,  // Para formato AM/PM
+  }); // Eliminar la coma entre fecha y hora
+};
 
 const listApprovals: Approval[] = [
   {

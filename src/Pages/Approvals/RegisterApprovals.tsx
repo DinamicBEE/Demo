@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Temporal } from "@js-temporal/polyfill";
-import { NativeSelectField, NativeSelectRoot, Stack, Textarea } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot, Spinner, Stack, Text, Textarea } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
@@ -14,27 +14,32 @@ import { useApi } from "@hooks/useApi";
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   ({ isOpen, onClose }) => {
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<RequestOpeningForm>();
+    const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
     const { addOrUpdateApprovalList } = useApprovalsList();
     const { data: closingList } = useApi(approvalsServices.getClosingList);
     const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
-    const onSubmitForm: SubmitHandler<RequestOpeningForm> = (data: RequestOpeningForm) => {
+    const { refetch, isLoading } = useApi(
+      () => {
+        const formData = getValues();
+        return approvalsServices.saveDataRequest(formData);
+      },
+      {
+        autoFetch: false,
+        onSuccess: (data) => {
 
-      const responseOpening: Approval = {
-        id: getRandomExcluding(),
-        date: formatDate(),
-        state: 'Abierto',
-        typeRequest: '',
-        reasons: data.reason,
-        comment: data.comment,
-        status: 2
-      };
+          addOrUpdateApprovalList(data);
+          reset();
+          onClose();
 
-      addOrUpdateApprovalList(responseOpening);
-      reset();
-      onClose();
-    }
+        },
+        onError: (data) => {
+          console.log(data)
+        },
+      }
+    );
+
+    const onSubmitForm: SubmitHandler<RequestOpeningForm> = async () => refetch();
 
     return (
       <>
@@ -63,7 +68,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
                       </NativeSelectField>
                     </NativeSelectRoot>
 
-                    {errors.name && <small className="text-red-600">{errors.name?.message}</small>}
+                    {errors.name && <Text color="red" textStyle='xs'>{errors.name?.message}</Text>}
                   </Field>
 
                   <Field label="Motivo*">
@@ -77,12 +82,12 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
                       </NativeSelectField>
                     </NativeSelectRoot>
 
-                    {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
+                    {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
                   </Field>
 
                   <Field label="Comentario*">
                     <Textarea variant="outline" {...register('comment', { required: 'Este campo es requerido' })} />
-                    {errors.reason && <small className="text-red-600">{errors.reason?.message}</small>}
+                    {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
                   </Field>
 
                 </Stack>
@@ -92,10 +97,15 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
               <DialogFooter>
 
                 <DialogActionTrigger asChild>
-                  <Button rounded='full' size='sm'>Cancelar</Button>
+                  <Button rounded='full' size='sm' onClick={() => reset()}>Cancelar</Button>
                 </DialogActionTrigger>
 
-                <Button type="submit" colorPalette="green" size='sm' rounded='full'>Guardar</Button>
+                <Button type="submit" colorPalette="green" size='sm' rounded='full'>
+                  {
+                    isLoading ? <Spinner size='md' /> : 'Guardar'
+                  }
+
+                </Button>
 
               </DialogFooter>
 
@@ -109,23 +119,3 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   }
 )
 
-const getRandomExcluding = () => {
-  let num;
-  do {
-    num = Math.floor(Math.random() * 100) + 1; // Número entre 1 y 100
-  } while ([1, 2, 3, 4, 5].includes(num));
-  return num;
-}
-
-const formatDate = () => {
-  const now = Temporal.Now.plainDateTimeISO();
-
-  return now.toLocaleString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,  // Para formato AM/PM
-  }); // Eliminar la coma entre fecha y hora
-};

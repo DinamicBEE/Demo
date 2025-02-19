@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import { Table } from "@chakra-ui/react";
+import { Badge, Table } from "@chakra-ui/react";
 import { useApi } from "@hooks/useApi";
 import { approvalsServices } from "@services/approvalsServices";
 import { Approval, TableApprovalsProps } from "@models/approvals.model";
@@ -32,8 +32,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
       if (dataApproval.id) addOrUpdateApprovalList(dataApproval);
     }, [dataApproval]);
 
-    const handleSwitchChange = (data: Approval) => {
-      const updatedDataEdit: Approval = { ...data, status: data.status ? 0 : 1 };
+    const handleSwitchChange = (data: Approval, status: number) => {
+      const updatedDataEdit: Approval = { ...data, status: status };
       addOrUpdateApprovalList(updatedDataEdit);
     };
 
@@ -75,20 +75,35 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                     <Table.Cell textAlign={'center'}> {item.reasons} </Table.Cell>
                     <Table.Cell textAlign={'center'}> {role === 1 ? item.comment : item.commentSupervisor} </Table.Cell>
 
-                    <Table.Cell textAlign={'center'}>  {statusLabels[item.status]} </Table.Cell>
+                    <Table.Cell textAlign={'center'}>
+                      <Badge colorPalette={item.status === 2 ? "blue" : item.status === 0 ? "red" : "green"}>
+                        {statusLabels[item.status]}
+                      </Badge>
+                    </Table.Cell>
 
-                    {role === 1 &&
+                    {
+                      role === 1 &&
                       <Table.Cell textAlign={'center'}>
 
-                        <Button size='xs' variant="surface" rounded="full"
-                          onClick={() => handleSwitchChange(item)}
-                          colorPalette={item.status === 2 ? "grey" : item.status === 0 ? "green" : "red"}>
-                          
-                          {item.status === 2 ? "Procesar" : item.status === 0 ? "Aprobar" : "Rechazar"}
+                        {
+                          item.status === 2 &&
+                          (
+                            <>
+                              <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px'
+                                onClick={() => handleSwitchChange(item, 1)}>
+                                Aprobar
+                              </Button>
 
-                        </Button>
+                              <Button size='xs' colorPalette='red' variant="surface" rounded="full"
+                                onClick={() => handleSwitchChange(item, 0)}>
+                                Rechazar
+                              </Button>
+                            </>
+                          )
+                        }
 
-                        <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full" onClick={() => openEditDialog(item)}>
+                        <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full"
+                          onClick={() => openEditDialog(item)}>
                           Detalle
                         </Button>
 
@@ -102,6 +117,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
 
           </Table.Root>
         </Table.ScrollArea>
+
       </>
     );
 
