@@ -10,5 +10,6 @@ export interface TableInputProps {
   id: number;
   keyValue?: string;
   currency: boolean;
+  disabled?: boolean;
   onChange?: (id: number, eventValue: string, key?:string) => void;
 }

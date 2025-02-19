@@ -1,5 +1,6 @@
 import { lazy } from 'react';
 import { HomeProvider } from '../context/home/homeProvider';
+import { ClosureProvider } from '../context/lotClosure/lotClosureProvider';
 
 const routesConfig = [
     {
@@ -16,6 +17,11 @@ const routesConfig = [
       path: '/lotClosure',
       element: lazy(() => import('../pages/LotClosure/LotClosure')),
       roles: [1, 2],
+      wrapper: (Component: React.ComponentType) => (
+        <ClosureProvider>
+          <Component />
+        </ClosureProvider>
+      ),
     },
     {
       path: '/request',
