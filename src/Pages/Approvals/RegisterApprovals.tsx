@@ -1,15 +1,14 @@
 import React, { memo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Temporal } from "@js-temporal/polyfill";
 import { NativeSelectField, NativeSelectRoot, Spinner, Stack, Text, Textarea } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
+import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
 import { Field } from "@components/ui/field";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
-
+import { Toaster, toaster } from "@components/ui/toaster";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   ({ isOpen, onClose }) => {
@@ -28,10 +27,16 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
         autoFetch: false,
         onSuccess: (data) => {
 
-          addOrUpdateApprovalList(data);
-          reset();
-          onClose();
+          toaster.create({
+            title: `Se guardaron los datos correctamente`,
+            type: 'success',
+          });
 
+          setTimeout(() => {
+            addOrUpdateApprovalList(data);
+            reset();
+            onClose();
+          }, 1000);
         },
         onError: (data) => {
           console.log(data)
@@ -43,6 +48,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
 
     return (
       <>
+        <Toaster />
+        
         <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
 
           <DialogContent>
@@ -104,7 +111,6 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
                   {
                     isLoading ? <Spinner size='md' /> : 'Guardar'
                   }
-
                 </Button>
 
               </DialogFooter>

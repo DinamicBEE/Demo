@@ -1,6 +1,6 @@
 import { createListCollection } from "@chakra-ui/react";
 import { Temporal } from "@js-temporal/polyfill";
-import { Approval, EditRequestForm, RequestOpeningForm } from "@models/approvals.model";
+import { Approval,  RequestOpeningForm } from "@models/approvals.model";
 
 
 export const approvalsServices = {
@@ -47,7 +47,7 @@ export const approvalsServices = {
         id: getRandomExcluding(),
         date: formatDate(),
         state: 'Abierto',
-        typeRequest: '',
+        typeRequest: data.name.replace(/(\bCorte (caja|lote)) .*/, "$1").toUpperCase(),
         reasons: data.reason,
         comment: data.comment,
         status: 2
@@ -64,7 +64,7 @@ export const approvalsServices = {
   },
 
   //Actualiza la solicitud.
-  async updateStatusRequest(data: EditRequestForm): Promise<any> {
+  async updateStatusRequest(data: Approval): Promise<any> {
     try {
 
       const response = data;
@@ -151,7 +151,7 @@ const listApprovals: Approval[] = [
     id: 2,
     date: "10/02/2025, 1:00 PM",
     state: "Con diferencia",
-    typeRequest: "CIERRE DE LOTE",
+    typeRequest: "CORTE  LOTE",
     reasons: "Forma de pago",
     comment: "Ajuste necesario en método de pago registrado.",
     status: 2
@@ -160,7 +160,7 @@ const listApprovals: Approval[] = [
     id: 3,
     date: "10/02/2025, 1:00 PM",
     state: "Cerrado",
-    typeRequest: "CORTE DE CAJA",
+    typeRequest: "CORTE CAJA",
     reasons: "Ajustes en cupones",
     comment: "Cupones no aplicados correctamente.",
     status: 2
@@ -169,7 +169,7 @@ const listApprovals: Approval[] = [
     id: 4,
     date: "11/02/2025, 1:00 PM",
     state: "Reabierto",
-    typeRequest: "CIERRE DE LOTE",
+    typeRequest: "CIERRE LOTE",
     reasons: "Diferencia en última actualización",
     comment: "Revisión urgente por actualización incorrecta.",
     status: 2
@@ -178,7 +178,7 @@ const listApprovals: Approval[] = [
     id: 5,
     date: "11/02/2025, 1:00 PM",
     state: "Abierto",
-    typeRequest: "CORTE DE CAJA",
+    typeRequest: "CORTE CAJA",
     reasons: "Forma de pago",
     comment: "Error en la asignación del pago con tarjeta.",
     status: 2
