@@ -5,6 +5,7 @@ import {
   useState,
   useMemo,
   useCallback,
+  useRef,
 } from "react";
 import { getCompanies, getLocations } from "@services/lotClosureService";
 import {
@@ -25,9 +26,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
   const [locations, setLocations] = useState<
     ListCollection<{ value: number; label: string }>
   >(createListCollection({ items: [] }));
-  const [cachedLocations, setCachedLocations] = useState<
-    { [key: number]: ListCollection<{ value: number; label: string }> }
-  >({});
+  const cachedLocations = useRef<{ [key: number]: ListCollection<{ value: number; label: string }> }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -53,8 +52,8 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
 
   const fetchLocations = useCallback(
     async (companyId: number) => {
-      if (cachedLocations[companyId]) {
-        setLocations(cachedLocations[companyId]);
+      if (cachedLocations.current[companyId]) {
+        setLocations(cachedLocations.current[companyId]);
         return;
       }
 
@@ -68,10 +67,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
           })),
         });
         setLocations(newLocations);
-        setCachedLocations((prev) => ({
-          ...prev,
-          [companyId]: newLocations,
-        }));
+        cachedLocations.current[companyId] = newLocations;
       } catch (error) {
         setError(true);
       } finally {

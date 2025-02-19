@@ -71,7 +71,7 @@ function LotClosure() {
               onOpenChange={fetchCompanies}
               onValueChange={({ value }) => onSelectedCompany(value)}
             >
-              <SelectLabel>Empresa</SelectLabel>
+              <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder="Selecciona una subsidiaria" />
               </SelectTrigger>

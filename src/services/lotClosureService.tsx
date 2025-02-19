@@ -6,8 +6,6 @@ export const getLotsClosure = async (
   locationId: number,
   companyId: number
 ) => {
-  console.log(dateRange, locationId, companyId);
-
   try {
     const response = lotsClosure;
     return new Promise<LotClosure[]>((resolve) => {

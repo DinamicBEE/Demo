@@ -48,6 +48,12 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       }
       setLoading(true);
       try {
+        if (isRefresh) {
+          setBanks([]);
+          bankCache.current = {};
+          setLotsClosure([]);
+          lostClosureCache.current = {};
+        }
         const response = await getLotsClosure(dateRange, locationId, companyId);
         const transformedResponse = response.map((lot) => ({
           ...lot,
@@ -55,8 +61,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
         }));
         setLotsClosure(transformedResponse);
         lostClosureCache.current[locationId] = transformedResponse;
-        setBanks([]);
-        bankCache.current = {};
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
