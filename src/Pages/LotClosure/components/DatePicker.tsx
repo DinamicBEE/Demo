@@ -20,6 +20,7 @@ const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
     ref={ref}
     onClick={onClick}
     onChange={onChange}
+    focusRingColor={"green.400"}
     placeholder="Selecciona un rango de fechas"
   />
 );

@@ -31,13 +31,13 @@ function LotClosure() {
     null,
   ]);
   const [startDate, endDate] = dateRange;
-  const { fetchLotClosureData,lotsClosure } = useLotClosureList();
+  const { fetchLotClosureData, lotsClosure } = useLotClosureList();
   const { fetchCompanies, fetchLocations, comapanies, locations, loading } =
     useLotCatalogList();
-    const [showTable, setShowTable] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
   const search = () => {
-    if(lotsClosure.length === 0){
+    if (lotsClosure.length === 0) {
       setShowTable(true);
     }
 
@@ -55,7 +55,7 @@ function LotClosure() {
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align="start">
         <Heading size="md">
-          Selecciona empresa, rango de fechas y centro de consumo
+          Selecciona una subsidiaria , rango de fechas y centro de consumo
         </Heading>
 
         <HStack w="100%">
@@ -73,7 +73,7 @@ function LotClosure() {
             >
               <SelectLabel>Empresa</SelectLabel>
               <SelectTrigger>
-                <SelectValueText placeholder="Selecciona una empresa" />
+                <SelectValueText placeholder="Selecciona una subsidiaria" />
               </SelectTrigger>
               <SelectContent>
                 {!loading ? (

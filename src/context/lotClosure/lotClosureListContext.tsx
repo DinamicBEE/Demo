@@ -5,14 +5,19 @@ import {
   useState,
   useMemo,
   useCallback,
+  useRef,
 } from "react";
-import { getBanks, getLotsClosure } from "@services/lotClosureService";
+import {
+  getBanks,
+  getLotsClosure,
+  updateBankService,
+  updateLotClosure,
+} from "@services/lotClosureService";
 import {
   LotClosureContextType,
   LotClosure,
   Bank,
 } from "@models/lotClosure.model";
-import { STATUS } from "@models/status.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -22,24 +27,36 @@ export const useLotClosureList = () => useContext(LotClosureListContext);
 
 export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [lotsClosure, setLotsClosure] = useState<LotClosure[]>([]);
+  const lostClosureCache = useRef<{ [key: number]: LotClosure[] }>({});
   const [banks, setBanks] = useState<Bank[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingBanks, setLoadingBanks] = useState(false);
+  const [updateBankLoading, setUpdateBankLoading] = useState(false);
   const [error, setError] = useState<string>("");
-  const [bankCache, setBankCache] = useState<{ [key: number]: Bank[] }>({});
-
+  const bankCache = useRef<{ [key: number]: Bank[] }>({});
 
   const fetchLotClosureData = useCallback(
     async (
       dateRange: [Date | null, Date | null],
       locationId: number,
-      companyId: number
+      companyId: number,
+      isRefresh?: boolean
     ) => {
-
+      if (lostClosureCache.current[locationId] && !isRefresh) {
+        setLotsClosure(lostClosureCache.current[locationId]);
+        return;
+      }
       setLoading(true);
       try {
         const response = await getLotsClosure(dateRange, locationId, companyId);
-        setLotsClosure(response);
+        const transformedResponse = response.map((lot) => ({
+          ...lot,
+          difference: lot.totalPOS - lot.totalClousing,
+        }));
+        setLotsClosure(transformedResponse);
+        lostClosureCache.current[locationId] = transformedResponse;
+        setBanks([]);
+        bankCache.current = {};
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -51,29 +68,41 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     [lotsClosure]
   );
 
-  const updateStatus = useCallback(
-    (lotId: number, status: STATUS) => {
-      const updatedLots = lotsClosure.map((lot) =>
-        lot.id === lotId ? { ...lot, status } : lot
-      );
-
-      setLotsClosure(updatedLots);
+  const updateBank = useCallback(
+    async (lotId: number, localBank: Bank[], localLotClosure: LotClosure) => {
+      setUpdateBankLoading(true);
+      try {
+        const reponseUpdatedBanks = await updateBankService(localBank);
+        setBanks(reponseUpdatedBanks);
+        bankCache.current[lotId] = reponseUpdatedBanks;
+        const responseUpdatedLotClosure = await updateLotClosure(
+          lotId,
+          localLotClosure
+        );
+        const prevLots = lostClosureCache.current[localLotClosure.location.id];
+        const updatedLots = prevLots.map((lot) =>
+          lot.id === lotId ? responseUpdatedLotClosure : lot
+        );
+        setLotsClosure(updatedLots);
+        lostClosureCache.current[localLotClosure.location.id] = updatedLots;
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
+        throw error;
+      } finally {
+        setUpdateBankLoading(false);
+      }
     },
-    [lotsClosure]
+    [lotsClosure, banks]
   );
 
   const fetchBanks = useCallback(
     async (lotId: number) => {
-      if (bankCache[lotId]) {
-        setBanks(bankCache[lotId]);
-        return bankCache[lotId];
-      }
-      if (banks.length > 0 && banks[0].lotClosureId === lotId) return banks;
+      if (bankCache.current[lotId]) return bankCache.current[lotId];
       setLoadingBanks(true);
       try {
         const response = await getBanks(lotId);
         setBanks(response);
-        setBankCache((prev) => ({ ...prev, [lotId]: response }));
+        bankCache.current[lotId] = response;
         return response;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
@@ -107,32 +136,37 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     },
     []
   );
-  
 
   const value = useMemo(
     () => ({
       lotsClosure,
+      setLotsClosure,
+      lotClosureCache: lostClosureCache.current,
       loadingBanks,
       banks,
-      setBankCache,
       setBanks,
+      bankCache: bankCache.current,
       error,
       loading,
+      updateBankLoading,
       fetchLotClosureData,
       fetchBanks,
-      updateStatus,
+      updateBank,
       updateBankAfilations,
     }),
     [
       lotsClosure,
+      setLotsClosure,
       loadingBanks,
+      lostClosureCache,
+      updateBankLoading,
       banks,
-      setBankCache,
       setBanks,
+      bankCache,
       loading,
       error,
       fetchLotClosureData,
-      updateStatus,
+      updateBank,
       fetchBanks,
       updateBankAfilations,
     ]

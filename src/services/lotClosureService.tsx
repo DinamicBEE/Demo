@@ -75,6 +75,48 @@ export const getBanks = async (lotId: number) => {
   }
 };
 
+export const updateBankService = async (localBank: Bank[]) => {
+  try {
+    return new Promise<Bank[]>((resolve) => {
+      setTimeout(() => {
+        resolve(localBank);
+      }, 1000);
+    });
+  } catch (error) {
+    console.error("Error al obtener las Subsidiarias: ", error);
+    return [];
+  }
+};
+
+export const updateLotClosure = async (
+  lotId: number,
+  localLotClosure: LotClosure
+) => {
+  try {
+    return new Promise<LotClosure>((resolve) => {
+      setTimeout(() => {
+        const lot = lotsClosure.find((lot) => lot.id === lotId);
+        if (lot) {
+          const updatedLot = {
+            ...lot,
+            status:
+              localLotClosure.difference === 0
+                ? STATUS.CLOSED
+                : STATUS.WITH_DIFFERENCE,
+            difference: localLotClosure.difference,
+            totalLot: localLotClosure.totalLot,
+          };
+
+          resolve(updatedLot);
+        }
+      }, 1000);
+    });
+  } catch (error) {
+    console.error("Error al obtener las Subsidiarias: ", error);
+    return {} as LotClosure;
+  }
+};
+
 const lotsClosure = [
   {
     id: 1,
@@ -90,11 +132,12 @@ const lotsClosure = [
       id: 1,
       name: "Company 1",
     },
-    lotNumber: "123456",
-    status: STATUS.CLOSED,
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
+    lotNumber: "14",
+    status: STATUS.OPEN,
+    totalPOS: 100.5,
+    totalClousing: 100.5,
+    totalLot: 0,
+    difference: 0,
     employe: "Employee 1",
     dateClosed: "22/09/2021",
   },
@@ -112,10 +155,11 @@ const lotsClosure = [
       id: 1,
       name: "Company 1",
     },
-    lotNumber: "123456",
+    lotNumber: "19",
     status: STATUS.WITH_DIFFERENCE,
-    totalPOS: 12200,
-    totalClousing: 20220,
+    totalPOS: 1200,
+    totalClousing: 1300,
+    totalLot: 0,
     difference: 0,
     employe: "Employee 40",
     dateClosed: "29/09/2021",
@@ -134,11 +178,12 @@ const lotsClosure = [
       id: 1,
       name: "Company 1",
     },
-    lotNumber: "123456",
-    status: STATUS.OPEN,
-    totalPOS: 100,
+    lotNumber: "1",
+    status: STATUS.CLOSED,
+    totalPOS: 200,
     totalClousing: 200,
-    difference: 100,
+    totalLot: 200,
+    difference: 0,
     employe: "Employee 2",
     dateClosed: "22/09/2021",
   },
@@ -156,11 +201,12 @@ const lotsClosure = [
       id: 2,
       name: "Company 2",
     },
-    lotNumber: "123456",
+    lotNumber: "24",
     status: STATUS.CLOSED,
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
+    totalPOS: 500,
+    totalClousing: 501,
+    totalLot: 0,
+    difference: 0,
     employe: "Employee 3",
     dateClosed: "22/09/2021",
   },
@@ -178,11 +224,12 @@ const lotsClosure = [
       id: 3,
       name: "Company 3",
     },
-    lotNumber: "123456",
+    lotNumber: "18",
     status: STATUS.REOPENED,
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
+    totalPOS: 0,
+    totalClousing: 0,
+    totalLot: 0,
+    difference: 0,
     employe: "Employee 4",
     dateClosed: "22/09/2021",
   },
@@ -200,11 +247,12 @@ const lotsClosure = [
       id: 4,
       name: "Company 4",
     },
-    lotNumber: "123456",
+    lotNumber: "19",
     status: STATUS.WITH_DIFFERENCE,
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
+    totalPOS: 100.9,
+    totalClousing: 100.1,
+    totalLot: 0,
+    difference: 0,
     employe: "Employee 5",
     dateClosed: "22/09/2021",
   },
@@ -222,11 +270,12 @@ const lotsClosure = [
       id: 5,
       name: "Company 5",
     },
-    lotNumber: "123456",
+    lotNumber: "99",
     status: STATUS.CLOSED,
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
+    totalPOS: 0,
+    totalClousing: 0,
+    totalLot: 0,
+    difference: 0,
     employe: "Employee 6",
     dateClosed: "22/09/2021",
   },
@@ -317,10 +366,10 @@ const banks = [
       },
     },
     bank: "BBVA",
-    totalPOS: 100,
-    totalClousing: 200,
-    difference: 100,
-    lot: 100,
+    totalPOS: 50,
+    totalClousing: 50,
+    difference: 0,
+    lot: 0,
     afilations: [
       {
         id: 1,
@@ -370,10 +419,10 @@ const banks = [
       },
     },
     bank: "Banamex",
-    totalPOS: 1001,
-    totalClousing: 2100,
-    difference: 1200,
-    lot: 3100,
+    totalPOS: 50.5,
+    totalClousing: 50.5,
+    difference: 0,
+    lot: 0,
     afilations: [
       {
         id: 11,
@@ -384,6 +433,39 @@ const banks = [
         id: 12,
         name: "Afiliacion 2",
         amount: 0,
+      },
+    ],
+  },
+  {
+    id: 4,
+    lotClosureId: 2,
+    company: {
+      id: 1,
+      name: "Company 1",
+    },
+    location: {
+      id: 2,
+      name: "Location 2",
+      company: {
+        id: 1,
+        name: "Company 1",
+      },
+    },
+    bank: "Banamex",
+    totalPOS: 200,
+    totalClousing: 200,
+    difference: 0,
+    lot: 200,
+    afilations: [
+      {
+        id: 11,
+        name: "Afiliacion 1",
+        amount: 100,
+      },
+      {
+        id: 12,
+        name: "Afiliacion 2",
+        amount: 100,
       },
     ],
   },

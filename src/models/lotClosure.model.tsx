@@ -5,6 +5,7 @@ export interface LotClosure {
   company: Company;
   location: Location;
   lotNumber: string;
+  totalLot: number;
   status: STATUS;
   totalPOS: number;
   totalClousing: number;
@@ -64,19 +65,23 @@ export interface LotClosureDialogProps {
 
 export interface LotClosureContextType {
   lotsClosure: LotClosure[];
+  setLotsClosure: (lots: LotClosure[]) => void;
+  lotClosureCache: { [key: number]: LotClosure[] };
   banks: Bank[];
   setBanks: (banks: Bank[]) => void;
-  setBankCache: (cache: { [key: number]: Bank[] }) => void;
+  bankCache: { [key: number]: Bank[] };
   error: string;
   loading: boolean;
   loadingBanks: boolean;
+  updateBankLoading: boolean;
   fetchLotClosureData: (
     dateRange: [Date | null, Date | null],
     locationId: number,
-    companyId: number
+    companyId: number,
+    isRefresh?: boolean
   ) => Promise<void>;
   fetchBanks: (lotId: number) => Promise<Bank[]>;
-  updateStatus: (lotId: number, status: STATUS) => void;
+  updateBank: (lotId: number, bank: Bank[], lot: LotClosure) => Promise<void>;
   updateBankAfilations: (
     bankId: number,
     amount: string,

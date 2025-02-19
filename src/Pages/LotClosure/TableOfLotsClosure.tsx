@@ -45,7 +45,16 @@ function TableOfLotClosure({
           { label: "Diferencia", key: "difference" },
           { label: "Empleado (Realizado por)", key: "employe" },
         ],
-        data: lotsClosure,
+        data: lotsClosure.map((item) => ({
+          location: item.location.name,
+          company: item.company.name,
+          lotNumber: item.lotNumber,
+          status: item.status,
+          totalPOS: item.totalPOS,
+          totalClousing: item.totalClousing,
+          difference: item.difference,
+          employe: item.employe,
+        })),
       },
       "lotes-cierre"
     );
@@ -63,7 +72,7 @@ function TableOfLotClosure({
 
   return (
     <>
-      {loading && <Loading />}
+      {/*  {loading && <Loading />} */}
       {showTable && (
         <Box>
           <Box>
@@ -78,7 +87,7 @@ function TableOfLotClosure({
                 onClick={() => {
                   handleExportCSV();
                 }}
-                disabled={lotsClosure.length === 0}
+                disabled={lotsClosure.length === 0 || loading}
               >
                 Exportar a CSV
               </Button>
@@ -86,8 +95,9 @@ function TableOfLotClosure({
               <Button
                 className="primary-button"
                 onClick={() => {
-                  fetchLotClosureData(dateRange, locationId, companyId);
+                  fetchLotClosureData(dateRange, locationId, companyId, true);
                 }}
+                disabled={loading}
               >
                 Actualizar Información
               </Button>
@@ -128,28 +138,28 @@ function TableOfLotClosure({
                 <Table.Body>
                   {loading && (
                     <Table.Row>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell  textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
                     </Table.Row>
@@ -168,7 +178,7 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>{item.location.name}</Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text
                             as="span"
                             cursor="pointer"
@@ -179,15 +189,15 @@ function TableOfLotClosure({
                             {item.company.name}
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text>{item.lotNumber}</Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Tag.Root colorPalette={statusColor(item.status)}>
                             <Tag.Label>{item.status}</Tag.Label>
                           </Tag.Root>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
                               value={item.totalPOS}
@@ -196,25 +206,29 @@ function TableOfLotClosure({
                             />
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              value={item.totalClousing}
+                              value={item.totalLot}
                               style="currency"
                               currency="USD"
                             />
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              value={item.difference}
+                              value={
+                                item.status === STATUS.OPEN
+                                  ? 0
+                                  : item.totalPOS - item.totalLot
+                              }
                               style="currency"
                               currency="USD"
                             />
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="end">
+                        <Table.Cell textAlign="center">
                           <Text>{item.employe}</Text>
                         </Table.Cell>
                       </Table.Row>
