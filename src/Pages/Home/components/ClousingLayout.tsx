@@ -124,7 +124,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                 </DialogBody>
 
                 <DialogFooter>
-                   <FooterClousing clousingType={value} clousingId={employee?.id ?? 0} />
+                   <FooterClousing clousingType={value} clousingId={employee?.id ?? 0} closeDialog={()=>onClose()} />
                 </DialogFooter>
 
                 <DialogCloseTrigger />

@@ -85,6 +85,7 @@ export interface ClousingType{
 export interface FooterClousing {
   clousingType: CLOUSING_KEY;
   clousingId: number;
+  closeDialog: () => void,
   // data?: TotalModel | undefined;
   // loading?: boolean;
   // onChange?: () => Promise<boolean>;
@@ -129,4 +130,10 @@ export interface ClousingLayoutProps {
 export interface TableOfTotalsProps {
   subsidiary: number;
   store: number;
+}
+
+export interface ConfirmDialogProps {
+    isOpen: boolean,
+    closeDialog: () => void,
+    sendData: () => void
 }

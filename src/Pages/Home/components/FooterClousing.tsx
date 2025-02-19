@@ -12,10 +12,13 @@ import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
+import ConfirmDialog from "./ConfirmDialog";
+import Loading from "@components/Loading";
 
-function FooterClousing({clousingType, clousingId}: FooterClousing) {
+function FooterClousing({clousingType, clousingId, closeDialog}: FooterClousing) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
 
   const { getFooterData } = useFooter();
@@ -37,6 +40,8 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   }, [clousingId, clousingType, getFooterData]);
 
   async function sendClousing() {
+
+    setloading(true);
 
     const cash = await getCashData(clousingId);
 
@@ -68,59 +73,65 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
     if (response.success) {
       console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
+      closeDialog()
     } else {
       console.log("Error al enviar el corte de caja");
       //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
     }
-
-    return false;
+    
+    setloading(false);
+    setButtonLoading(false);
   }
 
   return (
-    <Box
-      p={4}
-      mb={2}
-      mt={4}
-      gap="4"
-      flexDir={{ base: "column", md: "row" }}
-    >
-      <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
-        
-        <CurrencyInput
-          name={"Total POS"}
-          value={footer?.totalPOS ?? 0}
-          loading={false}
-        />
+    <>
+      <Box
+        p={4}
+        mb={2}
+        mt={4}
+        gap="4"
+        flexDir={{ base: "column", md: "row" }}
+      >
+        <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
+          
+          <CurrencyInput
+            name={"Total POS"}
+            value={footer?.totalPOS ?? 0}
+            loading={false}
+          />
 
-        <CurrencyInput
-          name={"Total físico"}
-          value={footer?.totalPhysical ?? 0}
-          loading={false}
-        />
+          <CurrencyInput
+            name={"Total físico"}
+            value={footer?.totalPhysical ?? 0}
+            loading={false}
+          />
 
-        <CurrencyInput
-          name={"Diferencia"}
-          value={footer?.difference ?? 0}
-          loading={false}
-        />
+          <CurrencyInput
+            name={"Diferencia"}
+            value={footer?.difference ?? 0}
+            loading={false}
+          />
 
-        <Button loading={buttonLoading}
-          className="secondary-button save-button"
-          onClick={async () => {
-            setButtonLoading(true);
-            const response = await sendClousing()
-            setButtonLoading(response);
-        }}
-        >
-          Confirmar Corte
-        </Button>
-        
-      </Flex>
+          <Button loading={loading}
+            className="secondary-button save-button"
+            onClick={async () => {
+              setButtonLoading(true);
+          }}
+          >
+            Confirmar Corte
+          </Button>
+          
+        </Flex>
 
-      <Flex>
-      </Flex>
+        <Flex>
+        </Flex>
 
-    </Box>
+      </Box>
+
+      <ConfirmDialog isOpen={buttonLoading} closeDialog={() => setButtonLoading(false)} sendData={sendClousing} />
+
+      {loading && <Loading />}
+    </>
   );
 }
 
