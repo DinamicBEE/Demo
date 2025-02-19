@@ -21,7 +21,7 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
     const getPrepaidData = useCallback( async(clousingId:number,)=>{
         setPrepaidLoading(true);
-        console.log(prepaidRef.current)
+        
         if(prepaidRef.current[clousingId]) {
             setPrepaidLoading(false);
             return prepaidRef.current[clousingId];

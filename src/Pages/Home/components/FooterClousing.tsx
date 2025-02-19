@@ -5,13 +5,13 @@ import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
 import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
 import { sendCashClousing } from "@services/clousingService";
-import { CLOUSING_KEY } from "@models/constants.model";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
+import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 
 function FooterClousing({clousingType, clousingId}: FooterClousing) {
 
@@ -25,6 +25,7 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   const { getSpecialCustData } = useSpecialCustContext();
   const { getEmployeetData } = useEmployeeContext();
   const { getIntercompanyData } = useIntercompanyContext();
+  const { getPrepaidData } = usePrepaidContext();
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -36,57 +37,33 @@ function FooterClousing({clousingType, clousingId}: FooterClousing) {
   }, [clousingId, clousingType, getFooterData]);
 
   async function sendClousing() {
-    
-    let body;
 
-    switch (clousingType) {
-      case CLOUSING_KEY.CASH:
+    const cash = await getCashData(clousingId);
 
-        body = await getCashData(clousingId);
+    const tdc = await getTDCData(clousingId);
 
-        break;
-      
-      case CLOUSING_KEY.TDC:
-        //Validar que se envia 
-        body = await getTDCData(clousingId);
+    const customer = await getCustomerData(clousingId);
 
-        break;
+    const specialCustomer = await getSpecialCustData(clousingId);
 
-      case CLOUSING_KEY.CUSTOMER:
+    const employee = await getEmployeetData(clousingId);
 
-        body = await getCustomerData(clousingId);
+    const prepaid = await getPrepaidData(clousingId);
 
-        break;
-      
-      case CLOUSING_KEY.SPECIALCUSTOMER:
+    const intercompany = await getIntercompanyData(clousingId);
 
-        body = await getSpecialCustData(clousingId);
+    const body={
+      id: clousingId,
+      cash: cash,
+      tdc: tdc,
+      customer: customer,
+      specialCustomer: specialCustomer,
+      employee: employee,
+      prepaid: prepaid,
+      intercompany: intercompany
+    };
 
-        break;
-
-      case CLOUSING_KEY.EMPLOYEE:
-
-        body = await getEmployeetData(clousingId);
-
-        break;
-
-      case CLOUSING_KEY.PREPAID:
-
-        body = await getCashData(clousingId);
-
-        break;
-      
-      case CLOUSING_KEY.INTERCOMPANY:
-
-        body = await getIntercompanyData(clousingId);
-
-        break;
-      default:
-        break;
-    }
-    console.log(body)
-
-    const response: any = await sendCashClousing(body);//, clousingId
+    const response: any = await sendCashClousing(body);
 
     if (response.success) {
       console.log("Corte de caja enviado correctamente");

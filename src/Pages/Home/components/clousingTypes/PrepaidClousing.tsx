@@ -125,8 +125,6 @@ function PrepaidClousing({data}: any) {
           : item
     );
 
-    console.log(updatePrepaid)
-
     updateData(updatePrepaid);
 
   }
