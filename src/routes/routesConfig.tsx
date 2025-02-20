@@ -25,7 +25,7 @@ const routesConfig = [
     },
     {
       path: '/approvals',
-      element: lazy(() => import('../Pages/Approvals/Approvals')),
+      element: lazy(() => import('../pages/Approvals/Approvals')),
       roles: [1],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
