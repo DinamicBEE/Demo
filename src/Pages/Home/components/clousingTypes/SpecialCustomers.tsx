@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
 import { TableInput } from "@components/NumericInput";
-import Loading from "@components/loading";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function SpecialCustomersClousing({data}: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>() 
@@ -149,7 +149,7 @@ function SpecialCustomersClousing({data}: any) {
           </Table.ScrollArea>
 
           {specialCustLoading && (
-            <Box position="fixed" top="50%" left="50%">
+            <Box position="fixed" top="50%" left="50%"  zIndex="1">
               <Loading />
             </Box>
           )}

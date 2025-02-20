@@ -4,10 +4,10 @@ import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
-import Loading from "@components/loading";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
+import Loading from "@components/Loading";
 
 function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
     const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
@@ -115,14 +115,14 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
                     </Table.ScrollArea>
 
                     {detailsLoading && (
-                        <Box position="fixed" top="50%" left="50%">
-                        <Loading />
+                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
+                            <Loading />
                         </Box>
                     )}
                     
                     {loading && (
-                        <Box position="fixed" top="50%" left="50%">
-                        <Loading />
+                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
+                            <Loading />
                         </Box>
                     )}
 

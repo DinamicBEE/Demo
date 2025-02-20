@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import { TableInput } from "@components/NumericInput";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
@@ -125,7 +125,7 @@ function CustomersClousing({data}: any) {
           </Table.ScrollArea>
 
           {customerLoading && (
-            <Box position="fixed" top="50%" left="50%">
+            <Box position="fixed" top="50%" left="50%" zIndex="1">
               <Loading />
             </Box>
           )}

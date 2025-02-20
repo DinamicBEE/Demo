@@ -39,7 +39,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
       )}
 
       {loading && (
-        <Box position="fixed" top="50%" left="50%">
+        <Box position="fixed" top="50%" left="50%" zIndex="1">
           <Loading />
         </Box>
       )}

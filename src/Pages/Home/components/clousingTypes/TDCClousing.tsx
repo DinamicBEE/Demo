@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
-import Loading from "@components/loading";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function TDCClousing({data}: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
@@ -104,7 +104,7 @@ function TDCClousing({data}: any) {
         </Table.ScrollArea>
 
         {tdcLoading && (
-          <Box position="fixed" top="50%" left="50%">
+          <Box position="fixed" top="50%" left="50%"  zIndex="1">
             <Loading />
           </Box>
         )}

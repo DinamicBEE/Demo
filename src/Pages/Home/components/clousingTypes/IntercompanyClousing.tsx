@@ -206,7 +206,7 @@ function IntercompanyClousing({data}: any) {
       </Table.ScrollArea>
 
       {loading && (
-        <Box position="fixed" top="50%" left="50%">
+        <Box position="fixed" top="50%" left="50%"  zIndex="1">
           <Loading />
         </Box>
       )}

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Button  } from "@chakra-ui/react";
-import { Toaster } from "@components/ui/toaster";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
-import Loading from "@components/loading";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function EmployeesClousing({data}: any) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>()
@@ -94,7 +93,7 @@ function EmployeesClousing({data}: any) {
       <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
 
       {employeeLoading && (
-        <Box position="fixed" top="50%" left="50%">
+        <Box position="fixed" top="50%" left="50%"  zIndex="1">
           <Loading />
         </Box>
       )}
