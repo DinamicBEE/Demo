@@ -5,7 +5,7 @@ import { ApprovalsProvider } from '@context/approvals/approvalsProvider';
 const routesConfig = [
     {
       path: '/home',
-      element: lazy(() => import('../Pages/Home/Home')),
+      element: lazy(() => import('../pages/Home/Home')),
       roles: [1],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
@@ -15,17 +15,17 @@ const routesConfig = [
     },
     {
       path: '/lotClosure',
-      element: lazy(() => import('../Pages/LotClosure/LotClosure')),
+      element: lazy(() => import('../pages/LotClosure/LotClosure')),
       roles: [1, 2],
     },
     {
       path: '/request',
-      element: lazy(() => import('../Pages/Requests/Requests')),
+      element: lazy(() => import('../pages/Requests/Requests')),
       roles: [2],
     },
     {
       path: '/approvals',
-      element: lazy(() => import('../Pages/Approvals/ApprovalsMain')),
+      element: lazy(() => import('../pages/Approvals/ApprovalsMain')),
       roles: [1],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
@@ -35,7 +35,7 @@ const routesConfig = [
     },
     {
       path: '/emptyPage',
-      element: lazy(() => import('../Pages/Empty/EmptyPage')),
+      element: lazy(() => import('../pages/Empty/EmptyPage')),
       roles: [],
     },
   ];
