@@ -52,9 +52,10 @@ function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInput
     );
 }
 
-function TableInput({value, id, currency, keyValue, onChange}: TableInputProps){
+function TableInput({value, id, currency, keyValue, onChange, disabled}: TableInputProps){
     return(
         <NumericFormat
+        disabled={disabled || false}
         customInput={Input}
         thousandSeparator=","
         decimalSeparator="."
