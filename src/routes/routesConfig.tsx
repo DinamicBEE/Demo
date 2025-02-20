@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { HomeProvider } from '../context/home/homeProvider';
-import { ApprovalsProvider } from '@context/approvals/approvalsProvider';
+import { ApprovalsProvider } from '../context/approvals/approvalsProvider';
 
 const routesConfig = [
     {
