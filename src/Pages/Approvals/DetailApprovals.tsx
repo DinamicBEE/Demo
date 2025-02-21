@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack, Text, Spinner, Flex } from "@chakra-ui/react";
+import { DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack, Text, Spinner, Flex, useDisclosure } from "@chakra-ui/react";
 import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFooter, DialogBody } from "@components/ui/dialog";
 import { Field } from "@components/ui/field";
 import { Button } from "@components/ui/button";
@@ -9,9 +9,10 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, EditRequestForm, DetailApprovalsProps } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
-import Loading from "@components/loading";
 import { HiCheck, HiX } from "react-icons/hi";
 import { Toaster, toaster } from "@components/ui/toaster";
+import { ConfirmDialog } from "./components/ConfirmDialog";
+import Loading from "@components/loading";
 
 
 export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, onClose }) => {
@@ -19,6 +20,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
   const { addOrUpdateApprovalList, dataApproval } = useApprovalsList();
   const { register, handleSubmit, reset, formState: { errors }, getValues, setValue } = useForm<EditRequestForm>();
   const [checked, setChecked] = useState<boolean>(false);
+  const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
 
   const { data: fetchDataApproval, error, isLoading } = useApi(
     () => dataApproval.id ? approvalsServices.getRequestApproval(dataApproval.id) : Promise.resolve(undefined),
@@ -29,11 +31,8 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
   );
 
   const { refetch, isLoading: isLoadingEdit } = useApi(
-
     () => {
-
       const data = getValues();
-
       const dataEdit: Approval = {
         id: dataApproval.id,
         date: dataApproval.date,
@@ -60,7 +59,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         toaster.create({
           title: `Se actualizo los datos correctamente`,
           type: 'success',
-         
+
         })
 
         setTimeout(() => {
@@ -74,34 +73,39 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         console.log(error);
       }
     }
-
   );
 
-  const onSubmitForm: SubmitHandler<EditRequestForm> = async () => refetch();
+  const onSubmitForm = () => onOpenConfir();
+
+  const handleConfirm = () => refetch();
 
   return (
     <>
+      <Toaster />
+
+      <ConfirmDialog
+        isOpen={open}
+        onClose={onCloseConfir}
+        onConfirm={handleConfirm}
+        message="¿Estás seguro de que deseas eliminar este elemento?"
+        title="Registrar nuevo Solicitud de reapertura de caja/lote."
+      />
 
       {isLoading ? <Loading /> :
-
         <VStack alignItems='start'>
           <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
-
             <DialogContent>
 
               <form onSubmit={handleSubmit(onSubmitForm)}>
-
                 <DialogCloseTrigger />
 
                 <DialogHeader>
                   <DialogTitle> Editar estatus de solicitud de Ajuste de Caja / Lote Cerrado </DialogTitle>
                 </DialogHeader>
 
-
                 <DialogBody pb='8'>
 
                   <DataList.Root orientation='horizontal'>
-
                     <DataList.Item>
                       <DataList.ItemLabel>Fecha</DataList.ItemLabel>
                       <DataList.ItemValue>{dataApproval.date}</DataList.ItemValue>
@@ -130,7 +134,6 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                         </List.Root>
                       </DataList.ItemValue>
                     </DataList.Item>
-
                   </DataList.Root>
 
                   <Field label='Agregar comentario' paddingTop='25px'>
@@ -152,33 +155,23 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                       </Flex>
                     )
                   }
-
                 </DialogBody>
 
 
                 <DialogFooter>
-
                   <DialogActionTrigger asChild>
-                    <Button rounded='full' size='sm' onClick={() => reset()}>Cancelar</Button>
+                    <Button rounded='full' size='sm' onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
                   </DialogActionTrigger>
 
-
-                  <Button type="submit" colorPalette="green" size='sm' rounded='full'>
-                    {
-                      isLoadingEdit ? <Spinner size='md' /> : 'Editar'
-                    }
+                  <Button type="submit" colorPalette="green" size='sm' rounded='full' loading={isLoadingEdit}>
+                    Guardar
                   </Button>
-
-                  <Toaster />
-
                 </DialogFooter>
-
               </form>
 
             </DialogContent>
           </DialogRoot>
         </VStack >
-
       }
     </>
   );
