@@ -87,8 +87,8 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         isOpen={open}
         onClose={onCloseConfir}
         onConfirm={handleConfirm}
-        message="¿Estás seguro de que deseas eliminar este elemento?"
-        title="Registrar nuevo Solicitud de reapertura de caja/lote."
+        message="¿Estás seguro de que deseas editar esta Solicitud?"
+        title="Editar Solicitud de reapertura de caja/lote."
       />
 
       {isLoading ? <Loading /> :

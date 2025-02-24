@@ -18,6 +18,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
     const { data: fecthData, error, isLoading } = useApi(approvalsServices.getListApprovals);
     const { open, onOpen, onClose } = useDisclosure();
     const [confirmData, setConfirmData] = useState<{ item: Approval; newStatus: number } | null>(null);// Estado para el diálogo de confirmación
+    const [message, setMessage] = useState<string>();
 
     //este se ejecuta cuando cargan los datos desde la peticion por primera vez.
     useEffect(() => {
@@ -32,6 +33,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
 
     const handleOpenConfirm = (item: Approval, newStatus: number) => {
       setConfirmData({ item, newStatus });
+      setMessage(newStatus == 1 ? 'Aprovar' :  'Rechazar');
       onOpen();
     };
 
@@ -50,8 +52,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
           isOpen={open}
           onClose={onClose}
           onConfirm={handleConfirm}
-          message="¿Estás seguro de que deseas eliminar este elemento?"
-          title="Registrar nuevo Solicitud de reapertura de caja/lote."
+          message={`¿Estás seguro de que deseas ${message}?`}
+          title=""
         />
 
         {isLoading && <Loading />}

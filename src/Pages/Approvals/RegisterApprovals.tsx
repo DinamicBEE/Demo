@@ -58,7 +58,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
           isOpen={open}
           onClose={onCloseConfir}
           onConfirm={handleConfirm}
-          message="¿Estás seguro de que deseas eliminar este elemento?"
+          message="¿Estás seguro de que deseas crear una nueva Solcitud?"
           title="Registrar nuevo Solicitud de reapertura de caja/lote."
         />
 
