@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from "date-fns/locale/es";
@@ -12,6 +12,7 @@ import {
   createListCollection,
   Button,
   Flex,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   SelectContent,
@@ -26,7 +27,6 @@ import { Checkbox } from "@components/ui/checkbox";
 import "./ReportFilter.css";
 import { generateReportCSV } from "@services/reportService";
 import { useReportContext } from "@context/reports/reportsContext";
-import { CheckedChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/checkbox/namespace";
 
 
 export const ReportFilterComponent = () => {
@@ -38,6 +38,15 @@ export const ReportFilterComponent = () => {
   const [diferenceChecked, setDiferenceChecked] = useState(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
+
+
+  useEffect(() => {
+    if (cdcSelected == undefined) { setCdcSelected({ label: "", value: 0 }) }
+    if (empSelected == undefined) { setEmpSelected({ label: "", value: 0}) }
+ 
+  }, [cdcSelected, empSelected]);
+  
 
   const handleSelectChange = (e: SelectValueChangeDetails, id: string) => {
     let selection;
@@ -78,11 +87,11 @@ export const ReportFilterComponent = () => {
     console.log(range);
   };
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
     let filteredRows = [...respaldo];
-
+    setConfirmLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 5000)); 
     if (cdcSelected.label !== "") {
-      console.log("entramos cdcSelected");
       
       filteredRows = filteredRows.filter((row) => 
         row.data.some((item) => item.code === "cdc" && item.value.toString() === cdcSelected.label));
@@ -96,13 +105,26 @@ export const ReportFilterComponent = () => {
     }
 
     if (startDate !== null && endDate !== null) {
-      console.log("entramos date");
-
       filteredRows = filteredRows.filter((row) => {
         const rowDateStr = row.data.find((item) => item.code === "date")?.value.toString();
-        const rowDate = rowDateStr ? new Date(rowDateStr.split("/").reverse().join("-")) : null;
-        return rowDate && rowDate >= startDate && rowDate <= endDate;
-      });
+        if (!rowDateStr) return false;
+    
+        const dateParts = rowDateStr.split("/");
+        const year = parseInt(dateParts[2], 10);
+        const month = parseInt(dateParts[1], 10) - 1;
+        const day = parseInt(dateParts[0], 10);
+    
+        // Crear rowDate en UTC
+        const rowDate = new Date(Date.UTC(year, month, day));
+    
+        // Asegurar que startDate y endDate también están en UTC
+        const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
+        const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
+    
+        console.log(rowDateStr, rowDate, startDateUTC, endDateUTC);
+    
+        return rowDate >= startDateUTC && rowDate <= endDateUTC;
+    });
     }
 
     if (diferenceChecked) {
@@ -121,9 +143,26 @@ export const ReportFilterComponent = () => {
     }
     
     setReport({headers: headers, rows: filteredRows});
+    setConfirmLoading(false);
     console.log(filteredRows);
     
   };
+
+    const getConfirmationButton = () => {
+      if (!confirmLoading) {
+        return <Button className="primary-button-filter" onClick={ () => applyFilters()}>
+      Buscar <RiFilterLine />
+      </Button>
+  
+      } else {
+        return <Button 
+        className="primary-button-filter"
+        disabled={true}
+        >
+          Buscando... <Spinner size="sm" />
+        </Button>
+      }
+    }
 
   const resetFilters = () => {
     setCdcSelected({ label: "", value: 0 });
@@ -197,10 +236,7 @@ export const ReportFilterComponent = () => {
                 className="calendar"
               />
             </Field.Root>
-
-            <Button className="primary-button-filter" onClick={ () => applyFilters()}>
-              Buscar <RiFilterLine />
-            </Button>
+            {getConfirmationButton()}
           </Flex>
           <HStack
             gap="6"

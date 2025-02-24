@@ -41,7 +41,7 @@ const getDiference = (row: Row) => {
  *  */
 
 export const fetchInitialData = async (): Promise<{ headers: Headers[]; rows: Row[] }> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   return {
     headers: [
       {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Headers, Row } from "../../models/report.model";
-import { Table, Button, Input, Box, Text, FormatNumber, Heading } from "@chakra-ui/react";
+import { Table, Button, Input, Box, Text, FormatNumber, Heading, Spinner } from "@chakra-ui/react";
 import { ActionBarContent, ActionBarRoot, ActionBarSelectionTrigger, ActionBarSeparator } from "@components/ui/action-bar";
 import { RiCheckFill } from "react-icons/ri";
 import { Checkbox } from "@components/ui/checkbox";
@@ -13,16 +13,20 @@ import { getCurrentDate } from "./ReportComponents/getCurrentDate";
 import { InputGroup } from "@components/ui/input-group";
 import { useReportContext } from "@context/reports/reportsContext";
 import { Toaster, toaster } from "@components/ui/toaster";
+import { fetchInitialData } from "@services/reportService";
+import { Skeleton } from "@components/ui/skeleton";
 
 function ReportViewer() {
   const { user } = useUser();
-  const { report, setReport, respaldo, respaldar } = useReportContext();
+  const { report, setReport, respaldar } = useReportContext();
   const { rows, headers} = report;
   const [useRows, setRows] = useState<Row[]>(rows);
   const [useHeaders, setHeaders] = useState<Headers[]>([]);
   const [selection, setSelection] = useState<number[]>([]);
   const [disabledRow, setDisabledRowCount] = useState<number>(0);
   const [totalsByColumn, setTotalsByColumn] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
 
 
   const hasSelection = selection.length > disabledRow;
@@ -43,37 +47,52 @@ function ReportViewer() {
     ]);
   };
 
-  const initializeRespaldo = () => {
-    if (respaldo.length === 0) {
-      respaldar(rows);
-    }
-  };
-  // TODO: Agregar función de llamado a API para obtener la data de la tabla
   useEffect(() => {
-    getSortedHeaders(headers);
-    initialHandleDisabledRows();
-    updateAllRowsTotals();
-    const newArr = useRows.filter((row) => row.confirmed).map((row) => row.id);
-    setSelection(newArr);
-    setDisabledRowCount(newArr.length);
+    fetchData();
+    setConfirmLoading(false);
   }, []);
 
+  const fetchData = async() => {
+    setLoading(true);
+    await fetchInitialData()
+      .then( (data) => {
+        if (data != null) {
+          
+          setLoading(false);
+          console.log(data);
+          setReport({ headers: data.headers, rows: data.rows });
+          respaldar(data.rows);
+          
+          getSortedHeaders(data.headers);
+          initialHandleDisabledRows(data.rows);
+          const newArr = data.rows.filter((row) => row.confirmed).map((row) => row.id);
+          setSelection(newArr);
+          setDisabledRowCount(newArr.length);
+          setRows(data.rows);
+        }
+      });
+      // updateAllRowsTotals();
+  }
+
   useEffect(() => {
+
     getTotalByColumns();
-    // handleDisabledRows();
     setReport({ headers, rows: useRows });
     const newArr = useRows.filter((row) => row.confirmed).map((row) => row.id);
     setSelection(newArr);
     setDisabledRowCount(newArr.length);
+    
   }, [useRows]);
 
+
+  
   useEffect(() => {
     setRows(rows);
   }, [rows]);
 
   
-  const initialHandleDisabledRows = () => {
-    const newArr = useRows.map((row) => {
+  const initialHandleDisabledRows = (rows: Row[]) => {
+    const newArr = rows.map((row) => {
       if (selection.includes(row.id)) {
         const updatedRow = {
           ...row,
@@ -91,11 +110,12 @@ function ReportViewer() {
 
     // setRows(newArr); // TODO: Reemplazar con función a API para guardar las selecciones
     
-    setRows(newArr);
-    setReport({ headers, rows: newArr });
+    updateAllRowsTotals(newArr);
   }
 
-  const confirm = () => {
+  const confirm = async () => {
+    setConfirmLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 5000)); 
     const newArr = useRows.map((row) => {
       if (selection.includes(row.id)) {
         const updatedRow = {
@@ -119,10 +139,32 @@ function ReportViewer() {
     setRows(newArr);
     setReport({ headers, rows: newArr });
     respaldar(newArr);
+    setConfirmLoading(false);
     toaster.create({
       title: `Se ha guardado correctamente`,
       type: "success",});
   };
+
+  const getConfirmationButton = () => {
+    if (!confirmLoading) {
+      return <Button
+      onClick={ confirm }
+      colorPalette="teal"
+      variant="solid"
+    >
+      Confirmar <RiCheckFill />
+    </Button>
+
+    } else {
+      return <Button 
+      colorPalette="teal"
+      variant="solid"
+      disabled={true}
+      >
+        Guardando <Spinner size="sm" />
+      </Button>
+    }
+  }
 
   const handleCheckAll = (changes: CheckedChangeDetails) => {
     setSelection(
@@ -170,9 +212,9 @@ function ReportViewer() {
     });
   };
 
-  const updateAllRowsTotals = () => {
+  const updateAllRowsTotals = (newRows: Row[]) => {
     
-    const newArr = useRows.map((row) => {
+    const newArr = newRows.map((row) => {
       const posTotal = row.data
         .filter((item) => item.code.startsWith('pos_') && item.code !== 'pos_total')
         .reduce((sum, item) => sum + (typeof item.value === 'number' ? item.value : 0), 0);
@@ -184,8 +226,7 @@ function ReportViewer() {
       return { ...row, data: updatedData };
     });
     setRows(newArr);
-    setReport({headers: headers, rows: newArr});4
-
+    // setReport({headers: headers, rows: newArr});
   };
 
 
@@ -267,6 +308,7 @@ function ReportViewer() {
       <Table.Cell key={`${row.id}-${code}`} textAlign="end">
         <InputGroup w="100%" startElement="$">
           <Input
+            minW="100px"
             readOnly={header.code === "pos_total"}
             disabled={row.confirmed}
             type="number"
@@ -281,21 +323,102 @@ function ReportViewer() {
     );
   };
 
-  // const confirm =() => {
-  //   handleDisabledRows();
-    
-  //   respaldar(useRows);
-  //   console.log("confirm",useRows);
-  //   toaster.create({
-  //     title: `Se ha guardado correctamente`,
-  //     type: "success",});
-  // }
+  const getTable = () => {
+    return (
+      <>
+        <Table.ScrollArea
+            borderWidth="1px"
+            maxW="100%"
+            rounded="md"
+            mt="4"
+            overflowY="auto"
+            flex={1}
+          >
+            <Table.Root size="sm" variant="outline" striped>
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader textAlign="center">
+                    <Checkbox
+                      checked={
+                        indeterminate
+                          ? "indeterminate"
+                          : selection.length - disabledRow > 0
+                      }
+                      onCheckedChange={(changes) => {
+                        console.log(changes);
+                        handleCheckAll(changes);
+                      }}
+                    />
+                  </Table.ColumnHeader>
+                  {useHeaders.map((h) => (
+                    <Table.ColumnHeader textAlign="center" key={h.code}>
+                      {h.name}
+                    </Table.ColumnHeader>
+                  ))}
+                </Table.Row>
+              </Table.Header>
+              <Table.Body position="relative">
+                {
+                  // TODO: Mover a componente de únicamente Rows
+                }
+                {useRows.map((row) => (
+                  <Table.Row key={row.id}>
+                    <Table.Cell 
+                      textAlign="center"
+                    >
+                      <Checkbox
+                        disabled={row.confirmed}
+                        checked={selection.includes(row.id)}
+                        onCheckedChange={(changes) => {
+                          setSelection((prev) =>
+                            changes.checked
+                              ? [...prev, row.id]
+                              : selection.filter((id) => id !== row.id)
+                          );
+                        }}
+                      />
+                    </Table.Cell>
+                    {useHeaders.map((h) => (
+                        renderCellContent(row, h)
+                      
+                    ))}
+                    {/* <Table.Cell> {} </Table.Cell> */}
+                  </Table.Row>
+                ))}
+                <Table.Row>
+                  <Table.Cell textAlign="end">
+                    <Heading size="sm">Totales</Heading>
+                  </Table.Cell>
+                  {useHeaders.map((h, i) =>
+                    !h.code.startsWith("pos_") && !h.code.startsWith("ns_") ? (
+                      <Table.Cell  key={i}></Table.Cell>
+                    ) : (
+                      <Table.Cell textAlign="end" key={i}>
+                        <Heading size="sm">
+                          
+                          <Text>
+                            <FormatNumber
+                              value={typeof totalsByColumn[h.code] == 'number' ? totalsByColumn[h.code] : 0}
+                              style="currency"
+                              currency="USD"
+                            />
+                          </Text>
+                        </Heading>
+                      </Table.Cell>
+                    )
+                  )}
+                </Table.Row>
+              </Table.Body>
+            </Table.Root>
+          </Table.ScrollArea>
+      </>
 
-  return (
-    <>
-      <Box p={6} boxShadow="xl" borderRadius="lg" bg="white" maxH="max-content">
-        <Heading size="md">Generación de Reportes</Heading>
-        <ReportFilterComponent />
+    )
+  }
+
+  const getSkeletons = () => {
+    if (loading) {
+      return (
         <Table.ScrollArea
           borderWidth="1px"
           maxW="100%"
@@ -304,103 +427,63 @@ function ReportViewer() {
           overflowY="auto"
           flex={1}
         >
-          <Table.Root size="sm" variant="outline" striped>
+          <Table.Root 
+          variant="outline" striped
+          >
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader textAlign="center">
-                  <Checkbox
-                    checked={
-                      indeterminate
-                        ? "indeterminate"
-                        : selection.length - disabledRow > 0
-                    }
-                    onCheckedChange={(changes) => {
-                      console.log(changes);
-                      handleCheckAll(changes);
-                    }}
-                  />
+                <Table.ColumnHeader>
+                  <Skeleton height="5" width="100%" />
                 </Table.ColumnHeader>
-                {useHeaders.map((h) => (
-                  <Table.ColumnHeader textAlign="center" key={h.code}>
-                    {h.name}
-                  </Table.ColumnHeader>
-                ))}
               </Table.Row>
             </Table.Header>
-            <Table.Body position="relative">
-              {
-                // TODO: Mover a componente de únicamente Rows
-              }
-              {useRows.map((row) => (
-                <Table.Row key={row.id}>
-                  <Table.Cell 
-                    textAlign="center"
-                  >
-                    <Checkbox
-                      disabled={row.confirmed}
-                      checked={selection.includes(row.id)}
-                      onCheckedChange={(changes) => {
-                        setSelection((prev) =>
-                          changes.checked
-                            ? [...prev, row.id]
-                            : selection.filter((id) => id !== row.id)
-                        );
-                      }}
-                    />
-                  </Table.Cell>
-                  {useHeaders.map((h) => (
-                      renderCellContent(row, h)
-                    
-                  ))}
-                  {/* <Table.Cell> {} </Table.Cell> */}
-                </Table.Row>
-              ))}
+            <Table.Body>
               <Table.Row>
-                <Table.Cell textAlign="end">
-                  <Heading size="sm">Totales</Heading>
+                <Table.Cell>
+                  <Skeleton height="5" width="100%" />
                 </Table.Cell>
-                {useHeaders.map((h) =>
-                  !h.code.startsWith("pos_") && !h.code.startsWith("ns_") ? (
-                    <Table.Cell></Table.Cell>
-                  ) : (
-                    <Table.Cell textAlign="end">
-                      <Heading size="sm">
-                        <Text>
-                          <FormatNumber
-                            value={totalsByColumn[h.code]}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Heading>
-                    </Table.Cell>
-                  )
-                )}
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <Skeleton height="5" width="100%" />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <Skeleton height="5" width="100%" />
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>
+                  <Skeleton height="5" width="100%" />
+                </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table.Root>
         </Table.ScrollArea>
+      )
+    }
+  }
 
-        {
-          //TODO: Mover el Action a un componente
-        }
+  return (
+    <>
+      <Box p={6} boxShadow="xl" borderRadius="lg" bg="white" maxH="max-content">
+        <Heading size="md">Generación de Reportes</Heading>
+        <ReportFilterComponent />
+        
+      {loading ? getSkeletons() : getTable()}
+
+      </Box>
         <ActionBarRoot open={hasSelection}>
           <ActionBarContent>
             <ActionBarSelectionTrigger>
               {selection.length - disabledRow} {`venta(s) seleccionada(s)`}
             </ActionBarSelectionTrigger>
             <ActionBarSeparator />
-            <Button
-              onClick={ confirm }
-              colorPalette="teal"
-              variant="solid"
-            >
-              Confirmar <RiCheckFill />
-            </Button>
+              {getConfirmationButton()}
           </ActionBarContent>
         </ActionBarRoot>
               <Toaster />
-      </Box>
       
     </>
   );

@@ -12,19 +12,19 @@ interface ReportContextType {
 const ReportContext = createContext<ReportContextType | undefined>(undefined);
 
 export const ReportProvider = ({ children }: { children: ReactNode }) => {
-  const [report, setReport] = useState<ReportModel>(arr);
+  const [report, setReport] = useState<ReportModel>({headers: [], rows: []});
   const [respaldo, setRespaldo] = useState<Row[]>([]);
 
   // Función para respaldar las filas
   const respaldar = (rows: Row[]) => {
-    console.log(rows);
+    // console.log("respaldar",rows);
     
     setRespaldo(rows);
   };
 
   // Función para resetear las filas al estado respaldado
   const resetRows = () => {
-    setReport({headers: report.headers, rows: respaldo});
+    setReport({headers: report != undefined ? report.headers : [], rows: respaldo});
   };
 
   return (
