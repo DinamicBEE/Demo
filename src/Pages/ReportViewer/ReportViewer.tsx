@@ -8,13 +8,13 @@ import { CheckedChangeDetails } from "node_modules/@chakra-ui/react/dist/types/c
 import { useUser } from "../../context/UserContext";
 import "./ReportViewer.css";
 import "../Home/Home.css";
-import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
-import { getCurrentDate } from "./ReportComponents/getCurrentDate";
 import { InputGroup } from "@components/ui/input-group";
 import { useReportContext } from "@context/reports/reportsContext";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { fetchInitialData } from "@services/reportService";
 import { Skeleton } from "@components/ui/skeleton";
+import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
+import { getCurrentDate } from './ReportComponents/getCurrentDate';
 
 function ReportViewer() {
   const { user } = useUser();
