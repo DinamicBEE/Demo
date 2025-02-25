@@ -15,7 +15,7 @@ import TableOfTotals from './components/TableOfTotals';
 import './Home.css'
 import { StoreModel } from '@models/common.model';
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
-import Loading from '@components/loading';
+import Loading from '@components/Loading';
 
 function Home() {
     const [subsidiary, setSubsidiary] = useState<ListCollection>(createListCollection({ items: [] }));
@@ -96,7 +96,7 @@ function Home() {
         >
                  
             <VStack spaceY={4} align="start">
-                <Heading size="md">Selecciona Subsidiaria y Restaurante</Heading>
+                <Heading size="md" >Selecciona Subsidiaria y Restaurante</Heading>
                 {catalogLoading && (
                     <Box position="fixed" top="50%" left="50%">
                     <Loading />
