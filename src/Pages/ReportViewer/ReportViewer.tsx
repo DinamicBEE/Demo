@@ -15,6 +15,7 @@ import { fetchInitialData } from "@services/reportService";
 import { Skeleton } from "@components/ui/skeleton";
 import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
 import { getCurrentDate } from './ReportComponents/getCurrentDate';
+import { TableHeader } from "../../table.recipe";
 
 function ReportViewer() {
   const { user } = useUser();
@@ -351,9 +352,9 @@ function ReportViewer() {
                     />
                   </Table.ColumnHeader>
                   {useHeaders.map((h) => (
-                    <Table.ColumnHeader textAlign="center" key={h.code}>
+                    <TableHeader textAlign="center" key={h.code}>
                       {h.name}
-                    </Table.ColumnHeader>
+                    </TableHeader>
                   ))}
                 </Table.Row>
               </Table.Header>

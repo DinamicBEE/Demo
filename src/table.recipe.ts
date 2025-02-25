@@ -1,4 +1,4 @@
-import { defineRecipe } from "@chakra-ui/react";
+import { chakra, defineRecipe } from "@chakra-ui/react";
 
 export const tableRecipe = defineRecipe({
     className: "TableHeader",
@@ -6,4 +6,6 @@ export const tableRecipe = defineRecipe({
         bg: "#008D38"
     }
 
-})
+});
+
+export const TableHeader = chakra("th", tableRecipe);

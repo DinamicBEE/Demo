@@ -19,7 +19,7 @@ export const system = createSystem(defaultConfig, {
       },
     },
     recipes: {
-        //Table: tableRecipe,
+        Table: tableRecipe,
         SelectLabel: {
             base: {
                 color: "#008D38",
