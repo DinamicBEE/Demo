@@ -149,7 +149,7 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        {location!=0 && <Button bg="neutrals.light" onClick={()=>{
+                        {location!=0 && <Button  onClick={()=>{
                                 setShowTable(true)
                                 getInfo(SubSelect, location)}
                             }>

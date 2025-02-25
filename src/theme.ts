@@ -1,5 +1,5 @@
-import { createSystem, defaultConfig } from "@chakra-ui/react"
-import { tableRecipe } from "./table.recipe";
+import { createSystem, defaultConfig, Table } from "@chakra-ui/react"
+import { tableSlotRecipe } from "./table.recipe";
 
 export const system = createSystem(defaultConfig, {
   theme: {
@@ -17,6 +17,9 @@ export const system = createSystem(defaultConfig, {
         heading: { value: `'Poppins', sans-serif` },
         body: { value: `'times new roman', sans-serif` },
       },
+    },
+    slotRecipes: {
+      Table: tableSlotRecipe
     }
   },
 });

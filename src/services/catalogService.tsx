@@ -20,7 +20,7 @@ export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(response);
-            }, 5000);
+            }, 500);
         });
 
         //return response
@@ -43,7 +43,7 @@ export const getStores = async (): Promise<StoreModel[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(response);
-            }, 5000);
+            }, 500);
         });
 
         //return response

@@ -4,7 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react" //, defaultSystem
 import App from './App.jsx'
 
 import { Toaster } from "./components/ui/Toaster";
-import { system } from './theme.js';
+import { system } from './theme/index.ts';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
