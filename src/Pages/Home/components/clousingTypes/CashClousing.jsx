@@ -44,15 +44,15 @@ function CashClousing ({ data }) {
         <Toaster />
 
         <Table.ScrollArea rounded="md" borderWidth="1px">
-          <Table.Root size="sm" variant="outline" striped>
+          <Table.Root size="sm" variant="outline">
             <Table.Header>
               <Table.Row>
-                <Table.Cell textAlign="center">Moneda</Table.Cell>
-                <Table.Cell textAlign="center">Total POS</Table.Cell>
-                <Table.Cell textAlign="center">Total físico</Table.Cell>
-                <Table.Cell textAlign="center">Diferencia</Table.Cell>
-                <Table.Cell textAlign="center">Tipo de cambio</Table.Cell>
-                <Table.Cell textAlign="center">Moneda original</Table.Cell>
+                <Table.ColumnHeader textAlign="center">Moneda</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Total POS</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Total físico</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Diferencia</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Tipo de cambio</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Moneda original</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>

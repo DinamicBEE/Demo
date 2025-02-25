@@ -334,7 +334,7 @@ function ReportViewer() {
             overflowY="auto"
             flex={1}
           >
-            <Table.Root size="sm" variant="outline" striped>
+            <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader textAlign="center">
@@ -428,7 +428,7 @@ function ReportViewer() {
           flex={1}
         >
           <Table.Root 
-          variant="outline" striped
+          variant="outline"
           >
             <Table.Header>
               <Table.Row>
@@ -468,7 +468,7 @@ function ReportViewer() {
   return (
     <>
       <Box p={6} boxShadow="xl" borderRadius="lg" bg="white" maxH="max-content">
-        <Heading size="md">Generación de Reportes</Heading>
+        <Heading>Generación de Reportes</Heading>
         <ReportFilterComponent />
         
       {loading ? getSkeletons() : getTable()}

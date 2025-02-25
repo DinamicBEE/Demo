@@ -96,7 +96,7 @@ function Home() {
         >
                  
             <VStack spaceY={4} align="start">
-                <Heading size="md" >Selecciona Subsidiaria y Restaurante</Heading>
+                <Heading>Corte de caja</Heading>
                 {catalogLoading && (
                     <Box position="fixed" top="50%" left="50%">
                     <Loading />

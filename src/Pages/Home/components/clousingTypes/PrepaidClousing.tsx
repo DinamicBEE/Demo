@@ -174,16 +174,16 @@ function PrepaidClousing({data}: any) {
       </Group>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
-        <Table.Root size="sm" variant="outline" striped>
+        <Table.Root size="sm" variant="outline">
           <Table.Header>
             <Table.Row>
-              <Table.Cell textAlign="center">Cliente</Table.Cell>
-              <Table.Cell textAlign="center">Cantidad</Table.Cell>
-              <Table.Cell textAlign="center">Cantidad Complementos</Table.Cell>
-              <Table.Cell textAlign="center">Precio unitario</Table.Cell>
-              <Table.Cell textAlign="center">Total POS</Table.Cell>
-              <Table.Cell textAlign="center">Total físico</Table.Cell>
-              <Table.Cell textAlign="center">Diferencia</Table.Cell>
+              <Table.ColumnHeader textAlign="center">Cliente</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Cantidad</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Cantidad Complementos</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Precio unitario</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Total POS</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Total físico</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Diferencia</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>

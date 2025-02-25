@@ -46,14 +46,14 @@ function EmployeesClousing({data}: any) {
       <Button mb={2} onClick={() => openDiaolog()}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
-        <Table.Root size="sm" variant="outline" striped>
+        <Table.Root size="sm" variant="outline">
           <Table.Header>
             <Table.Row>
-              <Table.Cell textAlign="center">Empleado</Table.Cell>
-              <Table.Cell textAlign="center">No. Empleado</Table.Cell>
-              <Table.Cell textAlign="center">Monto</Table.Cell>
-              <Table.Cell textAlign="center">Motivo</Table.Cell>
-              <Table.Cell textAlign="center">Ticket</Table.Cell>
+              <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">No. Empleado</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Motivo</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Ticket</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>

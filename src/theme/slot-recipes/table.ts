@@ -17,13 +17,21 @@ export const tableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
-      textAlign: "start",
+      textAlign: "center",
       alignItems: "center",
+      padding: "12px 0",
+      borderBottom: "1px solid",
+      borderColor: "#EDF2F7"
     },
     columnHeader: {
-      fontWeight: "medium",
-      textAlign: "start",
-      color: "fg",
+      fontWeight: "700",
+      textAlign: "center",
+      color: "2D3748",
+      bgColor: "mera.bg",
+      padding: "12px 0",
+      borderSpacing: "0 8px",
+      borderBottom: "2px solid",
+      borderColor: "#718096"
     },
     caption: {
       fontWeight: "medium",
@@ -39,7 +47,8 @@ export const tableSlotRecipe = defineSlotRecipe({
         body: {
           "& tr": {
             _hover: {
-              bg: "colorPalette.subtle",
+              bg: "#EDF2F7",
+              transition: "backgorund 0.2s"
             },
           },
         },
@@ -157,5 +166,6 @@ export const tableSlotRecipe = defineSlotRecipe({
   defaultVariants: {
     variant: "line",
     size: "md",
+    interactive: true
   },
 })

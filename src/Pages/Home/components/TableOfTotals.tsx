@@ -85,7 +85,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
         {data.length>1 && <Box>
           <Table.ScrollArea rounded="md" borderWidth="1px">
-            <Table.Root size="sm" variant="outline" striped>
+            <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row>
                   <Table.ColumnHeader textAlign="center">Vendedor</Table.ColumnHeader>

@@ -4,7 +4,9 @@ export const headingRecipe = defineRecipe({
   className: "chakra-heading",
   base: {
     fontFamily: "heading",
-    fontWeight: "semibold",
+    fontWeight: "bold",
+    fontSize: "3xl",
+    color:"mera.title"
   },
   variants: {
     size: {

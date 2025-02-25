@@ -226,8 +226,10 @@ export const tabsSlotRecipe = defineSlotRecipe({
           borderWidth: "1px",
           borderColor: "transparent",
           _selected: {
-            bg: "currentBg",
-            color: "colorPalette.fg",
+            bg: "mera.bg",
+            color: "meraPalette.primary",
+            border: "2px solid",
+            borderColor: "meraPalette.secondary",
           },
           _horizontal: {
             borderTopRadius: "var(--tabs-trigger-radius)",
@@ -236,7 +238,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
               _notLast: "var(--line-offset)",
             },
             _selected: {
-              borderColor: "border",
+              borderColor: "meraPalette.secondary",
               borderBottomColor: "transparent",
             },
           },

@@ -50,14 +50,14 @@ function TDCClousing({data}: any) {
         {/* <Toaster /> */}
 
         <Table.ScrollArea rounded="md" borderWidth="1px">
-          <Table.Root size="sm" variant="outline" striped>
+          <Table.Root size="sm" variant="outline">
             <Table.Header>
               <Table.Row>
-                <Table.Cell textAlign="center">Banco</Table.Cell>
-                <Table.Cell textAlign="center">POS</Table.Cell>
-                <Table.Cell textAlign="center">Físico</Table.Cell>
-                <Table.Cell textAlign="center">Cantidad Vouchers</Table.Cell>
-                <Table.Cell textAlign="center">Acciones</Table.Cell>
+                <Table.ColumnHeader textAlign="center">Banco</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">POS</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Físico</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Cantidad Vouchers</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>

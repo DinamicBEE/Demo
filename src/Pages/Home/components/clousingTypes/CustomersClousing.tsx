@@ -46,16 +46,16 @@ function CustomersClousing({data}: any) {
           {/* <Toaster /> */}
     
           <Table.ScrollArea rounded="md" borderWidth="1px">
-            <Table.Root size="sm" variant="outline" striped>
+            <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row>
-                  <Table.Cell textAlign="center">Clientes</Table.Cell>
-                  <Table.Cell textAlign="center">Cupones</Table.Cell>
-                  <Table.Cell textAlign="center">Moneda</Table.Cell>
-                  <Table.Cell textAlign="center">Valor PAX</Table.Cell>
-                  <Table.Cell textAlign="center">Monto</Table.Cell>
-                  <Table.Cell textAlign="center">Tasa de cambio</Table.Cell>
-                  <Table.Cell textAlign="center">Monto MXN</Table.Cell>
+                  <Table.ColumnHeader textAlign="center">Clientes</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Cupones</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Moneda</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Valor PAX</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Tasa de cambio</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>

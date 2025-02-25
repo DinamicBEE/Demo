@@ -145,14 +145,14 @@ function IntercompanyClousing({data}: any) {
       {/* <Toaster /> */}
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
-        <Table.Root size="sm" variant="outline" striped>
+        <Table.Root size="sm" variant="outline">
           <Table.Header>
             <Table.Row>
-              <Table.Cell textAlign="center">Empleado</Table.Cell>
-              <Table.Cell textAlign="center">Subsidiaria</Table.Cell>
-              <Table.Cell textAlign="center">Monto POS</Table.Cell>
-              <Table.Cell textAlign="center">Ticket</Table.Cell>
-              <Table.Cell textAlign="center">Importe físico</Table.Cell>
+              <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Subsidiaria</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Monto POS</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Ticket</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Importe físico</Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>

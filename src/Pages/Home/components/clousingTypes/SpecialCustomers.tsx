@@ -37,23 +37,23 @@ function SpecialCustomersClousing({data}: any) {
           {/* <Toaster /> */}
     
           <Table.ScrollArea rounded="md" borderWidth="1px">
-            <Table.Root size="sm" variant="outline" striped>
+            <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row>
-                  <Table.Cell textAlign="center">Cheque</Table.Cell>
-                  <Table.Cell textAlign="center">Consumo</Table.Cell>
-                  <Table.Cell textAlign="center">Precio cupón</Table.Cell>
-                  <Table.Cell textAlign="center">Diferencia</Table.Cell>
-                  <Table.Cell textAlign="center">Tipo de cambio</Table.Cell>
-                  <Table.Cell textAlign="center">Cliente</Table.Cell>
-                  <Table.Cell textAlign="center">PAX</Table.Cell>
-                  <Table.Cell textAlign="center">Folio cupones</Table.Cell>
-                  <Table.Cell textAlign="center">Folio cupones USD</Table.Cell>
-                  <Table.Cell textAlign="center">Valor</Table.Cell>
-                  <Table.Cell textAlign="center">Valor USD</Table.Cell>
-                  <Table.Cell textAlign="center">Vuelo</Table.Cell>
-                  <Table.Cell textAlign="center">Nombre pasajero</Table.Cell>
-                  <Table.Cell textAlign="center">Monto MXN</Table.Cell>
+                  <Table.ColumnHeader textAlign="center">Cheque</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Consumo</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Precio cupón</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Diferencia</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Tipo de cambio</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Cliente</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Folio cupones</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Folio cupones USD</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Valor</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Valor USD</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Vuelo</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Nombre pasajero</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>

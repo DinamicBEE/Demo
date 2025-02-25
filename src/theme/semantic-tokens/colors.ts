@@ -609,4 +609,48 @@ export const colors = defineSemanticTokens.colors({
       },
     },
   },
+  mera: {
+    bg: {
+      value: {
+        _light: "{colors.meraPalette.neutrals.light}",
+        _dark: "{colors.meraPalette.neutrals.dark}",
+      },
+    },
+    error: {
+      value: {
+        _light: "#E53E3E",
+        _dark: "{colors.red.950}",
+      },
+    },
+    warning: {
+      value: {
+        _light: "#DD6B20",
+        _dark: "{colors.orange.950}",
+      },
+    },
+    success: {
+      value: {
+        _light: "#38A169",
+        _dark: "{colors.green.950}",
+      },
+    },
+    info: {
+      value: {
+        _light: "#3182CE",
+        _dark: "{colors.blue.950}",
+      },
+    },
+    title: {
+      value: {
+        _light: "{colors.meraPalette.neutrals.dark}",
+        _dark: "{colors.blue.950}",
+      },
+    },
+    label: {
+      value: {
+        _light: "{colors.meraPalette.neutrals.medium}",
+        _dark: "{colors.blue.950}",
+      },
+    },
+  }
 })
