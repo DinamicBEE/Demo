@@ -59,7 +59,7 @@ function ReportViewer() {
         if (data != null) {
           
           setLoading(false);
-          console.log(data);
+          // console.log(data);
           setReport({ headers: data.headers, rows: data.rows });
           respaldar(data.rows);
           
@@ -345,7 +345,7 @@ function ReportViewer() {
                           : selection.length - disabledRow > 0
                       }
                       onCheckedChange={(changes) => {
-                        console.log(changes);
+                        // console.log(changes);
                         handleCheckAll(changes);
                       }}
                     />
