@@ -33,7 +33,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
 
     const handleOpenConfirm = (item: Approval, newStatus: number) => {
       setConfirmData({ item, newStatus });
-      setMessage(newStatus == 1 ? 'Aprovar' :  'Rechazar');
+      setMessage(newStatus == 1 ? 'Aprobar' :  'Rechazar');
       onOpen();
     };
 
