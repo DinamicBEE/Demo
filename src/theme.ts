@@ -17,15 +17,6 @@ export const system = createSystem(defaultConfig, {
         heading: { value: `'Poppins', sans-serif` },
         body: { value: `'times new roman', sans-serif` },
       },
-    },
-    recipes: {
-        //Table: tableRecipe,
-        SelectLabel: {
-            base: {
-                color: "#008D38",
-                fontFamily: `'Poppins', sans-serif`
-            },
-        }
     }
   },
 });
