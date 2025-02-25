@@ -1,29 +1,28 @@
 import { TotalModel } from "./common.clousing.model";
 
-export interface intercompanyContextType {
-    intercompany: intercompanyModel | {};
-    intercompanyLoading: boolean;
+export interface IntercompanyContextType {
+    intercompany: IntercompanyModel | {};
     error: string;
-    getIntercompanytData: (clousingId: number, employeeId: number) => Promise<intercompanyModel>;
-    //setSpecialCustData: (specialCustLine:any, employeeId: number, clousingId: number) => void;
+    getIntercompanyData: (clousingId: number) => Promise<IntercompanyModel>;
+    setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
 }
 
-export interface intercompanyContext {
-    [key: number]: {
-        [key: number]: intercompanyModel
-    }
+export interface IntercompanyContext {
+    [key: number]: IntercompanyModel
 }
 
-export interface intercompanyModel{
+export interface IntercompanyModel{
     id: number;
     employeeId: number;
     total: TotalModel;
-    lines: intercompanyLine[]
+    lines: IntercompanyLine[]
 }
 
-export interface intercompanyLine {
+export interface IntercompanyLine {
     id: number;
+    employeeId: number;
     employeeName: string;
+    subsidiaryId: number;
     subsidiaryname: string;
     amount: number;
     ticket: string;

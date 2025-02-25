@@ -1,16 +1,17 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
-import { getPrepaidClousing } from '@services/clousingService';
-import { PrepaidContext, PrepaidContextType } from '@models/prepaid.model';
+import { getCouponCatalog, getPrepaidClousing } from '@services/clousingService';
+import { CouponCatalogModel, CouponContext, PrepaidContext, PrepaidContextType, PrepaidModel } from '@models/prepaid.model';
 
-const prepaidContext = createContext<PrepaidContextType | undefined>(undefined);
+const prepaidContext = createContext<PrepaidContextType>({} as PrepaidContextType);
 
 export const usePrepaidContext = () => useContext(prepaidContext);
 
 export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
     const [prepaid, setPrepaid] = useState<PrepaidContext>({});
-    const [prepaidLoading, setPrepaidLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [coupons, setCoupons] = useState<CouponContext>({})
+    const [prepaidLoading, setPrepaidLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
     const prepaidRef = useRef<PrepaidContext>(prepaid);
 
     const updatePrepaidData = (newPrepaidData: PrepaidContext) => {
@@ -18,28 +19,20 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
         prepaidRef.current = newPrepaidData;
     }
 
-    const getPrepaidData = useCallback( async(clousingId:number, employeeId:number)=>{
+    const getPrepaidData = useCallback( async(clousingId:number,)=>{
         setPrepaidLoading(true);
-
-        console.log(clousingId)
         
-        if(prepaidRef.current[clousingId]?.[employeeId]) {
+        if(prepaidRef.current[clousingId]) {
             setPrepaidLoading(false);
-            return prepaidRef.current[clousingId]?.[employeeId];
+            return prepaidRef.current[clousingId];
         }
 
         try {
-            const data = await getPrepaidClousing(clousingId, employeeId);
-
-            const currentClousingData = prepaidRef.current[clousingId] || {};
+            const data = await getPrepaidClousing(clousingId);
 
             const updatePrepaid = {
                 ...prepaidRef.current,
-                [clousingId]: {
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [employeeId]: data
-                }
-
+                [clousingId]: data
             }
 
             updatePrepaidData(updatePrepaid);
@@ -50,7 +43,7 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
             setError(error instanceof Error ? error.message : String(error));
             
-            throw error;
+            return {} as PrepaidModel;
             
         } finally {
 
@@ -60,14 +53,54 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
     },[prepaid]);
 
+    const getCouponData = useCallback( async(clousingId:number,)=>{
+        
+        if(coupons[clousingId]) {
+            return coupons[clousingId];
+        }
+
+        try {
+            const data = await getCouponCatalog(clousingId);
+
+            const updatePrepaid = {
+                coupons,
+                [clousingId]: data
+            }
+
+            setCoupons(updatePrepaid);
+
+            return data;
+            
+        } catch (error) {
+
+            setError(error instanceof Error ? error.message : String(error));
+            
+            return [] as CouponCatalogModel[];
+            
+        }
+
+    },[coupons]);
+
+    const setPrepaidData = useCallback((clousingId:number, prepaid: PrepaidModel )=>{
+
+        const updateData: PrepaidContext = {
+          ...prepaidRef.current,
+          [clousingId]: prepaid
+        };
+
+        updatePrepaidData(updateData);
+    },[])
+
     const value = useMemo(
         ()=>({
             prepaid,
             prepaidLoading,
             error,
-            getPrepaidData
+            getPrepaidData,
+            getCouponData,
+            setPrepaidData
         }),
-        [prepaid, prepaidLoading, error, getPrepaidData]
+        [prepaid, prepaidLoading, error, getPrepaidData, getCouponData, setPrepaidData]
     );
 
     return (

@@ -1,8 +1,8 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
 import { getSpecialCustomerClousing } from '@services/clousingService';
-import { specialCustContextType, SpecialCustomerContext, SpecialCustomerLines } from '@models/specialCustome.model';
+import { specialCustContextType, SpecialCustomerContext, SpecialCustomerLines, SpecialCustomerModel } from '@models/specialCustome.model';
 
-const specialCustContext = createContext<specialCustContextType | undefined>(undefined);
+const specialCustContext = createContext<specialCustContextType>({} as specialCustContextType);
 
 export const useSpecialCustContext = () => useContext(specialCustContext);
 
@@ -17,25 +17,21 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         specialCustRef.current = newCashData;
     };
 
-    const getSpecialCustData = useCallback(async (clousingId: number, employeeId: number)=>{
+    const getSpecialCustData = useCallback(async (clousingId: number)=>{
         setSpecialCustLoading(true);
 
         if(specialCustRef.current[clousingId]){
             setSpecialCustLoading(false);
-            return specialCustRef.current[clousingId][employeeId];
+            return specialCustRef.current[clousingId];
         }
 
         try {
-            const response = await getSpecialCustomerClousing(clousingId, employeeId);
-
-            const currentClousingData = specialCustRef.current[clousingId] || {};
+            const response = await getSpecialCustomerClousing(clousingId);
 
             const updateSpecialCust = {
                 ...specialCustRef.current,
-                [clousingId]: {
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [employeeId]: response
-                }
+                [clousingId]: response
+    
             }
 
             updateSpecialCustData(updateSpecialCust)
@@ -44,25 +40,19 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
             
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
+            return {} as SpecialCustomerModel
         } finally {
             setSpecialCustLoading(false);
         }
 
     }, [specialCust]);
 
-    const setSpecialCustData = useCallback(async (specialCustLine:SpecialCustomerLines[], employeeId: number, clousingId: number)=>{
-
-        const currentClousingData = specialCustRef.current[clousingId] || {};
+    const setSpecialCustData = useCallback(async (specialCustLine:SpecialCustomerModel, clousingId: number)=>{
 
         const updateSpecialCustomer = {
             ...specialCustRef.current,
-            [clousingId]: {
-                ...currentClousingData,
-                [employeeId]: specialCustLine
-            }
+            [clousingId]: specialCustLine
         };
-
-        console.log(updateSpecialCustData);
         
         updateSpecialCustData(updateSpecialCustomer);
         

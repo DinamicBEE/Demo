@@ -4,27 +4,26 @@ import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
-import Loading from "@components/loading";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
+import Loading from "@components/Loading";
 
-function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsProp) {
-    const [details, setDetails] = useState<BankDetails>();
+function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
+    const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const useDetails = useHandleTDC(clousingId, lineId ?? 0)
+    const { updateLineClousing, handleInputData } = useHandleTDC(clousingId, lineId ?? 0)
 
-    const tdcContext = useTDCContext();
+    const {getDetails, detailsLoading, setDetails} = useTDCContext();
 
     useEffect(()=>{
 
         async function fetchData() {
-            const detailsData: BankDetails | undefined = tdcContext?.getDetails
-                    ? await tdcContext?.getDetails(clousingId,lineId) : undefined;
+            const detailsData: BankDetails = await getDetails(clousingId,lineId);
             
             if (detailsData) {
-                setDetails(detailsData);
+                setDetailsLocal(detailsData);
             }
         }
 
@@ -35,17 +34,17 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
     async function saveDetails() {
         setLoading(true)
         
-        if (lineId !== null && details !== undefined) {
-            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, details);
+        if (lineId !== null && detailsLocal !== undefined) {
+            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, detailsLocal);
             
-            setDetails(detailsValidated);
+            setDetailsLocal(detailsValidated);
 
-            tdcContext?.setDetails(detailsValidated,clousingId,lineId);
+            setDetails(detailsValidated,clousingId,lineId);
             
             const allSuccess = detailsValidated.details.every(item => item.success);
             
             if(allSuccess) { 
-                useDetails.updateLineClousing(detailsValidated, employeId,)
+                updateLineClousing(detailsValidated)
                 onClose()
             } 
 
@@ -67,7 +66,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                 <DialogHeader>
 
-                    <DialogTitle>{details?.bankName}</DialogTitle>
+                    <DialogTitle>{detailsLocal?.bankName}</DialogTitle>
                     
                 </DialogHeader>
 
@@ -88,7 +87,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
                             </Table.Header>
 
                             <Table.Body>
-                                {details?.details?.map((item:BankLineDetails)=>(
+                                {detailsLocal?.details?.map((item:BankLineDetails)=>(
                                     <Table.Row key={item.id}>
                                         
                                         <Table.Cell textAlign="center">
@@ -97,7 +96,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                                         <Table.Cell>
                                             <Field.Root invalid={item.success!=undefined && !item.success}>
-                                                <Input textAlign="center" value={item.check} onChange={(e) => useDetails.handleInputData(e.target.value, item.id, details || {} as BankDetails, setDetails,)}/>
+                                                <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)}/>
                                                 <Field.ErrorText>{item.message}</Field.ErrorText>
                                             </Field.Root>
                                         </Table.Cell>
@@ -115,15 +114,15 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
                         </Table.Root>
                     </Table.ScrollArea>
 
-                    {tdcContext?.detailsLoading && (
-                        <Box position="fixed" top="50%" left="50%">
-                        <Loading />
+                    {detailsLoading && (
+                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
+                            <Loading />
                         </Box>
                     )}
                     
                     {loading && (
-                        <Box position="fixed" top="50%" left="50%">
-                        <Loading />
+                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
+                            <Loading />
                         </Box>
                     )}
 
@@ -133,7 +132,7 @@ function TDCDetails({clousingId, employeId, lineId, isOpen, onClose}: DetailsPro
 
                     <Flex gap={4}>
 
-                        <CurrencyInput value={details?.total} name={"Total"} loading={tdcContext?.detailsLoading || false} />
+                        <CurrencyInput value={detailsLocal?.total} name={"Total"} loading={detailsLoading || false} />
                         
                         <Button 
                             className="secondary-button save-button"

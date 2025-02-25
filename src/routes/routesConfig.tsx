@@ -1,6 +1,8 @@
 import { lazy } from 'react';
 import { HomeProvider } from '../context/home/homeProvider';
 import { ReportsProvider } from '@context/reports/reportsProvider';
+import { ApprovalsProvider } from '../context/approvals/approvalsProvider';
+import { ClosureProvider } from '../context/lotClosure/lotClosureProvider';
 
 const routesConfig = [
     {
@@ -17,6 +19,11 @@ const routesConfig = [
       path: '/lotClosure',
       element: lazy(() => import('../pages/LotClosure/LotClosure')),
       roles: [1, 2],
+      wrapper: (Component: React.ComponentType) => (
+        <ClosureProvider>
+          <Component />
+        </ClosureProvider>
+      ),
     },
     {
       path: '/request',
@@ -27,6 +34,11 @@ const routesConfig = [
       path: '/approvals',
       element: lazy(() => import('../pages/Approvals/Approvals')),
       roles: [1],
+      wrapper: (Component: React.ComponentType) => (
+        <ApprovalsProvider>
+          <Component />
+        </ApprovalsProvider>
+      ),
     },
     {
       path: '/reportviewer',

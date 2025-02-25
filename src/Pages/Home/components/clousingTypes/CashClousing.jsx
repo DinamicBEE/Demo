@@ -11,13 +11,13 @@ import { CLOUSING_KEY } from "@models/constants.model";
 function CashClousing ({ data }) {
     const [cashData, setCashData] = useState(true)
     const { cashLoading, getCashData } = useCashClousing();
-    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id, data?.employeId);
+    const { handleInputChange, handleChangeTips } =  useHandleCashData(cashData, setCashData, data?.id);
     const { setFooterData } = useFooter();
 
     useEffect(() => {
       async function fetchData() {
 
-        const cashData = await getCashData(data.id, data.employeId);
+        const cashData = await getCashData(data.id);
 
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
 
@@ -98,7 +98,7 @@ function CashClousing ({ data }) {
         </Table.ScrollArea>
 
         {cashLoading && (
-          <Box position="fixed" top="50%" left="50%">
+          <Box position="fixed" top="50%" left="50%" zIndex="1">
             <Loading />
           </Box>
         )}

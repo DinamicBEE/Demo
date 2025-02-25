@@ -1,10 +1,10 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { getCustomerClousing } from '@services/clousingService';
-import { CustomerContext, CustomerContextType } from '@models/customer.model';
+import { CustomerContext, CustomerContextType, CustomerModel } from '@models/customer.model';
 
 
-const customerContext = createContext<CustomerContextType | undefined>(undefined);
+const customerContext = createContext<CustomerContextType>({} as CustomerContextType);
 
 export const useCustomerContext = () => useContext(customerContext);
 
@@ -20,26 +20,23 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
         customerRef.current = newCustomerhData;
     };
 
-    const getCustomerData = useCallback( async(clousingId:number, employeeId:number) => {
+    const getCustomerData = useCallback( async(clousingId:number) => {
         setCustomerLoading(true);
 
-        if(customerRef.current[clousingId]?.[employeeId]){
+        if(customerRef.current[clousingId]){
             setCustomerLoading(false);
-            return customerRef.current[clousingId][employeeId];
+            return customerRef.current[clousingId];
         }
 
         try {
             
-            const data = await getCustomerClousing(clousingId, employeeId);
+            const data = await getCustomerClousing(clousingId);
 
-            const currentClousingData = customerRef.current[clousingId] || {};
             
             const updateCustomer = {
                 ...customerRef.current,
-                [clousingId]:{
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [employeeId]: data
-                }
+                [clousingId]:data
+
             }
             
             updateCustomerData(updateCustomer);
@@ -49,8 +46,8 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
         } catch (error) {
             
             setError(error instanceof Error ? error.message : String(error));
-            
-            throw error;
+
+            return {} as CustomerModel
 
         } finally {
             setCustomerLoading(false);
@@ -58,16 +55,11 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
 
     }, [customer]);
 
-    const setCustomerData = useCallback((customer: any, employeeId: number, clousingId: number) => {
-        
-        const currentClousingData = customerRef.current[clousingId] || {};
+    const setCustomerData = useCallback((customer: CustomerModel, clousingId: number) => {
 
         const updateCustomer = {
             ...customerRef.current,
-            [clousingId]: {
-                ...currentClousingData,
-                [employeeId]: customer
-            }
+            [clousingId]:  customer
         }
 
         updateCustomerData(updateCustomer)

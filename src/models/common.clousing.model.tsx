@@ -1,16 +1,61 @@
 import { CLOUSING_KEY } from "./constants.model";
 
-export interface HeaderContextType {
-  header: any
-  error: string;
-  loading: boolean;
-  getHeader: (clousingId: number, employeeId: number) => Promise<any>;
-  updateTotal: (newtotal: number, clousingId: number, employeeId:number, clousingType: CLOUSING_KEY) => void;
+export interface ClousingModel {
+  header: HeaderClousingModel;
+  clousingLines: ClousingLinesModel[];
 }
 
-export interface HeaderClousingProps {
+export interface HeaderClousingModel {
+  subsidiaryName: string;
+  storeName: string;
+  date: string;
+  time:string;
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+}
+
+export interface ClousingLinesModel {
   id: number;
-  employe: number;
+  employe: string;
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+  status: string;
+  extra: number;
+  mxm: number;
+  usd: number;
+  eur: number;
+  lib: number;
+  can: number;
+  customer: number;
+  specialCustomer: number;
+  prepaid: number;
+  employees: number;
+  intercompany: number;
+  service: number;
+  discount: number;
+  iva: number;
+}
+
+export interface ClousingContextType {
+  header: HeaderClousingModel;
+  data: ClousingLinesModel[];
+  loading: boolean;
+  error: string;
+  getInfo: (subsidiary: number, store: number) => void;
+}
+
+export interface HeaderContextType {
+  header: HeaderContext
+  error: string;
+  loading: boolean;
+  getHeader: (clousingId: number) => Promise<HeaderData>;
+  updateTotal: (newtotal: number, clousingId: number, clousingType: CLOUSING_KEY) => void;
+}
+
+export interface HeaderContext {
+   [key: number]: HeaderData
 }
 
 export interface HeaderData {
@@ -38,11 +83,12 @@ export interface ClousingType{
 }
 
 export interface FooterClousing {
-  clousingType: string;
+  clousingType: CLOUSING_KEY;
   clousingId: number;
-  data?: TotalModel | undefined;
-  loading?: boolean;
-  onChange?: () => Promise<boolean>;
+  closeDialog: () => void,
+  // data?: TotalModel | undefined;
+  // loading?: boolean;
+  // onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {
@@ -73,4 +119,21 @@ export interface ResponseModel {
   data?: any;
   error?: string;
   message?: string
+}
+
+export interface ClousingLayoutProps {
+  isOpen: boolean;
+  onClose: () => void;
+  employee: ClousingLinesModel | null
+}
+
+export interface TableOfTotalsProps {
+  subsidiary: number;
+  store: number;
+}
+
+export interface ConfirmDialogProps {
+    isOpen: boolean,
+    closeDialog: () => void,
+    sendData: () => void
 }

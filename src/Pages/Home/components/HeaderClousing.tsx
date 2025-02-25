@@ -3,10 +3,10 @@ import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
 import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
-import { HeaderClousingProps, HeaderData } from "@models/common.clousing.model"
+import { HeaderData } from "@models/common.clousing.model"
 import { CurrencyInput } from "@components/NumericInput";
 
-function HeaderClousing ({ id, employe }: HeaderClousingProps) {
+function HeaderClousing ({ id}: {id: number}) {
     const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
     const headerContext = useHeaders()
     if (!headerContext) {
@@ -18,10 +18,10 @@ function HeaderClousing ({ id, employe }: HeaderClousingProps) {
     useEffect(()=>{
         async function fetchData() {
             if(!header[id]){
-                const data = await getHeader(id, employe);
+                const data = await getHeader(id);
                 setLocalHeader(data);
             } else {
-                setLocalHeader(header[id][employe]);
+                setLocalHeader(header[id]);
             }
         }
         fetchData()

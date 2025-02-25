@@ -5,19 +5,17 @@ export interface CashContextType {
     cashClousing: CashModel | {};
     cashLoading: boolean;
     error: string;
-    getCashData: (clousingId: number, employeeId: number) => Promise<CashModel>;
-    setCashData: (cashLine:any, employeeId: number, clousingId: number) => void;
+    getCashData: (clousingId: number) => Promise<CashModel>;//, employeeId: number
+    setCashData: (cashLine:CashModel, clousingId: number) => void; // employeeId: number,
 }
 
 export interface CashContext {
-    [key: number]: {
-        [key: number]: any
-    }
+    [key: number]: CashModel
 }
 
 export interface CashModel {
     id: number;
-    employeId: number;
+    employeeId: number;
     electronicTips: number;
     tips?: number;
     currencies: CashLines[];

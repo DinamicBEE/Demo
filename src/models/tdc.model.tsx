@@ -7,16 +7,14 @@ export interface TDCContextType {
     detailsLoading: boolean;
     error: string
     detailsError: string
-    getTDCData: (clousingId: number, employeeId: number) => Promise<TDCModel>;
-    setTDCData: (tdc: TDCModel, clousingId: number, employeeId: number) => void;
+    getTDCData: (clousingId: number) => Promise<TDCModel>;
+    setTDCData: (tdc: TDCModel, clousingId: number) => void;
     getDetails: (clousingId: number, lineId: number | null) => Promise<BankDetails>;
     setDetails: (details: BankDetails, clousingId: number, lineId: number) => void;
 }
 
 export interface TDCContext {
-    [key: number]: {
-        [key: number]: TDCModel
-    }
+    [key: number]: TDCModel
 }
 
 export interface TDCDetailsContext {
@@ -57,8 +55,7 @@ export interface BankDetails {
 }
 
 export interface DetailsProp {
-    clousingId: number;
-    employeId: number; 
+    clousingId: number; 
     lineId: number | null; 
     isOpen:boolean; 
     onClose: () => void; 

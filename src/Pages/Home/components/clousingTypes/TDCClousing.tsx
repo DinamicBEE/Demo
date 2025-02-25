@@ -1,30 +1,27 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
-import Loading from "@components/loading";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function TDCClousing({data}: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null>(null);
   const [details, setDetails] = useState<boolean>(false);
 
-  const footerContext = useFooter();
-  const tdcContext = useTDCContext();
-
-  const setFooterData = footerContext?.setFooterData;
+  const { setFooterData } = useFooter();
+  const { getTDCData, tdc, tdcLoading } = useTDCContext();
 
   useEffect(()=>{
     async function fetchData() {
-      const tdc: TDCModel | undefined = tdcContext?.getTDCData
-            ? await tdcContext?.getTDCData(data?.id, data?.employeId) : undefined;
+      const tdc: TDCModel = await getTDCData(data?.id,);
       
       if(tdc?.total){
-        setFooterData?.(tdc.total, data.id, CLOUSING_KEY.TDC);
+        setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
 
       setCashData(tdc);
@@ -33,7 +30,7 @@ function TDCClousing({data}: any) {
 
     fetchData();
 
-  },[tdcContext?.tdc])
+  },[tdc])
 
   const openDiaolog = (id: number) =>{
     setLineSeleted(id);
@@ -106,15 +103,15 @@ function TDCClousing({data}: any) {
           </Table.Root>
         </Table.ScrollArea>
 
-        {tdcContext?.tdcLoading && (
-          <Box position="fixed" top="50%" left="50%">
+        {tdcLoading && (
+          <Box position="fixed" top="50%" left="50%"  zIndex="1">
             <Loading />
           </Box>
         )}
 
       </Box>
 
-      <TDCDetails clousingId={data?.id} employeId={data?.employeId} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
+      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { getEmployees, getReasonClousing } from "@services/catalogService";
-import { Employee, EmployeeContext, EmployeeContextType, EmployeeLine, EmployeeModel, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
+import { Employee, EmployeeContext, EmployeeContextType, EmployeeLine, EmployeeModel, ReasonsModel } from "@models/employee.model";
 import { getEmployeeClousing } from "@services/clousingService";
 import { TotalModel } from "@models/common.clousing.model";
 
@@ -15,23 +15,21 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
     const [employeeLoading, setEmployeeLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-    const getEmployeetData = useCallback( async(clousingId:number, employeeId:number)=>{
+    const getEmployeetData = useCallback( async(clousingId:number)=>{
         setEmployeeLoading(true);
 
-        if(employee[clousingId]?.[employeeId]){
+        if(employee[clousingId]){
             setEmployeeLoading(false);
-            return employee[clousingId]?.[employeeId];
+            return employee[clousingId];
         }
 
         try {
 
-            const data: EmployeeModel  = await getEmployeeClousing(clousingId, employeeId);
+            const data: EmployeeModel  = await getEmployeeClousing(clousingId);
 
             const updateEmployee: EmployeeContext = {
                 ...employee,
-                [clousingId]:{
-                    [employeeId]: data
-                }
+                [clousingId]:data
             } 
 
             setEmployee(updateEmployee);
@@ -100,9 +98,9 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
 
     },[reasons]);
 
-    const setNewEmployee = useCallback( (newEmployee: EmployeeLine, clousingId:number, employeeId:number) => {
+    const setNewEmployee = useCallback( (newEmployee: EmployeeLine, clousingId:number) => {
         
-        const currentRegister = employee[clousingId]?.[employeeId];
+        const currentRegister = employee[clousingId];
 
         const updateLines = [...currentRegister.lines, newEmployee];
 
@@ -123,12 +121,9 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
         const updateData: EmployeeContext = {
             ...employee,
             [clousingId]: {
-                ...employee[clousingId],
-                [employeeId]:{
-                    ... currentRegister,
-                    lines: updateLines,
-                    total: newTotal
-                }
+                ... currentRegister,
+                lines: updateLines,
+                total: newTotal
             }
         }
 

@@ -4,14 +4,12 @@ export interface specialCustContextType {
     specialCust: SpecialCustomerModel | {};
     specialCustLoading: boolean;
     error: string;
-    getSpecialCustData: (clousingId: number, employeeId: number) => Promise<SpecialCustomerModel>;
-    setSpecialCustData: (specialCustLine:any, employeeId: number, clousingId: number) => void;
+    getSpecialCustData: (clousingId: number) => Promise<SpecialCustomerModel>;
+    setSpecialCustData: (specialCustLine:SpecialCustomerModel, clousingId: number) => void;
 }
 
 export interface SpecialCustomerContext {
-    [key: number]: {
-        [key: number]: any
-    }
+    [key: number]: SpecialCustomerModel
 }
 
 export interface SpecialCustomerLines {

@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Button  } from "@chakra-ui/react";
-import { Toaster } from "@components/ui/toaster";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
-import Loading from "@components/loading";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function EmployeesClousing({data}: any) {
-  const [employee, setEmployee] = useState<EmployeeModel>()
+  const [employeeLocal, setEmployee] = useState<EmployeeModel>()
   const [dialog, setDialog] = useState<boolean>(false);
 
-  const employeeContext = useEmployeeContext();
-  const footerContext = useFooter();
+  const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
+  const { setFooterData } = useFooter();
 
   useEffect(()=>{
     async function fetchData() {
 
-      const employeeData: EmployeeModel = await employeeContext.getEmployeetData(data?.id, data?.employeId);
+      const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
       if(employeeData){
-        footerContext?.setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
+        setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
       }
       setEmployee(employeeData)
 
@@ -29,7 +28,7 @@ function EmployeesClousing({data}: any) {
 
     fetchData()
     
-  },[employeeContext.employee])
+  },[employee])
 
 
   const openDiaolog = () =>{
@@ -58,7 +57,7 @@ function EmployeesClousing({data}: any) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {employee?.lines?.map((item: EmployeeLine) => (
+            {employeeLocal?.lines?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <Text> {item.name + ' ' + item.lastName} </Text>
@@ -93,8 +92,8 @@ function EmployeesClousing({data}: any) {
 
       <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
 
-      {employeeContext.employeeLoading && (
-        <Box position="fixed" top="50%" left="50%">
+      {employeeLoading && (
+        <Box position="fixed" top="50%" left="50%"  zIndex="1">
           <Loading />
         </Box>
       )}
@@ -104,37 +103,3 @@ function EmployeesClousing({data}: any) {
 }
 
 export default EmployeesClousing;
-
-const tdcData = {
-"id": 1,
-  "employeId": 150,
-  "globalTotalPOS": 9622.32,
-  "globalTotalFisico": 9622.32,
-  "globalDifference": 0,
-  "currencies": [
-    {
-      "id": 1,
-      "employee": "Mario Vásquez",
-      "employeId": "0015",
-      "amount": 125.00,
-      "reason": "Diferencia de efectivo",
-      "ticket": "---"
-    },
-    {
-      "id": 2,
-      "employee": "Luis Castillo",
-      "employeId": "0029",
-      "amount": 150.00,
-      "reason": "Consumo empelado",
-      "ticket": "123"
-    },
-    {
-      "id": 3,
-      "employee": "BANREGIO",
-      "employeId": "0105",
-      "amount": 300.00,
-      "reason": "Mala elaboración del producto",
-      "ticket": "---"
-    }
-  ]
-}

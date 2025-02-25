@@ -1,46 +1,175 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Group, InputAddon, Input, Skeleton  } from "@chakra-ui/react";
-import { Toaster } from "@components/ui/toaster";
-import Loading from "@components/loading";
+import { toaster, Toaster } from "@components/ui/toaster";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
-import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
+import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
+import { TotalModel } from "@models/common.clousing.model";
+import { useHeaders } from "@context/home/headerContext";
+import { TableInput } from "@components/NumericInput";
 
 function PrepaidClousing({data}: any) {
-  const [prepaid, setPrepaid] = useState<PrepaidModel>();
+  const [prepaid, setPrepaid] = useState<PrepaidModel>({} as PrepaidModel);
+  const [coupons, setCoupons] = useState<CouponCatalogModel[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const footerContext = useFooter();
-  const prepaidContext = usePrepaidContext();
-
-  const setFooterData = footerContext?.setFooterData;
+  const { updateTotal } = useHeaders();
+  const { setFooterData } = useFooter();
+  const { getPrepaidData, getCouponData, setPrepaidData } = usePrepaidContext();
 
   useEffect(()=>{
     async function fetchData(){
-      const prepaid: PrepaidModel | undefined = prepaidContext?.getPrepaidData
-            ? await prepaidContext?.getPrepaidData(data?.id, data?.employeId) : undefined;
+      setLoading(true);
+      const prepaid: PrepaidModel = await getPrepaidData(data?.id);
+      const couponsList: CouponCatalogModel[] = await getCouponData(data?.id)
 
       setPrepaid(prepaid);
+      setCoupons(couponsList);
 
       if (prepaid?.total) {
-        setFooterData?.(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
+        setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
       }
-
+      setLoading(false);
     }
 
     fetchData();
 
   },[])
-  
+
+  function updateData(updatePrepaid: PrepaidLineModel[]) {
+
+    const newTotalFisico = updatePrepaid.reduce(
+      (acc: number, curr: { physical: number }) => acc + curr.physical,
+      0
+    );
+
+    const newDifference = prepaid.total.totalPOS - newTotalFisico;
+
+    const newTotal: TotalModel = {
+      totalPOS: prepaid.total.totalPOS,
+      totalPhysical: newTotalFisico,
+      difference: newDifference,
+    };
+
+    const prepaidData: PrepaidModel = {
+      ...prepaid,
+      total: newTotal,
+      lines: updatePrepaid,
+    };
+    
+    setPrepaid(prepaidData);
+
+    setPrepaidData(data.id, prepaidData);
+
+    updateTotal(newTotalFisico, data.id, CLOUSING_KEY.PREPAID);
+
+    setFooterData(newTotal, data.id, CLOUSING_KEY.PREPAID);
+
+  }
+
+  function handleCoupon(coupon: string) {
+    if (coupon.length < 4) return;
+
+    const couponModel = coupons.find((item) => item.folio === coupon);
+
+    if(couponModel===undefined){ 
+      
+      toastContoller(couponModel);
+      return
+
+    }
+
+    const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
+      item.id === couponModel?.lineId
+        ? !couponModel.isUsed
+          ? {
+              ...item,
+              unitPrice: couponModel.unitPrice,
+              quantity: couponModel.quantity,
+              physical: couponModel.unitPrice * couponModel.quantity,
+              difference:
+                item.totalPOS - (couponModel.unitPrice * couponModel.quantity),
+            }
+          : {
+              ...item,
+              isEdit: true,
+            }
+        : item
+    );
+    
+    toastContoller(couponModel);
+
+    updateData(updatePrepaid);
+
+  }
+
+  function handleInputTextData(id: number, value: string, key?: string) {
+
+    value = value.replace(/[^\d.]/g, "");
+
+    const updatePrepaid = prepaid.lines.map(
+      (item: PrepaidLineModel) =>
+        item.id === id
+          ? {
+              ...item,
+              [key!]: parseFloat(value),
+              physical: key==="unitPrice" ? 
+                item.supplementsQuantity * parseFloat(value) 
+                : parseFloat(value) * item.unitPrice,
+              difference: key==="unitPrice" ?
+                item.totalPOS - (parseFloat(value) * item.supplementsQuantity) 
+                : item.totalPOS - (item.unitPrice * parseFloat(value)),
+            }
+          : item
+    );
+
+    updateData(updatePrepaid);
+
+  }
+
+  function toastContoller(couponModel: CouponCatalogModel | undefined){
+
+    let title: string = '', description: string = '', type: string = '';
+
+    if(couponModel === undefined){
+
+      title = "Cupón invalido";
+      description = "El cupón no se encuentra registrado en la base de datos";
+      type = "error";
+
+    } else if(couponModel.isUsed) {
+
+      title = "Cupón vencido";
+      description = "El cupón se encuentra vencido, ingrese manualmente los valores de Cantidad complementaria y Precio unitario";
+      type = "warning";
+
+    } else if(!couponModel.isUsed) {
+
+      title = "Cupón válido";
+      description = "El registro relacionado al cupón ingresado se ha actualizado de forma correcta";
+      type = "success";
+
+    }
+
+    toaster.create({
+      title: title,
+      description: description,
+      type: type,
+      duration: 2500,
+    });
+
+  }
   
   return (
     <Box>
-      {/* <Toaster /> */}
+      <Toaster />
 
       <Group attached mb={4}>
         <InputAddon>Código de Barras</InputAddon>
-        <Skeleton loading={prepaidContext?.prepaidLoading}>
-          <Input placeholder="Código de Barras" />
+        <Skeleton loading={loading}>
+          <Input placeholder="Código de Barras" onChange={(e) => handleCoupon(e.target.value)} />
         </Skeleton>
       </Group>
 
@@ -73,19 +202,21 @@ function PrepaidClousing({data}: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.supplementsQuantity} />
+                    {!item.isEdit && <FormatNumber value={item.supplementsQuantity} />}
+                    {item.isEdit && <TableInput value={item.supplementsQuantity} id={item.id} currency={false} keyValue="supplementsQuantity" onChange={handleInputTextData} />}
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <FormatNumber value={item.unitPrice} style="currency" currency="USD" />
+                    {!item.isEdit && <FormatNumber value={item.unitPrice} style="currency" currency="USD" />}
+                    {item.isEdit && <TableInput value={item.unitPrice} id={item.id} currency={true} keyValue="unitPrice" onChange={handleInputTextData} />}
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <FormatNumber value={item.POS} style="currency" currency="USD" />
+                    <FormatNumber value={item.totalPOS} style="currency" currency="USD" />
                   </Text>
                 </Table.Cell>
 
@@ -108,8 +239,8 @@ function PrepaidClousing({data}: any) {
         </Table.Root>
       </Table.ScrollArea>
 
-      {prepaidContext?.prepaidLoading && (
-        <Box position="fixed" top="50%" left="50%">
+      {loading && (
+        <Box position="fixed" top="50%" left="50%"  zIndex="1">
           <Loading />
         </Box>
       )}

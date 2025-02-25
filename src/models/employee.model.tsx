@@ -4,16 +4,14 @@ export interface EmployeeContextType {
     employee: EmployeeModel | {};
     employeeLoading: boolean;
     error: string;
-    getEmployeetData: (clousingId: number, employeeId: number) => Promise<EmployeeModel>;
+    getEmployeetData: (clousingId: number) => Promise<EmployeeModel>;
     getEmployeeList: () => Promise<Employee[]>;
     getReasonsList: () => Promise<ReasonsModel[]>;
-    setNewEmployee: (newEmployee: EmployeeLine, clousingId: number, employeeId:number) => void;
+    setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
 }
 
 export interface EmployeeContext {
-    [key: number]: {
-        [key: number]: EmployeeModel
-    }
+    [key: number]:  EmployeeModel
 }
 
 export interface EmployeeModel {
@@ -55,7 +53,10 @@ export interface NewEmployeeModel {
 
 export interface EmployeeFilterProps {
     employees: Employee[]
-    onSelect: (empleado: Employee ) => void;
+    label: boolean;
+    itemId?: number;
+    employeeSelect?: string;
+    onSelect: (empleado: Employee, itemId?: number ) => void;
 }
 
 export interface AddEmployeeProp {

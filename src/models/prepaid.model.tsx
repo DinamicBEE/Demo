@@ -4,13 +4,17 @@ export interface PrepaidContextType {
     prepaid: PrepaidModel | {};
     prepaidLoading: boolean;
     error: string;
-    getPrepaidData: (clousingId: number, employeeId: number) => Promise<PrepaidModel>;
+    getPrepaidData: (clousingId: number) => Promise<PrepaidModel>;
+    getCouponData: (clousingId: number) => Promise<CouponCatalogModel[]>;
+    setPrepaidData: (clousingId:number, prepaid: PrepaidModel ) => void;
 }
 
 export interface PrepaidContext {
-    [key: number]: {
-        [key: number]: any
-    }
+    [key: number]: PrepaidModel
+}
+
+export interface CouponContext {
+    [key: number]: CouponCatalogModel[]
 }
 
 export interface PrepaidModel {
@@ -26,7 +30,16 @@ export interface PrepaidLineModel {
     quantity: number;
     supplementsQuantity:number;
     unitPrice:number;
-    POS: number;
+    totalPOS: number;
     physical: number;
     difference: number;
+    isEdit?: boolean; 
+}
+
+export interface CouponCatalogModel {
+    lineId: number;
+    folio: string; 
+    quantity: number; 
+    unitPrice: number;
+    isUsed: boolean
 }

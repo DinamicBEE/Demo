@@ -6,10 +6,10 @@ import { CLOUSING_KEY } from "@models/constants.model";
 
 export const useHandleTDC = (clousingId: number, lineId: number) => {
 
-    const headerContext = useHeaders();
-    const tdcContext = useTDCContext();
+    const { updateTotal } = useHeaders();
+    const { setDetails, tdc, setTDCData } = useTDCContext();
 
-    function handleInputData(value: string, id: number, details: BankDetails, setDetails: any,) {
+    function handleInputData(value: string, id: number, details: BankDetails, setDetail: any,) {
       if (lineId === null) return;
 
       const updateLines = details?.details.map((item: BankLineDetails) =>
@@ -26,14 +26,13 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
         details: updateLines || [],
       };
 
-      setDetails(updateBankDetails);
+      setDetail(updateBankDetails);
 
-      tdcContext?.setDetails(updateBankDetails, clousingId, lineId);
+      setDetails(updateBankDetails, clousingId, lineId);
     }
 
-    function updateLineClousing(detailsValidated: BankDetails, employeId: number,) {
-      const tdcData = tdcContext?.tdc?.[clousingId]?.[employeId];
-      console.log(tdcData);
+    function updateLineClousing(detailsValidated: BankDetails) {
+      const tdcData = tdc?.[clousingId];
 
       const newPhysical = detailsValidated.details.reduce(
         (acc: number, curr: BankLineDetails) => acc + curr.amount,
@@ -71,14 +70,13 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
         lines: updateLines || [],
       };
 
-      headerContext?.updateTotal(
+      updateTotal(
         newTotalPhysical || 0,
         clousingId,
-        employeId,
         CLOUSING_KEY.TDC
       );
 
-      tdcContext?.setTDCData(updateTDCData, clousingId, employeId);
+      setTDCData(updateTDCData, clousingId);
     }
 
     return { handleInputData, updateLineClousing };

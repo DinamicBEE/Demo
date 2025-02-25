@@ -21,14 +21,14 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [reasons, setReasons] = useState<ListCollection>(createListCollection({ items: [] }));
 
-    const employeeContext = useEmployeeContext();
+    const { getEmployeeList, getReasonsList, setNewEmployee } = useEmployeeContext();
 
     useEffect(()=>{
 
       async function fetchData() {
         setCatalogLoading(true);
-        const employeeList: Employee[] =  await employeeContext.getEmployeeList();
-        const reasonsList: ReasonsModel[] = await employeeContext.getReasonsList(); 
+        const employeeList: Employee[] =  await getEmployeeList();
+        const reasonsList: ReasonsModel[] = await getReasonsList(); 
         
         setEmployees(employeeList)
 
@@ -70,7 +70,7 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
 
       if(response.success){
 
-        employeeContext.setNewEmployee(response.data, clousingId, employeId,);
+        setNewEmployee(response.data, clousingId);
         setLoading(false);
         onClose();
         setAmount(0);
@@ -99,7 +99,7 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
           <DialogBody>
             <Stack gap="6">
                 
-              <FilterEmployee employees={employees} onSelect={setSelectEmployee} />
+              <FilterEmployee employees={employees} label={true} onSelect={setSelectEmployee} />
 
               <Group attached>
                 <InputAddon>Monto</InputAddon>

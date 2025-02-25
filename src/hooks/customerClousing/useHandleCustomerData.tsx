@@ -7,13 +7,13 @@ import { CLOUSING_KEY } from "@models/constants.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 
 
-export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any, clousingId: number, employeId: number) => {
+export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any, clousingId: number) => {
   
   const customerRef = useRef(customerData);
 
-  const headerContext = useHeaders();
-  const footerContext = useFooter();
-  const customerContext = useCustomerContext();
+  const { updateTotal } = useHeaders();
+  const { setFooterData } = useFooter();
+  const { setCustomerData } = useCustomerContext();
 
   function selectCurrency(value: any, id: number, currencies:CurrencyModel[] | undefined) {
     const selectValue = value[0];
@@ -43,7 +43,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     setCustomer(updateCustomerData);
     customerRef.current = updateCustomerData;
     
-    customerContext?.setCustomerData(customerRef.current, employeId, clousingId)
+    setCustomerData(customerRef.current, clousingId)
   }
 
   function handleCoupons(id:number, value:string){
@@ -125,12 +125,12 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     }
 
     if(newTotalFisico>0){
-      headerContext?.updateTotal(newTotalFisico, clousingId, employeId, CLOUSING_KEY.CUSTOMER);
+      updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
     }
 
-    footerContext?.setFooterData(newTotal, clousingId, "customer");
+    setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
 
-    customerContext?.setCustomerData(updateCustomerData, employeId, clousingId)
+    setCustomerData(updateCustomerData, clousingId)
 
   }
 

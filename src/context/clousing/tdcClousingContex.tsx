@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useMemo, useCallback } from 'react
 import { getTDCClousing, getTDCDetails } from '@services/clousingService';
 import { BankDetails, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
-const tdcContext = createContext<TDCContextType | undefined>(undefined);
+const tdcContext = createContext<TDCContextType>({} as TDCContextType);
 
 export const useTDCContext = () => useContext(tdcContext);
 
@@ -27,26 +27,21 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         tdcDetailsRef.current = newDetails;
     }
 
-    const getTDCData = useCallback( async(clousingId:number, employeeId:number)=>{
+    const getTDCData = useCallback( async(clousingId:number)=>{
         setTDCLoading(true);
 
-        if(tdcRef.current[clousingId]?.[employeeId]) {
+        if(tdcRef.current[clousingId]) {
             setTDCLoading(false);
-            return tdcRef.current[clousingId]?.[employeeId];
+            return tdcRef.current[clousingId];
         }
 
         try {
 
-            const data: TDCModel = await getTDCClousing(clousingId, employeeId);
-
-            const currentClousingData = tdcRef.current[clousingId] || {};
+            const data: TDCModel = await getTDCClousing(clousingId);
 
             const updateTDC: TDCContext = {
                 ...tdcRef.current,
-                [clousingId]:{
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [employeeId]: data
-                }
+                [clousingId]: data
             }
             
             updateTDCData(updateTDC);
@@ -126,16 +121,13 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
     }, []);
 
 
-    const setTDCData = useCallback( async(tdc: TDCModel, clousingId: number, employeeId: number)=>{
+    const setTDCData = useCallback( async(tdc: TDCModel, clousingId: number)=>{
 
         const currentClousingData = tdcRef.current[clousingId] || {};
 
         const updateTDC = {
             ...tdcRef.current,
-            [clousingId]: {
-                ...currentClousingData,
-                [employeeId]: tdc
-            }
+            [clousingId]:  tdc
         };
 
         updateTDCData(updateTDC);

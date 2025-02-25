@@ -4,14 +4,12 @@ export interface CustomerContextType {
     customer: CustomerModel | {};
     customerLoading: boolean;
     error: string;
-    getCustomerData: (clousingId: number, employeeId: number) => Promise<CustomerModel>;
-    setCustomerData: (customer:any, employeeId: number, clousingId: number) => void;
+    getCustomerData: (clousingId: number) => Promise<CustomerModel>;
+    setCustomerData: (customer:any, clousingId: number) => void;
 }
 
 export interface CustomerContext {
-    [key: number]: {
-        [key: number]: any
-    }
+    [key: number]: CustomerModel
 }
 
 export interface CustomerLines {
