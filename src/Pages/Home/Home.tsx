@@ -119,7 +119,7 @@ function Home() {
                         {!catalogLoading && <SelectRoot collection={subsidiary}
                             onValueChange={(event) => filterStore(event)}
                         >
-                            <SelectLabel>Selecciona Subsidiaria</SelectLabel>
+                            <SelectLabel fontFamily="heading">Selecciona Subsidiaria</SelectLabel>
                             <SelectTrigger>
                                 <SelectValueText placeholder="Selecciona Subsidiaria" />
                             </SelectTrigger>
@@ -149,7 +149,7 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        {location!=0 && <Button className='primary-button' onClick={()=>{
+                        {location!=0 && <Button bg="neutrals.light" onClick={()=>{
                                 setShowTable(true)
                                 getInfo(SubSelect, location)}
                             }>

@@ -7,7 +7,7 @@ import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
 import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
 import Loading from '@components/Loading';
-
+import '../Home.css'
 
 
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {

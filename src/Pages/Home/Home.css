@@ -63,3 +63,15 @@
   width: auto;
   margin-top: 0px;
 }
+
+.TableHeader{
+  background-color: #EDF2F7;
+  padding: 12px 0;
+  color: #2D3748;
+  text-align: center;
+  font-weight: 700;
+  border-spacing: 0 8px;
+  border-bottom: 2px solid;
+  border-color: #718096;
+
+}
