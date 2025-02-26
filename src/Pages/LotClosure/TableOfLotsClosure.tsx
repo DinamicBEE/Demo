@@ -14,7 +14,7 @@ import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
 import { exportCSV } from "../../utils/exportCSV";
 import { LotClosure } from "@models/lotClosure.model";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
 
@@ -83,7 +83,7 @@ function TableOfLotClosure({
               w="100%"
             >
               <Button
-                className="secondary-button"
+                colorPalette="meraPrimary"
                 onClick={() => {
                   handleExportCSV();
                 }}
@@ -93,7 +93,7 @@ function TableOfLotClosure({
               </Button>
 
               <Button
-                className="primary-button"
+                colorPalette="meraInfo"
                 onClick={() => {
                   fetchLotClosureData(dateRange, locationId, companyId, true);
                 }}

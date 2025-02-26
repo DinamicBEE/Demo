@@ -3,14 +3,14 @@ import { STATUS } from "@models/status.model";
 export const getStatusColor = (status: STATUS) => {
   switch (status) {
     case STATUS.CLOSED:
-      return "green";
+      return "meraInfo";
     case STATUS.REOPENED:
-      return "yellow";
+      return "meraWarning";
     case STATUS.WITH_DIFFERENCE:
-      return "red";
+      return "meraError";
     case STATUS.OPEN:
-      return "gray";
+      return "meraSecondary";
     default:
-      return "gray";
+      return "meraSecondary";
   }
 };

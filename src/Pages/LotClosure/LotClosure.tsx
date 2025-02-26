@@ -64,6 +64,7 @@ function LotClosure() {
             gap={4}
             mb={4}
             w="100%"
+            alignItems="end"
           >
             <SelectRoot
               collection={comapanies}
@@ -125,9 +126,9 @@ function LotClosure() {
                 onChange={setDateRange}
               />
             </Field.Root>
-            <Flex align="center" justify="center">
+            
               <Button
-                className="primary-button"
+                colorPalette="meraInfo"
                 onClick={search}
                 disabled={
                   companyId !== 0 &&
@@ -140,7 +141,7 @@ function LotClosure() {
               >
                 Buscar
               </Button>
-            </Flex>
+
           </Grid>
         </HStack>
       </VStack>

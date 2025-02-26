@@ -135,7 +135,7 @@ function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
                         <CurrencyInput value={detailsLocal?.total} name={"Total"} loading={detailsLoading || false} />
                         
                         <Button 
-                            className="secondary-button save-button"
+                            colorPalette="meraPrimary"
                             loading={loading} 
                             onClick={(()=>saveDetails())}
                         >Guardar</Button>

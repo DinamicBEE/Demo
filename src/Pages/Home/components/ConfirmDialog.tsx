@@ -27,10 +27,10 @@ function ConfirmDialog({isOpen, closeDialog, sendData}: ConfirmDialogProps) {
 
                 <DialogFooter>
                     <DialogActionTrigger asChild>
-                        <Button colorPalette="red" >Cancelar</Button>
+                        <Button colorPalette="meraError" >Cancelar</Button>
                     </DialogActionTrigger>
                     <Button 
-                        colorPalette="green" 
+                        colorPalette="meraPrimary" 
                         onClick={() => {
                             sendData()
                             closeDialog()
