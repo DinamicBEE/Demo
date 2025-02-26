@@ -10,6 +10,8 @@ export const inputAddonRecipe = defineRecipe({
     whiteSpace: "nowrap",
     alignSelf: "stretch",
     borderRadius: "l2",
+    color: "mera.title",
+    fontWeight: "medium"
   },
   variants: {
     size: {
@@ -70,7 +72,7 @@ export const inputAddonRecipe = defineRecipe({
     },
   },
   defaultVariants: {
-    size: "md",
+    size: "lg",
     variant: "outline",
   },
 })

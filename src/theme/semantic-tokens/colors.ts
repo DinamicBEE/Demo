@@ -652,5 +652,49 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.blue.950}",
       },
     },
-  }
+  },
+  meraPrimary: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.primaryCor.700}",
+        _dark: "{colors.primaryCor.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.primaryCor.100}",
+        _dark: "{colors.primaryCor.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.primaryCor.200}",
+        _dark: "{colors.primaryCor.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.primaryCor.300}",
+        _dark: "{colors.primaryCor.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.primaryCor.600}",
+        _dark: "{colors.primaryCor.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.primaryCor.600}",
+        _dark: "{colors.primaryCor.600}",
+      },
+    },
+  },
 })

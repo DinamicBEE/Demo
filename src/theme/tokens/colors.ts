@@ -433,6 +433,41 @@ export const colors = defineTokens.colors({
       value: "#2c0514",
     },
   },
+  primaryCor:{
+    "50": {
+      value: "#f0fdf4",
+    },
+    "100": {
+      value: "#dcfce7",
+    },
+    "200": {
+      value: "#bbf7d0",
+    },
+    "300": {
+      value: "#86efac",
+    },
+    "400": {
+      value: "#4ade80",
+    },
+    "500": {
+      value: "#22c55e",
+    },
+    "600": {
+      value: "#16a34a",
+    },
+    "700": {
+      value: "#15803d",
+    },
+    "800": {
+      value: "#166534",
+    },
+    "900": {
+      value: "#14532d",
+    },
+    "950": {
+      value: "#0c3417",
+    },
+  },
   meraPalette: {
     primary: { value: "#008D38" },
     secondary: { value: "#00B74F" },
@@ -440,6 +475,6 @@ export const colors = defineTokens.colors({
         dark: { value: "#2D3748" },
         medium: { value: "#718096" },
         light: { value: "#EDF2F7" }
-    }
+    },
   }
 })

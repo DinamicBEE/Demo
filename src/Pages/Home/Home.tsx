@@ -149,7 +149,7 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        {location!=0 && <Button  onClick={()=>{
+                        {location!=0 && <Button colorPalette="meraPrimary" onClick={()=>{
                                 setShowTable(true)
                                 getInfo(SubSelect, location)}
                             }>
