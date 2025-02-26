@@ -127,7 +127,9 @@ export const selectSlotRecipe = defineSlotRecipe({
       fontWeight: "medium",
     },
     label: {
-      fontWeight: "medium",
+      fontWeight: "normal",
+      fontSize: "sm",
+      color: "mera.label",
       userSelect: "none",
       textStyle: "sm",
       _disabled: {

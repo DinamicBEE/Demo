@@ -106,7 +106,7 @@ function TableOfLotClosure({
 
           <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px">
-              <Table.Root size="sm" variant="outline" striped>
+              <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">

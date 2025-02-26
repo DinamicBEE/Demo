@@ -55,7 +55,7 @@ function LotClosure() {
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align="start">
         <Heading>
-          Selecciona una subsidiaria , rango de fechas y centro de consumo
+          Cierre de lotes
         </Heading>
 
         <HStack w="100%">

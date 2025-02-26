@@ -165,7 +165,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                           borderWidth="1px"
                           marginTop={6}
                         >
-                          <Table.Root size="sm" variant="outline" striped>
+                          <Table.Root size="sm" variant="outline">
                             <Table.Header>
                               <Table.Row>
                                 <Table.ColumnHeader textAlign="center">
@@ -262,7 +262,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                     Número de lotes
                   </Text>
                   <Table.ScrollArea rounded="md" borderWidth="1px">
-                    <Table.Root size="sm" variant="outline" striped>
+                    <Table.Root size="sm" variant="outline" interactive={false}>
                       <Table.Header>
                         <Table.Row>
                           <Table.ColumnHeader textAlign="center">
@@ -294,8 +294,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
               <Button
                 hidden={lot.status === STATUS.CLOSED}
                 onClick={() => handleOpenCloseLot()}
-                className="primary-button"
-                width={"auto !important"}
+                colorPalette="meraInfo"
                 disabled={
                   localBanks.length === 0 ||
                   localBanks.some((bank) => {
@@ -335,7 +334,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
             <Flex gap={2} wrap={"wrap"}>
               <Button
                 onClick={() => setOpenCloseLot(false)}
-                className="secondary-button"
+                colorPalette="meraError"
                 width={"auto !important"}
                 disabled={updateBankLoading}
               >
@@ -344,7 +343,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
               <Button
                 disabled={updateBankLoading}
                 onClick={() => handleSave()}
-                className="primary-button"
+                colorPalette="meraPrimary"
                 width={"auto !important"}
               >
                 {updateBankLoading ? <Spinner color={"#fff"} /> : "Cerrar lote"}
