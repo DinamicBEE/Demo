@@ -57,6 +57,7 @@ export interface EmployeeFilterProps {
     itemId?: number;
     employeeSelect?: string;
     onSelect: (empleado: Employee, itemId?: number ) => void;
+    disabled: boolean;
 }
 
 export interface AddEmployeeProp {

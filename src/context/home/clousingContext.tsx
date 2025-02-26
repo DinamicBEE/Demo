@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback, ReactNode, useEffect } from 'react';
 import { getGeneralInfo } from '@services/homeService';
 import { ClousingContextType, ClousingLinesModel, HeaderClousingModel } from '@models/common.clousing.model';
 
@@ -11,12 +11,14 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ClousingLinesModel[]>([] as ClousingLinesModel[]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-
+  const [dataClousing, setDataClousing] = useState({}); // por el momento no tiene un Modelo.
   
   const getInfo = useCallback(async (subsidiary:number, store:number) => {
     try {
       setLoading(true);
+      
       const response = await getGeneralInfo(subsidiary, store);
+    
       setHeader(response.header);
       setData(response.clousingLines);
     
@@ -29,8 +31,22 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  },[])
+  },[]);
 
+  useEffect(() => {
+    if (dataClousing.id) { 
+      console.log('aqui se tiene que realizar el cambio ', dataClousing);
+      setData((prevData) => 
+        prevData.map((item) => item.id == dataClousing.id ? { 
+          ...item,
+          closingConfirmation: true,
+          totalPhysical: dataClousing.totalClousing,
+          difference: dataClousing.difference
+        } : item)
+      );
+    }
+  }, [dataClousing]);
+  
   const value = useMemo(
     () => ({
       header,
@@ -38,8 +54,10 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       loading,
       error,
       getInfo,
+      dataClousing,
+      setDataClousing
     }),
-    [header, data, loading, error, getInfo]
+    [header, data, loading, error, getInfo, dataClousing, setDataClousing]
   );
 
   return (

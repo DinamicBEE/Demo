@@ -15,7 +15,7 @@ import {ClousingModel} from '@models/common.clousing.model'
 export const getGeneralInfo = async (subsidiary:number, store:number): Promise<ClousingModel> => {
     
     try {
-        console.log(subsidiary, store)
+        // console.log(subsidiary, store)
         //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
         const response = homeData;
 
@@ -95,6 +95,7 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
+      closingConfirmation: false
     },
     {
       id: 2,
@@ -117,6 +118,7 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
+      closingConfirmation: false
     },
     {
       id: 3,
@@ -139,6 +141,7 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
+      closingConfirmation: false
     },
     {
       id: 4,
@@ -161,6 +164,7 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
+      closingConfirmation: false
     },
   ],
 };

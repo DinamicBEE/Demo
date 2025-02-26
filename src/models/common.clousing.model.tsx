@@ -36,6 +36,7 @@ export interface ClousingLinesModel {
   service: number;
   discount: number;
   iva: number;
+  closingConfirmation: boolean;
 }
 
 export interface ClousingContextType {
@@ -44,6 +45,8 @@ export interface ClousingContextType {
   loading: boolean;
   error: string;
   getInfo: (subsidiary: number, store: number) => void;
+  dataClousing: any;
+  setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
 }
 
 export interface HeaderContextType {

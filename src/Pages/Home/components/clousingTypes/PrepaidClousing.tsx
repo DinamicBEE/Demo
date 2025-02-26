@@ -169,7 +169,7 @@ function PrepaidClousing({data}: any) {
       <Group attached mb={4}>
         <InputAddon>Código de Barras</InputAddon>
         <Skeleton loading={loading}>
-          <Input placeholder="Código de Barras" onChange={(e) => handleCoupon(e.target.value)} />
+          <Input placeholder="Código de Barras" onChange={(e) => handleCoupon(e.target.value)} disabled={data?.closingConfirmation}/>
         </Skeleton>
       </Group>
 
