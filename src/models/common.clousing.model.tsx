@@ -89,6 +89,7 @@ export interface FooterClousing {
   clousingType: CLOUSING_KEY;
   clousingId: number;
   closeDialog: () => void,
+  closingConfirmation: boolean
   // data?: TotalModel | undefined;
   // loading?: boolean;
   // onChange?: () => Promise<boolean>;

@@ -31,6 +31,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation }
 	}, [lineId])
 
 	async function saveDetails() {
+
+		if(closingConfirmation) return;
+
 		setLoading(true)
 
 		if (lineId !== null && detailsLocal !== undefined) {

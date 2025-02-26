@@ -18,7 +18,7 @@ import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
 
 
-function FooterClousing({ clousingType, clousingId, closeDialog }: FooterClousing) {
+function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirmation }: FooterClousing) {
 
   const [buttonLoading, setButtonLoading] = useState(false);
   const [loading, setloading] = useState(false);
@@ -119,7 +119,7 @@ function FooterClousing({ clousingType, clousingId, closeDialog }: FooterClousin
 
           <Button loading={loading}
             className="secondary-button save-button"
-            onClick={async () => { setButtonLoading(true); }} >
+            onClick={async () => { setButtonLoading(true); }} disabled={closingConfirmation}>
             Confirmar Corte
           </Button>
 

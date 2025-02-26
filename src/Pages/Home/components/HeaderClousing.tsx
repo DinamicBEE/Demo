@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { HeaderData } from "@models/common.clousing.model"
 import { CurrencyInput } from "@components/NumericInput";
 
-function HeaderClousing ({ id}: {id: number}) {
+function HeaderClousing ({ id, closingConfirmation}: {id: number, closingConfirmation: boolean}) {
     const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
     const headerContext = useHeaders()
     if (!headerContext) {
@@ -74,7 +74,7 @@ function HeaderClousing ({ id}: {id: number}) {
 
                 <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={loading} />
 
-                <Button size="sm" className="primary-button">
+                <Button size="sm" className="primary-button" disabled={closingConfirmation}>
                     Actualizar
                 </Button>
             </Grid>
