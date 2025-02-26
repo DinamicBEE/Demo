@@ -1,6 +1,7 @@
 .layout {
   display: flex;
   height: 100vh;
+  width: 100vw;
 }
 
 .menuContainer {
@@ -18,34 +19,37 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: white;
+  color: #1e293b;
   text-decoration: none;
   padding: 10px 15px;
   gap: 12px;
   border-radius: 5px;
   transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 .menu-link:hover {
-  background-color: #64b5f6;
-  box-shadow: 0 0 10px rgba(100, 181, 246, 0.5); /* Efecto de brillo */
-  color: white;
+  background-color: #f2f4f6;
+  /* box-shadow: 0 0 10px rgba(100, 181, 246, 0.5); Efecto de brillo */
+  color: #2D3748;
 }
 
 .logout-button {
-  margin-top: 20px;
-  background-color: #64b5f6;
+  margin-top: 5px;
+  padding: 0 5px;
+  background-color: white;
   border: none;
-  color: white;
-  padding: 10px 15px !important;
-  border-radius: 20px;
+  color: #1e293b;
+  /* padding: 10px 15px !important; */
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .logout-button:hover {
-  background-color: #2e7d32;
-  box-shadow: 0 0 10px rgba(46, 125, 50, 0.5); /* Efecto de brillo */
+  text-decoration-style: solid;
+  background-color: #f2f4f6;
+  /* box-shadow: 0 0 10px rgba(46, 125, 50, 0.5); Efecto de brillo */
 }
 
 .menuButton-container {
@@ -63,6 +67,7 @@
 
 .main-content {
   flex: 1;
+  width: 100vw;
   padding: 20px;
   background-color: #f4f4f4;
   overflow-y: auto;
@@ -73,4 +78,14 @@
 body {
   background: rgb(223,243,227);
   background: linear-gradient(180deg, rgba(223,243,227,0.5) 0%, rgba(46,125,50,0.5) 100%);
+}
+
+.mera-header {
+  box-shadow: 0 1px 7px 0 rgb(0 0 0 / .1), 0 1px 5px -1px rgb(0 0 0 / .1) !important;
+  padding: 0px 15px;
+  background: white;
+  display: flex;
+  flex-direction: row;
+  position:sticky;
+  width: 100%;
 }

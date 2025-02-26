@@ -19,7 +19,9 @@ export const fieldSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       textAlign: "start",
       textStyle: "sm",
-      fontWeight: "medium",
+      fontWeight: "normal",
+      color: "mera.label",
+      fontSize: "sm",
       gap: "1",
       userSelect: "none",
       _disabled: {

@@ -11,7 +11,7 @@ import {
     DrawerTitle,
     DrawerTrigger,
   } from "./ui/drawer"
-import { IconButton } from "@chakra-ui/react"
+import { IconButton, Container, Flex, HStack, Image } from '@chakra-ui/react';
 import { LuAlignJustify, LuLogOut } from "react-icons/lu";
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
@@ -25,7 +25,8 @@ function Layout() {
     const { user } = useUser();
 
     return (
-        <div className="layout">
+      <div className="layout">
+        {/*             
             <div>
 
                 <DrawerRoot placement="start" open={isMenuOpen} onOpenChange={(e) => setIsMenuOpen(e.open)}>
@@ -84,13 +85,43 @@ function Layout() {
 
                 </div>
 
-            </div>
-            
-            <div className="main-content">
-                <Outlet />
-            </div>
+            </div> */}
 
-        </div>
+        <Flex direction="column" overflowY="auto" overflowX="auto">
+          <header className="mera-header">
+            <Container
+              width="100vw"
+              bgColor="mera.light"
+              display="flex"
+              justifyContent="space-between"
+              alignContent="center"
+            >
+              <HStack>
+                <Image src="src\assets\meraLogo.png" h="48px" />
+                {menuItems
+                  .filter((item) => item.roles.includes(user.role))
+                  .map((item) => (
+                    <a key={item.name} className="menu-link">
+                      {item.icon}
+                      <NavLink to={item.path}>{item.name}</NavLink>
+                    </a>
+                  ))}
+              </HStack>
+              <IconButton
+                onClick={() => {logOut();}}
+                className="logout-button"
+              >
+                <LuLogOut />
+                Cerrar Sesión
+              </IconButton>
+            </Container>
+          </header>
+
+          <div className="main-content">
+            <Outlet />
+          </div>
+        </Flex>
+      </div>
     );
 
 }
