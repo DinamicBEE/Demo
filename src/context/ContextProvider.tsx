@@ -1,18 +1,14 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 import { AuthProvider } from "./AuthContext";
 import { UserProvider } from "./UserContext";
-import { ErrorDialogProvider } from './ErrorContext';
+import { ErrorDialogProvider } from "./ErrorContext";
 
 export const ContextProvider = ({ children }: { children: ReactNode }) => {
-    
-    return (
-        <AuthProvider>
-            <UserProvider>
-                <ErrorDialogProvider>
-                    { children } 
-                </ErrorDialogProvider> 
-            </UserProvider>
-        </AuthProvider>
-    );
-
+  return (
+    <ErrorDialogProvider>
+      <UserProvider>
+        <AuthProvider>{children}</AuthProvider>
+      </UserProvider>
+    </ErrorDialogProvider>
+  );
 };

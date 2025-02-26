@@ -8,7 +8,8 @@ export interface ProtectedRouteProps {
 export interface UserContextType {
     user: any; // ! Modelo de datos del usuario
     loading: boolean;
-    fetcUser: (currentToken: string) => Promise<any>; // ! Modelo de datos del usuario
+    setLoading: (loading: boolean) => void;
+    fetchUser: (currentToken: string) => Promise<any>; // ! Modelo de datos del usuario
 }
 
 export interface CurrencyInputProps {

@@ -6,26 +6,29 @@ import { ProtectedRouteProps } from '@models/common.model';
 import Loading from './loading';
 
 function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-    const { isAuthenticated, isLoading } = useAuth();
-    const { user, loading } = useUser();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, loading: userLoading } = useUser();
 
-    if (loading || isLoading) {
-        return <Loading />;
-    }
-        
-    if (!isAuthenticated) return <Navigate to="/" />;
-    
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-        return <Navigate to="/emptyPage" />;
-    }
+  // Manejo de estados de carga
+  const isLoading = authLoading || userLoading;
 
-    return children;
+  // Verificación de permisos
+  const hasPermission = allowedRoles 
+    ? allowedRoles.includes(user?.role)
+    : true;
+
+  // Lógica de redirección
+  if (isLoading) return <Loading />;
+  if (!isAuthenticated) return <Navigate to="/" />;
+  if (!user) return <Navigate to="/" />;
+  if (!hasPermission) return <Navigate to="/emptyPage" />;
+
+  return children;
 }
 
 export function PublicRoute({ children }: { children: ReactNode }) {
-    const { isAuthenticated } = useAuth();
-  
-    return isAuthenticated ? <Navigate to="/home" /> : children;
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/home" /> : children;
 }
 
 export default ProtectedRoute;
