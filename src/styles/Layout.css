@@ -37,7 +37,7 @@
 .logout-button {
   margin-top: 5px;
   padding: 0 5px;
-  background-color: white;
+  /* background-color: white; */
   border: none;
   color: #1e293b;
   /* padding: 10px 15px !important; */
@@ -89,3 +89,46 @@ body {
   position:sticky;
   width: 100%;
 }
+
+
+.header-img {
+  height: 48px;
+}
+
+.menu-icons {
+  display: none;
+}
+
+.menu-complete {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
+  gap: 5px;
+  align-items: center;
+  width: max-content;
+}
+@media (max-width: 800px) {
+  
+  .menu-icons {
+    display: block;
+  }
+  .menu-complete {
+    display: none;
+  }
+
+}
+
+@media (min-width:  1000px) {
+  .menu-icons {
+    display: none;
+  }
+}
+@media (max-width:  1000px) {
+  .header-img{
+    visibility: hidden;
+    display: none;
+  }
+}
+

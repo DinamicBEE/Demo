@@ -11,18 +11,20 @@ import {
     DrawerTitle,
     DrawerTrigger,
   } from "./ui/drawer"
-import { IconButton, Container, Flex, HStack, Image } from '@chakra-ui/react';
+import { IconButton, Container, Flex, HStack, Image, Box, useMediaQuery  } from '@chakra-ui/react';
 import { LuAlignJustify, LuLogOut } from "react-icons/lu";
 import { useAuth } from '../context/AuthContext';
 import { useUser } from '../context/UserContext';
 import '../styles/Layout.css'
 import { menuItems } from '@models/constants.model';
+import { breakpoints } from '../theme/breakpoints';
 
 function Layout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
     const { logOut } = useAuth();
     const { user } = useUser();
+    // const [ screenWidth ] = useMediaQuery('(max-width: 800px)') 
 
     return (
       <div className="layout">
@@ -96,23 +98,40 @@ function Layout() {
               justifyContent="space-between"
               alignContent="center"
             >
-              <HStack>
-                <Image src="src\assets\meraLogo.png" h="48px" />
+              <HStack className='links-container'>
+                <Image src="src\assets\meraLogo.png" className='header-img' />
+                <HStack >
                 {menuItems
                   .filter((item) => item.roles.includes(user.role))
                   .map((item) => (
-                    <a key={item.name} className="menu-link">
-                      {item.icon}
-                      <NavLink to={item.path}>{item.name}</NavLink>
-                    </a>
+                    <Box key={item.name} className="menu-link">
+                      
+                      <NavLink to={item.path} className="menu-complete">{item.icon}{item.name}</NavLink>
+                      <NavLink to={item.path} className="menu-icons">{item.icon}</NavLink>
+                    </Box>
                   ))}
+
+                </HStack>
+                {/* <HStack className='menu-icons'>
+                {menuItems
+                  .filter((item) => item.roles.includes(user.role))
+                  .map((item) => (
+                    <Box key={item.name} className="menu-link">
+                      <NavLink to={item.path}>{item.icon}</NavLink>
+                    </Box>
+                  ))}
+
+                </HStack> */}
               </HStack>
               <IconButton
                 onClick={() => {logOut();}}
-                className="logout-button"
+                // className="logout-button"
+                rounded="full"
+                variant="ghost"
+                colorPalette="red"
+                marginTop="5px"
               >
                 <LuLogOut />
-                Cerrar Sesión
               </IconButton>
             </Container>
           </header>
