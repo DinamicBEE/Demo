@@ -652,5 +652,269 @@ export const colors = defineSemanticTokens.colors({
         _dark: "{colors.blue.950}",
       },
     },
-  }
+  },
+  meraPrimary: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.primary.700}",
+        _dark: "{colors.primary.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.primary.100}",
+        _dark: "{colors.primary.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.primary.200}",
+        _dark: "{colors.primary.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.primary.300}",
+        _dark: "{colors.primary.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.primary.600}",
+        _dark: "{colors.primary.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.primary.600}",
+        _dark: "{colors.primary.600}",
+      },
+    },
+  },
+  meraSecondary: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.secondary.700}",
+        _dark: "{colors.secondary.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.secondary.100}",
+        _dark: "{colors.secondary.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.secondary.200}",
+        _dark: "{colors.secondary.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.secondary.300}",
+        _dark: "{colors.secondary.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.secondary.600}",
+        _dark: "{colors.secondary.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.secondary.600}",
+        _dark: "{colors.secondary.600}",
+      },
+    },
+  },
+  meraError: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.error.700}",
+        _dark: "{colors.error.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.error.100}",
+        _dark: "{colors.error.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.error.200}",
+        _dark: "{colors.error.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.error.300}",
+        _dark: "{colors.error.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.error.600}",
+        _dark: "{colors.error.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.error.600}",
+        _dark: "{colors.error.600}",
+      },
+    },
+  },
+  meraWarning: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "black",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.warning.700}",
+        _dark: "{colors.warning.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.warning.100}",
+        _dark: "{colors.warning.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.warning.200}",
+        _dark: "{colors.warning.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.warning.300}",
+        _dark: "{colors.warning.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.warning.600}",
+        _dark: "{colors.warning.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.warning.600}",
+        _dark: "{colors.warning.600}",
+      },
+    },
+  },
+  meraSuccess: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.success.700}",
+        _dark: "{colors.success.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.success.100}",
+        _dark: "{colors.success.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.success.200}",
+        _dark: "{colors.success.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.success.300}",
+        _dark: "{colors.success.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.success.600}",
+        _dark: "{colors.success.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.success.600}",
+        _dark: "{colors.success.600}",
+      },
+    },
+  },
+  meraInfo: {
+    contrast: {
+      value: {
+        _light: "white",
+        _dark: "white",
+      },
+    },
+    fg: {
+      value: {
+        _light: "{colors.info.700}",
+        _dark: "{colors.info.300}",
+      },
+    },
+    subtle: {
+      value: {
+        _light: "{colors.info.100}",
+        _dark: "{colors.info.900}",
+      },
+    },
+    muted: {
+      value: {
+        _light: "{colors.info.200}",
+        _dark: "{colors.info.800}",
+      },
+    },
+    emphasized: {
+      value: {
+        _light: "{colors.info.300}",
+        _dark: "{colors.info.700}",
+      },
+    },
+    solid: {
+      value: {
+        _light: "{colors.info.600}",
+        _dark: "{colors.info.600}",
+      },
+    },
+    focusRing: {
+      value: {
+        _light: "{colors.info.600}",
+        _dark: "{colors.info.600}",
+      },
+    },
+  },
 })

@@ -170,6 +170,6 @@ export const buttonRecipe = defineRecipe({
   },
   defaultVariants: {
     size: "md",
-    variant: "solid",
+    variant: "surface",
   },
 })

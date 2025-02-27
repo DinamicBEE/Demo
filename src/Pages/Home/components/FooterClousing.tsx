@@ -113,7 +113,7 @@ function FooterClousing({clousingType, clousingId, closeDialog}: FooterClousing)
           />
 
           <Button loading={loading}
-            className="secondary-button save-button"
+            colorPalette="meraPrimary"
             onClick={async () => {
               setButtonLoading(true);
           }}

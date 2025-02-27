@@ -5,7 +5,7 @@ import FilterEmployee from "@components/FilterEmployee";
 import { Box, createListCollection, Group, Input, InputAddon, ListCollection, SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText, Stack } from "@chakra-ui/react";
 import { AddEmployeeProp, Employee, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { sendNewEmployeeRegister } from "@services/clousingService";
 import { ResponseModel } from "@models/common.clousing.model";
 
@@ -151,7 +151,7 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
 
           <DialogFooter>
             <Button
-              className="secondary-button save-button"
+              colorPalette="meraPrimary"
               loading={loading}
               onClick={() => handleData()}
             >

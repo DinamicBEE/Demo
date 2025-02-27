@@ -6,7 +6,7 @@ import { Approval, TableApprovalsProps } from "@models/approvals.model";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Button } from "@components/ui/button";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(
@@ -43,7 +43,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
         {isLoading && <Loading />}
 
         <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
-          <Table.Root variant="outline" striped>
+          <Table.Root variant="outline">
 
             <Table.Header>
               <Table.Row>

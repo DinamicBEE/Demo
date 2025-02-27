@@ -29,6 +29,7 @@ export const globalCss = defineGlobalStyles({
     "--global-font-mono": "fonts.mono",
     "--global-font-body": "fonts.body",
     "--global-color-border": "colors.border",
+    "--background-color-mera": "colors.mera.bg"
   },
   html: {
     color: "fg",

@@ -46,7 +46,7 @@ const Approvals: React.FC = () => {
 					<Flex justifyContent='end'>
 
 						<Flex width={'250px'}>
-							<Button className='primary-button' onClick={() => openDialog()}>
+							<Button colorPalette="meraPrimary" onClick={() => openDialog()}>
 								Agregar nueva Solicitud
 							</Button>
 						</Flex>

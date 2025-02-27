@@ -114,6 +114,7 @@ function Home() {
                         gap={4} 
                         mb={4}
                         w="100%"
+                        alignItems="end"
                     >
 
                         {!catalogLoading && <SelectRoot collection={subsidiary}
@@ -149,7 +150,7 @@ function Home() {
                         </SelectRoot>}
 
                         
-                        {location!=0 && <Button  onClick={()=>{
+                        {location!=0 && <Button colorPalette="meraInfo" onClick={()=>{
                                 setShowTable(true)
                                 getInfo(SubSelect, location)}
                             }>

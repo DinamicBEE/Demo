@@ -43,7 +43,7 @@ function EmployeesClousing({data}: any) {
     <Box>
       {/* <Toaster /> */}
 
-      <Button mb={2} onClick={() => openDiaolog()}>Agregar</Button>
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">

@@ -74,7 +74,7 @@ function HeaderClousing ({ id}: {id: number}) {
 
                 <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={loading} />
 
-                <Button size="sm" className="primary-button">
+                <Button size="sm" colorPalette="meraInfo">
                     Actualizar
                 </Button>
             </Grid>

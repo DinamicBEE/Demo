@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, FormatNumber, Grid, Table, Text } from '@chakra-ui/react'
+import { Box, Button, FormatNumber, Grid, Group, Input, InputAddon, Skeleton, Table, Tag, Text } from '@chakra-ui/react'
 import { exportCSV } from '@services/homeService'
 import { useClousing } from '@context/home/clousingContext';
 import ClousingLayout from './ClousingLayout';
@@ -8,6 +8,8 @@ import { CurrencyInput } from '@components/NumericInput';
 import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
 import Loading from '@components/Loading';
 import '../Home.css'
+import { STATUS } from '@models/status.model';
+import { getStatusColor } from '../../../utils/getStatusColor';
 
 
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
@@ -30,6 +32,10 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
       setIsDialogOpen(false);
     };
 
+    function statusColor(status: STATUS) {
+      return getStatusColor(status);
+    }
+
   return (
     <>
       {error && (
@@ -51,13 +57,34 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
             gap={4}
             mb={4}
           >
-            <Text>Subsidiaria: {header.subsidiaryName || "No seleccionada"}</Text>
-            <Text>Restaurante: {header.storeName || "No seleccionado"}</Text>
-            <Text>Fecha: {header.date}</Text>
-            <Text>Hora: {header.time}</Text>
-            <CurrencyInput name={"Total Ventas"} value={header.totalPOS} loading={false} />
-            <CurrencyInput name={"Total Ventas Registradas"} value={header.totalPhysical} loading={false} />
-            <CurrencyInput name={"Diferencia"} value={header.difference} loading={false} />
+            
+            <Group>
+              <InputAddon>Subsidiaria</InputAddon>
+              <Skeleton loading={loading}>
+                <Input placeholder="No seleccionada" defaultValue={header.subsidiaryName} />
+              </Skeleton>
+            </Group>
+            <Group>
+              <InputAddon>Restaurante</InputAddon>
+              <Skeleton loading={loading}>
+                <Input placeholder="No seleccionada" defaultValue={header.storeName} />
+              </Skeleton>
+            </Group>
+            <Group>
+              <InputAddon>Fecha</InputAddon>
+              <Skeleton loading={loading}>
+                <Input placeholder="No seleccionada" defaultValue={header.date} />
+              </Skeleton>
+            </Group>
+            <Group>
+              <InputAddon>Hora</InputAddon>
+              <Skeleton loading={loading}>
+                <Input placeholder="No seleccionada" defaultValue={header.time} />
+              </Skeleton>
+            </Group>
+            <CurrencyInput name={"Total Ventas"} value={header.totalPOS} loading={loading} />
+            <CurrencyInput name={"Total Ventas Registradas"} value={header.totalPhysical} loading={loading} />
+            <CurrencyInput name={"Diferencia"} value={header.difference} loading={loading} />
 
             <Text></Text>
           </Grid>
@@ -71,7 +98,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
             w="100%"
           >
             <Button
-              className="secondary-button"
+              colorPalette="meraPrimary"
               onClick={() => {
                 handleExportCSV();
               }}
@@ -79,7 +106,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
               Exportar a CSV
             </Button>
 
-            <Button className="primary-button" onClick={()=>{getInfo(subsidiary, store)}}>Actualizar Información</Button>
+            <Button colorPalette="meraInfo" onClick={()=>{getInfo(subsidiary, store)}}>Actualizar Información</Button>
           </Grid>
         </Box>
 
@@ -140,9 +167,9 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                     </Table.Cell>
 
                     <Table.Cell textAlign="center">
-                      <Text>
-                        {item.status}
-                      </Text>
+                      <Tag.Root colorPalette={statusColor(item.status as STATUS)}>
+                        <Tag.Label>{item.status}</Tag.Label>
+                      </Tag.Root>
                     </Table.Cell>
 
                     <Table.Cell textAlign="end">
