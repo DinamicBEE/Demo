@@ -3,9 +3,10 @@ import Cookies from "js-cookie";
 import { API_AUTH } from "../services/settings";
 import { refreshAuthToken } from "@services/authService";
 import { getValidationsError } from "../utils/getValidationsError";
+import { toast } from "../utils/index";
 
 const setNewTokens = (accessToken: string, refreshToken: string) => {
-   Cookies.set("accessToken", accessToken, {
+  Cookies.set("accessToken", accessToken, {
     expires: 1 / 96, // 15 minutos
     sameSite: "Strict",
     secure: true,
@@ -49,10 +50,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    console.log("Error en la respuesta", error);
-    
     const originalRequest = error.config as any;
-    const errorResponse = getValidationsError(error, window.location.pathname);
     if (
       originalRequest &&
       error.response?.status === 401 &&
@@ -85,14 +83,16 @@ api.interceptors.response.use(
         } else {
           throw new Error("Error al renovar el token");
         }
-      } catch (err) {
+      } catch (err: any) {
+        toast(err.message, "error");
         removeTokens();
-        window.location.href = "/login";
+        window.location.href = "/";
         return Promise.reject(err);
       }
     }
-
-    return Promise.reject(errorResponse);
+    const errorResponse = getValidationsError(error, window.location.pathname);
+    toast(errorResponse, "error");
+    return Promise.reject(error);
   }
 );
 

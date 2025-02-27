@@ -35,8 +35,6 @@ export const refreshAuthToken = async (
     );
     return response.data;
   } catch (error: any) {
-    console.log("erraaaor", error);
-
     throw new Error(
       error.response?.data?.error || "Error al intentar refrescar el token"
     );

@@ -2,6 +2,7 @@ import { useErrorContext } from "@context/ErrorContext";
 import { AxiosError } from "axios";
 
 const SERVER_ERROR_MESSAGE = "Error en el servidor";
+const TOKEN_NOT_FOUND = "Token no proporcionado";
 
 export const loginErrors: Record<string, string> = {
   "Invalid username or password": "Usuario o contraseña incorrectos",
@@ -17,6 +18,8 @@ export const defaultErrors: Record<string, string> = {
   ERR_GATEWAY_TIMEOUT: SERVER_ERROR_MESSAGE,
   ERR_SERVICE_UNAVAILABLE: SERVER_ERROR_MESSAGE,
   ERR_BAD_GATEWAY: SERVER_ERROR_MESSAGE,
+  ERR_NETWORK: "Error de red",
+  "Token no proporcionado": "Token no proporcionado",
 };
 
 const specificErrors: Record<string, Record<string, string>> = {

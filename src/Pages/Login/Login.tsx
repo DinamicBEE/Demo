@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { HStack, Box, VStack, Heading, Stack } from "@chakra-ui/react";
 import { Field } from "@components/ui/field";
@@ -47,8 +46,6 @@ function Login() {
             <Heading size="lg" textAlign="center" color="teal.500">
               Iniciar Sesión
             </Heading>
-            {error && <Alert status="error" title={error}></Alert>}
-
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack gap="4" align="flex-start" maxW="sm">
                 <Field
