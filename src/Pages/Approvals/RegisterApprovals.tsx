@@ -104,10 +104,10 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
               <DialogFooter>
 
                 <DialogActionTrigger asChild>
-                  <Button rounded='full' size='sm' onClick={() => reset()}>Cancelar</Button>
+                  <Button colorPalette="meraError" onClick={() => reset()}>Cancelar</Button>
                 </DialogActionTrigger>
 
-                <Button type="submit" colorPalette="green" size='sm' rounded='full'>
+                <Button type="submit" colorPalette="meraPrimary">
                   {
                     isLoading ? <Spinner size='md' /> : 'Guardar'
                   }

@@ -1,6 +1,9 @@
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Tabs, Box } from "@chakra-ui/react"
-import { LuFolder, LuSquareCheck, LuUser } from "react-icons/lu"
+import { IoCashOutline, IoCardOutline } from "react-icons/io5";
+import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
+import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
+import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing"
 import { lazy, useState, Suspense } from "react";
 import FooterClousing from "./FooterClousing";
@@ -34,31 +37,31 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         }} variant="outline" defaultValue={value} unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
                             <Tabs.Trigger value={CLOUSING_KEY.CASH}>
-                                <LuUser />
+                                <IoCashOutline />
                                 Efectivo
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.TDC}>
-                                <LuFolder />
+                                <IoCardOutline  />
                                 TDC
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.CUSTOMER}>
-                                <LuSquareCheck />
+                                <BsPersonLinesFill />
                                 Clientes
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.SPECIALCUSTOMER}>
-                                <LuUser />
+                                <RiUserStarFill  />
                                 Clientes especiales
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.PREPAID}>
-                                <LuFolder />
+                                <RiCoupon3Line />
                                 Prepago
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.EMPLOYEE}>
-                                <LuSquareCheck />
+                                <BsPersonVcard />
                                 Empleados
                             </Tabs.Trigger>
                             <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
-                                <LuSquareCheck />
+                                <LiaUsersSolid />
                                 Intercompañias
                             </Tabs.Trigger>
                         </Tabs.List>

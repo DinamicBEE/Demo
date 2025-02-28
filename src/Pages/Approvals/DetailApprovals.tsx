@@ -9,7 +9,7 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, EditRequestForm, DetailApprovalsProps } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { HiCheck, HiX } from "react-icons/hi";
 import { Toaster, toaster } from "@components/ui/toaster";
 
@@ -159,11 +159,11 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                 <DialogFooter>
 
                   <DialogActionTrigger asChild>
-                    <Button rounded='full' size='sm' onClick={() => reset()}>Cancelar</Button>
+                    <Button colorPalette="meraError" onClick={() => reset()}>Cancelar</Button>
                   </DialogActionTrigger>
 
 
-                  <Button type="submit" colorPalette="green" size='sm' rounded='full'>
+                  <Button type="submit" colorPalette="meraPrimary">
                     {
                       isLoadingEdit ? <Spinner size='md' /> : 'Editar'
                     }

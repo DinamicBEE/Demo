@@ -76,7 +76,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                     <Table.Cell textAlign={'center'}> {role === 1 ? item.comment : item.commentSupervisor} </Table.Cell>
 
                     <Table.Cell textAlign={'center'}>
-                      <Badge colorPalette={item.status === 2 ? "blue" : item.status === 0 ? "red" : "green"}>
+                      <Badge colorPalette={item.status === 2 ? "meraInfo" : item.status === 0 ? "meraError" : "meraSecondary"}>
                         {statusLabels[item.status]}
                       </Badge>
                     </Table.Cell>

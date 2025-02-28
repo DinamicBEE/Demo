@@ -1,4 +1,7 @@
 import { LuClipboardCheck, LuClipboardList, LuContainer, LuHouse, LuColumns4 } from "react-icons/lu";
+import { PiCashRegisterLight } from "react-icons/pi";
+import { GiCash } from "react-icons/gi";
+import { VscGraph } from "react-icons/vsc";
 
 export const ALERTCLOUSING_MODEL = {
     SUCCESS: { title: 'Envio exitoso', description: 'Corte de caja enviado correctamente', type: 'success' },
@@ -27,9 +30,9 @@ export enum CLOUSING_KEY {
 }
 
 export const menuItems = [
-  { name: 'Inicio', path: '/home', icon:<LuHouse />, roles: [1, 2] },
+  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: [1, 2] },
   { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [1, 2] },
   { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: [2] },
   { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: [1] },
-  { name: 'Generación de reportes', path: '/reportviewer', icon:<LuColumns4 />, roles: [1,2] },
+  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: [1,2] },
 ];

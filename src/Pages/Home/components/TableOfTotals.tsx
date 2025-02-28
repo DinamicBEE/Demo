@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, FormatNumber, Grid, Group, Input, InputAddon, Skeleton, Table, Tag, Text } from '@chakra-ui/react'
+import { Box, Button, FormatNumber, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table, Tag, Text } from '@chakra-ui/react'
 import { exportCSV } from '@services/homeService'
 import { useClousing } from '@context/home/clousingContext';
 import ClousingLayout from './ClousingLayout';
@@ -92,19 +92,21 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
         <Box>
           <Grid
-            templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
             gap={4}
             mb={4}
             w="100%"
           >
-            <Button
-              colorPalette="meraPrimary"
-              onClick={() => {
-                handleExportCSV();
-              }}
-            >
-              Exportar a CSV
-            </Button>
+            <GridItem colSpan={1}>            
+            </GridItem>
+              <Button
+                colorPalette="meraPrimary"
+                onClick={() => {
+                  handleExportCSV();
+                }}
+              >
+                Exportar a CSV
+              </Button>
 
             <Button colorPalette="meraInfo" onClick={()=>{getInfo(subsidiary, store)}}>Actualizar Información</Button>
           </Grid>

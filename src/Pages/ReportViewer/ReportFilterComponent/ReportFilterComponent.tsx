@@ -13,6 +13,8 @@ import {
   Button,
   Flex,
   Spinner,
+  Grid,
+  GridItem,
 } from "@chakra-ui/react";
 import {
   SelectContent,
@@ -148,22 +150,6 @@ export const ReportFilterComponent = () => {
     
   };
 
-    const getConfirmationButton = () => {
-      if (!confirmLoading) {
-        return <Button className="primary-button-filter" onClick={ () => applyFilters()}>
-      Buscar <RiFilterLine />
-      </Button>
-  
-      } else {
-        return <Button 
-        className="primary-button-filter"
-        disabled={true}
-        >
-          Buscando... <Spinner size="sm" />
-        </Button>
-      }
-    }
-
   const resetFilters = () => {
     setCdcSelected({ label: "", value: 0 });
     setEmpSelected({ label: "", value: 0 });
@@ -180,17 +166,16 @@ export const ReportFilterComponent = () => {
       <Box p={6} bg="white">
         <VStack align="flex-start">
           <p>Filtros</p>
-          <Flex
-            align="stretch"
-            justify="space-between"
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+            gap={4}
+            mb={4}
             w="100%"
-            direction="row"
-            gap="10px"
+            alignItems="end"
           >
             <SelectRoot
               width="100%"
               collection={cdc}
-              // value={cdcSelected}
               onValueChange={(e) => handleSelectChange(e, "cdc")}
             >
               <SelectLabel>Centro de Consumo</SelectLabel>
@@ -208,7 +193,6 @@ export const ReportFilterComponent = () => {
 
             <SelectRoot
               collection={employees}
-              // value={cdcSelected}
               onValueChange={(e) => handleSelectChange(e, "emp")}
             >
               <SelectLabel>Empleado</SelectLabel>
@@ -236,8 +220,17 @@ export const ReportFilterComponent = () => {
                 className="calendar"
               />
             </Field.Root>
-            {getConfirmationButton()}
-          </Flex>
+            
+            <Button 
+              loading={confirmLoading} 
+              loadingText="Buscando..." 
+              colorPalette="meraInfo" 
+              onClick={ () => applyFilters()}
+              >
+              Buscar
+            </Button>
+
+          </Grid>
           <HStack
             gap="6"
             w="100%"
@@ -258,14 +251,20 @@ export const ReportFilterComponent = () => {
               />
             </Field.Root>
 
-            <Button justifySelf="end" onClick={resetFilters}> Borrar filtro </Button>
 
           </HStack>
-          <Box width="100%" textAlign="center">
-            <Button className="secondary-button-filter" onClick={() => generateReportCSV(rows)} >
-              Exportar a Excel
-            </Button>
-          </Box>
+          <Grid
+            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+            gap={4}
+            mb={4}
+            w="100%"
+            alignItems="end">
+              <GridItem colSpan={1}></GridItem>
+              <Button colorPalette="meraWarning" onClick={resetFilters}> Borrar filtro </Button>
+              <Button colorPalette="meraPrimary" onClick={() => generateReportCSV(rows)} >
+                Exportar a Excel
+              </Button>
+          </Grid>
         </VStack>
       </Box>
     </>
