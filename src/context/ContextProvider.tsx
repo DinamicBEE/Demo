@@ -5,10 +5,10 @@ import { ErrorDialogProvider } from "./ErrorContext";
 
 export const ContextProvider = ({ children }: { children: ReactNode }) => {
   return (
-    <ErrorDialogProvider>
-      <UserProvider>
-        <AuthProvider>{children}</AuthProvider>
-      </UserProvider>
-    </ErrorDialogProvider>
+    <UserProvider>
+      <AuthProvider>
+        <ErrorDialogProvider>{children}</ErrorDialogProvider>
+      </AuthProvider>
+    </UserProvider>
   );
 };
