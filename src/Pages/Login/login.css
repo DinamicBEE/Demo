@@ -1,6 +1,75 @@
-.container{
-    background: rgb(223,243,227);
-    background: linear-gradient(180deg, rgba(223,243,227,0.5) 0%, rgba(46,125,50,0.5) 100%);
+
+.login-page {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.login-container {
+    background: rgb(241, 245, 249);
+    width: 100%;
+    justify-content: center;
+}
+
+.login-form-container {
+  margin: 0;
+  background: rgba(255, 255, 255, 0.5);
+  justify-content: center !important;
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 #0000, 0 0 0 / .1;
+  z-index: 1;
+}
+
+.login-aside {
+  width: 100%;
+  /* background: #69b473; */
+}
+
+.aside-items-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+
+.login-phrase {
+  margin: 0;
+  width: 80%;
+  color: white;
+  font-style: italic;
+  font-size: 34px;
+  text-align: center;
+  font-weight: 600;
+  text-rendering: optimizeLegibility;
+  filter: drop-shadow(1px 1px 1px #222);
+
+  z-index: 10;
+}
+
+.icon {
+  position: absolute;
+  color: rgba(0, 217, 86, .5);
+  font-size: 300px;
+
+}
+
+
+.svg-top {
+  position: absolute;
+  top: 0;
+  
+}
+.svg-center {
+  position: absolute;
+  top: 50;
+  right: 50;
+  display: none;
+}
+.svg-bot {
+  position: absolute;
+  bottom: 0;
 }
 
 div input{
@@ -18,4 +87,27 @@ div input{
     width: 100%;
     flex-direction: column;
     align-items: center;
+}
+
+.fondo {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 0;
+}
+
+.login-input {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.mera-logo-login {
+  align-self: center;
+  width: 250px;
+  filter: drop-shadow(1px 1px 1px #222);
+}
+
+@media (max-width: 800px) {
+  .login-aside {
+    display: none;
+  }
 }
