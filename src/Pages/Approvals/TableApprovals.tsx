@@ -53,7 +53,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
           onClose={onClose}
           onConfirm={handleConfirm}
           message={`¿Estás seguro de que deseas ${message}?`}
-          title=""
+          title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
         />
 
         {isLoading && <Loading />}
