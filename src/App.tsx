@@ -11,9 +11,9 @@ const Login = lazy(() => import("./pages/Login/Login"));
 
 function App() {
   return (
-    <Router>
-      <ContextProvider>
-        <Suspense fallback={<Loading />}>
+    <ContextProvider>
+      <Suspense fallback={<Loading />}>
+        <Router>
           <Routes>
             <Route
               path="/"
@@ -47,10 +47,10 @@ function App() {
               )}
             </Route>
           </Routes>
-        </Suspense>
-        <ErrorDialog />
-      </ContextProvider>
-    </Router>
+        </Router>
+      </Suspense>
+      <ErrorDialog />
+    </ContextProvider>
   );
 }
 

@@ -1,6 +1,7 @@
 export interface Tokens {
     accessToken: string;
     refreshToken: string;
+    token: string;
 }
 export interface AuthContextType {
     isAuthenticated: boolean;
@@ -9,4 +10,5 @@ export interface AuthContextType {
     token: string | null;
     error: string | null;
     isLoading: boolean;
+    user: any;
 }

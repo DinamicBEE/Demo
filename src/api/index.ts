@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { API_AUTH } from "../services/settings";
+import { API_AUTH, MODE } from "../services/settings";
 import { refreshAuthToken } from "@services/authService";
 import { getValidationsError } from "../utils/getValidationsError";
 import { toast } from "../utils/index";
@@ -55,7 +55,8 @@ api.interceptors.response.use(
       originalRequest &&
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      window.location.pathname !== "/"
+      window.location.pathname !== "/" &&
+      MODE === "BACK"
     ) {
       originalRequest._retry = true;
 
