@@ -146,7 +146,7 @@ export const ReportFilterComponent = () => {
     
     setReport({headers: headers, rows: filteredRows});
     setConfirmLoading(false);
-    console.log(filteredRows);
+    // console.log(filteredRows);
     
   };
 

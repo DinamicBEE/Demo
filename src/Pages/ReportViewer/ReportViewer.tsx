@@ -85,7 +85,9 @@ function ReportViewer() {
 
   
   useEffect(() => {
-    setUseRows(rows);
+    if (JSON.stringify(rows) !== JSON.stringify(useRows)) {
+      setUseRows(rows);
+    }
   }, [rows]);
 
   
