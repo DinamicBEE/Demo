@@ -77,7 +77,12 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
         id: body.id,
         date: header[body.id].totalClousing,
         difference: header[body.id].difference,
-        totalClousing: header[body.id].totalClousing
+        totalClousing: header[body.id].totalClousing,
+        customer: body.customer.total.totalPhysical,
+        specialCustomer: body.specialCustomer.total.totalPhysical,
+        employee: body.specialCustomer.total.totalPhysical,
+        prepaid: body.prepaid.total.totalPhysical,
+        intercompany: body.intercompany.total.totalPhysical
       });
 
       closeDialog();

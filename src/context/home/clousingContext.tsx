@@ -35,13 +35,18 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (dataClousing.id) { 
-      console.log('aqui se tiene que realizar el cambio ', dataClousing);
+      
       setData((prevData) => 
         prevData.map((item) => item.id == dataClousing.id ? { 
           ...item,
           closingConfirmation: true,
           totalPhysical: dataClousing.totalClousing,
-          difference: dataClousing.difference
+          difference: dataClousing.difference,
+          customer: dataClousing.customer,
+          specialCustomer: dataClousing.specialCustomer,
+          employees:  dataClousing.employee,
+          intercompany: dataClousing.intercompany,
+          prepaid: dataClousing.prepaid
         } : item)
       );
     }
