@@ -37,6 +37,18 @@ export const getValidationsError = (
   // Si el servidor envió un mensaje específico, lo devolvemos
   if (serverMessage && typeof serverMessage === "string") {
     const firstPartOfMessage = serverMessage.split(",")[0].trim();
+    const minutesMatch = serverMessage.match(/\d+/); // Extraer los minutos
+    const minutes = minutesMatch ? minutesMatch[0] : "X"; // Si hay minutos, los tomamos, sino usamos "X"
+
+    if (firstPartOfMessage === "The user is locked") {
+      return (
+        messages[firstPartOfMessage] +
+        ". Intenta de nuevo en " +
+        minutes +
+        " minutos."
+      );
+    }
+
     if (messages[firstPartOfMessage]) {
       return messages[firstPartOfMessage];
     }
