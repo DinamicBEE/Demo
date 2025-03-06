@@ -9,146 +9,149 @@ import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
 import Loading from "@components/Loading";
 
-function TDCDetails({clousingId, lineId, isOpen, onClose}: DetailsProp) {
-    const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
-    const [loading, setLoading] = useState<boolean>(false);
+function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation }: DetailsProp) {
+	const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
+	const [loading, setLoading] = useState<boolean>(false);
 
-    const { updateLineClousing, handleInputData } = useHandleTDC(clousingId, lineId ?? 0)
+	const { updateLineClousing, handleInputData } = useHandleTDC(clousingId, lineId ?? 0)
+	const { getDetails, detailsLoading, setDetails } = useTDCContext();
 
-    const {getDetails, detailsLoading, setDetails} = useTDCContext();
+	useEffect(() => {
 
-    useEffect(()=>{
+		async function fetchData() {
+			const detailsData: BankDetails = await getDetails(clousingId, lineId);
 
-        async function fetchData() {
-            const detailsData: BankDetails = await getDetails(clousingId,lineId);
-            
-            if (detailsData) {
-                setDetailsLocal(detailsData);
-            }
-        }
+			if (detailsData) {
+				setDetailsLocal(detailsData);
+			}
+		}
 
-        fetchData()
+		fetchData()
 
-    },[lineId])
+	}, [lineId])
 
-    async function saveDetails() {
-        setLoading(true)
-        
-        if (lineId !== null && detailsLocal !== undefined) {
-            const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, detailsLocal);
-            
-            setDetailsLocal(detailsValidated);
+	async function saveDetails() {
 
-            setDetails(detailsValidated,clousingId,lineId);
-            
-            const allSuccess = detailsValidated.details.every(item => item.success);
-            
-            if(allSuccess) { 
-                updateLineClousing(detailsValidated)
-                onClose()
-            } 
+		if(closingConfirmation) return;
 
-            setLoading(false)
+		setLoading(true)
 
-        }
+		if (lineId !== null && detailsLocal !== undefined) {
+			const detailsValidated: BankDetails = await validateDetails(clousingId, lineId, detailsLocal);
 
-    }
-    
-    return (
-        <DialogRoot 
-            open={isOpen} 
-            closeOnEscape={false} 
-            closeOnInteractOutside={false}
-            scrollBehavior="inside"
-            onOpenChange={() => onClose()}
-        >
-            <DialogContent>
+			setDetailsLocal(detailsValidated);
 
-                <DialogHeader>
+			setDetails(detailsValidated, clousingId, lineId);
 
-                    <DialogTitle>{detailsLocal?.bankName}</DialogTitle>
-                    
-                </DialogHeader>
+			const allSuccess = detailsValidated.details.every(item => item.success);
 
-                <DialogBody>
+			if (allSuccess) {
+				updateLineClousing(detailsValidated)
+				onClose()
+			}
 
-                    <Table.ScrollArea  borderWidth="1px" rounded="md">
-                        <Table.Root
-                            striped
-                            showColumnBorder
-                            stickyHeader
-                        >
-                            <Table.Header>
-                                <Table.Row bg="bg.subtle">
-                                    <Table.ColumnHeader textAlign="center">Fecha de cierre</Table.ColumnHeader>
-                                    <Table.ColumnHeader textAlign="center">No. Cheque</Table.ColumnHeader>
-                                    <Table.ColumnHeader textAlign="end">Importe</Table.ColumnHeader>
-                                </Table.Row>
-                            </Table.Header>
+			setLoading(false)
 
-                            <Table.Body>
-                                {detailsLocal?.details?.map((item:BankLineDetails)=>(
-                                    <Table.Row key={item.id}>
-                                        
-                                        <Table.Cell textAlign="center">
-                                            <Text>{item.date}</Text>
-                                        </Table.Cell>
+		}
 
-                                        <Table.Cell>
-                                            <Field.Root invalid={item.success!=undefined && !item.success}>
-                                                <Input textAlign="center" value={item.check} onChange={(e) => handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)}/>
-                                                <Field.ErrorText>{item.message}</Field.ErrorText>
-                                            </Field.Root>
-                                        </Table.Cell>
+	}
 
-                                        <Table.Cell textAlign="end">
-                                            <Text>
-                                                <FormatNumber value={item.amount} style="currency" currency="USD" />
-                                            </Text>
-                                        </Table.Cell>
+	return (
+		<DialogRoot
+			open={isOpen}
+			closeOnEscape={false}
+			closeOnInteractOutside={false}
+			scrollBehavior="inside"
+			onOpenChange={() => onClose()}
+		>
+			<DialogContent>
 
-                                    </Table.Row>
-                                ))}
-                            </Table.Body>
-                            
-                        </Table.Root>
-                    </Table.ScrollArea>
+				<DialogHeader>
 
-                    {detailsLoading && (
-                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
-                            <Loading />
-                        </Box>
-                    )}
-                    
-                    {loading && (
-                        <Box position="fixed" top="50%" left="50%"  zIndex="1">
-                            <Loading />
-                        </Box>
-                    )}
+					<DialogTitle>{detailsLocal?.bankName}</DialogTitle>
 
-                </DialogBody>
+				</DialogHeader>
 
-                <DialogFooter>
+				<DialogBody>
 
-                    <Flex gap={4}>
+					<Table.ScrollArea borderWidth="1px" rounded="md">
+						<Table.Root
+							striped
+							showColumnBorder
+							stickyHeader
+						>
+							<Table.Header>
+								<Table.Row bg="bg.subtle">
+									<Table.ColumnHeader textAlign="center">Fecha de cierre</Table.ColumnHeader>
+									<Table.ColumnHeader textAlign="center">No. Cheque</Table.ColumnHeader>
+									<Table.ColumnHeader textAlign="end">Importe</Table.ColumnHeader>
+								</Table.Row>
+							</Table.Header>
 
-                        <CurrencyInput value={detailsLocal?.total} name={"Total"} loading={detailsLoading || false} />
-                        
-                        <Button 
-                            className="secondary-button save-button"
-                            loading={loading} 
-                            onClick={(()=>saveDetails())}
-                        >Guardar</Button>
+							<Table.Body>
+								{detailsLocal?.details?.map((item: BankLineDetails) => (
+									<Table.Row key={item.id}>
 
-                    </Flex>
-                    
-                </DialogFooter>
+										<Table.Cell textAlign="center">
+											<Text>{item.date}</Text>
+										</Table.Cell>
 
-                <DialogCloseTrigger />
-                
-            </DialogContent>
-        </DialogRoot>
-    );
+										<Table.Cell>
+											<Field.Root invalid={item.success != undefined && !item.success}>
+												<Input textAlign="center" value={item.check} disabled={closingConfirmation}
+													onChange={(e) => handleInputData(e.target.value, item.id, detailsLocal || {} as BankDetails, setDetailsLocal,)} />
+												<Field.ErrorText>{item.message}</Field.ErrorText>
+											</Field.Root>
+										</Table.Cell>
+
+										<Table.Cell textAlign="end">
+											<Text>
+												<FormatNumber value={item.amount} style="currency" currency="USD" />
+											</Text>
+										</Table.Cell>
+
+									</Table.Row>
+								))}
+							</Table.Body>
+
+						</Table.Root>
+					</Table.ScrollArea>
+
+					{detailsLoading && (
+						<Box position="fixed" top="50%" left="50%" zIndex="1">
+							<Loading />
+						</Box>
+					)}
+
+					{loading && (
+						<Box position="fixed" top="50%" left="50%" zIndex="1">
+							<Loading />
+						</Box>
+					)}
+
+				</DialogBody>
+
+				<DialogFooter>
+
+					<Flex gap={4}>
+
+						<CurrencyInput value={detailsLocal?.total} name={"Total"} loading={detailsLoading || false} />
+
+						<Button className="secondary-button save-button"
+							loading={loading}
+							onClick={(() => saveDetails())} disabled={closingConfirmation}> 
+							Guardar
+						</Button>
+
+					</Flex>
+
+				</DialogFooter>
+
+				<DialogCloseTrigger />
+
+			</DialogContent>
+		</DialogRoot>
+	);
 };
 
 export default TDCDetails;

@@ -18,7 +18,7 @@ import { BankDetails, TDCModel } from "@models/tdc.model";
  * @returns {Promise<HeaderData>}
  */
 export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
-    console.log(clousingId)
+    // console.log(clousingId)
     try {
         //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
         const response = HeaderDataMocky;
@@ -47,7 +47,7 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @returns {Promise<CashModel>}
  */
 export const getCashClousing = async (clousingId: number): Promise<CashModel> => {
-  console.log(clousingId) //employeeId
+  // console.log(clousingId) //employeeId
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -90,7 +90,7 @@ export const getCashClousing = async (clousingId: number): Promise<CashModel> =>
  * @returns {Promise<TDCModel>}
  */
 export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -195,7 +195,7 @@ export const validateDetails = async (clousingId: number, lineId: number, detail
  * @returns {Promise<CustomerModel>}
  */
 export const getCustomerClousing = async (clousingId: number): Promise<CustomerModel> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -234,7 +234,7 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
  * @returns {Promise<CustomerModel>}
  */
 export const getSpecialCustomerClousing = async (clousingId: number): Promise<SpecialCustomerModel> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -269,7 +269,7 @@ export const getSpecialCustomerClousing = async (clousingId: number): Promise<Sp
  * @returns {Promise<PrepaidModel>}
  */
 export const getPrepaidClousing = async (clousingId: number): Promise<PrepaidModel> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -302,7 +302,7 @@ export const getPrepaidClousing = async (clousingId: number): Promise<PrepaidMod
 }
 
 export const getCouponCatalog = async (clousingId: number): Promise<CouponCatalogModel[]> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -331,7 +331,7 @@ export const getCouponCatalog = async (clousingId: number): Promise<CouponCatalo
  * @returns {Promise<EmployeeModel>}
  */
 export const getEmployeeClousing = async (clousingId: number): Promise<EmployeeModel> => {
-    console.log(clousingId)
+    // console.log(clousingId)
 
     try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -404,7 +404,7 @@ export const sendNewEmployeeRegister = async (clousingId: number, newEmployee: N
  * @returns {Promise<IntercompanyModel>}
  */
 export const getIntercompanyClousing = async (clousingId: number): Promise<IntercompanyModel> => {
-  console.log(clousingId)
+  // console.log(clousingId)
   
   try {
       //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -429,7 +429,6 @@ export const getIntercompanyClousing = async (clousingId: number): Promise<Inter
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
 export const sendCashClousing = async (body:any) => {
 
-  console.log(body)
   try {
       //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
       const response = {success: true}

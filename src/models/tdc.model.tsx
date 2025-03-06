@@ -58,5 +58,6 @@ export interface DetailsProp {
     clousingId: number; 
     lineId: number | null; 
     isOpen:boolean; 
-    onClose: () => void; 
+    onClose: () => void;
+    closingConfirmation: boolean
 }

@@ -11,7 +11,7 @@ import { CurrencyModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 
-function CustomersClousing({data}: any) {
+function CustomersClousing({ data }: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
@@ -19,7 +19,7 @@ function CustomersClousing({data}: any) {
   const { getCustomerData, customerLoading } = useCustomerContext();
   const { handleCoupons, selectCurrency, handleAmountPAX } = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id);
 
-  useEffect(()=>{
+  useEffect(() => {
     async function fetchData() {
       const customers: CustomerModel = await getCustomerData(data.id);
 
@@ -38,99 +38,97 @@ function CustomersClousing({data}: any) {
       setCurrencies(currencies);
     }
     fetchData();
-  
+
   }, [])
 
   return (
-        <Box>
-          {/* <Toaster /> */}
-    
-          <Table.ScrollArea rounded="md" borderWidth="1px">
-            <Table.Root size="sm" variant="outline" striped>
-              <Table.Header>
-                <Table.Row>
-                  <Table.Cell textAlign="center">Clientes</Table.Cell>
-                  <Table.Cell textAlign="center">Cupones</Table.Cell>
-                  <Table.Cell textAlign="center">Moneda</Table.Cell>
-                  <Table.Cell textAlign="center">Valor PAX</Table.Cell>
-                  <Table.Cell textAlign="center">Monto</Table.Cell>
-                  <Table.Cell textAlign="center">Tasa de cambio</Table.Cell>
-                  <Table.Cell textAlign="center">Monto MXN</Table.Cell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {CustomersData?.lines?.map((item: CustomerLines) => (
-                  <Table.Row key={item.id}>
-                    
-                    <Table.Cell textAlign="center">
-                      <Text>{item.customers}</Text>
-                    </Table.Cell>
-    
-                    <Table.Cell textAlign="center">
-                      <Text>
-                        <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCoupons} />
-                      </Text>
-                    </Table.Cell>
-    
-                    <Table.Cell textAlign="center">
-                      <SelectRoot 
-                         
-                        collection={currenciesForSelect || createListCollection({ items: [] })} 
-                        onValueChange={(e) => selectCurrency(e.value, item.id, currencies)}
-                      >
-                        
-                        <SelectTrigger>
-                          <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
-                        </SelectTrigger>
-                        
-                        <SelectContent>
-                          {currenciesForSelect && Array.from(currenciesForSelect).map((item) => (
-                            <SelectItem item={item} key={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
+    <Box>
+      {/* <Toaster /> */}
 
-                      </SelectRoot>
-                    </Table.Cell>
-    
-                    <Table.Cell textAlign="end">
-                      <Text>
-                        <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} />
-                      </Text>
-                    </Table.Cell>
+      <Table.ScrollArea rounded="md" borderWidth="1px">
+        <Table.Root size="sm" variant="outline" striped>
+          <Table.Header>
+            <Table.Row>
+              <Table.Cell textAlign="center">Clientes</Table.Cell>
+              <Table.Cell textAlign="center">Cupones</Table.Cell>
+              <Table.Cell textAlign="center">Moneda</Table.Cell>
+              <Table.Cell textAlign="center">Valor PAX</Table.Cell>
+              <Table.Cell textAlign="center">Monto</Table.Cell>
+              <Table.Cell textAlign="center">Tasa de cambio</Table.Cell>
+              <Table.Cell textAlign="center">Monto MXN</Table.Cell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {CustomersData?.lines?.map((item: CustomerLines) => (
+              <Table.Row key={item.id}>
 
-                    <Table.Cell textAlign="end">
-                      <Text>
-                        <FormatNumber value={item.amount} style="currency" currency="USD" />
-                      </Text>
-                    </Table.Cell> 
+                <Table.Cell textAlign="center">
+                  <Text>{item.customers}</Text>
+                </Table.Cell>
 
-                    <Table.Cell textAlign="end">
-                      <Text>
-                        <FormatNumber value={item.exchangeRate} style="currency" currency="USD" />
-                      </Text>
-                    </Table.Cell> 
+                <Table.Cell textAlign="center">
+                  <Text>
+                    <TableInput value={item.coupons} id={item.id} currency={false} onChange={handleCoupons} disabled={data?.closingConfirmation}/>
+                  </Text>
+                </Table.Cell>
 
-                    <Table.Cell textAlign="end">
-                      <Text>
-                        <FormatNumber value={item.amountMXN} style="currency" currency="USD" />
-                      </Text>
-                    </Table.Cell>               
-    
-                  </Table.Row>
-                ))}
-              </Table.Body>
-            </Table.Root>
-          </Table.ScrollArea>
+                <Table.Cell textAlign="center">
+                  <SelectRoot
+                    collection={currenciesForSelect || createListCollection({ items: [] })}
+                    onValueChange={(e) => selectCurrency(e.value, item.id, currencies)}  disabled={data?.closingConfirmation}>
 
-          {customerLoading && (
-            <Box position="fixed" top="50%" left="50%" zIndex="1">
-              <Loading />
-            </Box>
-          )}
-    
+                    <SelectTrigger>
+                      <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {currenciesForSelect && Array.from(currenciesForSelect).map((item) => (
+                        <SelectItem item={item} key={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+
+                  </SelectRoot>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} disabled={data?.closingConfirmation}/>
+                  </Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber value={item.amount} style="currency" currency="USD" />
+                  </Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber value={item.exchangeRate} style="currency" currency="USD" />
+                  </Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber value={item.amountMXN} style="currency" currency="USD" />
+                  </Text>
+                </Table.Cell>
+
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </Table.ScrollArea>
+
+      {customerLoading && (
+        <Box position="fixed" top="50%" left="50%" zIndex="1">
+          <Loading />
         </Box>
+      )}
+
+    </Box>
   )
 }
 
