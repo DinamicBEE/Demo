@@ -17,8 +17,6 @@ export interface LotClosure {
 export interface Bank {
   id: number;
   lotClosureId: number;
-  company: Company;
-  location: Location;
   bank: string;
   totalPOS: number;
   totalClousing: number;
