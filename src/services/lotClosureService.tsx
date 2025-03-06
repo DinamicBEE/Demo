@@ -351,18 +351,6 @@ const banks = [
   {
     id: 1,
     lotClosureId: 1,
-    company: {
-      id: 1,
-      name: "Company 1",
-    },
-    location: {
-      id: 1,
-      name: "Location 1",
-      company: {
-        id: 1,
-        name: "Company 1",
-      },
-    },
     bank: "BBVA",
     totalPOS: 50,
     totalClousing: 50,
@@ -404,18 +392,6 @@ const banks = [
   {
     id: 2,
     lotClosureId: 1,
-    company: {
-      id: 1,
-      name: "Company 1",
-    },
-    location: {
-      id: 1,
-      name: "Location 1",
-      company: {
-        id: 1,
-        name: "Company 1",
-      },
-    },
     bank: "Banamex",
     totalPOS: 50.5,
     totalClousing: 50.5,
@@ -437,18 +413,6 @@ const banks = [
   {
     id: 4,
     lotClosureId: 2,
-    company: {
-      id: 1,
-      name: "Company 1",
-    },
-    location: {
-      id: 2,
-      name: "Location 2",
-      company: {
-        id: 1,
-        name: "Company 1",
-      },
-    },
     bank: "Banamex",
     totalPOS: 200,
     totalClousing: 200,

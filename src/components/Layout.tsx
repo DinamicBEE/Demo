@@ -21,8 +21,8 @@ import { menuItems } from '@models/constants.model';
 function Layout() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const { logOut } = useAuth();
-    const { user } = useUser();
+    const { logOut,user } = useAuth();
+    
 
     return (
         <div className="layout">

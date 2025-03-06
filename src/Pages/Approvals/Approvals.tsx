@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
@@ -7,6 +7,7 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
 import { DetailApprovals } from "./DetailApprovals";
 import './Approvals.css';
+import { ConfirmDialog } from "./components/ConfirmDialog";
 
 const Approvals: React.FC = () => {
 
@@ -21,7 +22,7 @@ const Approvals: React.FC = () => {
 
 	const openDialogEdit = useCallback((approval: Approval) => {
 		//seteamos el valor global de approbal para que el componente de Edit pueda tomar el registro.
-		setDataApproval(approval); 
+		setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
 
