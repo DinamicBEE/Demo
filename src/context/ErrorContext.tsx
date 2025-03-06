@@ -12,10 +12,8 @@ export function ErrorDialogProvider({ children }: { children: ReactNode }){
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const showErrorDialog = useCallback((message: string) => {
-    console.log(message)
     setErrorMessage(message);
     setIsOpen(true);
-    console.log(isOpen)
   },[isOpen]);
 
   const closeErrorDialog = useCallback(() => {
