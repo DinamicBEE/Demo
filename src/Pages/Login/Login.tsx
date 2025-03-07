@@ -150,6 +150,7 @@ function Login() {
                       errorText={errors.password?.message}
                     >
                       <PasswordInput
+                        placeholder="••••••"
                         {...register("password", {
                           required: "La contraseña es obligatoria",
                           minLength: {
