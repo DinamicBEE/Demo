@@ -8,10 +8,9 @@ import { menuItems } from '@models/constants.model';
 import { Tooltip } from './ui/tooltip';
 
 function Layout() {
-    const { logOut } = useAuth();
-    const { user } = useUser();
-    // const [ screenWidth ] = useMediaQuery('(max-width: 800px)') 
 
+    const { logOut,user } = useAuth();
+    
     return (
       <div className="layout">
         <Flex direction="column" overflowY="auto" overflowX="auto">

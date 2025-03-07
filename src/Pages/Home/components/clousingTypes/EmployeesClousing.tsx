@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Button  } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Button } from "@chakra-ui/react";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/Loading";
+import Loading from "@components/loading";
 
-function EmployeesClousing({data}: any) {
+function EmployeesClousing({ data }: any) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>()
   const [dialog, setDialog] = useState<boolean>(false);
 
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
 
-  useEffect(()=>{
+  useEffect(() => {
     async function fetchData() {
 
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
-      if(employeeData){
+      if (employeeData) {
         setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
       }
       setEmployee(employeeData)
@@ -27,23 +27,24 @@ function EmployeesClousing({data}: any) {
     }
 
     fetchData()
-    
-  },[employee])
+
+  }, [employee])
 
 
-  const openDiaolog = () =>{
+  const openDiaolog = () => {
+    if (data?.closingConfirmation) return;
     setDialog(true);
   }
 
   const closeDiaolog = () => {
     setDialog(false);
   }
-  
+
   return (
     <Box>
       {/* <Toaster /> */}
 
-      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()}>Agregar</Button>
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()} disabled={data?.closingConfirmation}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
@@ -93,7 +94,7 @@ function EmployeesClousing({data}: any) {
       <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
 
       {employeeLoading && (
-        <Box position="fixed" top="50%" left="50%"  zIndex="1">
+        <Box position="fixed" top="50%" left="50%" zIndex="1">
           <Loading />
         </Box>
       )}

@@ -21,20 +21,20 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
     const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH)
 
     return (
-        <DialogRoot scrollBehavior="inside" size="cover"  open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+        <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
                     <Box>
-                        <HeaderClousing id={employee?.id ?? 0}></HeaderClousing>
+                        <HeaderClousing id={employee?.id ?? 0} closingConfirmation={employee?.closingConfirmation ?? false}></HeaderClousing>
                     </Box>
                 </DialogHeader>
 
-                <DialogBody>                   
-                    
+                <DialogBody>
+
                     <Tabs.Root onValueChange={(e) => {
-                            setValue(e.value as CLOUSING_KEY)
-                        }} variant="outline" defaultValue={value} unmountOnExit colorPalette="green" justify="center" size="lg">
+                        setValue(e.value as CLOUSING_KEY)
+                    }} variant="outline" defaultValue={value} unmountOnExit colorPalette="green" justify="center" size="lg">
                         <Tabs.List>
                             <Tabs.Trigger value={CLOUSING_KEY.CASH}>
                                 <IoCashOutline />
@@ -77,7 +77,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         <Tabs.Content value={CLOUSING_KEY.TDC}>
                             {value === CLOUSING_KEY.TDC && (
                                 <Suspense fallback={<div>Cargando TDC...</div>}>
-                                  <TDCClousing data={employee} />
+                                    <TDCClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -93,7 +93,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         <Tabs.Content value={CLOUSING_KEY.SPECIALCUSTOMER}>
                             {value === CLOUSING_KEY.SPECIALCUSTOMER && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                                    <SpecialCustomersClousing data={employee}/>
+                                    <SpecialCustomersClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -101,7 +101,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         <Tabs.Content value={CLOUSING_KEY.PREPAID}>
                             {value === CLOUSING_KEY.PREPAID && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                                    <PrepaidClousing data={employee}/>
+                                    <PrepaidClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -109,7 +109,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         <Tabs.Content value={CLOUSING_KEY.EMPLOYEE}>
                             {value === CLOUSING_KEY.EMPLOYEE && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                                    <EmployeesClousing data={employee}/>
+                                    <EmployeesClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -117,7 +117,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                         <Tabs.Content value={CLOUSING_KEY.INTERCOMPANY}>
                             {value === CLOUSING_KEY.INTERCOMPANY && (
                                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                                    <IntercompanyClousing data={employee}/>
+                                    <IntercompanyClousing data={employee} />
                                 </Suspense>
                             )}
                         </Tabs.Content>
@@ -127,7 +127,8 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
                 </DialogBody>
 
                 <DialogFooter>
-                   <FooterClousing clousingType={value} clousingId={employee?.id ?? 0} closeDialog={()=>onClose()} />
+                    <FooterClousing clousingType={value} clousingId={employee?.id ?? 0} closeDialog={() => onClose()}
+                        closingConfirmation={employee?.closingConfirmation ?? false} />
                 </DialogFooter>
 
                 <DialogCloseTrigger />

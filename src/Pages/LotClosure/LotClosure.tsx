@@ -22,6 +22,8 @@ import {
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
+import api from "../../api/index";
+import { MODE } from "@services/settings";
 
 function LotClosure() {
   const [companyId, setCompanyId] = useState(0);
@@ -44,6 +46,19 @@ function LotClosure() {
     fetchLotClosureData(dateRange, locationId, companyId);
   };
 
+  const test = () => {
+   // delete api.defaults.headers.common["Authorization"];
+    api;
+    api
+      .get("/auth/authentication/api/test/secured-controller")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const onSelectedCompany = (companyIdSelected: string[]) => {
     if (Number(companyIdSelected) !== companyId) {
       setLocationId(0);
@@ -54,8 +69,10 @@ function LotClosure() {
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align="start">
+        <Button hidden={MODE === "LOCAL"}
+         onClick={test}>Test</Button>
         <Heading>
-          Cierre de lotes
+          Selecciona una subsidiaria , rango de fechas y centro de consumo
         </Heading>
 
         <HStack w="100%">

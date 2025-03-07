@@ -1,26 +1,25 @@
-import React, { memo, useEffect } from "react";
-import { Badge, Table } from "@chakra-ui/react";
+import React, { memo, useEffect, useState } from "react";
+import { Badge, Table, useDisclosure } from "@chakra-ui/react";
 import { useApi } from "@hooks/useApi";
 import { approvalsServices } from "@services/approvalsServices";
 import { Approval, TableApprovalsProps } from "@models/approvals.model";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Button } from "@components/ui/button";
-import Loading from "@components/Loading";
+import { ConfirmDialog } from "./components/ConfirmDialog";
+import Loading from "@components/loading";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(
   ({ openEditDialog }) => {
 
+    const statusLabels: Record<number, string> = { 0: "Rechazado", 1: "Aprobado", 2: "En espera", };
     const { role } = useApprovalsRolUser()
     const { approvalsList, fectApprovals, addOrUpdateApprovalList, dataApproval } = useApprovalsList();
     const { data: fecthData, error, isLoading } = useApi(approvalsServices.getListApprovals);
-
-    const statusLabels: Record<number, string> = {
-      0: "Rechazado",
-      1: "Aprobado",
-      2: "En espera",
-    };
+    const { open, onOpen, onClose } = useDisclosure();
+    const [confirmData, setConfirmData] = useState<{ item: Approval; newStatus: number } | null>(null);// Estado para el diálogo de confirmación
+    const [message, setMessage] = useState<string>();
 
     //este se ejecuta cuando cargan los datos desde la peticion por primera vez.
     useEffect(() => {
@@ -32,13 +31,31 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
       if (dataApproval.id) addOrUpdateApprovalList(dataApproval);
     }, [dataApproval]);
 
-    const handleSwitchChange = (data: Approval, status: number) => {
-      const updatedDataEdit: Approval = { ...data, status: status };
-      addOrUpdateApprovalList(updatedDataEdit);
+
+    const handleOpenConfirm = (item: Approval, newStatus: number) => {
+      setConfirmData({ item, newStatus });
+      setMessage(newStatus == 1 ? 'Aprobar' :  'Rechazar');
+      onOpen();
     };
 
+    // Manejo de la confirmación
+    const handleConfirm = () => {
+      if (confirmData) {
+        addOrUpdateApprovalList({ ...confirmData.item, status: confirmData.newStatus });
+        setConfirmData(null);
+        onClose();
+      }
+    };
+    
     return (
       <>
+        <ConfirmDialog
+          isOpen={open}
+          onClose={onClose}
+          onConfirm={handleConfirm}
+          message={`¿Estás seguro de que deseas ${message}?`}
+          title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
+        />
 
         {isLoading && <Loading />}
 
@@ -90,12 +107,12 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                           (
                             <>
                               <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px'
-                                onClick={() => handleSwitchChange(item, 1)}>
+                                onClick={() => handleOpenConfirm(item, 1)}>
                                 Aprobar
                               </Button>
 
                               <Button size='xs' colorPalette='red' variant="surface" rounded="full"
-                                onClick={() => handleSwitchChange(item, 0)}>
+                                onClick={() => handleOpenConfirm(item, 0)}>
                                 Rechazar
                               </Button>
                             </>
@@ -117,7 +134,6 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
 
           </Table.Root>
         </Table.ScrollArea>
-
       </>
     );
 

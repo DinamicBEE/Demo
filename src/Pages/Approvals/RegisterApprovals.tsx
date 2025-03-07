@@ -1,6 +1,6 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { NativeSelectField, NativeSelectRoot, Spinner, Stack, Text, Textarea } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot, Spinner, Stack, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
@@ -9,6 +9,7 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
 import { Toaster, toaster } from "@components/ui/toaster";
+import { ConfirmDialog } from "./components/ConfirmDialog";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   ({ isOpen, onClose }) => {
@@ -17,6 +18,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
     const { addOrUpdateApprovalList } = useApprovalsList();
     const { data: closingList } = useApi(approvalsServices.getClosingList);
     const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
+    const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
 
     const { refetch, isLoading } = useApi(
       () => {
@@ -44,13 +46,24 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       }
     );
 
-    const onSubmitForm: SubmitHandler<RequestOpeningForm> = async () => refetch();
-
+    const onSubmitForm = () => onOpenConfir();
+    
+    const handleConfirm = () => refetch();
+    
     return (
       <>
         <Toaster />
-        
-        <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+
+        <ConfirmDialog
+          isOpen={open}
+          onClose={onCloseConfir}
+          onConfirm={handleConfirm}
+          message="¿Estás seguro de que deseas crear una nueva Solcitud?"
+          title="Registrar nuevo Solicitud de reapertura de caja/lote."
+        />
+
+        <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()}
+          closeOnEscape={false} closeOnInteractOutside={false}>
 
           <DialogContent>
 
@@ -104,13 +117,11 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
               <DialogFooter>
 
                 <DialogActionTrigger asChild>
-                  <Button colorPalette="meraError" onClick={() => reset()}>Cancelar</Button>
+                  <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
                 </DialogActionTrigger>
 
-                <Button type="submit" colorPalette="meraPrimary">
-                  {
-                    isLoading ? <Spinner size='md' /> : 'Guardar'
-                  }
+                <Button type="submit" colorPalette="meraPrimary" loading={isLoading}>
+                  Guardar
                 </Button>
 
               </DialogFooter>
@@ -118,6 +129,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
             </form>
 
           </DialogContent>
+
         </DialogRoot>
       </>
     );

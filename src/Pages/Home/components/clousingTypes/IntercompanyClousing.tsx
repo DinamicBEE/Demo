@@ -5,7 +5,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/Loading";
+import Loading from "@components/loading";
 import { Employee } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import FilterEmployee from "@components/FilterEmployee";
@@ -49,8 +49,7 @@ function IntercompanyClousing({data}: any) {
       })
       
       setSubsidiary(subList);
-
-      setLoading(false)
+      setLoading(false);
 
     }
 
@@ -79,11 +78,8 @@ function IntercompanyClousing({data}: any) {
     }
 
     setIntercompany(intercompanyData);
-
     setIntercompanyData(intercompanyData, data?.id);
-
     updateTotal(newTotalFisico, data.id, CLOUSING_KEY.INTERCOMPANY);
-
     setFooterData(newTotal, data.id, CLOUSING_KEY.INTERCOMPANY);
 
   }
@@ -160,12 +156,13 @@ function IntercompanyClousing({data}: any) {
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
-                  <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} onSelect={handleEmployeeData} />
+                  <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} 
+                    onSelect={handleEmployeeData} disabled={data?.closingConfirmation}/>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <SelectRoot collection={subsidiary}
-                            onValueChange={(event) => handleSubsidiary(event, item.id)}>
+                            onValueChange={(event) => handleSubsidiary(event, item.id)} disabled={data?.closingConfirmation}>
                     <SelectTrigger>
                       <SelectValueText placeholder={item.subsidiaryname || "Selecciona Subsidiaria"} />
                     </SelectTrigger>
@@ -196,7 +193,7 @@ function IntercompanyClousing({data}: any) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
-                  <TableInput value={item.physicalAmount} id={item.id} currency={true} onChange={handleAmount} />
+                  <TableInput value={item.physicalAmount} id={item.id} currency={true} onChange={handleAmount} disabled={data?.closingConfirmation}/>
                 </Table.Cell>
 
               </Table.Row>

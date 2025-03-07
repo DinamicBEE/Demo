@@ -29,7 +29,7 @@ import {
 } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
 import { useEffect, useState } from "react";
-import { toast } from "../../utils/Toast";
+import { toast } from "../../utils/index";
 function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading } =
     useLotClosureList();

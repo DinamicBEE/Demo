@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
-import { Box, Table, Text, FormatNumber, IconButton  } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, IconButton } from "@chakra-ui/react";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/Loading";
+import Loading from "@components/loading";
 
-function TDCClousing({data}: any) {
+function TDCClousing({ data }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null>(null);
   const [details, setDetails] = useState<boolean>(false);
@@ -16,11 +16,11 @@ function TDCClousing({data}: any) {
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
 
-  useEffect(()=>{
+  useEffect(() => {
     async function fetchData() {
       const tdc: TDCModel = await getTDCData(data?.id,);
-      
-      if(tdc?.total){
+
+      if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
 
@@ -30,9 +30,9 @@ function TDCClousing({data}: any) {
 
     fetchData();
 
-  },[tdc])
+  }, [tdc])
 
-  const openDiaolog = (id: number) =>{
+  const openDiaolog = (id: number) => {
     setLineSeleted(id);
     setDetails(true);
   }
@@ -42,10 +42,10 @@ function TDCClousing({data}: any) {
     setDetails(false);
   }
 
-  
+
   return (
     <>
-    
+
       <Box>
         {/* <Toaster /> */}
 
@@ -63,7 +63,7 @@ function TDCClousing({data}: any) {
             <Table.Body>
               {tdcData?.lines?.map((item: BankLineModel) => (
                 <Table.Row key={item.id}>
-                  
+
                   <Table.Cell textAlign="center">
                     <Text>{item.bank}</Text>
                   </Table.Cell>
@@ -87,15 +87,14 @@ function TDCClousing({data}: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
-                    <IconButton 
-                      rounded="full" 
+                    <IconButton
+                      rounded="full"
                       variant={"ghost"}
                       onClick={() => openDiaolog(item.id)}
                     >
                       <LuEye />
                     </IconButton>
                   </Table.Cell>
-              
 
                 </Table.Row>
               ))}
@@ -104,14 +103,15 @@ function TDCClousing({data}: any) {
         </Table.ScrollArea>
 
         {tdcLoading && (
-          <Box position="fixed" top="50%" left="50%"  zIndex="1">
+          <Box position="fixed" top="50%" left="50%" zIndex="1">
             <Loading />
           </Box>
         )}
 
       </Box>
 
-      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}></TDCDetails>
+      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}
+        closingConfirmation={data?.closingConfirmation} />
     </>
   );
 }

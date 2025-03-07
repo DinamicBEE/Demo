@@ -5,7 +5,7 @@ import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/Loading";
+import Loading from "@components/loading";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
@@ -169,7 +169,7 @@ function PrepaidClousing({data}: any) {
       <Group attached mb={4}>
         <InputAddon>Código de Barras</InputAddon>
         <Skeleton loading={loading}>
-          <Input placeholder="Código de Barras" onChange={(e) => handleCoupon(e.target.value)} />
+          <Input placeholder="Código de Barras" onChange={(e) => handleCoupon(e.target.value)} disabled={data?.closingConfirmation}/>
         </Skeleton>
       </Group>
 
