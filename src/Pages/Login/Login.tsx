@@ -149,9 +149,7 @@ function Login() {
                       invalid={!!errors.password}
                       errorText={errors.password?.message}
                     >
-                      <PasswordInput
-                        className="login-input"
-                      
+                      <PasswordInput                      
                         {...register("password", {
                           required: "La contraseña es obligatoria",
                           minLength: {
