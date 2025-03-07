@@ -18,9 +18,9 @@ import { getCurrentDate } from './ReportComponents/getCurrentDate';
 
 function ReportViewer() {
   const { user } = useUser();
-  const { report, setReport, respaldar } = useReportContext();
+  const { report, setReport, respaldar, resetRows } = useReportContext();
   const { rows, headers} = report;
-  const [useRows, setRows] = useState<Row[]>(rows);
+  const [useRows, setUseRows] = useState<Row[]>(rows);
   const [useHeaders, setHeaders] = useState<Headers[]>([]);
   const [selection, setSelection] = useState<number[]>([]);
   const [disabledRow, setDisabledRowCount] = useState<number>(0);
@@ -60,15 +60,13 @@ function ReportViewer() {
           
           setLoading(false);
           // console.log(data);
-          setReport({ headers: data.headers, rows: data.rows });
-          respaldar(data.rows);
-          
           getSortedHeaders(data.headers);
+          // updateAllRowsTotals(data.rows);
           initialHandleDisabledRows(data.rows);
           const newArr = data.rows.filter((row) => row.confirmed).map((row) => row.id);
           setSelection(newArr);
           setDisabledRowCount(newArr.length);
-          setRows(data.rows);
+          // setUseRows(initialHandleDisabledRows(data.rows));
         }
       });
       // updateAllRowsTotals();
@@ -87,7 +85,9 @@ function ReportViewer() {
 
   
   useEffect(() => {
-    setRows(rows);
+    if (JSON.stringify(rows) !== JSON.stringify(useRows)) {
+      setUseRows(rows);
+    }
   }, [rows]);
 
   
@@ -108,9 +108,25 @@ function ReportViewer() {
       return row;
     });
 
-    // setRows(newArr); // TODO: Reemplazar con función a API para guardar las selecciones
+    const sumArr = newArr.map((row) => {
+      const posTotal = row.data
+        .filter((item) => item.code.startsWith('pos_') && item.code !== 'pos_total')
+        .reduce((sum, item) => sum + (typeof item.value === 'number' ? item.value : 0), 0);
+
+      const updatedData = row.data.map((item) =>
+        item.code === 'pos_total' ? { ...item, value: posTotal } : item,
+      );
+
+      return { ...row, data: updatedData };
+    });    
+
+    // return sumArr
+    if (useRows.length == 0) {
+
+      setUseRows(sumArr); // TODO: Reemplazar con función a API para guardar las selecciones
+    }
     
-    updateAllRowsTotals(newArr);
+    // updateAllRowsTotals(newArr);
   }
 
   const confirm = async () => {
@@ -136,7 +152,7 @@ function ReportViewer() {
       return row;
     });
     
-    setRows(newArr);
+    setUseRows(newArr);
     setReport({ headers, rows: newArr });
     respaldar(newArr);
     setConfirmLoading(false);
@@ -192,7 +208,7 @@ function ReportViewer() {
         : row
     );
     const rowsWithTotals = updateRowTotal(rowId, updatedRows);
-    setRows(rowsWithTotals);
+    setUseRows(rowsWithTotals);
     getDiference(rowsWithTotals.find((row) => row.id === rowId)!);
     setReport({ headers, rows: rowsWithTotals });
   };
@@ -214,6 +230,7 @@ function ReportViewer() {
 
   const updateAllRowsTotals = (newRows: Row[]) => {
     
+    
     const newArr = newRows.map((row) => {
       const posTotal = row.data
         .filter((item) => item.code.startsWith('pos_') && item.code !== 'pos_total')
@@ -224,8 +241,13 @@ function ReportViewer() {
       );
 
       return { ...row, data: updatedData };
-    });
-    setRows(newArr);
+    });    
+    // console.log("rows total", newArr);
+    setUseRows(newArr);
+    console.log(useRows);
+    setReport({ headers: headers, rows: newArr });
+    respaldar(newArr);
+    // resetRows();
     // setReport({headers: headers, rows: newArr});
   };
 

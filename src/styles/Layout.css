@@ -75,8 +75,8 @@
 }
 
 body {
-  background: rgb(223,243,227);
-  background: linear-gradient(180deg, rgba(223,243,227,0.5) 0%, rgba(46,125,50,0.5) 100%);
+  background: rgb(237, 242, 247);
+  /* background: linear-gradient(180deg, rgba(223,243,227,0.5) 0%, rgba(46,125,50,0.5) 100%); */
 }
 
 .mera-header {
