@@ -14,7 +14,7 @@ import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useClousing } from "@context/home/clousingContext";
 import ConfirmDialog from "./ConfirmDialog";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
 
 
@@ -67,10 +67,11 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
       intercompany: intercompany
     };
 
+    //console.log(body)
     const response: any = await sendCashClousing(body);
 
     if (response.success) {
-      console.log("Corte de caja enviado correctamente");
+      //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
       setDataClousing({

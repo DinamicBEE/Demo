@@ -11,7 +11,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ClousingLinesModel[]>([] as ClousingLinesModel[]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [dataClousing, setDataClousing] = useState({}); // por el momento no tiene un Modelo.
+  const [dataClousing, setDataClousing] = useState<any>({}); // por el momento no tiene un Modelo.
   
   const getInfo = useCallback(async (subsidiary:number, store:number) => {
     try {
