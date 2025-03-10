@@ -33,7 +33,7 @@ function Login() {
           version="1.1"
           xmlnsXlink="http://www.w3.org/1999/xlink"
           //xmlns:svgjs="http://svgjs.dev/svgjs"
-          viewBox={"0"}
+          // viewBox={"0 0 100 100"}
           width="100%"
           height="100%"
         >
@@ -149,7 +149,8 @@ function Login() {
                       invalid={!!errors.password}
                       errorText={errors.password?.message}
                     >
-                      <PasswordInput                      
+                      <PasswordInput
+                        placeholder="••••••"
                         {...register("password", {
                           required: "La contraseña es obligatoria",
                           minLength: {
