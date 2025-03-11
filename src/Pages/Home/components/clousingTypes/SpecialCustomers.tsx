@@ -6,7 +6,9 @@ import { useSpecialCustContext } from "@context/clousing/specialCustClousingCont
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
+
 
 function SpecialCustomersClousing({ data }: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
@@ -14,17 +16,17 @@ function SpecialCustomersClousing({ data }: any) {
   const { setFooterData } = useFooter();
   const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
   const { handleInputTextData, handleUpdateAmountMXN } = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id)
+  const { updateTotal } = useHeaders();
 
   useEffect(() => {
     async function fetchData() {
       const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id);
 
-      if (specialCustomer) {
-        setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
-      }
+      if (specialCustomer) setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
 
       setSpecialCustomer(specialCustomer);
-
+      updateTotal(specialCustomer.total.totalPhysical, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
+      
     }
 
     fetchData();

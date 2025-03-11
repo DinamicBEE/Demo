@@ -5,21 +5,26 @@ import { CurrencyInput, EditableCurrencyInput, TableInput } from "@components/Nu
 import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
-import Loading from '@components/loading';
 import { CLOUSING_KEY } from "@models/constants.model";
+import { useHeaders } from "@context/home/headerContext";
+import Loading from '@components/loading';
+
 
 function CashClousing({ data }) {
   const [cashData, setCashData] = useState(true)
   const { cashLoading, getCashData } = useCashClousing();
   const { handleInputChange, handleChangeTips } = useHandleCashData(cashData, setCashData, data?.id);
   const { setFooterData } = useFooter();
+  const { updateTotal } = useHeaders();
 
   useEffect(() => {
     async function fetchData() {
+      
       const cashData = await getCashData(data.id);
 
       setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       setCashData(cashData);
+      updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
     }
 
     fetchData();

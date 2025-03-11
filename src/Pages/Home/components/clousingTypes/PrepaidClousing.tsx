@@ -28,10 +28,10 @@ function PrepaidClousing({data}: any) {
       setPrepaid(prepaid);
       setCoupons(couponsList);
 
-      if (prepaid?.total) {
-        setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
-      }
+      if (prepaid?.total)  setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
+      
       setLoading(false);
+      updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
     }
 
     fetchData();

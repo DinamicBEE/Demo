@@ -5,7 +5,9 @@ import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
+import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
+
 
 function EmployeesClousing({ data }: any) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>()
@@ -13,17 +15,18 @@ function EmployeesClousing({ data }: any) {
 
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
+  const { updateTotal } = useHeaders();
 
   useEffect(() => {
     async function fetchData() {
 
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
-      if (employeeData) {
-        setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE)
-      }
-      setEmployee(employeeData)
+      if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
+      setEmployee(employeeData)
+      updateTotal(employeeData.total.totalPhysical, data.id, CLOUSING_KEY.EMPLOYEE);
+      
     }
 
     fetchData()

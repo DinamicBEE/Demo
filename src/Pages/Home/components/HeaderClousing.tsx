@@ -1,33 +1,29 @@
 import { useState } from "react";
-import { Box, Grid, Group, Input, InputAddon, Button  } from "@chakra-ui/react";
+import { Box, Grid, Group, Input, InputAddon, Button } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
 import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
 import { HeaderData } from "@models/common.clousing.model"
 import { CurrencyInput } from "@components/NumericInput";
+import { useClousing } from "@context/home/clousingContext";
 
-function HeaderClousing ({ id, closingConfirmation}: {id: number, closingConfirmation: boolean}) {
+function HeaderClousing({ id, closingConfirmation }: { id: number, closingConfirmation: boolean }) {
     const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
-    const headerContext = useHeaders()
-    if (!headerContext) {
-        return null;
-    }
-    const {loading, header, getHeader} = headerContext;
+    const { dataRow } = useClousing();
+    const { getHeader, header } = useHeaders();
 
+    useEffect(() => {
 
-    useEffect(()=>{
-        async function fetchData() {
-            if(!header[id]){
-                const data = await getHeader(id);
-                setLocalHeader(data);
-            } else {
-                setLocalHeader(header[id]);
-            }
+        if (!header[id]) {
+            const headerData = getHeader(dataRow);
+            setLocalHeader(headerData);
+        } else {
+            setLocalHeader(header[id]);
         }
-        fetchData()
-    },[header]);
 
-    return(
+    }, [header]);
+
+    return (
         <Box>
             <Grid
                 templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
@@ -36,43 +32,43 @@ function HeaderClousing ({ id, closingConfirmation}: {id: number, closingConfirm
             >
                 <Group>
                     <InputAddon>CDC</InputAddon>
-                    <Skeleton loading={loading}>
+                    <Skeleton loading={false}>
                         <Input value={localHeader?.cdc || ""} placeholder="CDC" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Ubicación</InputAddon>
-                    <Skeleton loading={loading}>
+                    <Skeleton loading={false}>
                         <Input value={localHeader?.location || ""} placeholder="Ubicación" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Empresa</InputAddon>
-                    <Skeleton loading={loading}>
+                    <Skeleton loading={false}>
                         <Input value={localHeader?.subsidiary || ""} placeholder="Empresa" readOnly />
                     </Skeleton>
                 </Group>
 
                 <Group>
                     <InputAddon>Fecha</InputAddon>
-                    <Skeleton loading={loading}>
+                    <Skeleton loading={false}>
                         <Input value={localHeader?.date || ""} placeholder="Fecha" readOnly />
                     </Skeleton>
                 </Group>
 
-                <CurrencyInput value={localHeader?.totalPOS} name={"Corte POS"} loading={loading} />
+                <CurrencyInput value={localHeader?.totalPOS} name={"Corte POS"} loading={false} />
 
-                <CurrencyInput value={localHeader?.totalClousing} name={"Corte físico"} loading={loading} />
+                <CurrencyInput value={localHeader?.totalClousing} name={"Corte físico"} loading={false} />
 
-                <CurrencyInput value={localHeader?.difference} name={"Diferencia"} loading={loading} />
+                <CurrencyInput value={localHeader?.difference} name={"Diferencia"} loading={false} />
 
-                <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={loading} />
+                <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} />
 
-                <CurrencyInput value={localHeader?.discountPOS} name={"Descuento + IVA POS"} loading={loading} />
+                <CurrencyInput value={localHeader?.discountPOS} name={"Descuento + IVA POS"} loading={false} />
 
-                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={loading} />
+                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={false} />
 
                 <Button size="sm" className="primary-button" disabled={closingConfirmation}>
                     Actualizar

@@ -1,7 +1,6 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState } from 'react';
-import { getHeaders } from '@services/clousingService';
-import { HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
+import { ClousingLinesModel, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/constants.model';
 
 const headersContext = createContext<HeaderContextType>({} as HeaderContextType);
@@ -13,34 +12,35 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const headerRef = useRef(header);
-  
+
   const updateHeaderState = (newHeader: any) => {
     setHeader(newHeader);
     headerRef.current = newHeader;
   };
-  
-  const getHeader = async (clousingId:number) => {
+
+  const getHeader = (clousingData: ClousingLinesModel) => {
     setLoading(true);
-    
-    if(headerRef.current[clousingId]) {
+
+    if (headerRef.current[clousingData.id]) {
       setLoading(false);
-      return headerRef.current[clousingId];
+      return headerRef.current[clousingData.id];
     }
 
     try {
-      const data = await getHeaders(clousingId);
-      
-      const updatedHeader  = {
-        ...headerRef.current,
-        [clousingId]: data,
-      }
-      
+
+      const data = createObjectHeader(clousingData);
+
+      const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
+
       updateHeaderState(updatedHeader);
 
+      console.log('contexto, header actual', headerRef.current)
+
       return data;
+
     } catch (error) {
+
       setError(error instanceof Error ? error.message : String(error));
-      
       return {} as HeaderData
 
     } finally {
@@ -49,8 +49,8 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   }
 
-  const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY)=>{
-    
+  const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
+
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
 
@@ -97,4 +97,30 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
       {children}
     </headersContext.Provider>
   );
+}
+
+function createObjectHeader(dataRow: ClousingLinesModel) {
+  const headerData: HeaderData = {
+    cdc: "No seleccionada",
+    location: "No seleccionado",
+    subsidiary: "No seleccionado",
+    date: "2021-10-10 10:00",
+    totalPOS: dataRow.totalPOS,
+    totalClousing: dataRow.totalPhysical,
+    difference: dataRow.difference,
+    service: dataRow.service,
+    discountPOS: 1000,
+    discountClousing: dataRow.discount,
+    closures: {
+      cash: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      customer: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      specialCustomer: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      tdc: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      employee: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      prepaid: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      intercompany: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+    },
+  }
+
+  return headerData
 }

@@ -13,9 +13,9 @@ import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useClousing } from "@context/home/clousingContext";
+import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "./ConfirmDialog";
 import Loading from "@components/Loading";
-import { useHeaders } from "@context/home/headerContext";
 
 
 function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirmation }: FooterClousing) {

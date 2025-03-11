@@ -7,6 +7,7 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import Loading from "@components/Loading";
+import { useHeaders } from "@context/home/headerContext";
 
 function TDCClousing({ data }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
@@ -15,6 +16,7 @@ function TDCClousing({ data }: any) {
 
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
+  const {updateTotal} = useHeaders();
 
   useEffect(() => {
     async function fetchData() {
@@ -25,6 +27,7 @@ function TDCClousing({ data }: any) {
       }
 
       setCashData(tdc);
+      updateTotal(tdc.total.totalPhysical, data.id, CLOUSING_KEY.TDC);
 
     }
 
