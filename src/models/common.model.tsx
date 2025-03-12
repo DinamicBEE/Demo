@@ -17,6 +17,7 @@ export interface CurrencyInputProps {
   loading: boolean;
   name?: string;
   onChange?: (value: string) => void;
+  currency?: boolean
 }
 
 export interface TableInputProps {

@@ -34,8 +34,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
       updateHeaderState(updatedHeader);
 
-      console.log('contexto, header actual', headerRef.current)
-
       return data;
 
     } catch (error) {

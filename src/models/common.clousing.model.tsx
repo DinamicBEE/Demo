@@ -143,3 +143,10 @@ export interface ConfirmDialogProps {
     closeDialog: () => void,
     sendData: () => void
 }
+
+export interface CustomerClousingFormProps { 
+  isOpen: boolean;
+  onClose: () => void;
+  message?: string;
+  title?: string;
+}

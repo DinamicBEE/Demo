@@ -29,3 +29,10 @@ export interface CustomerModel {
     total: TotalModel;
     lines: CustomerLines[]
 }
+
+export interface CustomerForm { 
+    customerName: string,
+    coupons: number,
+    currency: string, 
+    valuePax: number,
+}
