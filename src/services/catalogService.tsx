@@ -20,7 +20,7 @@ export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(response);
-            }, 5000);
+            }, 100);
         });
 
         //return response
@@ -43,7 +43,7 @@ export const getStores = async (): Promise<StoreModel[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(response);
-            }, 5000);
+            }, 100);
         });
 
         //return response
@@ -87,7 +87,7 @@ export const getEmployees = async (): Promise<Employee[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
-            }, 5000);
+            }, 100);
         });
         
     } catch (error) {
@@ -111,7 +111,7 @@ export const getReasonClousing = async (): Promise<ReasonsModel[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
-            }, 5000);
+            }, 100);
         });
         
     } catch (error) {

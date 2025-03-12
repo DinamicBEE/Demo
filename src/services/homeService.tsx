@@ -23,7 +23,7 @@ export const getGeneralInfo = async (subsidiary:number, store:number): Promise<C
         return new Promise((resolve) => {
           setTimeout(() => {
               resolve(response);
-          }, 5000);
+          }, 0);
       });
         
     } catch (error) {
@@ -164,6 +164,54 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
+      closingConfirmation: false
+    },
+    {
+      id: 5,
+      employe: "Juan Mendoza",
+      totalPOS: 2500,
+      totalPhysical: 2500,
+      difference: 0,
+      status: "Abierto",
+      extra: 0,
+      mxm: 0,
+      usd: 0,
+      eur: 0,
+      lib: 0,
+      can: 0,
+      customer: 0,
+      specialCustomer: 0,
+      prepaid: 0,
+      employees: 0,
+      intercompany: 0,
+      service: 10,
+      discount: 150,
+      iva: 150,
+      adyen: 0,
+      closingConfirmation: false
+    },
+    {
+      id: 6,
+      employe: "Irving Canul",
+      totalPOS: 2500,
+      totalPhysical: 2500,
+      difference: 0,
+      status: "Abierto",
+      extra: 0,
+      mxm: 0,
+      usd: 0,
+      eur: 0,
+      lib: 0,
+      can: 0,
+      customer: 0,
+      specialCustomer: 0,
+      prepaid: 0,
+      employees: 0,
+      intercompany: 0,
+      service: 10,
+      discount: 150,
+      iva: 150,
+      adyen: 0,
       closingConfirmation: false
     },
   ],

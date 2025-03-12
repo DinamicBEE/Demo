@@ -20,7 +20,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
     return (
         <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
-                <DialogHeader>
+                <DialogHeader flexDirection={"column"}>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
                     <Box>
                         <HeaderClousing id={employee?.id ?? 0} closingConfirmation={employee?.closingConfirmation ?? false}></HeaderClousing>
