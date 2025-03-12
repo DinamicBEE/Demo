@@ -37,6 +37,9 @@ function DialogFiles({ isOpen, onClose }: DialogFilesProps) {
   const fileUpload = useFileUpload({
     maxFiles: 20,
     accept: ".csv",
+    onFileChange: () => {
+      setError("");
+    },
     validate(file, details) {
       const errors: FileError[] = [];
       details.acceptedFiles.forEach((files) => {
@@ -118,7 +121,9 @@ function DialogFiles({ isOpen, onClose }: DialogFilesProps) {
                     <FileUpload.Item key={file.name} file={file}>
                       <FileUpload.ItemPreview />
                       <FileUpload.ItemName />
-                      <FileUpload.ItemDeleteTrigger />
+                      <FileUpload.ItemDeleteTrigger
+                        onClick={() => fileUpload.clearRejectedFiles()}
+                      />
                     </FileUpload.Item>
                   ))
                 }

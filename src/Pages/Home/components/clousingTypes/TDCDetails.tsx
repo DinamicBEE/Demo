@@ -29,6 +29,7 @@ import Loading from "@components/Loading";
 import DialogFiles from "./DialogFiles";
 import { useTDCAdyenContext } from "@context/clousing/tdcAdyenContext";
 import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
+import { ProcessResult } from "@models/adyen.model";
 
 function TDCDetails({
   clousingId,
@@ -39,9 +40,9 @@ function TDCDetails({
 }: DetailsProp) {
   const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { dataFilesProcess } = useTDCAdyenContext();
+  const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
-  const { updateLocalBanksAdyen } = useHandleTDCAdyen();
+  const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
 
   const { updateLineClousing, handleInputData } = useHandleTDC(
     clousingId,
@@ -71,7 +72,12 @@ function TDCDetails({
   const isCheckValid = (
     check: boolean | undefined,
     differences:
-      | { date: string | null; check: string | null; amount: string | null, general: string | null }
+      | {
+          date: string | null;
+          check: string | null;
+          amount: string | null;
+          general: string | null;
+        }
       | undefined
   ) => {
     if (check === undefined) return "";
@@ -81,7 +87,10 @@ function TDCDetails({
     if (!differences) return "red.200";
 
     const hasDifferences =
-      differences.date || differences.check || differences.amount || differences.general;
+      differences.date ||
+      differences.check ||
+      differences.amount ||
+      differences.general;
 
     if (check && !hasDifferences) {
       return "bg.success";
@@ -126,7 +135,9 @@ function TDCDetails({
         closeOnEscape={false}
         closeOnInteractOutside={false}
         scrollBehavior="inside"
-        onOpenChange={() => onClose()}
+        onOpenChange={() => {
+          onClose(), setDataFilesProcess({} as ProcessResult);
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -154,7 +165,40 @@ function TDCDetails({
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
                     {detailsLocal?.bankName === "ADYEN" && (
-                      <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>
+                      <Table.ColumnHeader textAlign="center">
+                       
+                          <Checkbox
+                            top="1"
+                            aria-label="Select row"
+                            checked={detailsLocal.details.every(
+                              (item) => item.successAdyen
+                            )}
+                            disabled={
+                              dataFilesProcess &&
+                              dataFilesProcess.consolidatedData
+                                ? false
+                                : true
+                            }
+                            onCheckedChange={(changes) => {
+                              const updatedDetails = detailsLocal.details.map(
+                                (detail) => ({
+                                  ...detail,
+                                  successAdyen: changes.checked as boolean,
+                                })
+                              );
+                              const updatedDetailsLocal = {
+                                ...detailsLocal,
+                                details: updatedDetails,
+                              };
+                              setDetailsLocal(updatedDetailsLocal);
+                              updateLocalBanksTotal(
+                                updatedDetailsLocal,
+                                setDetailsLocal
+                              );
+                            }}
+                          />
+                       
+                      </Table.ColumnHeader>
                     )}
                     <Table.ColumnHeader textAlign="center">
                       Fecha de cierre
@@ -178,7 +222,7 @@ function TDCDetails({
                     <Table.Row
                       key={item.id}
                       backgroundColor={isCheckValid(
-                        item.success,
+                        item.successAdyen,
                         item.differences
                       )}
                     >
@@ -187,19 +231,33 @@ function TDCDetails({
                           <Checkbox
                             top="1"
                             aria-label="Select row"
-                            checked={item.success}
+                            checked={item.successAdyen}
+                            disabled={
+                              dataFilesProcess &&
+                              dataFilesProcess.consolidatedData
+                                ? false
+                                : true
+                            }
                             onCheckedChange={(changes) => {
-                              setDetailsLocal({
-                                ...detailsLocal,
-                                details: detailsLocal.details.map((detail) =>
+                              const updatedDetails = detailsLocal.details.map(
+                                (detail) =>
                                   detail.id === item.id
                                     ? {
                                         ...detail,
-                                        success: changes.checked as boolean,
+                                        successAdyen:
+                                          changes.checked as boolean,
                                       }
                                     : detail
-                                ),
-                              });
+                              );
+                              const updatedDetailsLocal = {
+                                ...detailsLocal,
+                                details: updatedDetails,
+                              };
+                              setDetailsLocal(updatedDetailsLocal);
+                              updateLocalBanksTotal(
+                                updatedDetailsLocal,
+                                setDetailsLocal
+                              );
                             }}
                           />
                         </Table.Cell>

@@ -8,6 +8,7 @@ import {
 } from "react";
 import { processFiles } from "@services/clousingService";
 import { TDCAdyenContextType } from "@models/tdc.model";
+import { ProcessResult } from "@models/adyen.model";
 
 const tdcAdyenContext = createContext<TDCAdyenContextType>(
   {} as TDCAdyenContextType
@@ -20,7 +21,7 @@ export function TDCAdyenClousingProvider({
 }: {
   children: ReactNode;
 }) {
-  const [dataFilesProcess, setDataFilesProcess] = useState<any>([]);
+  const [dataFilesProcess, setDataFilesProcess] = useState<ProcessResult>({} as ProcessResult);
 
   const fetchProcessFiles = useCallback(async (Files: File[]) => {
     const data = await processFiles(Files);
@@ -32,8 +33,9 @@ export function TDCAdyenClousingProvider({
     () => ({
       dataFilesProcess,
       fetchProcessFiles,
+      setDataFilesProcess,
     }),
-    [dataFilesProcess, fetchProcessFiles]
+    [dataFilesProcess, fetchProcessFiles, setDataFilesProcess]
   );
 
   return (

@@ -23,6 +23,7 @@ export interface TDCContextType {
 
 export interface TDCAdyenContextType {
   dataFilesProcess: ProcessResult;
+  setDataFilesProcess: (data: ProcessResult) => void;
   fetchProcessFiles: (Files: File[]) => Promise<ProcessResult>;
 }
 

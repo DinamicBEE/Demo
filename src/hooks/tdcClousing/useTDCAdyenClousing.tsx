@@ -42,7 +42,7 @@ export const useHandleTDCAdyen = () => {
 
       return {
         ...detail,
-        success: dateMatch && checkMatch && amountMatch,
+        successAdyen: dateMatch && checkMatch && amountMatch,
         differences: {
           date: isGeneralError ? null : !dateMatch ? "Fecha no coincide" : null,
           check: isGeneralError ? null : !checkMatch ? "Check no coincide" : null,
@@ -54,9 +54,8 @@ export const useHandleTDCAdyen = () => {
 
     // Verificar cambios
     const hasChanges = updatedDetails.some(
-      (detail, index) => detail.success !== detailsLocal.details[index].success
+      (detail, index) => detail.successAdyen !== detailsLocal.details[index].successAdyen
     );
-    console.log('hasChanges', updatedDetails);
 
     // Actualizar si hay cambios
     if (hasChanges) {
@@ -64,8 +63,34 @@ export const useHandleTDCAdyen = () => {
         ...prev!,
         details: updatedDetails,
       }));
+
+      // Llamar a updateLocalBanksTotal después de actualizar los detalles
+      updateLocalBanksTotal({ ...detailsLocal, details: updatedDetails }, setDetailsLocal);
     }
   };
 
-  return { updateLocalBanksAdyen };
+  const updateLocalBanksTotal = (
+    detailsLocal: BankDetails,
+    setDetailsLocal: React.Dispatch<React.SetStateAction<BankDetails | undefined>>
+  ) => {
+    if (detailsLocal.details) {
+      const total = detailsLocal.details
+        .filter(detail => detail.successAdyen) // Filtrar solo los detalles con successAdyen en true
+        .reduce(
+          (acc, detail) => {
+            return {
+              amount: acc.amount + Number(detail.amount),
+            };
+          },
+          { amount: 0 } // Inicializar el acumulador con amount en 0
+        );
+
+      setDetailsLocal((prev) => ({
+        ...prev!,
+        total: total.amount,
+      }));
+    }
+  };
+
+  return { updateLocalBanksAdyen, updateLocalBanksTotal };
 };
