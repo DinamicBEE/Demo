@@ -6,7 +6,7 @@ import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 
 function TDCClousing({ data }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();

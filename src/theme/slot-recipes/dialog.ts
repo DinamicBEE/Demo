@@ -169,10 +169,9 @@ export const dialogSlotRecipe = defineSlotRecipe({
       },
       full: {
         content: {
-          maxW: "100vw",
-          minH: "100vh",
-          "--dialog-margin": "0",
-          borderRadius: "0",
+          maxW: "94%",
+          minH: "95%",
+          "--dialog-margin": "1rem",
         },
       },
     },

@@ -6,7 +6,7 @@ import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
 import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
-import Loading from '@components/loading';
+import Loading from '@components/Loading';
 import '../Home.css'
 import { STATUS } from '@models/status.model';
 import { getStatusColor } from '../../../utils/getStatusColor';
