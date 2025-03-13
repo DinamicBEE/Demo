@@ -9,6 +9,10 @@ import { IntercompanyModel } from "@models/intercompany.model";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
+import axios from "axios";
+import { API_LOCAL, CLIENTS, LOCATIONS, SP_CLIENTS } from "./settings";
+import Cookies from "js-cookie";
+import api from "../api/index";
 
 /**
  * This function gets the totals 
@@ -198,28 +202,32 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
   // console.log(clousingId)
   
   try {
-      //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-      const response = CustomerMOCKData;
+      const response = await api.get(CLIENTS, {
+          params: {idCashRegisterClosure: clousingId},
+      });
+      const lines = response.data;
+      console.log(response);
+      
       //TODO: Validar la estructura de datos que regresara la API
-      // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
-      // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
-
-      //const newTotalFisico = response.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
+      const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
+      const newTotalFisico = lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0);
+      const newDiff = Number(newTotalPOS - newTotalFisico);
 
       const data = {
           //...response.data,
-          ...response,
+          id: clousingId,
+          total: {
+            totalPOS: newTotalPOS,
+            totalPhysical: newTotalFisico,
+            difference: Number(newDiff)
+          },
+          lines: [...lines],
           // globalTotalPOS: newTotalPOS,
           // globalTotalFisico: newTotalFisico,
           // globalDifference: response.globalTotalPOS - newTotalFisico,
       }
       
-      //return data
-      return new Promise((resolve) => {
-          setTimeout(() => {
-              resolve(data);
-          }, 5000);
-      });
+      return data;
 
   } catch (error) {
       console.error('Error al obtener los valores generales:', error);
@@ -234,27 +242,31 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
  * @returns {Promise<CustomerModel>}
  */
 export const getSpecialCustomerClousing = async (clousingId: number): Promise<SpecialCustomerModel> => {
-  // console.log(clousingId)
+  console.log(clousingId)
   
   try {
-      //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-      const response = SpecialCustomerMOCKDATA;
+      const response = await api.get(SP_CLIENTS, {
+          params: {idCashRegisterClosure: clousingId},
+      });
+      const lines = response.data;
+      console.log(response);
 
-      // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
-      // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
+      const newTotalPOS = lines.map((line: any) => Number(line.bill)).reduce((acc: number, curr: number) => acc + curr, 0);
+      const newTotalFisico = lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0);
+      const newDiff = Number(newTotalPOS - newTotalFisico);
 
       const data = {
-          //...response.data,
-          ...response,
+        id: clousingId,
+        total: {
+          totalPOS: newTotalPOS,
+          totalPhysical: newTotalFisico,
+          difference: Number(newDiff)
+        },
+        lines: [...lines],
 
       }
       
-      //return data
-      return new Promise((resolve) => {
-          setTimeout(() => {
-              resolve(data);
-          }, 5000);
-      });
+      return data;
 
   } catch (error) {
       console.error('Error al obtener los valores generales:', error);
@@ -524,13 +536,13 @@ export const CustomerMOCKData = {
     },
     lines:[{
       id: 2,
-      customers: "BRITISH ",
+      nameClient: "BRITISH ",
       coupons: 0,
       currency: "",
-      valuePAX: 0,
+      pax: 0,
       amount: 0,
       exchangeRate: 0,
-      amountMXN: 0,
+      ammountMXN: 0,
     },
     {
       id: 3,
@@ -566,19 +578,20 @@ export const SpecialCustomerMOCKDATA = {
   lines: [
     {
       id: 1,
-      Check: 420,
-      consumption: 258.0,
-      priceCuopon: 0,
+      check: 420,
+      bill: 258.0,
+      couponPrice: 0,
       difference: 0,
       exchangeRate: 1.0,
       client: "AMERICAN AIRLINES",
-      PAX: 0,
-      folioCuopon: "0",
-      folioCuoponUSD: "0",
-      value: 1,
-      valueUSD: 1,
+      pax: 0,
+      couponFolio: "0",
+      couponFolioUSD: "0",
+      ammount: 1,
+      ammountUSD: 1,
       flight: "OFCEM",
       passengerName: "JUAN PEREZ",
+      passengerNum: "",
       amountMXN: 1,
     },
     {

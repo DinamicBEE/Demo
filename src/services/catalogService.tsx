@@ -3,7 +3,9 @@ import { createListCollection } from "@chakra-ui/react"
 import { CurrencyModel } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { Employee, ReasonsModel } from "@models/employee.model";
-import { API_CATALOG } from "./settings"
+import { API_CATALOG, API_LOCAL, CURRENCY, LOCATIONS, SUBSIDIARIES } from "./settings"
+import Cookies from 'js-cookie';
+import api from '../api/index';
 
 //const BASE_URL = 'https://run.mocky.io/v3';
 
@@ -12,18 +14,16 @@ import { API_CATALOG } from "./settings"
  * This function gets the list of active subsides
  * @returns {Promise<SubsidiaryModal[]>}
  */
-export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
+export const getSubsidiaries = async (): Promise<any> => {
     try {
-        //const response = await axios.get(`${API_CATALOG}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
-        const response = sub;
-        
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(response);
-            }, 500);
+        const username = Cookies.get('username');
+        const response = await api.get(SUBSIDIARIES, {
+          params: {user: username}
         });
 
-        //return response
+        const subs = response.data;
+      
+        return subs;
     } catch (error) {
         //console.error('Error al obtener las Subsidiarias: ', error)
         return [];        
@@ -35,18 +35,16 @@ export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
  * stores belonging to each subsidiary
  * @returns {Promise<StoreModel[]>}
  */
-export const getStores = async (): Promise<StoreModel[]> => {
-    try {
-        //const response = await axios.get(`${API_CATALOG}/ccdc1956-02d0-4917-abab-8021fb1a53fc`);
-        const response = store;
-        
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(response);
-            }, 500);
+export const getStores = async (subId: number): Promise<StoreModel[]> => {
+  try {
+        if (subId === null) throw new Error("Error al obtener las tiendas"); 
+        const response = await api.get(LOCATIONS, {
+          params: {subsidiaria: subId}
         });
+        
+        const locs = response.data
 
-        //return response
+        return locs;
 
     } catch (error) {
         console.error('Error al obtener las tiendas:', error);
@@ -62,14 +60,24 @@ export const getStores = async (): Promise<StoreModel[]> => {
 export const getCurrencies = async (): Promise<CurrencyModel[]> => {
     try {
 
-        //const response = await axios.get(`${API_CATALOG}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
-        const response = currenciesS;     
+        const response = await api.get(CURRENCY);
 
-        return response
+        const currencyResponse = response.data.map( (curr: any) => {
+          return {
+            value: curr.id,
+            label: curr.name,
+            exchangeRate: curr.exchange
+          }
+
+        });
+
+        return currencyResponse;
+
+        
 
         
     } catch (error) {
-        console.error('Error al obtener las Subsidiarias: ', error)
+        console.error('Error al obtener los tipos de monedas: ', error)
         return [] as unknown as CurrencyModel[];
     }
 }

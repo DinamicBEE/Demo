@@ -14,25 +14,25 @@ export interface SpecialCustomerContext {
 
 export interface SpecialCustomerLines {
     id: number; 
-    Check: number; 
-    consumption: number; 
-    priceCuopon: number; 
+    check: number; 
+    bill: number; 
+    couponPrice: number; 
     difference: number; 
     exchangeRate: number; 
     client: string;
-    PAX: number; 
-    folioCuopon: string; 
-    folioCuoponUSD: string;
-    value: number;
-    valueUSD: number;
+    pax: number; 
+    couponFolio: string; 
+    couponFolioUSD: string;
+    ammount: number;
+    ammountUSD: number;
     flight: string;
     passengerName: string;
-    amountMXN: number;
+    ammountMXN: number;
 }
 
 export interface SpecialCustomerModel {
   id: number;
-  employeeId: number;
+  employeeId?: number;
   total: TotalModel;
   lines: SpecialCustomerLines[];
 }

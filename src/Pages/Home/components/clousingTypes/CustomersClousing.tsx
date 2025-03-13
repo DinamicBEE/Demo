@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, createListCollection, SelectValueText, SelectContent, SelectItem, ListCollection } from "@chakra-ui/react";
 import { SelectRoot, SelectTrigger } from "@components/ui/select";
 import { TableInput } from "@components/NumericInput";
-import Loading from "@components/loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
@@ -10,6 +9,7 @@ import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function CustomersClousing({ data }: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
@@ -63,7 +63,7 @@ function CustomersClousing({ data }: any) {
               <Table.Row key={item.id}>
 
                 <Table.Cell textAlign="center">
-                  <Text>{item.customers}</Text>
+                  <Text>{item.nameClient}</Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
@@ -83,7 +83,7 @@ function CustomersClousing({ data }: any) {
 
                     <SelectContent>
                       {currenciesForSelect && Array.from(currenciesForSelect).map((item) => (
-                        <SelectItem item={item} key={item.value}>
+                        <SelectItem item={item} key={item.id}>
                           {item.label}
                         </SelectItem>
                       ))}
@@ -94,7 +94,7 @@ function CustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} disabled={data?.closingConfirmation}/>
+                    <TableInput value={item.pax} id={item.id} currency={false} onChange={handleAmountPAX} disabled={data?.closingConfirmation}/>
                   </Text>
                 </Table.Cell>
 

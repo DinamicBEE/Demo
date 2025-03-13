@@ -36,13 +36,13 @@ export interface SubsidiaryModal {
 export interface StoreModel {
   id: number;
   name: string;
-  subsidiary: SubsidiaryModal;
+  subsidiary: number;
 }
 
 export interface ListContextType {
   error: string;
   getSubsidiariesData: () => Promise<SubsidiaryModal[]>;
-  getStoresData: () => Promise<StoreModel[]>;
+  getStoresData: (subId: number) => Promise<StoreModel[]>;
 }
 
 export interface ErrorDialogContextType {

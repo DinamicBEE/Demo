@@ -1,6 +1,8 @@
 import { Tokens } from "@models/auth.model";
 import api from "../api/index";
 import { API_AUTH, MODE } from "./settings";
+import Cookies from "js-cookie";
+
 //const BASE_URL = "https://reqres.in/api";
 
 /**
@@ -20,7 +22,10 @@ export const loginUser = async (
         ? { email: login, password }
         : { login, password }
     );
+    console.log(response.config.data);
     
+    const loginInfo = JSON.parse(response.config.data);
+    Cookies.set("username", loginInfo.login);
     return response.data;
 
    

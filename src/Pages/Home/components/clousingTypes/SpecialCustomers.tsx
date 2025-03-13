@@ -6,7 +6,7 @@ import { useSpecialCustContext } from "@context/clousing/specialCustClousingCont
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 
 function SpecialCustomersClousing({ data }: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
@@ -62,18 +62,18 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.Check} />
+                    {item.check}
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <FormatNumber value={item.consumption} style="currency" currency="USD" />
+                    <FormatNumber value={item.bill} style="currency" currency="USD" />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
-                  <FormatNumber value={item.priceCuopon} style="currency" currency="USD" />
+                  <FormatNumber value={item.couponPrice} style="currency" currency="USD" />
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
@@ -96,34 +96,34 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.PAX} />
+                    <FormatNumber value={item.pax} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.folioCuopon} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuopon")}
+                    <Input textAlign="center" value={item.couponFolio} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuopon")}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.folioCuoponUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuoponUSD")}
+                    <Input textAlign="center" value={item.couponFolioUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuoponUSD")}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.value} id={item.id} currency={false} keyValue={"value"} onChange={handleUpdateAmountMXN}
+                    <TableInput value={item.ammount} id={item.id} currency={false} keyValue={"value"} onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.valueUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleUpdateAmountMXN}
+                    <TableInput value={item.ammountUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
@@ -144,7 +144,7 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <FormatNumber value={item.amountMXN} style="currency" currency="USD" />
+                    <FormatNumber value={item.ammountMXN} style="currency" currency="USD" />
                   </Text>
                 </Table.Cell>
 
