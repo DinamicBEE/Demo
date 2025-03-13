@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { EmployeeFilterProps } from "@models/employee.model";
-import { Box, createListCollection, ListCollection, SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@chakra-ui/react";
+import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
+import { SelectLabel, SelectRoot, SelectTrigger,
+    SelectValueText, SelectContent, SelectItem,
+  } from "@components/ui/select"
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
 function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, disabled }: EmployeeFilterProps) {//

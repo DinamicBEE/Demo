@@ -96,7 +96,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
           <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
 
-              <form onSubmit={handleSubmit(onSubmitForm)}>
+              
                 <DialogCloseTrigger />
 
                 <DialogHeader>
@@ -104,7 +104,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                 </DialogHeader>
 
                 <DialogBody pb='8'>
-
+                <form >
                   <DataList.Root orientation='horizontal'>
                     <DataList.Item>
                       <DataList.ItemLabel>Fecha</DataList.ItemLabel>
@@ -155,6 +155,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                       </Flex>
                     )
                   }
+                </form>
                 </DialogBody>
 
 
@@ -163,11 +164,11 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                     <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
                   </DialogActionTrigger>
 
-                  <Button type="submit" colorPalette="meraPrimary" loading={isLoadingEdit}>
+                  <Button colorPalette="meraPrimary" loading={isLoadingEdit} onClick={handleSubmit(onSubmitForm)}>
                     Guardar
                   </Button>
                 </DialogFooter>
-              </form>
+              
 
             </DialogContent>
           </DialogRoot>

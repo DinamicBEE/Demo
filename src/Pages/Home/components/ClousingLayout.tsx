@@ -21,7 +21,7 @@ function ClousingLayout({ isOpen, onClose, employee }: ClousingLayoutProps) {
     const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH)
 
     return (
-        <DialogRoot scrollBehavior="inside" size="cover" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
+        <DialogRoot scrollBehavior="inside" size="full" open={isOpen} onOpenChange={() => onClose()} closeOnEscape={false} closeOnInteractOutside={false}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
