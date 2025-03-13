@@ -26,18 +26,15 @@ function CustomersClousing({ data }: any) {
   const { open, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
+    
     async function fetchData() {
       const customers: CustomerModel = await getCustomerData(data.id);
 
-      if (customers?.total) {
-        setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
-      }
+      if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
 
       const currencies = await getCurrencies()
 
-      let createCurrenciList = createListCollection({
-        items: currencies
-      })
+      let createCurrenciList = createListCollection({   items: currencies })
 
       setCustomersData(customers);
       setcurrenciesForSelect(createCurrenciList);
@@ -49,7 +46,7 @@ function CustomersClousing({ data }: any) {
   }, []);
 
   const openDialog = () => {
-    onOpen()
+    onOpen();
   }
 
   return (
@@ -143,7 +140,7 @@ function CustomersClousing({ data }: any) {
         )}
       </Box>
 
-      <CustomerClousingForm isOpen={open} onClose={onClose}/>
+      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData}/>
     </>
 
   );

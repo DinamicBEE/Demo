@@ -1,31 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogCloseTrigger, DialogContent, DialogFooter, DialogHeader, DialogRoot } from "@components/ui/dialog";
 import { Controller, useForm } from "react-hook-form";
 import { Input, NativeSelectField, NativeSelectRoot, Stack, Text } from "@chakra-ui/react";
 import { Field } from "@components/ui/field";
 import { CustomerClousingFormProps } from "@models/common.clousing.model";
-import { CustomerForm } from "@models/customer.model";
+import { CustomerForm, CustomerModel } from "@models/customer.model";
 import { useApi } from "@hooks/useApi";
 import { getCurrencies } from "@services/catalogService";
-import { CurrencyInput, CurrencyInputNumber, EditableCurrencyInput, TableInput } from "@components/NumericInput";
+import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
+import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 
-export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({ isOpen, onClose }) => {
+export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({ isOpen, onClose, dataCustomer, setCustomersData }) => {
 
-  const { control, register, handleSubmit, reset, formState: { errors } } = useForm<CustomerForm>({
-    defaultValues: {
-      customerName: "",
-      coupons: undefined,  // <-- Cambiar a undefined para que el input pueda actualizarse
-      currency: "",
-      valuePax: undefined
-    }
-  });
-
+  const { control, register, handleSubmit, reset, formState: { errors } } = useForm<CustomerForm>();
   const { data: currencies } = useApi(getCurrencies);
-  // const createCurrenciList = currencies ? createListCollection({ items: currencies }) : null;
+
+  const { addCustomerRecord } = useHandleCustomer( dataCustomer || {} as CustomerModel, setCustomersData, dataCustomer?.id);
 
   const onSubmitForm = (data: CustomerForm) => {
-    console.log('esta es un prueba', data);
+    reset();
+    onClose();
+    addCustomerRecord(data, currencies);
   }
 
   return (
@@ -37,7 +33,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({ isOp
           <DialogCloseTrigger />
 
           <DialogHeader>
-            <Text fontSize="lg" fontWeight="bold">Formulario de Cierre</Text>
+            <Text fontSize="lg" fontWeight="bold">Registro de Nuevo Cliente</Text>
           </DialogHeader>
 
           <DialogBody>

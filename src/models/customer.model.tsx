@@ -33,6 +33,6 @@ export interface CustomerModel {
 export interface CustomerForm { 
     customerName: string,
     coupons: number,
-    currency: string, 
+    currency: number, 
     valuePax: number,
 }
