@@ -114,7 +114,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       valuePAX: newCustomer.valuePax,
       amount: newCustomer.coupons * newCustomer.valuePax,
       amountMXN: newCustomer.coupons * newCustomer.valuePax * exchangeRate,
-      customers: ""
+      customers: newCustomer.customerName
     };
 
     const updatedCustomerData = { ...customerData, lines: [...customerData.lines, newRecord], };
@@ -147,7 +147,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
 
-    setCustomerData(updateCustomerData, clousingId)
+    setCustomerData(updateCustomerData, clousingId);
 
   }
 
