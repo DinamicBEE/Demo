@@ -41,6 +41,8 @@ export interface StoreModel {
 
 export interface ListContextType {
   error: string;
+  subsidiaries: SubsidiaryModal[];
+  stores: StoreModel[];
   getSubsidiariesData: () => Promise<SubsidiaryModal[]>;
   getStoresData: () => Promise<StoreModel[]>;
 }

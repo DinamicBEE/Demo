@@ -9,6 +9,7 @@ import {
 import { processFiles } from "@services/clousingService";
 import { TDCAdyenContextType } from "@models/tdc.model";
 import { ProcessResult } from "@models/adyen.model";
+import { useList } from "@context/home/listsContext";
 
 const tdcAdyenContext = createContext<TDCAdyenContextType>(
   {} as TDCAdyenContextType
@@ -21,13 +22,40 @@ export function TDCAdyenClousingProvider({
 }: {
   children: ReactNode;
 }) {
-  const [dataFilesProcess, setDataFilesProcess] = useState<ProcessResult>({} as ProcessResult);
+  const [dataFilesProcess, setDataFilesProcess] = useState<ProcessResult>(
+    {} as ProcessResult
+  );
+  const { getStoresData, getSubsidiariesData } = useList();
 
-  const fetchProcessFiles = useCallback(async (Files: File[]) => {
-    const data = await processFiles(Files);
-    setDataFilesProcess(data);
-    return data;
-  }, []);
+  const fetchProcessFiles = useCallback(
+    async (Files: File[], store: number, location: number) => {
+      const storesData = await getStoresData();
+      const subsidiaries = await getSubsidiariesData();
+
+
+      
+
+      const storeName = storesData.find(
+        (storeContext) => storeContext.id === location
+      )?.name;
+      const locationName = subsidiaries.find(
+        (subsidiary) => subsidiary.id === store
+      )?.name;
+
+
+
+      if (!storeName || !locationName) {
+        return;
+      }
+
+      const data = await processFiles(Files, storeName, locationName);
+      setDataFilesProcess(data);
+      console.log(data);
+      
+      return data;
+    },
+    []
+  );
 
   const value = useMemo(
     () => ({

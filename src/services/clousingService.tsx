@@ -1,7 +1,12 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
 
-import { EXPECTED_COLUMNS,FIELD_MAPPING,FileResult,ProcessResult } from "@models/adyen.model";
+import {
+  EXPECTED_COLUMNS,
+  FIELD_MAPPING,
+  FileResult,
+  ProcessResult,
+} from "@models/adyen.model";
 import { CashModel } from "@models/cash.model";
 import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
@@ -470,13 +475,16 @@ export const sendCashClousing = async (body: any) => {
   }
 };
 
-
 /**
  * Procesa múltiples archivos CSV y transforma sus datos según el mapeo especificado
  * @param files Array de archivos File para procesar
  * @returns Promesa que resuelve con el resultado del procesamiento
  */
-export const processFiles = async (files: File[]): Promise<ProcessResult> => {
+export const processFiles = async (
+  files: File[],
+  storeName: string,
+  location: string
+): Promise<ProcessResult> => {
   // Validación inicial de archivos
   if (!files?.length) {
     return {
@@ -488,7 +496,7 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
   try {
     // Primera fase: validar todos los archivos antes de procesarlos
     const validationErrors: { fileName: string; error: string }[] = [];
-    
+
     // Función para validar encabezados
     const validateHeaders = (headers: string[], fileName: string): void => {
       const missingColumns = EXPECTED_COLUMNS.filter(
@@ -511,20 +519,23 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     // Validar todos los archivos primero
     for (const file of files) {
       try {
-        const parseResult = await new Promise<Papa.ParseResult<unknown>>((resolve, reject) => {
-          Papa.parse(file, {
-            ...validationConfig,
-            complete: resolve,
-            error: (error) => reject(new Error(`Error de parsing: ${error.message}`)),
-          });
-        });
-        
+        const parseResult = await new Promise<Papa.ParseResult<unknown>>(
+          (resolve, reject) => {
+            Papa.parse(file, {
+              ...validationConfig,
+              complete: resolve,
+              error: (error) =>
+                reject(new Error(`Error de parsing: ${error.message}`)),
+            });
+          }
+        );
+
         const headers = parseResult.meta.fields || [];
         validateHeaders(headers, file.name);
       } catch (error) {
-        validationErrors.push({ 
-          fileName: file.name, 
-          error: error instanceof Error ? error.message : String(error) 
+        validationErrors.push({
+          fileName: file.name,
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     }
@@ -533,7 +544,9 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     if (validationErrors.length > 0) {
       return {
         success: false,
-        error: `Errores de validación en archivos: ${validationErrors.map(e => `${e.fileName}: ${e.error}`).join("; ")}`,
+        error: `Errores de validación en archivos: ${validationErrors
+          .map((e) => `${e.fileName}: ${e.error}`)
+          .join("; ")}`,
       };
     }
 
@@ -542,23 +555,32 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     const processedFileNames: string[] = [];
 
     // Transformar row optimizada con mejor manejo de tipos
-    const transformRow = (row: Record<string, unknown>): Record<string, unknown> => {
+    const transformRow = (
+      row: Record<string, unknown>
+    ): Record<string, unknown> => {
       const transformedRow: Record<string, unknown> = {};
 
       // Procesar los campos según el mapeo
       Object.entries(FIELD_MAPPING).forEach(([csvColumn, targetField]) => {
         if (row[csvColumn] !== undefined) {
           // Procesamiento específico para Merchant Reference
-          if (csvColumn === "Merchant Reference" && typeof row[csvColumn] === "string") {
+          if (
+            csvColumn === "Merchant Reference" &&
+            typeof row[csvColumn] === "string"
+          ) {
             const merchantRef = row[csvColumn] as string;
             const parts = merchantRef.split("-");
-            transformedRow[targetField] = parts.length >= 2 ? parts[1] : merchantRef;
-          } 
+            transformedRow[targetField] =
+              parts.length >= 2 ? parts[1] : merchantRef;
+          }
           // Procesamiento específico para Account
-          else if (csvColumn === "Account" && typeof row[csvColumn] === "string") {
+          else if (
+            csvColumn === "Account" &&
+            typeof row[csvColumn] === "string"
+          ) {
             const account = row[csvColumn] as string;
             transformedRow[targetField] = account.split("_")[0];
-          } 
+          }
           // Transferencia directa para otros campos
           else {
             transformedRow[targetField] = row[csvColumn];
@@ -568,7 +590,10 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
 
       // Preservar campos sin mapeo
       Object.keys(row).forEach((key) => {
-        if (!Object.keys(FIELD_MAPPING).includes(key) && row[key] !== undefined) {
+        if (
+          !Object.keys(FIELD_MAPPING).includes(key) &&
+          row[key] !== undefined
+        ) {
           transformedRow[key] = row[key];
         }
       });
@@ -585,29 +610,47 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     };
 
     // Procesar archivos en paralelo ahora que sabemos que todos tienen la estructura correcta
-    const processingPromises = files.map((file) => 
-      new Promise<{ data: Record<string, unknown>[]; fileName: string }>((resolve, reject) => {
-        Papa.parse(file, {
-          ...config,
-          complete: (results) => {
-            try {
-              if (!Array.isArray(results.data) || results.data.length === 0) {
-                reject(new Error("No se encontraron datos válidos"));
-                return;
+    const processingPromises = files.map((file) =>
+      new Promise<{ data: Record<string, unknown>[]; fileName: string }>(
+        (resolve, reject) => {
+          Papa.parse(file, {
+            ...config,
+            complete: (results) => {
+              try {
+                if (!Array.isArray(results.data) || results.data.length === 0) {
+                  reject(new Error("No se encontraron datos válidos"));
+                  return;
+                }
+
+                const transformedData = (
+                  results.data as Record<string, unknown>[]
+                )
+                  .map(transformRow)
+                  .filter(Boolean) // Filtrar valores nulos o undefined
+                  .filter(record => {
+                
+                    // Filtrar por storeName y location si están presentes
+                    const recordStore = String(record["Centro de consumo"] || record["StoreName"] || record["store"] || "").trim();
+                    const recordLocation = String(record["Subsidiaria"] || record["StoreLocation"] || record["location"] || "").trim();
+
+                    
+                    
+                    // Validar si ambos valores coinciden con los proporcionados
+                    // Solo filtramos si los valores de storeName y location no están vacíos
+                    return (!storeName || recordStore === storeName) && 
+                           (!location || recordLocation === location);
+                  });
+
+                resolve({ data: transformedData, fileName: file.name });
+              } catch (error) {
+                reject(error);
               }
-
-              const transformedData = (results.data as Record<string, unknown>[])
-                .map(transformRow)
-                .filter(Boolean); // Filtrar valores nulos o undefined
-
-              resolve({ data: transformedData, fileName: file.name });
-            } catch (error) {
-              reject(error);
-            }
-          },
-          error: (error) => reject(new Error(`Error de parsing: ${error.message}`)),
-        });
-      }).catch((error) => {
+            },
+            error: (error) =>
+              reject(new Error(`Error de parsing: ${error.message}`)),
+          });
+        }
+      ).catch((error) => {
         // Este bloque no debería ejecutarse si la validación previa fue exitosa
         console.error(`Error inesperado procesando ${file.name}:`, error);
         throw error; // Propagar el error para detener todo el proceso
@@ -627,9 +670,11 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
 
     // Eliminar duplicados usando Map para mejor rendimiento
     const uniqueMap = new Map<string, Record<string, unknown>>();
-    
+
     allData.forEach((record) => {
-      const pspReference = record["PSP Reference"] ? String(record["PSP Reference"]) : "";
+      const pspReference = record["PSP Reference"]
+        ? String(record["PSP Reference"])
+        : "";
       // Solo guardar si la clave no existe o está vacía
       if (pspReference && !uniqueMap.has(pspReference)) {
         uniqueMap.set(pspReference, record);
@@ -639,12 +684,12 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     const uniqueData = Array.from(uniqueMap.values());
 
     // Resultados detallados por archivo
-    const fileResults: FileResult[] = processedFileNames.map(fileName => {
-      const fileData = results.find(r => r.fileName === fileName)?.data || [];
+    const fileResults: FileResult[] = processedFileNames.map((fileName) => {
+      const fileData = results.find((r) => r.fileName === fileName)?.data || [];
       return {
         fileName,
         data: fileData,
-        rowCount: fileData.length
+        rowCount: fileData.length,
       };
     });
 
@@ -654,7 +699,7 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
       processedFileNames,
       consolidatedData: uniqueData,
       totalRecords: uniqueData.length,
-      results: fileResults
+      results: fileResults,
     };
   } catch (error) {
     console.error("Error global en el procesamiento:", error);
@@ -664,6 +709,7 @@ export const processFiles = async (files: File[]): Promise<ProcessResult> => {
     };
   }
 };
+
 export const HeaderDataMocky = {
   cdc: "No seleccionada",
   location: "No seleccionado",
@@ -817,11 +863,11 @@ export const TDCDetailsMOCKData = [
       { id: 103, date: "22/05/2024 11:02", check: "4", amount: 323 },
       { id: 104, date: "22/05/2024 09:37", check: "5", amount: 405.6 },
       { id: 105, date: "22/05/2024 09:26", check: "6", amount: 104 },
-      { id: 106, date: "22/05/2024 08:57", check: "7", amount: 273.9 },
+      { id: 106, date: "22/05/2024 08:57", check: "71", amount: 273.9 },
       { id: 107, date: "22/05/2024 08:54", check: "8", amount: 203 },
-      { id: 108, date: "22/05/2024 08:45", check: "7", amount: 228.65 },
+      { id: 108, date: "22/05/2024 08:45", check: "788", amount: 228.65 },
       { id: 109, date: "22/05/2024 07:36", check: "9", amount: 95 },
-      { id: 110, date: "22/05/2024 06:43", check: "7", amount: 273.9 },
+      { id: 110, date: "28/05/24 6:21", check: "7", amount: 273.9 },
     ],
   },
 ];

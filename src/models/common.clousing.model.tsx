@@ -37,6 +37,7 @@ export interface ClousingLinesModel {
   discount: number;
   iva: number;
   closingConfirmation: boolean;
+  adyenTotal?: number;
 }
 
 export interface ClousingContextType {
@@ -47,6 +48,7 @@ export interface ClousingContextType {
   getInfo: (subsidiary: number, store: number) => void;
   dataClousing: any;
   setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
+  filterDataAdyen: (isAdyen: boolean) => void;
 }
 
 export interface HeaderContextType {
@@ -128,7 +130,9 @@ export interface ResponseModel {
 export interface ClousingLayoutProps {
   isOpen: boolean;
   onClose: () => void;
-  employee: ClousingLinesModel | null
+  employee: ClousingLinesModel | null;
+  location: number;
+  subsidiary: number;
 }
 
 export interface TableOfTotalsProps {

@@ -37,6 +37,8 @@ function TDCDetails({
   isOpen,
   onClose,
   closingConfirmation,
+  location,
+  subsidiary
 }: DetailsProp) {
   const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -351,6 +353,8 @@ function TDCDetails({
       </DialogRoot>
       <DialogFiles
         isOpen={isOpenDialogFiles}
+        location={location}
+        subsidiary={subsidiary}
         onClose={() => setIsOpenDialogFiles(false)}
       />
     </>

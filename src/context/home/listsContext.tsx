@@ -23,6 +23,7 @@ export function ListProvider({ children }: {children: ReactNode}){
       const subsidiariesData = await getSubsidiaries();
 
       setSubsidiaries(subsidiariesData);
+      console.log(subsidiariesData);
 
       return subsidiariesData;
       
@@ -64,10 +65,13 @@ export function ListProvider({ children }: {children: ReactNode}){
     () => ({
       error,
       getSubsidiariesData,
-      getStoresData
+      getStoresData,
+      subsidiaries,
+      stores
     }),
-    [error, getSubsidiariesData, getStoresData] 
+    [error, getSubsidiariesData, getStoresData, subsidiaries, stores]
   );
+
 
   return(
       <listContext.Provider value={value}>

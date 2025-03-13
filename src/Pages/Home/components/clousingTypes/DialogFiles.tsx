@@ -21,19 +21,9 @@ import { DialogFilesProps } from "@models/tdc.model";
 import { FileError } from "@zag-js/file-utils";
 import { useState } from "react";
 import { LuUpload } from "react-icons/lu";
-/* 
-interface ProcessResult {
-  success: boolean;
-  processedFiles?: number;
-  processedFileNames?: string[];
-  consolidatedData?: Record<string, unknown>[];
-  totalRecords?: number;
-  results?: FileResult[];
-  error?: string;
-} */
 
-function DialogFiles({ isOpen, onClose }: DialogFilesProps) {
-  const { fetchProcessFiles, dataFilesProcess } = useTDCAdyenContext();
+function DialogFiles({ isOpen, onClose, subsidiary, location }: DialogFilesProps) {
+  const { fetchProcessFiles } = useTDCAdyenContext();
   const fileUpload = useFileUpload({
     maxFiles: 20,
     accept: ".csv",
@@ -56,14 +46,14 @@ function DialogFiles({ isOpen, onClose }: DialogFilesProps) {
 
   const handleFileUpload = async (files: File[]) => {
     setLoading(true);
-    const data = await fetchProcessFiles(files);
+    const data = await fetchProcessFiles(files, subsidiary, location);
 
-    if (data.success === true) {
+    if (data && data.success === true) {
       fileUpload.clearFiles();
       setError("");
       onClose();
     } else {
-      setError(data.error ?? "");
+      setError(data?.error || "Error al procesar los archivos");
     }
     setLoading(false);
   };

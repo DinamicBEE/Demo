@@ -24,7 +24,11 @@ export interface TDCContextType {
 export interface TDCAdyenContextType {
   dataFilesProcess: ProcessResult;
   setDataFilesProcess: (data: ProcessResult) => void;
-  fetchProcessFiles: (Files: File[]) => Promise<ProcessResult>;
+  fetchProcessFiles: (
+    Files: File[],
+    store: number,
+    location: number
+  ) => Promise<ProcessResult | undefined>;
 }
 
 export interface TDCContext {
@@ -81,9 +85,13 @@ export interface DetailsProp {
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;
+  location: number;
+  subsidiary: number;
 }
 
 export interface DialogFilesProps {
   isOpen: boolean;
   onClose: () => void;
+  subsidiary: number;
+  location: number;
 }
