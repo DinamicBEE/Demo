@@ -14,24 +14,24 @@ import ClousingLayout from './ClousingLayout';
 
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
-    const { data, loading, error, header, getInfo, setDataRow } = useClousing();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedEmployee, setSelectedEmployee] = useState<ClousingLinesModel | null>(null);
-    
-    function handleExportCSV() {
-        exportCSV(data,header)
-    }
+  const { data, loading, error, header, getInfo, setDataRow } = useClousing();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<ClousingLinesModel | null>(null);
+  
+  function handleExportCSV() {
+      exportCSV(data,header)
+  }
 
-    const openDialog = (item: any) => {
-      setSelectedEmployee(item);
-      setIsDialogOpen(true);
-      setDataRow(item)
-    }
+  const openDialog = (item: any) => {
+    setSelectedEmployee(item);
+    setIsDialogOpen(true);
+    setDataRow(item)
+  }
 
-    const closeDialog = () => {
-      setSelectedEmployee(null);
-      setIsDialogOpen(false);
-    };
+  const closeDialog = () => {
+    setSelectedEmployee(null);
+    setIsDialogOpen(false);
+  };
 
     function statusColor(status: STATUS) {
       return getStatusColor(status);
@@ -39,11 +39,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
   return (
     <>
-      {error && (
-          <Alert status="error">
-          {error}
-          </Alert>
-      )}
+      {error && <Alert status="error">{error}</Alert>}
 
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">
@@ -134,6 +130,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                   <Table.ColumnHeader textAlign="center">Prepago</Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="center">CXC Empleados</Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="center">Intercompañia</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">Adyen</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
@@ -241,19 +238,34 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                       </Text>
                     </Table.Cell>
 
+                    <Table.Cell textAlign="end">
+                        <Text>
+                          <FormatNumber
+                            value={item.adyenTotal || 0}
+                            style="currency"
+                            currency="USD"
+                          />
+                        </Text>
+                      </Table.Cell>
+
                   </Table.Row>
                 ))}
-              </Table.Body>
-            </Table.Root>
-          </Table.ScrollArea>
-        </Box>}
+                </Table.Body>
+              </Table.Root>
+            </Table.ScrollArea>
+          </Box>
+        }
 
-        {data.length===0 && <h2>
-                    No hay data
-                </h2>}
+        {data.length === 0 && <h2>No hay data</h2>}
       </Box>
 
-      <ClousingLayout isOpen={isDialogOpen} employee={selectedEmployee} onClose={closeDialog}></ClousingLayout>
+      <ClousingLayout
+        isOpen={isDialogOpen}
+        employee={selectedEmployee}
+        onClose={closeDialog}
+        location={store}
+        subsidiary={subsidiary}
+      ></ClousingLayout>
     </>
   );
 }

@@ -9,7 +9,7 @@ import { CLOUSING_KEY } from "@models/constants.model";
 import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
 
-function TDCClousing({ data }: any) {
+function TDCClousing({ data, location, subsidiary }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null>(null);
   const [details, setDetails] = useState<boolean>(false);
@@ -20,7 +20,7 @@ function TDCClousing({ data }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const tdc: TDCModel = await getTDCData(data?.id,);
+      const tdc: TDCModel = await getTDCData(data?.id);
 
       if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
@@ -32,23 +32,20 @@ function TDCClousing({ data }: any) {
     }
 
     fetchData();
-
-  }, [tdc])
+  }, [tdc]);
 
   const openDiaolog = (id: number) => {
     setLineSeleted(id);
     setDetails(true);
-  }
+  };
 
   const closeDiaolog = () => {
     setLineSeleted(null);
     setDetails(false);
-  }
-
+  };
 
   return (
     <>
-
       <Box>
         {/* <Toaster /> */}
 
@@ -66,20 +63,27 @@ function TDCClousing({ data }: any) {
             <Table.Body>
               {tdcData?.lines?.map((item: BankLineModel) => (
                 <Table.Row key={item.id}>
-
                   <Table.Cell textAlign="center">
                     <Text>{item.bank}</Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
                     <Text>
-                      <FormatNumber value={item.POS} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={item.POS}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
                     <Text>
-                      <FormatNumber value={item.physical} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={item.physical}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Text>
                   </Table.Cell>
 
@@ -98,7 +102,6 @@ function TDCClousing({ data }: any) {
                       <LuEye />
                     </IconButton>
                   </Table.Cell>
-
                 </Table.Row>
               ))}
             </Table.Body>
@@ -110,11 +113,17 @@ function TDCClousing({ data }: any) {
             <Loading />
           </Box>
         )}
-
       </Box>
 
-      <TDCDetails clousingId={data?.id} lineId={lineSelected} isOpen={details} onClose={closeDiaolog}
-        closingConfirmation={data?.closingConfirmation} />
+      <TDCDetails
+        location={location}
+        subsidiary={subsidiary}
+        clousingId={data?.id}
+        lineId={lineSelected}
+        isOpen={details}
+        onClose={closeDiaolog}
+        closingConfirmation={data?.closingConfirmation}
+      />
     </>
   );
 }

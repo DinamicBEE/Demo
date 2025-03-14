@@ -95,7 +95,7 @@ export const getEmployees = async (): Promise<Employee[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
-            }, 5000);
+            }, 100);
         });
         
     } catch (error) {
@@ -119,7 +119,7 @@ export const getReasonClousing = async (): Promise<ReasonsModel[]> => {
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
-            }, 5000);
+            }, 100);
         });
         
     } catch (error) {
