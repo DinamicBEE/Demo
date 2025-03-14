@@ -23,8 +23,6 @@ export function ListProvider({ children }: {children: ReactNode}){
       const subsidiariesData = await getSubsidiaries();
 
       setSubsidiaries(subsidiariesData);
-      console.log(subsidiariesData);
-
       return subsidiariesData;
       
     } catch (error) {

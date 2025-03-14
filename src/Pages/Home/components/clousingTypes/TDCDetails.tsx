@@ -30,6 +30,7 @@ import DialogFiles from "./DialogFiles";
 import { useTDCAdyenContext } from "@context/clousing/tdcAdyenContext";
 import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
 import { ProcessResult } from "@models/adyen.model";
+import DialogConfirmTDC from "./DialogConfirmTDC";
 
 function TDCDetails({
   clousingId,
@@ -38,13 +39,14 @@ function TDCDetails({
   onClose,
   closingConfirmation,
   location,
-  subsidiary
+  subsidiary,
 }: DetailsProp) {
   const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
   const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
+  const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
 
   const { updateLineClousing, handleInputData } = useHandleTDC(
     clousingId,
@@ -109,21 +111,38 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      const detailsValidated: BankDetails = await validateDetails(
-        clousingId,
-        lineId,
-        detailsLocal
-      );
+      if (detailsLocal.bankName !== "ADYEN") {
+        const detailsValidated: BankDetails = await validateDetails(
+          clousingId,
+          lineId,
+          detailsLocal
+        );
 
-      setDetailsLocal(detailsValidated);
+        setDetailsLocal(detailsValidated);
 
-      setDetails(detailsValidated, clousingId, lineId);
+        setDetails(detailsValidated, clousingId, lineId);
 
-      const allSuccess = detailsValidated.details.every((item) => item.success);
+        const allSuccess = detailsValidated.details.every(
+          (item) => item.success
+        );
 
-      if (allSuccess) {
+        if (allSuccess) {
+          updateLineClousing(detailsValidated);
+          onClose();
+        
+        }
+        setIsOpenDialogSave(false);
+      } else if (detailsLocal.bankName === "ADYEN") {
+        const detailsValidated: BankDetails = await validateDetails(
+          clousingId,
+          lineId,
+          detailsLocal
+        );
+        setDetailsLocal(detailsValidated);
+        setDetails(detailsValidated, clousingId, lineId);
         updateLineClousing(detailsValidated);
         onClose();
+        setIsOpenDialogSave(false);
       }
 
       setLoading(false);
@@ -168,38 +187,36 @@ function TDCDetails({
                   <Table.Row bg="bg.subtle">
                     {detailsLocal?.bankName === "ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
-                       
-                          <Checkbox
-                            top="1"
-                            aria-label="Select row"
-                            checked={detailsLocal.details.every(
-                              (item) => item.successAdyen
-                            )}
-                            disabled={
-                              dataFilesProcess &&
-                              dataFilesProcess.consolidatedData
-                                ? false
-                                : true
-                            }
-                            onCheckedChange={(changes) => {
-                              const updatedDetails = detailsLocal.details.map(
-                                (detail) => ({
-                                  ...detail,
-                                  successAdyen: changes.checked as boolean,
-                                })
-                              );
-                              const updatedDetailsLocal = {
-                                ...detailsLocal,
-                                details: updatedDetails,
-                              };
-                              setDetailsLocal(updatedDetailsLocal);
-                              updateLocalBanksTotal(
-                                updatedDetailsLocal,
-                                setDetailsLocal
-                              );
-                            }}
-                          />
-                       
+                        <Checkbox
+                          top="1"
+                          aria-label="Select row"
+                          checked={detailsLocal.details.every(
+                            (item) => item.successAdyen
+                          )}
+                          disabled={
+                            dataFilesProcess &&
+                            dataFilesProcess.consolidatedData
+                              ? false
+                              : true
+                          }
+                          onCheckedChange={(changes) => {
+                            const updatedDetails = detailsLocal.details.map(
+                              (detail) => ({
+                                ...detail,
+                                successAdyen: changes.checked as boolean,
+                              })
+                            );
+                            const updatedDetailsLocal = {
+                              ...detailsLocal,
+                              details: updatedDetails,
+                            };
+                            setDetailsLocal(updatedDetailsLocal);
+                            updateLocalBanksTotal(
+                              updatedDetailsLocal,
+                              setDetailsLocal
+                            );
+                          }}
+                        />
                       </Table.ColumnHeader>
                     )}
                     <Table.ColumnHeader textAlign="center">
@@ -321,12 +338,6 @@ function TDCDetails({
                 <Loading />
               </Box>
             )}
-
-            {loading && (
-              <Box position="fixed" top="50%" left="50%" zIndex="1">
-                <Loading />
-              </Box>
-            )}
           </DialogBody>
 
           <DialogFooter>
@@ -339,9 +350,12 @@ function TDCDetails({
 
               <Button
                 className="secondary-button save-button"
-                loading={loading}
-                onClick={() => saveDetails()}
-                disabled={closingConfirmation}
+                //   onClick={() => saveDetails()}
+                onClick={() => setIsOpenDialogSave(true)}
+                disabled={
+                  closingConfirmation || 
+                  (detailsLocal?.bankName === "ADYEN" && !(dataFilesProcess && dataFilesProcess.consolidatedData))
+                }
               >
                 Guardar
               </Button>
@@ -356,6 +370,13 @@ function TDCDetails({
         location={location}
         subsidiary={subsidiary}
         onClose={() => setIsOpenDialogFiles(false)}
+      />
+      <DialogConfirmTDC
+        isOpen={isOpenDialogSave}
+        onAccept={saveDetails}
+        onClose={() => setIsOpenDialogSave(false)}
+        nameBank={detailsLocal?.bankName || ""}
+        loading={loading}
       />
     </>
   );

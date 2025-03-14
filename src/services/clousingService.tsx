@@ -171,7 +171,6 @@ export const validateDetails = async (
 
   try {
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
-
     let data: BankDetails;
 
     if (lineId == 3) {
@@ -182,6 +181,15 @@ export const validateDetails = async (
             ...detial,
             success: true,
             message: undefined,
+          };
+        }),
+      };
+    } else if (details.bankName === "ADYEN") {
+      data = {
+        ...details,
+        details: details.details.map((detial) => {
+          return {
+            ...detial,
           };
         }),
       };
@@ -627,18 +635,27 @@ export const processFiles = async (
                 )
                   .map(transformRow)
                   .filter(Boolean) // Filtrar valores nulos o undefined
-                  .filter(record => {
-                
+                  .filter((record) => {
                     // Filtrar por storeName y location si están presentes
-                    const recordStore = String(record["Centro de consumo"] || record["StoreName"] || record["store"] || "").trim();
-                    const recordLocation = String(record["Subsidiaria"] || record["StoreLocation"] || record["location"] || "").trim();
+                    const recordStore = String(
+                      record["Centro de consumo"] ||
+                        record["StoreName"] ||
+                        record["store"] ||
+                        ""
+                    ).trim();
+                    const recordLocation = String(
+                      record["Subsidiaria"] ||
+                        record["StoreLocation"] ||
+                        record["location"] ||
+                        ""
+                    ).trim();
 
-                    
-                    
                     // Validar si ambos valores coinciden con los proporcionados
                     // Solo filtramos si los valores de storeName y location no están vacíos
-                    return (!storeName || recordStore === storeName) && 
-                           (!location || recordLocation === location);
+                    return (
+                      (!storeName || recordStore === storeName) &&
+                      (!location || recordLocation === location)
+                    );
                   });
 
                 resolve({ data: transformedData, fileName: file.name });

@@ -53,19 +53,10 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const filterDataAdyen = useCallback((isAdyen: boolean) => {
-    console.log("Filtrar por Adyen: ", originalData);
-    console.log("Data Original: ", data);
-    console.log("Data Original: ", dataClousing);
-    
     if (isAdyen) {
-      console.log("Filtrar por Adyen: ", isAdyen);
-      console.log("Data Original: ", originalData);
-      
-      
       // Filtrar solo elementos con adyenTotal definido
       const dataAdyen = originalData.filter(
         (item) => {
-          console.log("Item: ", item);
           return item.adyenTotal !== undefined;
         }
       );

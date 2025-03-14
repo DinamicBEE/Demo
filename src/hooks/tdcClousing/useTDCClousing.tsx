@@ -39,12 +39,24 @@ export const useHandleTDC = (clousingId: number, lineId: number) => {
         0
       );
 
+      const successCount = detailsValidated.details.filter(
+        (item: BankLineDetails) => item.success
+      ).length;
+      const successCountAdyen = detailsValidated.details.filter(
+        (item: BankLineDetails) => item.successAdyen
+      )
+
+      const newPhysicalAdyen = successCountAdyen.map((item: BankLineDetails) => item.amount).reduce(
+        (acc: number, curr: number) => acc + curr,
+        0
+      );
+
       const updateLines = tdcData?.lines?.map((item: BankLineModel) =>
         lineId === item.id
           ? {
               ...item,
-              voucherAmount: detailsValidated.details.length,
-              physical: newPhysical,
+              voucherAmount: detailsValidated.bankName === "ADYEN" ? successCountAdyen.length : successCount,
+              physical: detailsValidated.bankName === "ADYEN" ? newPhysicalAdyen : newPhysical,
             }
           : item
       );

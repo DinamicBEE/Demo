@@ -95,3 +95,11 @@ export interface DialogFilesProps {
   subsidiary: number;
   location: number;
 }
+
+export interface DialogConfirmTDCProps {
+  isOpen: boolean;
+  onClose: () => void;
+  nameBank: string;
+  onAccept: () => void;
+  loading: boolean;
+}

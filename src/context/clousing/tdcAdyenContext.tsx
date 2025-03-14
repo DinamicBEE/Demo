@@ -50,8 +50,6 @@ export function TDCAdyenClousingProvider({
 
       const data = await processFiles(Files, storeName, locationName);
       setDataFilesProcess(data);
-      console.log(data);
-      
       return data;
     },
     []
