@@ -1,12 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { EmployeeFilterProps } from "@models/employee.model";
 import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
-import {
-	SelectLabel,
-	SelectRoot,
-	SelectTrigger,
-	SelectValueText,
-	SelectContent, SelectItem,
+import { SelectLabel, SelectRoot, SelectTrigger,
+    SelectValueText, SelectContent, SelectItem,
   } from "@components/ui/select"
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
@@ -14,8 +10,6 @@ function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, di
 	const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
 	const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
 	const searchRef = useRef<string>('');
-
-	console.log(disabled)
 
 	useEffect(() => {
 		const employeeCollection = createListCollection({

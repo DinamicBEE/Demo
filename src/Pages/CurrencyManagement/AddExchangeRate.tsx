@@ -1,4 +1,4 @@
-import { Button, createListCollection, Field, Grid, Group, Input, InputAddon, ListCollection, Skeleton, HStack, } from "@chakra-ui/react";
+import { Button, createListCollection, Field, Grid, Group, Input, InputAddon, ListCollection, Skeleton, } from "@chakra-ui/react";
 import {
     SelectLabel,
     SelectRoot,
@@ -11,18 +11,18 @@ import { es } from "date-fns/locale/es";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, DialogTitle } from "@components/ui/dialog";
 import { CurrencyModel } from "@models/common.clousing.model";
+import { getCurrencyData, newRegister } from "@services/currencyService";
+import { AddExchangeRateProps, CurrenciesDataModel, NewExchangeRate } from "@models/currencyManagement.model";
+import { CurrencyInput } from "@components/NumericInput";
 registerLocale("es", es);
-
-interface AddExchangeRateProps {
-    isOpen:boolean; 
-    onClose: () => void;
-    curriesProps: CurrencyModel[] | [];
-}
 
 function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>([])
+  const [currency, setCurrency] = useState<CurrencyModel>()
   const [startDate, setStartDate] = useState<Date | null>(null);
+  const [currencyData, setCurrencyData] = useState<NewExchangeRate | null>(null);
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false);
   
   useEffect(()=>{
     let createCurrenciList = createListCollection({
@@ -32,10 +32,83 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
     setCurrencies(curriesProps);
   },[curriesProps])
 
-  const handleChange = (date: Date | null) => {
+  function handleChange(date: Date | null) {
     console.log(date);
     setStartDate(date);
   };
+
+  function selectCurrency(value: any) {
+    const selectValue = value[0];
+    console.log(selectValue);
+    const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0];
+
+    setCurrency(newCurrency);
+  }
+
+  async function fectCurrencyData(){
+    setConfirmLoading(true);
+
+    if (startDate && currency) {
+      const data = await getCurrencyData(startDate, currency.value);
+      
+      const newRegister: NewExchangeRate = {
+        ...data,
+        newTotalSale: data.totalSale,
+        newExchangeRate: data.exchangeRate,
+        userId: 0,
+        currencyId: currency.value
+      }
+      setCurrencyData(newRegister);
+      setConfirmLoading(false);
+    }
+  }
+
+  function handleNewExchangeRate(event: any){
+    let value = event.target.value;
+
+    value = value.replace(/^-/, '');
+
+    const decimalParts = value.split('.');
+    if (decimalParts.length > 1) {
+      value = `${decimalParts[0]}.${decimalParts[1].slice(0, 2)}`;
+    }
+
+    const numericValue = parseFloat(value);
+ 
+    if(currencyData && numericValue){
+
+      const newExchangeRate = numericValue;
+      const rawTotalSale = (currencyData.totalSale / currencyData.exchangeRate) * newExchangeRate;
+
+      const newTotalSale = Math.ceil(rawTotalSale * 100) / 100;
+
+      setCurrencyData({
+        ...currencyData,
+        newExchangeRate: newExchangeRate,
+        newTotalSale: newTotalSale
+      });
+    }
+  }
+
+  async function handleSave(){
+
+    const fakedata:CurrenciesDataModel={
+      id: 1,
+      date: "14/03/2025",
+      currency: currency?.label || "",
+      employee: "Juan Prueba",
+      exchangeRate: currencyData?.exchangeRate || 0,
+      newExchangeRate: currencyData?.newExchangeRate || 0,
+      totalSales: currencyData?.totalSale || 0,
+      newTotalSales: currencyData?.newTotalSale || 0
+    }
+    const response = await newRegister(fakedata);
+    //const response = await newRegister(currencyData);
+    if(response){
+      setCurrencyData(null);
+      onClose();
+    }
+  }
 
   return (
     <DialogRoot
@@ -51,7 +124,7 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
           <DialogTitle>Nuevo tipo de cambio</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <HStack w="100%">
+
           <Grid
             templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
             gap={4}
@@ -61,7 +134,7 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
             alignItems="end"
           >
             <Field.Root w="100%">
-              <Field.Label>Seleccione rango de fechas</Field.Label>
+              <Field.Label>Seleccione fecha</Field.Label>
               <DatePicker
                 selected={startDate}
                 onChange={(ev) => handleChange(ev)}
@@ -69,8 +142,10 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
               />
             </Field.Root>
 
-            <SelectRoot collection={currenciesForSelect || createListCollection({ items: [] })}>
-              <SelectLabel>Select framework</SelectLabel>
+            <SelectRoot collection={currenciesForSelect || createListCollection({ items: [] })}
+              onValueChange={(e) => selectCurrency(e.value)}
+            >
+              <SelectLabel>Seleccionar moneda</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder={"Seleccionar moneda"} />
               </SelectTrigger>
@@ -83,37 +158,34 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
               </SelectContent>
             </SelectRoot>
 
-            <Button colorPalette="meraInfo"> Buscar </Button>
+            <Button 
+              colorPalette="meraInfo" 
+              loading={confirmLoading} 
+              loadingText="Buscando..." 
+              onClick={()=>fectCurrencyData()}
+            > Buscar </Button>
           </Grid>
-          </HStack>
-          <Grid
+
+          {currencyData && <Grid
             templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
             gap={4}
             mb={4}
             w="100%"
             alignItems="end"
           >
-            <Group w="100%">
-              <InputAddon>Total de ventas </InputAddon>
-              <Skeleton loading={false}>
-                <Input placeholder="No seleccionada" defaultValue={data.totalSales} />
-              </Skeleton>
-            </Group>
 
-            <Input placeholder="tipo de cambio" defaultValue={"2550"} />
+            <CurrencyInput name="Total de ventas" value={currencyData.totalSale} loading={false} />
 
-            <Group w="100%">
-              <InputAddon>Total de ventas {"Moneda"} </InputAddon>
-              <Skeleton loading={false}>
-                <Input placeholder="No seleccionada" defaultValue={"2550"} />
-              </Skeleton>
-            </Group>
-          </Grid>
+            <Input type="number" min="0" step="0.01" placeholder="tipo de cambio" value={currencyData.newExchangeRate} onChange={(e) => handleNewExchangeRate(e)}/>
+
+            <CurrencyInput name={`Total de ventas ${currency?.label}`} value={currencyData.newTotalSale} loading={false} />
+
+          </Grid>}
           
         </DialogBody>
         <DialogFooter>
           <Button colorPalette="meraError" onClick={onClose}> Cancelar </Button>
-          <Button colorPalette="meraPrimary"> Guardar </Button>
+          <Button colorPalette="meraPrimary" onClick={()=>handleSave()} > Guardar </Button>
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
@@ -122,7 +194,3 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
 
 export default AddExchangeRate;
 
-const data = {
-  totalSales: 2550,
-  exchangeRate: 20.5
-}

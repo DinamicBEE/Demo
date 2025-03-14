@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, ListCollection, createListCollection, SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem  } from "@chakra-ui/react";
-import { Toaster } from "@components/ui/toaster";
+import { Box, Table, Text, FormatNumber, ListCollection, createListCollection } from "@chakra-ui/react";
+import { SelectRoot, SelectTrigger,
+  SelectValueText, SelectContent, SelectItem,
+} from "@components/ui/select"
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";

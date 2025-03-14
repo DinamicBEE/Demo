@@ -1,6 +1,6 @@
-import { LuClipboardCheck, LuClipboardList, LuContainer, LuHouse, LuColumns4 } from "react-icons/lu";
+import { LuClipboardCheck, LuClipboardList, LuContainer } from "react-icons/lu";
 import { PiCashRegisterLight } from "react-icons/pi";
-import { GiCash } from "react-icons/gi";
+import { MdCurrencyExchange } from "react-icons/md";
 import { VscGraph } from "react-icons/vsc";
 
 export const ALERTCLOUSING_MODEL = {
@@ -35,5 +35,5 @@ export const menuItems = [
   { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: [2] },
   { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: [1] },
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: [1,2] },
-  { name: 'Gestión de moneda', path: '/currencymanagement', icon:<VscGraph />, roles: [1] },
+  { name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: [1] },
 ];

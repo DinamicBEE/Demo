@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import FilterEmployee from "@components/FilterEmployee";
-import { Box, createListCollection, Group, Input, InputAddon, ListCollection, SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText, Stack } from "@chakra-ui/react";
+import { Box, createListCollection, Group, Input, InputAddon, ListCollection, Stack } from "@chakra-ui/react";
+import { SelectLabel, SelectRoot, SelectTrigger,
+    SelectValueText, SelectContent, SelectItem,
+  } from "@components/ui/select"
 import { AddEmployeeProp, Employee, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";

@@ -16,6 +16,8 @@ import { Employee } from "@models/employee.model";
 import { getCurrencies, getEmployees } from "@services/catalogService";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { CurrencyModel } from "@models/common.clousing.model";
+import { CurrenciesDataModel } from "@models/currencyManagement.model";
+import { getCurrenciesExchangeRate } from "@services/currencyService";
 registerLocale("es", es);
 
 const pageSize = 5
@@ -29,21 +31,34 @@ function CurrencyManagement() {
     const [open, setOpen] = useState<boolean>(false);
 
     const [page, setPage] = useState(1)
+    const [dataBase, setDataBase] = useState<CurrenciesDataModel[]>([])
+    const [visibleItems, setVisibleItems] = useState<CurrenciesDataModel[]>([])
 
     const startRange = (page - 1) * pageSize
     const endRange = startRange + pageSize
+    
+    useEffect(()=>{
+      async function fetchData() {
 
-    const visibleItems = data.slice(startRange, endRange)
+        const data = await getCurrenciesExchangeRate("body");
+        console.log(data);
+        setDataBase(data);
+        const items = data?.slice(startRange, endRange)//data.slice(startRange, endRange)
+        setVisibleItems(items)
 
+      }
+      fetchData();
+    },[])
+    
     useEffect(()=>{
       async function fetchData() {
         const employeeList: Employee[] =  await getEmployees();
         const currencies = await getCurrencies();
-
+        
         let createCurrenciList = createListCollection({
           items: currencies
         });
-
+               
         setEmployees(employeeList);
         setcurrenciesForSelect(createCurrenciList);
         setCurrencies(currencies);
@@ -52,6 +67,10 @@ function CurrencyManagement() {
       fetchData();
 
     },[currenciesLocal])
+
+    useEffect(() => {
+      handleDataVisible(page)
+    }, [page])
 
     const handleChange = (date: Date | null) => {
       console.log(date);
@@ -64,6 +83,12 @@ function CurrencyManagement() {
   
     const closeDiaolog = () => {
       setOpen(false);
+    }
+
+    const handleDataVisible = (page: number) => {
+      setPage(page);
+      const items = dataBase.slice(startRange, endRange)
+      setVisibleItems(items)
     }
 
     return (
@@ -89,7 +114,7 @@ function CurrencyManagement() {
             </Field.Root>
 
             <SelectRoot collection={currenciesForSelect || createListCollection({ items: [] })}>
-              <SelectLabel>Select framework</SelectLabel>
+              <SelectLabel>Seleccionar moneda</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder={"Seleccionar moneda"} />
               </SelectTrigger>
@@ -113,11 +138,11 @@ function CurrencyManagement() {
             w="100%"
           >
             <GridItem colSpan={1}></GridItem>
-            <Button
+            {/* <Button
               colorPalette="meraInfo"
             >
               Exportar a CSV
-            </Button>
+            </Button> */}
 
             <Button
               colorPalette="meraPrimary"
@@ -195,7 +220,7 @@ function CurrencyManagement() {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
-          <PaginationRoot count={data.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+          <PaginationRoot count={dataBase.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
             <HStack>
               <PaginationPrevTrigger />
               <PaginationItems />
@@ -211,23 +236,3 @@ function CurrencyManagement() {
 }
 
 export default CurrencyManagement;
-
-const data = [
-  {id: 1, date: "10/12/2024", currency: "USD", employee: "Juan Perez", exchangeRate: 20.5, newExchangeRate: 21.5, totalSales: 2550, newTotalSales: 2650},
-  {id: 2, date: "11/12/2024", currency: "USD", employee: "Juan Perez", exchangeRate: 21.5, newExchangeRate: 19.5, totalSales: 3550, newTotalSales: 3219.77},
-  {id: 3, date: "12/12/2024", currency: "USD", employee: "Manuel Poot", exchangeRate: 19.5, newExchangeRate: 21, totalSales: 5500, newTotalSales: 5923.08},
-  {id: 4, date: "13/12/2024", currency: "USD", employee: "Manuel Poot", exchangeRate: 21, newExchangeRate: 20.65, totalSales: 1750, newTotalSales: 1720.83},
-  {id: 5, date: "10/12/2024", currency: "EUR", employee: "Juan Perez", exchangeRate: 23.5, newExchangeRate: 23, totalSales: 3550, newTotalSales: 3425.53},
-  {id: 6, date: "12/12/2024", currency: "EUR", employee: "Juan Perez", exchangeRate: 23, newExchangeRate: 22.5, totalSales: 7500, newTotalSales: 7336.96},
-  {id: 7, date: "16/12/2024", currency: "EUR", employee: "Manuel Poot", exchangeRate: 22.5, newExchangeRate: 23.5, totalSales: 15500, newTotalSales: 16188.89},
-  {id: 8, date: "18/12/2024", currency: "EUR", employee: "Manuel Poot", exchangeRate: 23.5, newExchangeRate: 23, totalSales: 3750, newTotalSales: 2370.21},
-]
-
-const frameworks = createListCollection({
-    items: [
-      { label: "React.js", value: "react" },
-      { label: "Vue.js", value: "vue" },
-      { label: "Angular", value: "angular" },
-      { label: "Svelte", value: "svelte" },
-    ],
-  })
