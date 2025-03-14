@@ -4,7 +4,6 @@ import { SelectRoot, SelectTrigger,
     SelectValueText, SelectContent, SelectItem,
   } from "@components/ui/select"
 import { TableInput } from "@components/NumericInput";
-import Loading from "@components/loading";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
@@ -12,6 +11,7 @@ import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { CLOUSING_KEY } from "@models/constants.model";
+import Loading from "@components/Loading";
 
 function CustomersClousing({ data }: any) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
@@ -65,7 +65,7 @@ function CustomersClousing({ data }: any) {
               <Table.Row key={item.id}>
 
                 <Table.Cell textAlign="center">
-                  <Text>{item.customers}</Text>
+                  <Text>{item.nameClient}</Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
@@ -96,7 +96,7 @@ function CustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.valuePAX} id={item.id} currency={false} onChange={handleAmountPAX} disabled={data?.closingConfirmation}/>
+                    <TableInput value={item.pax} id={item.id} currency={false} onChange={handleAmountPAX} disabled={data?.closingConfirmation}/>
                   </Text>
                 </Table.Cell>
 

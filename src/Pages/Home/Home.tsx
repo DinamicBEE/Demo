@@ -19,10 +19,10 @@ import Loading from '@components/Loading';
 
 function Home() {
     const [subsidiary, setSubsidiary] = useState<ListCollection>(createListCollection({ items: [] }));
-    const [SubSelect, setSubSelect] = useState<number>(0);
-    const [stores, setStores] = useState<StoreModel[]>([])
     const [storeBySub, setStoreBySub] = useState<ListCollection>(createListCollection({ items: [] }));
+    const [SubSelect, setSubSelect] = useState<number>(0);
     const [location, setLocation] = useState<number>(0);
+    const [stores, setStores] = useState<StoreModel[]>([])
     const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
     const [showTable, setShowTable] = useState<boolean>(false);
     const { getInfo } = useClousing();
@@ -46,9 +46,9 @@ function Home() {
             
             setSubsidiary(subList);
 
-            const storeData = await getStoresData()
+            // const storeData = await getStoresData()
 
-            setStores(storeData);
+            // setStores(storeData);
 
             setCatalogLoading(false);
 
@@ -58,31 +58,65 @@ function Home() {
 
     },[])
 
-    function filterStore(event: ValueChangeDetails<any>) {
-      const subSelect = Number(event.value[0]);
-
-      setSubSelect(subSelect)
-      const selectedId = subSelect;
-
+    async function filterStore(event: ValueChangeDetails<any>) {      
+      const selection = Number(event.value[0]);
+      
+      setSubSelect(selection);
+      // const selectedId = subSelect;
+      // console.log(SubSelect, selection);
+      
+      // TODO: Guardar las tiendas encontradas en stores para no repetir búsquedas
       let storeBySubsidiary = stores.filter(
-        (item) => item.subsidiary.id === selectedId
+        (item) => item.subsidiary === selection
       );
-
-      if (storeBySubsidiary.length > 0) {
-        const mappedStores = storeBySubsidiary.map((item) => ({
+      if (storeBySubsidiary.length == 0) {
+        const newLocs = await fetchLocations(selection);
+        const mappedStores = newLocs.map((item: { name: string; id: number; }) => ({
           value: item.id,
           label: item.name,
-        }));
+        }));        
         
         let storeFilter = createListCollection({
           items: mappedStores,
         });
 
+        const newLocations = newLocs.map( loc => {
+          return {
+            ...loc,
+            subsidiary: selection
+          }
+        });
+
+        setStores((prev) => [...prev, ...newLocations]);
+
         setStoreBySub(storeFilter);
 
-      } else {
+      } else if(storeBySubsidiary.length > 0) {
+        const mappedStores = storeBySubsidiary.map((item: { name: string; id: number; }) => ({
+          value: item.id,
+          label: item.name,
+        }));
+        let storeFilter = createListCollection({
+          items: mappedStores,
+        });
+        setStoreBySub(storeFilter);
+        } else {
         console.warn("No se encontraron tiendas para esta subsidiaria.");
+
       }
+
+    }
+
+    async function fetchLocations(subId: number) {
+      
+      setCatalogLoading(true);
+      const locationsData = await getStoresData(subId);
+      
+      // setStores((prev) => locationsData);
+
+      setCatalogLoading(false);
+
+      return Promise.resolve(locationsData);
 
     }
 
@@ -117,7 +151,7 @@ function Home() {
                         alignItems="end"
                     >
 
-                        {!catalogLoading && <SelectRoot collection={subsidiary}
+                        {subsidiary.items.length > 0 && <SelectRoot collection={subsidiary}
                             onValueChange={(event) => filterStore(event)}
                         >
                             <SelectLabel fontFamily="heading">Selecciona Subsidiaria</SelectLabel>
@@ -141,9 +175,9 @@ function Home() {
                                 <SelectValueText placeholder="Selecciona Centro de consumo" />
                             </SelectTrigger>
                             <SelectContent>
-                                {storeBySub.items.map((movie) => (
-                                    <SelectItem item={movie} key={movie.value}>
-                                        {movie.label}
+                                {storeBySub.items.map((item) => (
+                                    <SelectItem item={item} key={item.value}>
+                                        {item.label}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

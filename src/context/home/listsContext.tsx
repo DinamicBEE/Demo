@@ -36,15 +36,16 @@ export function ListProvider({ children }: {children: ReactNode}){
 
   },[subsidiaries])
 
-  const getStoresData = useCallback( async()=>{
+  const getStoresData = useCallback( async(subId = 0)=>{
+    // console.log("entramos listConstext");
 
-    if(stores.length>1){
-      return stores;
-    }
+      // if(stores.length>1){
+      //   return stores;
+      // }
 
     try {
-
-      const storesData = await getStores();
+      
+      const storesData = await getStores(subId!);
 
       setStores(storesData)
 

@@ -31,7 +31,7 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
         try {
             
             const data = await getCustomerClousing(clousingId);
-
+            
             
             const updateCustomer = {
                 ...customerRef.current,

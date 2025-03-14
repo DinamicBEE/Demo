@@ -14,10 +14,10 @@ export interface CustomerContext {
 
 export interface CustomerLines {
     id: number;
-    customers: string;
+    nameClient: string;
     coupons: number;
     currency: string;
-    valuePAX: number;
+    pax: number;
     amount: number;
     exchangeRate: number;
     amountMXN: number;
@@ -25,7 +25,7 @@ export interface CustomerLines {
 
 export interface CustomerModel {
     id: number;
-    employeeId: number;
+    employeeId?: number;
     total: TotalModel;
     lines: CustomerLines[]
 }
