@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Box, Button, FormatNumber, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table, Tag, Text } from '@chakra-ui/react'
 import { exportCSV } from '@services/homeService'
 import { useClousing } from '@context/home/clousingContext';
-import ClousingLayout from './ClousingLayout';
 import { Alert } from '@components/ui/alert';
 import { CurrencyInput } from '@components/NumericInput';
 import { ClousingLinesModel, TableOfTotalsProps } from '@models/common.clousing.model';
@@ -10,11 +9,12 @@ import Loading from '@components/Loading';
 import '../Home.css'
 import { STATUS } from '@models/status.model';
 import { getStatusColor } from '../../../utils/getStatusColor';
+import ClousingLayout from './ClousingLayout';
 
 
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
 
-    const { data, loading, error, header, getInfo } = useClousing();
+    const { data, loading, error, header, getInfo, setDataRow } = useClousing();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState<ClousingLinesModel | null>(null);
     
@@ -25,6 +25,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
     const openDialog = (item: any) => {
       setSelectedEmployee(item);
       setIsDialogOpen(true);
+      setDataRow(item)
     }
 
     const closeDialog = () => {

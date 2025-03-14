@@ -47,13 +47,15 @@ export interface ClousingContextType {
   getInfo: (subsidiary: number, store: number) => void;
   dataClousing: any;
   setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
+  dataRow: any
+  setDataRow: any
 }
 
 export interface HeaderContextType {
   header: HeaderContext
   error: string;
   loading: boolean;
-  getHeader: (clousingId: number) => Promise<HeaderData>;
+  getHeader: (clousingData: ClousingLinesModel) => HeaderData;
   updateTotal: (newtotal: number, clousingId: number, clousingType: CLOUSING_KEY) => void;
 }
 
@@ -140,4 +142,13 @@ export interface ConfirmDialogProps {
     isOpen: boolean,
     closeDialog: () => void,
     sendData: () => void
+}
+
+export interface CustomerClousingFormProps { 
+  isOpen: boolean;
+  onClose: () => void;
+  dataCustomer: any;
+  setCustomersData: any;
+  message?: string;
+  title?: string;
 }

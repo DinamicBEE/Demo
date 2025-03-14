@@ -7,7 +7,6 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/loading";
 import { Employee } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import FilterEmployee from "@components/FilterEmployee";
@@ -16,6 +15,8 @@ import { useList } from "@context/home/listsContext";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
+import Loading from "@components/Loading";
+
 
 function IntercompanyClousing({data}: any) {
   const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
@@ -52,6 +53,7 @@ function IntercompanyClousing({data}: any) {
       
       setSubsidiary(subList);
       setLoading(false);
+      updateTotal(intercompanyData.total.totalPhysical, data.id, CLOUSING_KEY.INTERCOMPANY);
 
     }
 

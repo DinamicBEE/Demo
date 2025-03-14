@@ -1,4 +1,4 @@
-import { Group, Input, InputAddon } from "@chakra-ui/react";
+import { Group, HStack, Input, InputAddon, Stack } from "@chakra-ui/react";
 import { Skeleton } from "@components/ui/skeleton";
 import { CurrencyInputProps, TableInputProps } from "@models/common.model";
 import { NumericFormat } from 'react-number-format';
@@ -47,30 +47,58 @@ function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInput
                         }
                     }}
                 />
-            </Skeleton>    
+            </Skeleton>
         </Group>
     );
 }
 
-function TableInput({value, id, currency, keyValue, onChange, disabled}: TableInputProps){
-    return(
+function TableInput({ value, id, currency, keyValue, onChange, disabled }: TableInputProps) {
+    return (
         <NumericFormat
-        disabled={disabled || false}
-        customInput={Input}
-        thousandSeparator=","
-        decimalSeparator="."
-        prefix={currency ? "$": ""} 
-        textAlign="end"
-        decimalScale={currency ? 2 : 0} fixedDecimalScale
-        value={value  || 0}
-        onChange={(event) => {
-            if (onChange) {
-                const eventValue = event.target.value;
-                onChange(id, eventValue, keyValue);
-            }}
-        }
-      />
+            disabled={disabled || false}
+            customInput={Input}
+            thousandSeparator=","
+            decimalSeparator="."
+            prefix={currency ? "$" : ""}
+            textAlign="end"
+            decimalScale={currency ? 2 : 0} fixedDecimalScale
+            value={value || 0}
+            onChange={(event) => {
+                if (onChange) {
+                    const eventValue = event.target.value;
+                    onChange(id, eventValue, keyValue);
+                }
+            }
+            }
+        />
     );
 }
 
-export {CurrencyInput, EditableCurrencyInput, TableInput};
+function CurrencyInputNumber({ name, value, onChange, currency = false, allowDecimals = true, }:
+    CurrencyInputProps & {
+        onChange?: (floatValue: number | undefined) => void;
+        allowDecimals?: boolean;
+    }) {
+
+    return (
+        <NumericFormat
+            customInput={Input}
+            thousandSeparator=","
+            decimalSeparator="."
+            prefix={currency ? "$" : ""}
+            textAlign="start"
+            value={value || ""}
+            placeholder={name}
+            allowNegative={false} // Evita valores negativos
+            decimalScale={allowDecimals ? 2 : 0} // Controla la cantidad de decimales
+            fixedDecimalScale={allowDecimals} // Fija la cantidad de decimales solo si están permitidos
+            onValueChange={(values) => {
+                if (onChange) {
+                    onChange(values.floatValue); // Asegura que se pase un número
+                }
+            }}
+        />
+    );
+}
+
+export { CurrencyInput, EditableCurrencyInput, TableInput, CurrencyInputNumber };

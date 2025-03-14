@@ -17,6 +17,7 @@ export const getGeneralInfo = async (subsidiary:number, store:number): Promise<C
     try {
         // console.log(subsidiary, store)
         //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
+        //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
         const response = homeData;
 
         //return response.data
@@ -69,17 +70,17 @@ const homeData = {
     storeName: "Tienda 01",
     date: "30/12/24",
     time: "15:40",
-    totalPOS: 15000,
-    totalPhysical: 15000,
+    totalPOS: 233048.2,
+    totalPhysical: 233048.2,
     difference: 0,
   },
   clousingLines: [
     {
       id: 1,
       employe: "Mario Vásquez",
-      totalPOS: 2500,
-      totalPhysical: 2500,
-      difference: 0,
+      totalPOS: 46609.64,
+      totalPhysical: 0,
+      difference: 46609.64,
       status: "Abierto",
       extra: 0,
       mxm: 0,
@@ -95,15 +96,15 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
-      closingConfirmation: false
+      closingConfirmation: false,
     },
     {
       id: 2,
       employe: "Franklin Cardona",
-      totalPOS: 2500,
-      totalPhysical: 2500,
-      difference: 0,
-      status: "Cerrado",
+      totalPOS: 46609.64,
+      totalPhysical: 0,
+      difference: 46609.64,
+      status: "Abierto",
       extra: 0,
       mxm: 0,
       usd: 0,
@@ -118,15 +119,15 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
-      closingConfirmation: false
+      closingConfirmation: false,
     },
     {
       id: 3,
       employe: "Luis Castillo",
-      totalPOS: 2500,
-      totalPhysical: 2500,
-      difference: 0,
-      status: "Reabierto",
+      totalPOS: 46609.64,
+      totalPhysical: 0,
+      difference: 46609.64,
+      status: "Abierto",
       extra: 0,
       mxm: 0,
       usd: 0,
@@ -141,15 +142,15 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
-      closingConfirmation: false
+      closingConfirmation: false,
     },
     {
       id: 4,
       employe: "Gerardo Flores",
-      totalPOS: 2500,
-      totalPhysical: 2500,
-      difference: 0,
-      status: "Con Diferencia",
+      totalPOS: 46609.64,
+      totalPhysical: 0,
+      difference: 46609.64,
+      status: "Abierto",
       extra: 0,
       mxm: 0,
       usd: 0,
@@ -164,7 +165,7 @@ const homeData = {
       service: 10,
       discount: 150,
       iva: 150,
-      closingConfirmation: false
+      closingConfirmation: false,
     },
   ],
 };
