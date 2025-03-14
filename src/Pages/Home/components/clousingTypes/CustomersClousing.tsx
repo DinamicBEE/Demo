@@ -83,7 +83,7 @@ function CustomersClousing({ data }: any) {
 
                     <SelectContent>
                       {currenciesForSelect && Array.from(currenciesForSelect).map((item) => (
-                        <SelectItem item={item} key={item.id}>
+                        <SelectItem item={item} key={item.value}>
                           {item.label}
                         </SelectItem>
                       ))}

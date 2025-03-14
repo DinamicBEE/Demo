@@ -30,7 +30,6 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
 
         try {
             
-          console.log("entramos contexto cieres");
             const data = await getCustomerClousing(clousingId);
             
             

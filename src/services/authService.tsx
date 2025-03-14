@@ -21,9 +21,7 @@ export const loginUser = async (
       MODE === "LOCAL"
         ? { email: login, password }
         : { login, password }
-    );
-    console.log(response.config.data);
-    
+    );    
     const loginInfo = JSON.parse(response.config.data);
     Cookies.set("username", loginInfo.login);
     return response.data;

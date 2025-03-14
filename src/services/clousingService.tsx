@@ -202,19 +202,18 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
   // console.log(clousingId)
   
   try {
-      const response = await api.get(CLIENTS, {
+      const response = CustomerMOCKData;
+      /* const response = await api.get(CLIENTS, {
           params: {idCashRegisterClosure: clousingId},
       });
-      const lines = response.data;
-      console.log(response);
+      const lines = response.data; */
       
       //TODO: Validar la estructura de datos que regresara la API
-      const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
+      /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
       const newTotalFisico = lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0);
       const newDiff = Number(newTotalPOS - newTotalFisico);
 
       const data = {
-          //...response.data,
           id: clousingId,
           total: {
             totalPOS: newTotalPOS,
@@ -222,11 +221,12 @@ export const getCustomerClousing = async (clousingId: number): Promise<CustomerM
             difference: Number(newDiff)
           },
           lines: [...lines],
-          // globalTotalPOS: newTotalPOS,
-          // globalTotalFisico: newTotalFisico,
-          // globalDifference: response.globalTotalPOS - newTotalFisico,
+      } */
+
+      const data = {
+        ...response
       }
-      
+
       return data;
 
   } catch (error) {
@@ -542,24 +542,24 @@ export const CustomerMOCKData = {
       pax: 0,
       amount: 0,
       exchangeRate: 0,
-      ammountMXN: 0,
+      amountMXN: 0,
     },
     {
       id: 3,
-      customers: "SUNWING",
+      nameClient: "SUNWING",
       coupons: 0,
       currency: "",
-      valuePAX: 0,
+      pax: 0,
       amount: 0,
       exchangeRate: 0,
       amountMXN: 0,
     },
     {
       id: 4,
-      customers: "VIVA AEROBUS",
+      nameClient: "VIVA AEROBUS",
       coupons: 0,
       currency: "",
-      valuePAX: 0,
+      pax: 0,
       amount: 0,
       exchangeRate: 0,
       amountMXN: 0,
