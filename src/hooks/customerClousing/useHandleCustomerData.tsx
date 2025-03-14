@@ -21,10 +21,6 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.label || "";
     const newExchangeRage = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
 
-    console.log('divisa', currencies)
-    console.log('nueva divisa:', newCurrency);
-    console.log('nueva rango cambiaria', newExchangeRage)
-
     if (!customerData) return;
 
     const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
@@ -98,12 +94,11 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     updateContext(updatedCurrencies);
   }
 
-
   function addCustomerRecord(newCustomer: CustomerForm, currencies: CurrencyModel[] | undefined) {
 
     if (!customerData) return;
 
-    const currency = currencies?.find((item) => item.value === newCustomer.currency);
+    const currency = currencies?.find((item) => item.value === Number(newCustomer.currency));
     const exchangeRate = currency?.exchangeRate || 1;
 
     const newRecord: CustomerLines = {
@@ -120,9 +115,9 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const updatedCustomerData = { ...customerData, lines: [...customerData.lines, newRecord], };
 
     setCustomer(updatedCustomerData);
-    
+
     customerRef.current = updatedCustomerData;
-    
+
     setCustomerData(updatedCustomerData, clousingId);
 
     updateContext(updatedCustomerData.lines);
