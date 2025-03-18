@@ -16,6 +16,7 @@ import { useClousing } from "@context/home/clousingContext";
 import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "./ConfirmDialog";
 import Loading from "@components/Loading";
+import { ClousingSave } from "@models/saveClousing.model";
 
 
 function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirmation }: FooterClousing) {
@@ -56,15 +57,15 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
-    const body = {
+    const body: ClousingSave = {
       id: clousingId,
-      cash: cash,
-      tdc: tdc,
-      customer: customer,
-      specialCustomer: specialCustomer,
-      employee: employee,
-      prepaid: prepaid,
-      intercompany: intercompany
+      cash: {
+         electronicTips: cash.electronicTips,
+         lines: cash.currencies,
+         tips: cash.tips,
+         total: cash.total,
+
+      }
     };
 
     //console.log(body)
