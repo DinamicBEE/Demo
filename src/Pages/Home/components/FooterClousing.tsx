@@ -17,6 +17,12 @@ import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "./ConfirmDialog";
 import Loading from "@components/Loading";
 import { ClousingSave } from "@models/saveClousing.model";
+import { CustomerLines } from "@models/customer.model";
+import { IntercompanyLine } from "@models/intercompany.model";
+import { BankLineModel } from "@models/tdc.model";
+import { PrepaidLineModel } from "@models/prepaid.model";
+import { EmployeeLine } from "@models/employee.model";
+import { SpecialCustomerLines } from "@models/specialCustome.model";
 
 function FooterClousing({
   clousingType,
@@ -59,6 +65,64 @@ function FooterClousing({
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
+    const mapCustomerLines = (lines: CustomerLines[]) =>
+      lines.map(
+        ({ nameClient: customers, pax: valuePAX, currency, ...rest }) => ({
+          ...rest,
+          customers,
+          valuePAX,
+          currency: Number(currency),
+        })
+      );
+
+    const mapIntercompanyLines = (lines: IntercompanyLine[]) => lines;
+
+    const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
+      lines.map(
+        ({
+          ammountMXN: amountMXN,
+          ammountUSD: valueUSD,
+          ammount: value,
+          bill: consumption,
+          check: Check,
+          couponFolio: folioCuopon,
+          couponPrice: priceCuopon,
+          pax: PAX,
+          couponFolioUSD: folioCuoponUSD,
+          ...rest
+        }) => ({
+          ...rest,
+          amountMXN,
+          valueUSD,
+          value,
+          consumption,
+          Check,
+          folioCuopon,
+          folio: folioCuopon,
+          priceCuopon,
+          PAX,
+          folioCuoponUSD,
+        })
+      );
+
+    const mapEmployeeLines = (lines: EmployeeLine[]) =>
+      lines.map(({ employeeCode, reason, ticket, ...rest }) => ({
+        ...rest,
+        employeeId: Number(employeeCode),
+        reasonId: Number(reason),
+        ticketId: ticket ? Number(ticket) : null,
+      }));
+
+    const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
+      lines.map((line) => ({
+        ...line,
+        isEdit: line.isEdit ?? false,
+      }));
+
+
+    const mapTdcLines = (lines: BankLineModel[]) => lines;
+
+
     const body: ClousingSave = {
       id: clousingId,
       cash: {
@@ -68,89 +132,30 @@ function FooterClousing({
         total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
       customer: {
-        lines: customer.lines.map((line) => ({
-          amount: line.amount,
-          currency: Number(line.currency),
-          exchangeRate: line.exchangeRate,
-          id: line.id,
-          amountMXN: line.amountMXN,
-          coupons: line.coupons,
-          customers: line.nameClient,
-          valuePAX: line.pax,
-        })),
+        lines: mapCustomerLines(customer.lines),
         total: customer.total,
       },
       intercompany: {
         total: intercompany.total,
-        lines: intercompany.lines.map((line) => ({
-          amount: line.amount,
-          employeeId: line.employeeId,
-          employeeName: line.employeeName,
-          id: line.id,
-          physicalAmount: line.physicalAmount,
-          subsidiaryId: line.subsidiaryId,
-          subsidiaryname: line.subsidiaryname,
-          ticket: line.ticket,
-        })),
+        lines: mapIntercompanyLines(intercompany.lines),
       },
       specialCustomer: {
         total: specialCustomer.total,
-        lines: specialCustomer.lines.map((line) => ({
-          amountMXN: line.ammountMXN,
-          Check: line.check,
-          client: line.client,
-          consumption: line.bill,
-          difference: line.difference,
-          exchangeRate: line.exchangeRate,
-          passengerName: line.passengerName,
-          valueUSD: line.ammountUSD,
-          flight: line.flight,
-          id: line.id,
-          PAX: line.pax,
-          priceCuopon: line.couponPrice,
-          folioCuopon: line.couponFolio,
-          folio: line.couponFolio,
-          folioCuoponUSD: line.couponFolioUSD,
-          value: line.ammount,
-        })),
+        lines: mapSpecialCustomerLines(specialCustomer.lines),
       },
       employee: {
         total: employee.total,
-        lines: employee.lines.map((line) => ({
-          amount: line.amount,
-          employeeId: Number(line.employeeCode),
-          reasonId: Number(line.reason),
-          ticketId: line.ticket ? Number(line.ticket) : null,
-          id: line.id,
-          //         externalId: line.externalId,
-        })),
+        lines: mapEmployeeLines(employee.lines),
       },
       prepaid: {
         total: prepaid.total,
-        lines: prepaid.lines.map((line) => ({
-          client: line.client,
-          difference: line.difference,
-          id: line.id,
-          physical: line.physical,
-          unitPrice: line.unitPrice,
-          totalPOS: line.totalPOS,
-          quantity: line.quantity,
-          supplementsQuantity: line.supplementsQuantity,
-          isEdit: line.isEdit ?? false,
-        })),
+        lines: mapPrepaidLines(prepaid.lines),
       },
-      tdc:{
+      tdc: {
         total: tdc.total,
-        lines: tdc.lines.map((line) => ({
-          bank: line.bank,
-          id: line.id,
-          physical: line.physical,
-          POS: line.POS,
-          voucherAmount: line.voucherAmount,
-        })),
-      }
+        lines: mapTdcLines(tdc.lines),
+      },
     };
-
     //console.log(body)
     const response: any = await sendCashClousing(body);
 
