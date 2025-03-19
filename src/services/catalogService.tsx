@@ -25,7 +25,7 @@ export const getSubsidiaries = async (): Promise<any> => {
       
         return subs;
     } catch (error) {
-        //console.error('Error al obtener las Subsidiarias: ', error)
+        console.error('Error al obtener las Subsidiarias: ', error);
         return [];        
     }
 }

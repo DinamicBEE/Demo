@@ -146,7 +146,7 @@ export const getTDCDetails = async (
   clousingId: number,
   lineId: number
 ): Promise<BankDetails> => {
-  console.log(clousingId, lineId);
+  // console.log(clousingId, lineId);
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -172,7 +172,7 @@ export const validateDetails = async (
   lineId: number,
   details: BankDetails
 ): Promise<BankDetails> => {
-  console.log(clousingId, lineId);
+// console.log(clousingId, lineId);
 
   try {
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
@@ -286,10 +286,10 @@ export const getSpecialCustomerClousing = async (clousingId: number): Promise<Sp
           params: {idCashRegisterClosure: clousingId},
       });
       const lines = response.data;
-      console.log(response);
+      // console.log(response);
 
-      const newTotalPOS = lines.map((line: any) => Number(line.bill)).reduce((acc: number, curr: number) => acc + curr, 0);
-      const newTotalFisico = lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0);
+      const newTotalPOS = lines.legth > 0 ? lines.map((line: any) => Number(line.bill)).reduce((acc: number, curr: number) => acc + curr, 0) : 0;
+      const newTotalFisico = lines.legth > 0 ? lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0) : 0;
       const newDiff = Number(newTotalPOS - newTotalFisico);
 
       const data = {

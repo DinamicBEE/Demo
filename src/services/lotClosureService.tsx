@@ -1,5 +1,9 @@
 import { STATUS } from "@models/status.model";
 import { Company, Location, LotClosure, Bank } from "@models/lotClosure.model";
+import Cookies from "js-cookie";
+import { LOCATIONS, SUBSIDIARIES } from "./settings";
+import { StoreModel } from "@models/common.model";
+import api from "../api";
 
 export const getLotsClosure = async (
   dateRange: [Date | null, Date | null],
@@ -27,28 +31,36 @@ export const getLotsClosure = async (
 
 export const getCompanies = async () => {
   try {
-    const response = companies;
-    return new Promise<Company[]>((resolve) => {
+    const username = Cookies.get('username');
+    const response = await api.get(SUBSIDIARIES, {
+      params: {user: username}
+    });
+
+    return Promise.resolve(response.data);
+    /* return new Promise<Company[]>((resolve) => {
       setTimeout(() => {
         resolve(response);
       }, 2000);
-    });
+    }); */
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];
   }
 };
 
-export const getLocations = async (companyId: number) => {
+export const getLocations = async (companyId: number): Promise<StoreModel[]> => {
   try {
-    const response = locations;
-    return new Promise<Location[]>((resolve) => {
+    const response = await api.get(LOCATIONS, {
+      params: {subsidiaria: companyId}
+    });
+    /* return new Promise<Location[]>((resolve) => {
       setTimeout(() => {
         resolve(
           response.filter((location) => location.company.id === companyId)
         );
       }, 2000);
-    });
+    }); */
+    return Promise.resolve(response.data);
   } catch (error) {
     console.error("Error al obtener las ubicaciones: ", error);
     return [];

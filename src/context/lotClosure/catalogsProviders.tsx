@@ -37,7 +37,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
       const response = await getCompanies();
       setCompanies(
         createListCollection({
-          items: response.map((company) => ({
+          items: response.map((company: { id: any; name: any; }) => ({
             value: company.id,
             label: company.name,
           })),
@@ -61,7 +61,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
       try {
         const response = await getLocations(companyId);
         const newLocations = createListCollection({
-          items: response.map((location) => ({
+          items: response.map((location: { id: number; name: string; }) => ({
             value: location.id,
             label: location.name,
           })),
