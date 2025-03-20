@@ -64,6 +64,7 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
+                    {item.id}
                     {item.check}
                   </Text>
                 </Table.Cell>

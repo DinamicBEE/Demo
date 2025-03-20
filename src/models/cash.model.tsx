@@ -24,7 +24,7 @@ export interface CashModel {
 }
 
 export interface CashLines {
-    id: number;
+    id: number | string;
     currency: string;
     totalPOS: number;
     totalFisico: number;

@@ -42,7 +42,7 @@ export interface TDCDetailsContext {
 }
 
 export interface BankLineModel {
-  id: number;
+  id: number | string;
   bank: string;
   POS: number;
   physical: number;
@@ -81,7 +81,7 @@ export interface BankDetails {
 
 export interface DetailsProp {
   clousingId: number;
-  lineId: number | null;
+  lineId: number | null | string;
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;

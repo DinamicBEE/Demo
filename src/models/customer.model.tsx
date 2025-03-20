@@ -13,7 +13,7 @@ export interface CustomerContext {
 }
 
 export interface CustomerLines {
-    id: number;
+    id: number | string;
     nameClient: string;
     coupons: number;
     currency: string;

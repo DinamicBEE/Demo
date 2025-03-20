@@ -4,12 +4,12 @@ import { BankDetails, BankLineDetails, BankLineModel, TDCModel } from "@models/t
 import { TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 
-export const useHandleTDC = (clousingId: number, lineId: number) => {
+export const useHandleTDC = (clousingId: number, lineId: number | string ) => {
 
     const { updateTotal } = useHeaders();
     const { setDetails, tdc, setTDCData } = useTDCContext();
 
-    function handleInputData(value: string, id: number, details: BankDetails, setDetail: any,) {
+    function handleInputData(value: string, id: number | string, details: BankDetails, setDetail: any,) {
       if (lineId === null) return;
 
       const updateLines = details?.details.map((item: BankLineDetails) =>

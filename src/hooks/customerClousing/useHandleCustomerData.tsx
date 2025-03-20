@@ -5,7 +5,7 @@ import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { CurrencyModel, TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { CustomerForm, CustomerLines, CustomerModel } from "@models/customer.model";
-
+import { v4 as uuidv4 } from "uuid";
 
 export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any, clousingId: number) => {
 
@@ -15,7 +15,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   const { setFooterData } = useFooter();
   const { setCustomerData } = useCustomerContext();
 
-  function selectCurrency(value: any, id: number, currencies: CurrencyModel[] | undefined) {
+  function selectCurrency(value: any, id: number | string, currencies: CurrencyModel[] | undefined) {
 
     const selectValue = value[0];
     const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.label || "";
@@ -42,7 +42,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     setCustomerData(customerRef.current, clousingId)
   }
 
-  function handleCoupons(id: number, value: string) {
+  function handleCoupons(id: number | string, value: string) {
 
     value = value.replace(/[^\d.]/g, "");
 
@@ -68,7 +68,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     updateContext(updatedCurrencies);
   }
 
-  function handleAmountPAX(id: number, value: string) {
+  function handleAmountPAX(id: number | string, value: string) {
 
     value = value.replace(/[^\d.]/g, "");
 
@@ -102,7 +102,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const exchangeRate = currency?.exchangeRate || 1;
 
     const newRecord: CustomerLines = {
-      id: Date.now(), // Generar un ID temporal
+      id: "customer-" + uuidv4(),
+       // Generar un ID temporal
       currency: currency?.label || "",
       exchangeRate,
       coupons: newCustomer.coupons,
@@ -148,3 +149,5 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
 
   return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord }
 };
+
+

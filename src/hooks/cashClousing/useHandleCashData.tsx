@@ -15,7 +15,7 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
   const { setFooterData } = useFooter();
   const { setCashData } = useCashClousing();
 
-  function handleInputChange(itemId: number, value:string) {
+  function handleInputChange(itemId: number | string, value:string) {
     
     value = value.replace(/[^\d.]/g, "");
     

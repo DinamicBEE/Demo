@@ -88,7 +88,7 @@ function IntercompanyClousing({data}: any) {
 
   }
 
-  function handleEmployeeData(employee:Employee, itemId?: number){
+  function handleEmployeeData(employee:Employee, itemId?: number | string){
 
     const updateLine: IntercompanyLine[] = intercompany?.lines.map((item:IntercompanyLine) => 
       item.id === itemId
@@ -104,7 +104,7 @@ function IntercompanyClousing({data}: any) {
     
   }
 
-  function handleAmount(itemId: number, value: string){
+  function handleAmount(itemId: number | string, value: string){
 
     value = value.replace(/[^\d.]/g, "");
 
@@ -121,7 +121,7 @@ function IntercompanyClousing({data}: any) {
 
   }
 
-  function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number){
+  function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number | string){
     
     const subSelect = Number(event.value[0]);
     const subName = subsidiary.items.find(item => item.value === event.value[0]).label;
@@ -160,6 +160,7 @@ function IntercompanyClousing({data}: any) {
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
+                  {item.id}
                   <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} 
                     onSelect={handleEmployeeData} disabled={data?.closingConfirmation}/>
                 </Table.Cell>

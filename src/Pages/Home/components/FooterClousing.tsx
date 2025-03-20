@@ -67,15 +67,20 @@ function FooterClousing({
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
-        ({ nameClient: customers, pax: valuePAX, currency, ...rest }) => ({
+        ({ nameClient: customers, pax: valuePAX, currency, id, ...rest }) => ({
           ...rest,
           customers,
           valuePAX,
+          id: typeof id === "number" ? id : null,
           currency: Number(currency),
         })
       );
 
-    const mapIntercompanyLines = (lines: IntercompanyLine[]) => lines;
+    const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
+      lines.map(({ id, ...rest }) => ({
+        ...rest,
+        id: typeof id === "number" ? id : null,
+      }));
 
     const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
       lines.map(
@@ -88,10 +93,12 @@ function FooterClousing({
           couponFolio: folioCuopon,
           couponPrice: priceCuopon,
           pax: PAX,
+          id,
           couponFolioUSD: folioCuoponUSD,
           ...rest
         }) => ({
           ...rest,
+          id: typeof id === "number" ? id : null,
           amountMXN,
           valueUSD,
           value,
@@ -108,6 +115,7 @@ function FooterClousing({
     const mapEmployeeLines = (lines: EmployeeLine[]) =>
       lines.map(({ employeeCode, reason, ticket, ...rest }) => ({
         ...rest,
+        id: typeof rest.id === "number" ? rest.id : null,
         employeeId: Number(employeeCode),
         reasonId: Number(reason),
         ticketId: ticket ? Number(ticket) : null,
@@ -116,18 +124,20 @@ function FooterClousing({
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
       lines.map((line) => ({
         ...line,
+        id: typeof line.id === "number" ? line.id : null,
         isEdit: line.isEdit ?? false,
       }));
 
-
     const mapTdcLines = (lines: BankLineModel[]) => lines;
-
 
     const body: ClousingSave = {
       id: clousingId,
       cash: {
         electronicTips: cash.electronicTips,
-        lines: cash.currencies,
+        lines: cash.currencies.map(({ id, ...rest }) => ({
+          id: typeof id === "number" ? Number(id) : null,
+          ...rest,
+        })),
         tips: cash.tips ?? 0,
         total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
@@ -157,7 +167,12 @@ function FooterClousing({
       },
     };
     //console.log(body)
+    console.log(body);
+    
     const response: any = await sendCashClousing(body);
+
+    console.log(response);
+    
 
     if (response.success) {
       //console.log("Corte de caja enviado correctamente");
