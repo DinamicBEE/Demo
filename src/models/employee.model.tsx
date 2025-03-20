@@ -40,8 +40,7 @@ export interface ReasonsModel {
 export interface Employee {
     id: number;
     name: string;
-    lastName: string;
-    employeeCode: string; 
+    employeeNumber: string; 
 }
 
 export interface NewEmployeeModel {

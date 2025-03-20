@@ -95,7 +95,7 @@ function IntercompanyClousing({data}: any) {
         ? {
           ...item,
           employeeId: employee.id,
-          employeeName: employee.name + " " + employee.lastName
+          employeeName: employee.name
         }
         : item
     )

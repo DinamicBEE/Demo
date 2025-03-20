@@ -115,7 +115,7 @@ function ClousingLayout({
                   <TDCClousing
                     data={employee}
                     location={location}
-                    subsidiary={subsidiary}
+                    subsidiary={subsidiary.id}
                   />
                 </Suspense>
               )}
@@ -124,7 +124,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.CUSTOMER}>
               {value === CLOUSING_KEY.CUSTOMER && (
                 <Suspense fallback={<div>Cargando Clientes...</div>}>
-                  <CustomersClousing data={employee} />
+                  <CustomersClousing data={employee} subsidiary={subsidiary}/>
                 </Suspense>
               )}
             </Tabs.Content>

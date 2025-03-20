@@ -14,7 +14,8 @@ export const generateReportCSV = (rows: Row[]) => {
   .map( (row) => row.join(","))
   .join("\n");
 
-  const blob = new Blob([csvString], {type: 'text/csv;charset=utf-8;'});
+  const bom = "\uFEFF";
+  const blob = new Blob([bom + csvString], {type: 'text/csv;charset=utf-8;'});
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

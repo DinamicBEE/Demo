@@ -58,14 +58,14 @@ function CurrencyManagement() {
     useEffect(()=>{
       async function fetchData() {
         const employeeList: Employee[] =  await getEmployees();
-        const currencies = await getCurrencies();
+        const currencies = await getCurrencies(1); //id base currency
         
         let createCurrenciList = createListCollection({
           items: currencies
         });
 
         createCurrenciList.items.unshift({label: 'Todas', value: 0, exchangeRate: 0});
-        employeeList.unshift({id: 0, name: 'Todos', lastName: '', employeeCode: ''});
+        employeeList.unshift({id: 0, name: 'Todos', employeeNumber: ''});
                
         setEmployees(employeeList);
         setcurrenciesForSelect(createCurrenciList);
@@ -129,7 +129,7 @@ function CurrencyManagement() {
       }
 
       if(selectEmployee && selectEmployee.id !== 0){
-        filterData = filterData.filter((item) => item.employee.toLowerCase().includes(selectEmployee.name.toLowerCase() || selectEmployee.lastName.toLowerCase()));
+        filterData = filterData.filter((item) => item.employee.toLowerCase().includes(selectEmployee.name.toLowerCase()));
       }
 
       setData(filterData);
@@ -188,7 +188,7 @@ function CurrencyManagement() {
             <Button colorPalette="meraInfo" onClick={()=>setFilterFlag(true)}> Filtrar </Button>
           </Grid>
 
-          <Grid
+          {/* <Grid
             templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
             gap={4}
             mb={4}
@@ -201,15 +201,15 @@ function CurrencyManagement() {
               Exportar a CSV
             </Button>
 
-            {/* <Button
+            <Button
               colorPalette="meraPrimary"
               onClick={() => {
                 openDiaolog();
               }}
             >
               Nuevo tipo de cambio
-            </Button> */}
-          </Grid>
+            </Button>
+          </Grid> */}
 
           <Table.ScrollArea rounded="md" borderWidth="1px">
             <Table.Root variant="outline">

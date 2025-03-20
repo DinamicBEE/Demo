@@ -14,7 +14,7 @@ import api from '../api/index';
  * This function gets the list of active subsides
  * @returns {Promise<SubsidiaryModal[]>}
  */
-export const getSubsidiaries = async (): Promise<any> => {
+export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
     try {
         const username = Cookies.get('username');
         const response = await api.get(SUBSIDIARIES, {
@@ -25,8 +25,8 @@ export const getSubsidiaries = async (): Promise<any> => {
       
         return subs;
     } catch (error) {
-        //console.error('Error al obtener las Subsidiarias: ', error)
-        return [];        
+        console.error('Error al obtener las Subsidiarias: ', error);
+        return [] as SubsidiaryModal[];        
     }
 }
 
@@ -57,10 +57,12 @@ export const getStores = async (subId: number): Promise<StoreModel[]> => {
  * with their respective exchange value
  * @returns {Promise<CurrencyModel[]>}
  */
-export const getCurrencies = async (): Promise<CurrencyModel[]> => {
+export const getCurrencies = async (currencyId: number): Promise<CurrencyModel[]> => {
     try {
 
-        const response = await api.get(CURRENCY);
+        const response = await api.get(CURRENCY,{
+          params: {idCurrency: currencyId}
+        });
 
         const currencyResponse = response.data.map( (curr: any) => {
           return {
@@ -205,16 +207,16 @@ const currenciesS = [
 ];
 
 const employeesMocky = [
-  { id: 1, name: "Irving E", lastName: "Canul", employeeCode: "0151" },
-  { id: 2, name: "Franklin", lastName: "Cardona", employeeCode: "0155" },
-  { id: 3, name: "Gerrardo", lastName: "Flores", employeeCode: "0120" },
-  { id: 4, name: "Juan", lastName: "Mendoza", employeeCode: "0101" },
-  { id: 5, name: "Luis", lastName: "Castillo", employeeCode: "0091" },
-  { id: 6, name: "Mario", lastName: "Vázquez Arias", employeeCode: "0085" },
-  { id: 7, name: "Victor Ivan", lastName: "Garrido Aragón", employeeCode: "0075" },
-  { id: 8, name: "Ramiro", lastName: "Diaz", employeeCode: "0070" },
-  { id: 9, name: "Carlos Alan", lastName: "Yañez Sanchez", employeeCode: "0100" },
-  { id: 10, name: "Erick Raul", lastName: "Estrada Acosta", employeeCode: "0115" },
+  { id: 1, name: "Irving E Canul", employeeNumber: "0151" },
+  { id: 2, name: "Franklin Cardona", employeeNumber: "0155" },
+  { id: 3, name: "Gerrardo Flores", employeeNumber: "0120" },
+  { id: 4, name: "Juan Mendoza", employeeNumber: "0101" },
+  { id: 5, name: "Luis Castillo", employeeNumber: "0091" },
+  { id: 6, name: "Mario Vázquez Arias", employeeNumber: "0085" },
+  { id: 7, name: "Victor Ivan Garrido Aragón", employeeNumber: "0075" },
+  { id: 8, name: "Ramiro Diaz", employeeNumber: "0070" },
+  { id: 9, name: "Carlos Alan Yañez Sanchez", employeeNumber: "0100" },
+  { id: 10, name: "Erick Raul Estrada Acosta", employeeNumber: "0115" },
 ];
 
 const reasonsMocky = [

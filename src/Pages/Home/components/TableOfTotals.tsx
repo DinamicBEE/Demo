@@ -105,7 +105,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                 Exportar a CSV
               </Button>
 
-            <Button colorPalette="meraInfo" onClick={()=>{getInfo(subsidiary, store)}}>Actualizar Información</Button>
+            <Button colorPalette="meraInfo" onClick={()=>{getInfo(subsidiary.id, store)}}>Actualizar Información</Button>
           </Grid>
         </Box>
 

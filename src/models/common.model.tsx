@@ -32,6 +32,7 @@ export interface TableInputProps {
 export interface SubsidiaryModal {
   id: number;
   name: string;
+  idCurrency: number;
 }
 
 export interface StoreModel {

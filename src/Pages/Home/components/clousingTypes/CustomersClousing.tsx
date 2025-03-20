@@ -15,9 +15,14 @@ import { useHeaders } from "@context/home/headerContext";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
+import { SubsidiaryModal } from "@models/common.model";
 
+interface CustomersClousingProps {
+  data: any;
+  subsidiary: SubsidiaryModal;
+}
 
-function CustomersClousing({ data }: any) {
+function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
@@ -34,7 +39,7 @@ function CustomersClousing({ data }: any) {
 
       if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
 
-      const currencies = await getCurrencies()
+      const currencies = await getCurrencies(subsidiary.idCurrency);
 
       let createCurrenciList = createListCollection({   items: currencies })
 
@@ -142,7 +147,7 @@ function CustomersClousing({ data }: any) {
         )}
       </Box>
 
-      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData}/>
+      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency}/>
     </>
 
   );

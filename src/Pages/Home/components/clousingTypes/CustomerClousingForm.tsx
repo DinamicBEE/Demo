@@ -11,10 +11,10 @@ import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 
-export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({ isOpen, onClose, dataCustomer, setCustomersData }) => {
+export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({ isOpen, onClose, dataCustomer, setCustomersData, idCurrency }) => {
 
   const { control, register, handleSubmit, reset, formState: { errors } } = useForm<CustomerForm>();
-  const { data: currencies } = useApi(getCurrencies);
+  const { data: currencies } = useApi(() => getCurrencies(idCurrency));
 
   const { addCustomerRecord } = useHandleCustomer( dataCustomer || {} as CustomerModel, setCustomersData, dataCustomer?.id);
 

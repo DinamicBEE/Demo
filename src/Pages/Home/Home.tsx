@@ -11,7 +11,7 @@ import { useList } from "@context/home/listsContext";
 import { useClousing } from "@context/home/clousingContext";
 import TableOfTotals from "./components/TableOfTotals";
 import "./Home.css";
-import { StoreModel } from "@models/common.model";
+import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
@@ -20,7 +20,7 @@ function Home() {
   const [subsidiary, setSubsidiary] = useState<ListCollection>(
     createListCollection({ items: [] })
   );
-  const [SubSelect, setSubSelect] = useState<number>(0);
+  const [SubSelect, setSubSelect] = useState<SubsidiaryModal>({} as SubsidiaryModal);
   const [stores, setStores] = useState<StoreModel[]>([]);
   const [storeBySub, setStoreBySub] = useState<ListCollection>(
     createListCollection({ items: [] })
@@ -47,6 +47,7 @@ function Home() {
         items: subsidiariesData.map((item) => ({
           value: item.id,
           label: item.name,
+          idCurrency: item.idCurrency,
         })),
       });
 
@@ -63,9 +64,16 @@ function Home() {
   }, []);
 
   async function filterStore(event: ValueChangeDetails<any>) {
+    const itemSelected = {
+      ...event.items[0],
+      id: event.items[0].value,
+      name: event.items[0].label    
+    };
+
     const selection = Number(event.value[0]);
 
-    setSubSelect(selection);
+    setSubSelect(itemSelected);
+    console.log("SubSelect", itemSelected);
     // const selectedId = subSelect;
     // console.log(SubSelect, selection);
 
@@ -163,7 +171,7 @@ function Home() {
               </SelectRoot>
             )}
 
-            {SubSelect != 0 && (
+            {(SubSelect.id != 0 && SubSelect.id !=null) && (
               <SelectRoot
                 collection={storeBySub}
                 onValueChange={(event) => setLocation(Number(event.value[0]))}
@@ -198,7 +206,7 @@ function Home() {
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect, location);
+                  getInfo(SubSelect.id, location);
                   setIsAdyen(false);
                 }}
               >

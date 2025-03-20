@@ -64,11 +64,11 @@ function HeaderClousing({ id, closingConfirmation }: { id: number, closingConfir
 
                 <CurrencyInput value={localHeader?.difference} name={"Diferencia"} loading={false} />
 
-                <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} />
+                {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} />
 
                 <CurrencyInput value={localHeader?.discountPOS} name={"Descuento + IVA POS"} loading={false} />
 
-                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={false} />
+                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={false} /> */}
 
                 <Button size="sm" colorPalette="meraInfo" disabled={closingConfirmation}>
                     Actualizar

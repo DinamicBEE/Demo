@@ -71,7 +71,6 @@ export function ListProvider({ children }: {children: ReactNode}){
     [error, getSubsidiariesData, getStoresData, subsidiaries, stores]
   );
 
-
   return(
       <listContext.Provider value={value}>
           {children}

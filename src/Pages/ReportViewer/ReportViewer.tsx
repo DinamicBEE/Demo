@@ -15,9 +15,10 @@ import { fetchInitialData } from "@services/reportService";
 import { Skeleton } from "@components/ui/skeleton";
 import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
 import { getCurrentDate } from './ReportComponents/getCurrentDate';
+import Cookies from "js-cookie";
 
 function ReportViewer() {
-  const { user } = useUser();
+  const user = Cookies.get('username');
   const { report, setReport, respaldar, resetRows } = useReportContext();
   const { rows, headers} = report;
   const [useRows, setUseRows] = useState<Row[]>(rows);
@@ -140,7 +141,7 @@ function ReportViewer() {
           approved: {
             id: 0,
             name: row.approved.name === "" 
-                  ? `${user.first_name} ${user.last_name}`
+                  ? user!
                   : row.approved.name,
             date: row.approved.date === ""
                   ? getCurrentDate()

@@ -14,7 +14,7 @@ function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, di
 	useEffect(() => {
 		const employeeCollection = createListCollection({
 			items: employees.map(employee => ({
-				label: employee.name + ' ' + employee.lastName,
+				label: employee.name,
 				value: employee.id
 			})
 			)
@@ -40,12 +40,12 @@ function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, di
 		const filtered = employees.filter(
 			(employee) =>
 				employee.name.toLowerCase().includes(query) ||
-				employee.lastName.toLowerCase().includes(query)
+				employee.employeeNumber.toLowerCase().includes(query)
 		);
 
 		const employeeCollection = createListCollection({
 			items: filtered.map(employee => ({
-				label: employee.name + ' ' + employee.lastName,
+				label: employee.name,
 				value: employee.id
 			})
 			)

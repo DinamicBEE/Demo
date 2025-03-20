@@ -19,7 +19,7 @@ export const getCurrencyData = async (date: Date, currency: number): Promise<Exc
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(data);
-            }, 5000);
+            }, 1000);
         });
 
     } catch (error) {

@@ -31,7 +31,9 @@ function Layout() {
                     <Box key={item.name} className="menu-link">
                       
                       <NavLink to={item.path} className="menu-complete">{item.icon}{item.name}</NavLink>
-                      <NavLink to={item.path} className="menu-icons">{item.icon}</NavLink>
+                      <Tooltip content={`${item.name}`}>
+                        <NavLink to={item.path} className="menu-icons">{item.icon}</NavLink>
+                      </Tooltip>
                     </Box>
                   ))}
 

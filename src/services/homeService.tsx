@@ -24,7 +24,7 @@ export const getGeneralInfo = async (subsidiary:number, store:number): Promise<C
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(response);
-      }, 0);
+      }, 1000);
     });
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
@@ -74,7 +74,8 @@ export function exportCSV(data: any, header: any) {
     .map((row) => row.join(","))
     .join("\n");
 
-  const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
+  const bom = "\uFEFF";  
+  const blob = new Blob([bom + csvString], { type: "text/csv;charset=utf-8;" });
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

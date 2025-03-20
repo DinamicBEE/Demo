@@ -1,3 +1,4 @@
+import { SubsidiaryModal } from "./common.model";
 import { CLOUSING_KEY } from "./constants.model";
 
 export interface ClousingModel {
@@ -134,11 +135,11 @@ export interface ClousingLayoutProps {
   onClose: () => void;
   employee: ClousingLinesModel | null;
   location: number;
-  subsidiary: number;
+  subsidiary: SubsidiaryModal;
 }
 
 export interface TableOfTotalsProps {
-  subsidiary: number;
+  subsidiary: SubsidiaryModal;
   store: number;
 }
 
@@ -155,4 +156,5 @@ export interface CustomerClousingFormProps {
   setCustomersData: any;
   message?: string;
   title?: string;
+  idCurrency: number;
 }
