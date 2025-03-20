@@ -1,14 +1,9 @@
-import axios from 'axios';
-import { createListCollection } from "@chakra-ui/react"
 import { CurrencyModel } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { Employee, ReasonsModel } from "@models/employee.model";
-import { API_CATALOG, API_LOCAL, CURRENCY, LOCATIONS, SUBSIDIARIES } from "./settings"
+import { CURRENCY, EMPLOYEELIST, LOCATIONS, REASONLIST, SUBSIDIARIES } from "./settings"
 import Cookies from 'js-cookie';
 import api from '../api/index';
-
-//const BASE_URL = 'https://run.mocky.io/v3';
-
 
 /**
  * This function gets the list of active subsides
@@ -74,9 +69,6 @@ export const getCurrencies = async (currencyId: number): Promise<CurrencyModel[]
         });
 
         return currencyResponse;
-
-        
-
         
     } catch (error) {
         console.error('Error al obtener los tipos de monedas: ', error)
@@ -88,17 +80,18 @@ export const getCurrencies = async (currencyId: number): Promise<CurrencyModel[]
  * This function gets the list of active employees.
  * @returns {Promise<employee[]>}
  */
-export const getEmployees = async (): Promise<Employee[]> => {
+export const getEmployees = async (subId: number, cdc: number): Promise<Employee[]> => {
 
     try {
-        //const response = await axios.get(`${API_CATALOG}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
-        const data = employeesMocky;     
+      if (subId === null || cdc === null) throw new Error("Error al obtener la lista de empleados"); 
 
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(data);
-            }, 100);
-        });
+      const response = await api.get(EMPLOYEELIST, {
+        params: {subsidiarieId: subId, consumerCenterId: cdc}
+      });
+      
+      const employees = response.data
+
+      return employees;
         
     } catch (error) {
         console.error('Error al obtener la lista de empleados:', error);
@@ -112,17 +105,18 @@ export const getEmployees = async (): Promise<Employee[]> => {
  * perform a cash cut-off record for employees
  * @returns {Promise<ReasonsModel[]>}
  */
-export const getReasonClousing = async (): Promise<ReasonsModel[]> => {
+export const getReasonClousing = async (subId: number, cdc: number): Promise<ReasonsModel[]> => {
 
     try {
-        //const response = await axios.get(`${API_CATALOG}/1a0fce36-dc35-4a6e-9f83-5dc5a6353cf9`);
-        const data = reasonsMocky;     
+      if (subId === null || cdc === null) throw new Error("Error al obtener la lista de motivos");
 
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(data);
-            }, 100);
-        });
+      const response = await api.get(REASONLIST, {
+        params: {subsidiarieId: subId, consumerCenterId: cdc}
+      });     
+
+      const reasons = response.data
+
+      return reasons;
         
     } catch (error) {
         console.error('Error al obtener la lista de motivos:', error);

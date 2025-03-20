@@ -148,7 +148,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.EMPLOYEE}>
               {value === CLOUSING_KEY.EMPLOYEE && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <EmployeesClousing data={employee} />
+                  <EmployeesClousing data={employee} subsidiaryId={subsidiary.id} cdc={location} />
                 </Suspense>
               )}
             </Tabs.Content>
@@ -156,7 +156,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.INTERCOMPANY}>
               {value === CLOUSING_KEY.INTERCOMPANY && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <IntercompanyClousing data={employee} />
+                  <IntercompanyClousing data={employee} subsidiaryId={subsidiary.id} cdc={location} />
                 </Suspense>
               )}
             </Tabs.Content>

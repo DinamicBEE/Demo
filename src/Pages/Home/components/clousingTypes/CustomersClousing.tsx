@@ -9,18 +9,12 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
 import { CurrencyModel } from "@models/common.clousing.model";
-import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { CustomerLines, CustomerModel, CustomersClousingProps } from "@models/customer.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/home/headerContext";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
-import { SubsidiaryModal } from "@models/common.model";
-
-interface CustomersClousingProps {
-  data: any;
-  subsidiary: SubsidiaryModal;
-}
 
 function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
@@ -28,13 +22,14 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const [CustomersData, setCustomersData] = useState<CustomerModel>()
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading } = useCustomerContext();
-  const { handleCoupons, selectCurrency, handleAmountPAX } = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id);
+  const { handleCoupons, selectCurrency, handleAmountPAX } = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id ?? 0);
   const { updateTotal } = useHeaders();
   const { open, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     
     async function fetchData() {
+      if (!data) return;
       const customers: CustomerModel = await getCustomerData(data.id);
 
       if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);

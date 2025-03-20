@@ -1,12 +1,18 @@
-import { TotalModel } from "./common.clousing.model";
+import { ClousingLinesModel, TotalModel } from "./common.clousing.model";
+
+export interface EmployeeClousingProps {
+  data: ClousingLinesModel | null;
+  subsidiaryId: number;
+  cdc: number;
+}
 
 export interface EmployeeContextType {
     employee: EmployeeModel | {};
     employeeLoading: boolean;
     error: string;
-    getEmployeetData: (clousingId: number) => Promise<EmployeeModel>;
-    getEmployeeList: () => Promise<Employee[]>;
-    getReasonsList: () => Promise<ReasonsModel[]>;
+    getEmployeetData: ( clousingId: number ) => Promise<EmployeeModel>;
+    getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
+    getReasonsList: ( subsidiary: number, cdc: number ) => Promise<ReasonsModel[]>;
     setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
 }
 
@@ -33,8 +39,8 @@ export interface EmployeeLine {
 
 export interface ReasonsModel {
     id: number;
-    reason: string;
-    type: string;
+    reasonName: string;
+    useCase: string;
 }
 
 export interface Employee {
@@ -61,7 +67,8 @@ export interface EmployeeFilterProps {
 
 export interface AddEmployeeProp {
     clousingId: number;
-    employeId: number;
+    subsidiaryId: number;
+    cdc: number;
     isOpen:boolean; 
     onClose: () => void; 
 }

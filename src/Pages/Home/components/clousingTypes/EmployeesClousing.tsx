@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, Button } from "@chakra-ui/react";
-import { EmployeeLine, EmployeeModel } from "@models/employee.model";
+import { EmployeeClousingProps, EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useFooter } from "@context/home/footerClousingContext";
@@ -9,7 +9,7 @@ import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 
 
-function EmployeesClousing({ data }: any) {
+function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>()
   const [dialog, setDialog] = useState<boolean>(false);
 
@@ -19,6 +19,7 @@ function EmployeesClousing({ data }: any) {
 
   useEffect(() => {
     async function fetchData() {
+      if (!data) return;
 
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
@@ -94,7 +95,7 @@ function EmployeesClousing({ data }: any) {
         </Table.Root>
       </Table.ScrollArea>
 
-      <AddEmployee clousingId={data?.id} employeId={data?.employeId} isOpen={dialog} onClose={closeDiaolog} />
+      <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} />
 
       {employeeLoading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

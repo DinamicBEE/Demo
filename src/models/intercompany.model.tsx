@@ -1,4 +1,11 @@
-import { TotalModel } from "./common.clousing.model";
+import { ClousingLinesModel, TotalModel } from "./common.clousing.model";
+import { SubsidiaryModal } from "./common.model";
+
+export interface IntercompanyClousingProps {
+  data: ClousingLinesModel | null;
+  subsidiaryId: number;
+  cdc: number;
+}
 
 export interface IntercompanyContextType {
     intercompany: IntercompanyModel | {};

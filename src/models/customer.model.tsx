@@ -1,4 +1,11 @@
-import { TotalModel } from "./common.clousing.model";
+import { ClousingLinesModel, TotalModel } from "./common.clousing.model";
+import { SubsidiaryModal } from "./common.model";
+
+
+export interface CustomersClousingProps {
+  data: ClousingLinesModel | null;
+  subsidiary: SubsidiaryModal;
+}
 
 export interface CustomerContextType {
     customer: CustomerModel | {};

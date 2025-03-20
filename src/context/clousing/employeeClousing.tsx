@@ -50,7 +50,7 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
 
     },[employee]);
 
-    const getEmployeeList = useCallback( async()=>{
+    const getEmployeeList = useCallback( async(subsidiary: number, cdc: number)=>{
         
         if(employeeList){
             return employeeList
@@ -58,7 +58,7 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
 
         try {
 
-            const data: Employee[] = await getEmployees();
+            const data: Employee[] = await getEmployees(subsidiary, cdc);
             
             setEmployeeList(data);
 
@@ -74,7 +74,7 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
 
     },[employeeList]);
 
-    const getReasonsList = useCallback( async()=>{
+    const getReasonsList = useCallback( async(subsidiary: number, cdc: number)=>{
 
         if(reasons){
             return reasons
@@ -82,7 +82,7 @@ export function EmployeeClousingProvider({children}: {children: ReactNode}) {
 
         try {
 
-            const data: ReasonsModel[] = await getReasonClousing();
+            const data: ReasonsModel[] = await getReasonClousing(subsidiary, cdc);
 
             setReasons(data);
 

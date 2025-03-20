@@ -3,7 +3,7 @@ import { Box, Table, Text, FormatNumber, ListCollection, createListCollection } 
 import { SelectRoot, SelectTrigger,
   SelectValueText, SelectContent, SelectItem,
 } from "@components/ui/select"
-import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
+import { IntercompanyClousingProps, IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
@@ -18,7 +18,7 @@ import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 
 
-function IntercompanyClousing({data}: any) {
+function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingProps) {
   const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [subsidiary, setSubsidiary] = useState<ListCollection>(createListCollection({ items: [] }));
@@ -32,9 +32,10 @@ function IntercompanyClousing({data}: any) {
 
   useEffect( ()=>{
     async function fetchData() {
+      if (!data) return;
       setLoading(true)
       const intercompanyData: IntercompanyModel = await getIntercompanyData(data?.id);
-      const employeeList: Employee[] =  await getEmployeeList();
+      const employeeList: Employee[] =  await getEmployeeList(subsidiaryId, cdc);
       const subsidiariesData = await getSubsidiariesData();
 
       if(intercompanyData){
@@ -62,6 +63,7 @@ function IntercompanyClousing({data}: any) {
   },[]);
 
   function updateIntercompany(updateLine: IntercompanyLine[]){
+    if (!data) return;
 
     const newTotalFisico = updateLine.reduce(
       (acc: number, curr: { physicalAmount: number }) => acc + curr.physicalAmount,
@@ -161,7 +163,7 @@ function IntercompanyClousing({data}: any) {
                 
                 <Table.Cell textAlign="center">
                   <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} 
-                    onSelect={handleEmployeeData} disabled={data?.closingConfirmation}/>
+                    onSelect={handleEmployeeData} disabled={data?.closingConfirmation ?? false}/>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">

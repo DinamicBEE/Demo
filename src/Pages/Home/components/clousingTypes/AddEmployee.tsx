@@ -13,7 +13,7 @@ import { sendNewEmployeeRegister } from "@services/clousingService";
 import { ResponseModel } from "@models/common.clousing.model";
 
 
-function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
+function AddEmployee({clousingId, subsidiaryId, cdc, isOpen, onClose}: AddEmployeeProp){
     const [selectEmployee, setSelectEmployee] = useState<Employee>();
     const [reasonsList, setReasonsList] = useState<ReasonsModel[]>([]);
     const [amount, setAmount] = useState<number>(0);
@@ -30,14 +30,14 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
 
       async function fetchData() {
         setCatalogLoading(true);
-        const employeeList: Employee[] =  await getEmployeeList();
-        const reasonsList: ReasonsModel[] = await getReasonsList(); 
+        const employeeList: Employee[] =  await getEmployeeList(subsidiaryId, cdc);
+        const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc); 
         
         setEmployees(employeeList)
 
         const reasonCollection = createListCollection({
           items: reasonsList.map(reason => ({
-            label: reason.reason,
+            label: reason.reasonName,
             value: reason.id
           }))
         })
@@ -132,7 +132,7 @@ function AddEmployee({clousingId, employeId, isOpen, onClose}: AddEmployeeProp){
                 </SelectContent>
               </SelectRoot>
 
-              { reasonsList.find(item => item.id === Number(reason[0]))?.type === "A" && (
+              { reasonsList.find(item => item.id === Number(reason[0]))?.useCase === "A" && (
                 <Group attached>
                   <InputAddon>Ticket</InputAddon>
                   <Input 
