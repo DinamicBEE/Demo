@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { es } from "date-fns/locale/es";
 import DatePicker, { registerLocale } from "react-datepicker";
-import AddExchangeRate from "./AddExchangeRate";
+//import AddExchangeRate from "./AddExchangeRate";
 import FilterEmployee from "@components/FilterEmployee";
 import { Employee } from "@models/employee.model";
 import { getCurrencies, getEmployees } from "@services/catalogService";
@@ -26,13 +26,17 @@ function CurrencyManagement() {
     const [selectEmployee, setSelectEmployee] = useState<Employee>();
     const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
     const [currenciesLocal, setCurrencies] = useState<CurrencyModel[]>([])
+    const [currency, setCurrency] = useState<CurrencyModel>()
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [startDate, setStartDate] = useState<Date | null>(null);
-    const [open, setOpen] = useState<boolean>(false);
+    const [endDate, setEndDate] = useState<Date | null>(null);
+    //const [open, setOpen] = useState<boolean>(false);
 
     const [page, setPage] = useState(1)
     const [dataBase, setDataBase] = useState<CurrenciesDataModel[]>([])
+    const [data, setData] = useState<CurrenciesDataModel[]>([])
     const [visibleItems, setVisibleItems] = useState<CurrenciesDataModel[]>([])
+    const [filterFlag, setFilterFlag] = useState<boolean>(false)
 
     const startRange = (page - 1) * pageSize
     const endRange = startRange + pageSize
@@ -40,10 +44,11 @@ function CurrencyManagement() {
     useEffect(()=>{
       async function fetchData() {
 
-        const data = await getCurrenciesExchangeRate("body");
-        console.log(data);
-        setDataBase(data);
-        const items = data?.slice(startRange, endRange)//data.slice(startRange, endRange)
+        const dataAPI = await getCurrenciesExchangeRate("body");
+        console.log(dataAPI);
+        setDataBase(dataAPI);
+        setData(dataAPI);
+        const items = dataAPI?.slice(startRange, endRange)
         setVisibleItems(items)
 
       }
@@ -58,6 +63,9 @@ function CurrencyManagement() {
         let createCurrenciList = createListCollection({
           items: currencies
         });
+
+        createCurrenciList.items.unshift({label: 'Todas', value: 0, exchangeRate: 0});
+        employeeList.unshift({id: 0, name: 'Todos', lastName: '', employeeCode: ''});
                
         setEmployees(employeeList);
         setcurrenciesForSelect(createCurrenciList);
@@ -72,24 +80,68 @@ function CurrencyManagement() {
       handleDataVisible(page)
     }, [page])
 
-    const handleChange = (date: Date | null) => {
-      console.log(date);
-      setStartDate(date);
-    };
+    useEffect(() => {
+      handleFilter();
+    }, [filterFlag]);
 
-    const openDiaolog = () => {
-      setOpen(true);
-    }
+    // const openDiaolog = () => {
+    //   setOpen(true);
+    // }
   
-    const closeDiaolog = () => {
-      setOpen(false);
-    }
+    // const closeDiaolog = () => {
+    //   setOpen(false);
+    // }
+    
+    const handleChange = (range: [Date | null, Date | null]) => {
+      const [startDate, endDate] = range;
+      setStartDate(startDate);
+      setEndDate(endDate);
+      console.log(range);
+    };
 
     const handleDataVisible = (page: number) => {
       setPage(page);
-      const items = dataBase.slice(startRange, endRange)
-      setVisibleItems(items)
+      const items = data.slice(startRange, endRange);
+      setVisibleItems(items);
+    };
+
+    function selectCurrency(value: any) {
+      const selectValue = value[0];
+      const newCurrency = currenciesLocal?.filter(
+        (item: CurrencyModel) => item.value === selectValue
+      )[0];
+
+      setCurrency(newCurrency);
     }
+
+    const handleFilter = () => {
+
+      let filterData = dataBase;
+      if(startDate && endDate){
+        filterData = filterData.filter((item) => {
+          const date = convertToDate(item.date);
+          return date >= startDate && date <= endDate;
+        });
+      }
+
+      if(currency){
+        filterData = filterData.filter((item) => item.currency === currency.label);
+      }
+
+      if(selectEmployee && selectEmployee.id !== 0){
+        filterData = filterData.filter((item) => item.employee.toLowerCase().includes(selectEmployee.name.toLowerCase() || selectEmployee.lastName.toLowerCase()));
+      }
+
+      setData(filterData);
+      const items = filterData.slice(startRange, endRange);
+      setVisibleItems(items);
+      setFilterFlag(false);
+    }
+
+    const convertToDate = (dateString: string) => {
+      const [day, month, year] = dateString.split("/");
+      return new Date(`${year}-${month}-${day}`);
+    };
 
     return (
       <>
@@ -109,11 +161,16 @@ function CurrencyManagement() {
               <DatePicker
                 selected={startDate}
                 onChange={(ev) => handleChange(ev)}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange
                 locale="es"
               />
             </Field.Root>
 
-            <SelectRoot collection={currenciesForSelect || createListCollection({ items: [] })}>
+            <SelectRoot collection={currenciesForSelect || createListCollection({ items: [] })}
+              onValueChange={(e) => selectCurrency(e.value)}
+            >
               <SelectLabel>Seleccionar moneda</SelectLabel>
               <SelectTrigger>
                 <SelectValueText placeholder={"Seleccionar moneda"} />
@@ -128,7 +185,7 @@ function CurrencyManagement() {
             </SelectRoot>
 
             <FilterEmployee employees={employees} label={true} onSelect={setSelectEmployee} disabled={false} />
-            <Button colorPalette="meraInfo"> Filtrar </Button>
+            <Button colorPalette="meraInfo" onClick={()=>setFilterFlag(true)}> Filtrar </Button>
           </Grid>
 
           <Grid
@@ -138,20 +195,20 @@ function CurrencyManagement() {
             w="100%"
           >
             <GridItem colSpan={1}></GridItem>
-            {/* <Button
+            <Button
               colorPalette="meraInfo"
             >
               Exportar a CSV
-            </Button> */}
+            </Button>
 
-            <Button
+            {/* <Button
               colorPalette="meraPrimary"
               onClick={() => {
                 openDiaolog();
               }}
             >
               Nuevo tipo de cambio
-            </Button>
+            </Button> */}
           </Grid>
 
           <Table.ScrollArea rounded="md" borderWidth="1px">
@@ -220,7 +277,7 @@ function CurrencyManagement() {
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>
-          <PaginationRoot count={dataBase.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+          <PaginationRoot count={data.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
             <HStack>
               <PaginationPrevTrigger />
               <PaginationItems />
@@ -229,7 +286,7 @@ function CurrencyManagement() {
           </PaginationRoot>
         </Box>
 
-        <AddExchangeRate isOpen={open} onClose={closeDiaolog} curriesProps={currenciesLocal} />
+        {/* <AddExchangeRate isOpen={open} onClose={closeDiaolog} curriesProps={currenciesLocal} /> */}
       </>
     );
 
