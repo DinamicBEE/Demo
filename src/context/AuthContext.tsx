@@ -58,12 +58,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (data) {
 
             setTokens({ accessToken, refreshToken, token });
-            setUser({ ...data, role: 1 });
+            setUser(data);
+
             const result: any = await getUserRol();
 
             await loadData.userData.put({ key: 'userRole', value: result.userRole });
 
-            // console.log("Rol guardado en IndexedDB:", result.userRole); // Verificación
+            // Actualizar el estado del usuario con el rol obtenido
+            setUser((prevUser: any) => ({ ...prevUser, role: result.userRole }));
           }
 
         }
@@ -81,11 +83,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     setError(null);
     setUser(null); // Reiniciar el estado del usuario
-  
+
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove('username');
-  
+
     // Eliminar solo el registro del rol del usuario
     await loadData.userData.delete("userRole");
     console.log("Rol eliminado de IndexedDB");
@@ -110,7 +112,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Obtener el rol desde IndexedDB
             const userRecord = await loadData.userData.get("userRole");
             const role = userRecord ? userRecord.value : null;
-            console.log("Rol obtenido desde IndexedDB:", role); // Verificación
+
+            // Actualizar el estado del usuario con el rol obtenido
+            setUser((prevUser: any) => ({ ...prevUser, role }));
 
           }
 
