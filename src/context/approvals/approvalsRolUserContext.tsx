@@ -1,15 +1,17 @@
 import { createContext, useContext, useState, useMemo, ReactNode } from "react";
+import { loadData } from "../../indexedDB/localDB";
+import { useApi } from "@hooks/useApi";
+
 
 interface RoleContextType {
-  role: 1 | 2; // Los roles disponibles
-  switchRole: () => void; // Función para cambiar el rol
+  role: string | null; // Los roles disponibles
 }
 
 const ApprovalsRolUserContext = createContext<RoleContextType | null>(null);
 
 export const useApprovalsRolUser = () => {
   const context = useContext(ApprovalsRolUserContext);
- 
+
   if (!context) throw new Error("useRole debe usarse dentro de un RoleProvider");
 
   return context;
@@ -17,15 +19,22 @@ export const useApprovalsRolUser = () => {
 
 // Provider que manejará el estado del rol
 export const ApprovalsRolUserProvider = ({ children }: { children: ReactNode }) => {
-  const [role, setRole] = useState<1 | 2>(2); // Valor inicial
+  const [role, setRole] = useState<string | null>(null); // Valor inicial
 
-  // Función para cambiar entre roles
-  const switchRole = () => {
-    setRole((prevRole) => (prevRole === 2  ? 1 : 2));
-  };
+  const { data, error, isLoading, refetch } = useApi(() => {
+    return loadData.userData.get('userRole');
+  }, {
+    onSuccess: (result) => {
+      if (result?.value) setRole(result.value);
+    },
+    onError: (err) => {
+      console.error('Error fetching user role:', err);
+    },
+    autoFetch: true
+  });
 
   // Memoizamos el valor para evitar renders innecesarios
-  const value = useMemo(() => ({ role, switchRole }), [role]);
+  const value = useMemo(() => ({ role }), [role]);
 
   return <ApprovalsRolUserContext.Provider value={value}>{children}</ApprovalsRolUserContext.Provider>;
 };

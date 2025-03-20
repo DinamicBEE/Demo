@@ -11,33 +11,28 @@ import Cookies from "js-cookie";
  * @param {String} password
  * @returns {Promise<Object>}
  */
-export const loginUser = async (
-  login: string,
-  password: string
-): Promise<Tokens> => {
+export const loginUser = async (login: string, password: string): Promise<Tokens> => {
   try {
+
     const response = await api.post(
       MODE === "LOCAL" ? "/login" : "/auth/authentication/api/v1/auth/signin",
-      MODE === "LOCAL"
-        ? { email: login, password }
-        : { login, password }
-    );    
+      MODE === "LOCAL" ? { email: login, password } : { login, password }
+    );
+
     const loginInfo = JSON.parse(response.config.data);
+
     Cookies.set("username", loginInfo.login);
+
     return response.data;
 
-   
   } catch (error: any) {
     throw new Error(error);
   }
 };
 
-export const refreshAuthToken = async (
-  refreshToken: string
-): Promise<Tokens> => {
+export const refreshAuthToken = async (refreshToken: string): Promise<Tokens> => {
   try {
-    const response = await api.post(
-      `/auth/authentication/api/v1/auth/refresh`,
+    const response = await api.post( `/auth/authentication/api/v1/auth/refresh`,
       {
         refreshToken,
       }
@@ -49,3 +44,18 @@ export const refreshAuthToken = async (
     );
   }
 };
+
+export const getUserRol = async () => {
+
+  try {
+    const response = await api.get('/auth/authentication/api/test/echo-role');
+    const result = response;
+    
+    return result.data
+
+  } catch (error: any) {
+    throw new Error(
+      error || "Error al intentar refrescar el token"
+    );
+  }
+}

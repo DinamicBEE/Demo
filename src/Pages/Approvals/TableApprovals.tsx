@@ -69,7 +69,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                 <Table.ColumnHeader textAlign={'center'}>Tipo de Solicitud</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign={'center'}>Motivo de Solicitud</Table.ColumnHeader>
 
-                {role === 1 ?
+                {role === 'admin' ?
                   <Table.ColumnHeader textAlign={'center'}>Comentario Cajero</Table.ColumnHeader>
                   :
                   <Table.ColumnHeader textAlign={'center'}>Comentario Supervisor</Table.ColumnHeader>
@@ -77,7 +77,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
 
                 <Table.ColumnHeader textAlign={'center'}>Estatus</Table.ColumnHeader>
 
-                {role === 1 && <Table.ColumnHeader textAlign={'center'}>Acciones</Table.ColumnHeader>}
+                {role === 'admin' && <Table.ColumnHeader textAlign={'center'}>Acciones</Table.ColumnHeader>}
 
               </Table.Row>
             </Table.Header>
@@ -90,7 +90,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                     <Table.Cell textAlign={'center'}> {item.date} </Table.Cell>
                     <Table.Cell textAlign={'center'}> {item.typeRequest} </Table.Cell>
                     <Table.Cell textAlign={'center'}> {item.reasons} </Table.Cell>
-                    <Table.Cell textAlign={'center'}> {role === 1 ? item.comment : item.commentSupervisor} </Table.Cell>
+                    <Table.Cell textAlign={'center'}> {role === 'admin' ? item.comment : item.commentSupervisor} </Table.Cell>
 
                     <Table.Cell textAlign={'center'}>
                       <Badge colorPalette={item.status === 2 ? "meraInfo" : item.status === 0 ? "meraError" : "meraSecondary"}>
@@ -99,7 +99,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(
                     </Table.Cell>
 
                     {
-                      role === 1 &&
+                      role === 'admin' &&
                       <Table.Cell textAlign={'center'}>
 
                         {
