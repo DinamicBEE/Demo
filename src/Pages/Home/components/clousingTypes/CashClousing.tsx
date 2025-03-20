@@ -91,7 +91,6 @@ function CashClousing({ data }: any) {
             {cashData?.currencies?.map((item) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text>{item.id}</Text>
                   <Text>{item.currency}</Text>
                 </Table.Cell>
 

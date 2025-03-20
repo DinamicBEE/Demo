@@ -76,7 +76,6 @@ function CustomersClousing({ data }: any) {
                 <Table.Row key={item.id}>
 
                   <Table.Cell textAlign="center">
-                    <Text>{item.id}</Text>
                     <Text>{item.nameClient}</Text>
                   </Table.Cell>
 

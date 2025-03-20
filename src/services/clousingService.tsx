@@ -183,7 +183,7 @@ export const getTDCDetails = async (
 
 export const validateDetails = async (
   clousingId: number,
-  lineId: number,
+  lineId: number | string,
   details: BankDetails
 ): Promise<BankDetails> => {
   console.log(clousingId, lineId);
@@ -532,14 +532,10 @@ export const getIntercompanyClousing = async (
 export const sendCashClousing = async (body: any) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
-    const response = { success: true };
 
-    //return response
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 5000); // 5 segundos
-    });
+    const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
+
+    return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
     return [];
@@ -846,16 +842,7 @@ export const CashData = {
     },
     {
       id: null as number | null,
-      currency: "LIB",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 2,
-    },
-    {
-      id: null as number | null,
-      currency: "CAN",
+      currency: "CAD",
       totalPOS: 1000,
       totalFisico: 1000,
       difference: 0,
@@ -874,9 +861,9 @@ export const TDCMOCKData = {
     difference: 0,
   },
   lines: [
-    { id: null, bank: "BBVA", POS: 2784.56, physical: 0, voucherAmount: 10 },
+    { id: 1, bank: "BBVA", POS: 2784.56, physical: 0, voucherAmount: 10 },
     { id: 2, bank: "HSBC", POS: 208.69, physical: 150, voucherAmount: 1 },
-    { id: null, bank: "BANREGIO", POS: 856.32, physical: 300, voucherAmount: 5 },
+    { id: 3, bank: "BANREGIO", POS: 856.32, physical: 300, voucherAmount: 5 },
     { id: 4, bank: "ADYEN", POS: 0, physical: 0, voucherAmount: 0 },
   ],
 };
@@ -963,7 +950,7 @@ export const CustomerMOCKData = {
   lines: [
     {
       id: null,
-      nameClient: "BRITISH ",
+      nameClient: "BRITISH AIRWAYS",
       coupons: 0,
       currency: "",
       pax: 0,
@@ -973,7 +960,7 @@ export const CustomerMOCKData = {
     },
     {
       id: null,
-      nameClient: "SUNWING",
+      nameClient: "SUNWING Airlines",
       coupons: 0,
       currency: "",
       pax: 0,
@@ -1085,7 +1072,7 @@ export const PrepaidMOCKData = {
   },
   lines: [
     {
-      id: 1,
+      id: null,
       client: "Thomas Moore",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1095,7 +1082,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 2,
+      id: null,
       client: "SSIA",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1105,7 +1092,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 3,
+      id: null,
       client: "SEASON TOURS",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1150,7 +1137,7 @@ export const EmployeeData = {
       id: null,
       name: "Mario",
       lastName: "Vásquez",
-      employeeCode: "0015",
+      employeeCode: "3",
       amount: 125.0,
       reason: "Diferencia de efectivo",
       ticket: "---",
@@ -1159,7 +1146,7 @@ export const EmployeeData = {
       id: null,
       name: "Luis",
       lastName: "Castillo",
-      employeeCode: "0029",
+      employeeCode: "5",
       amount: 150.0,
       reason: "Consumo empelado",
       ticket: "123",
@@ -1168,7 +1155,7 @@ export const EmployeeData = {
       id: null,
       name: "Ramiro",
       lastName: "Diaz",
-      employeeCode: "0105",
+      employeeCode: "3",
       amount: 300.0,
       reason: "Mala elaboración del producto",
       ticket: "---",
@@ -1196,7 +1183,7 @@ const intercompanyData = {
       physicalAmount: 0,
     },
     {
-      id: 1,
+      id: null,
       employeeId: 0,
       employeeName: "",
       subsidiaryId: 0,

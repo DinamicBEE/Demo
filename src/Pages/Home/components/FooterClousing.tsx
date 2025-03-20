@@ -67,12 +67,12 @@ function FooterClousing({
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
-        ({ nameClient: customers, pax: valuePAX, currency, id, ...rest }) => ({
+        ({ pax: valuePAX, currency, id, ...rest }) => ({
           ...rest,
-          customers,
+          customers: rest.nameClient,
           valuePAX,
           id: typeof id === "number" ? id : null,
-          currency: Number(currency),
+          currency: 1,
         })
       );
 
@@ -80,6 +80,7 @@ function FooterClousing({
       lines.map(({ id, ...rest }) => ({
         ...rest,
         id: typeof id === "number" ? id : null,
+        ticket: "1",
       }));
 
     const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
@@ -114,11 +115,13 @@ function FooterClousing({
 
     const mapEmployeeLines = (lines: EmployeeLine[]) =>
       lines.map(({ employeeCode, reason, ticket, ...rest }) => ({
-        ...rest,
+        // id: typeof rest.id === "number" ? rest.id : null,
         id: typeof rest.id === "number" ? rest.id : null,
+        amount: rest.amount,
         employeeId: Number(employeeCode),
-        reasonId: Number(reason),
-        ticketId: ticket ? Number(ticket) : null,
+        reasonId: 1,
+        ticketId: 1,
+        externalId: 1,
       }));
 
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
@@ -128,7 +131,12 @@ function FooterClousing({
         isEdit: line.isEdit ?? false,
       }));
 
-    const mapTdcLines = (lines: BankLineModel[]) => lines;
+    const mapTdcLines = (lines: BankLineModel[]) =>
+      lines.map(({ id, ...rest }) => ({
+        ...rest,
+        // id: typeof id === "number" ? id : null
+        id: null,
+      }));
 
     const body: ClousingSave = {
       id: clousingId,
@@ -168,13 +176,12 @@ function FooterClousing({
     };
     //console.log(body)
     console.log(body);
-    
+
     const response: any = await sendCashClousing(body);
 
     console.log(response);
-    
 
-    if (response.success) {
+    if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal

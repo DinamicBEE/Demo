@@ -87,7 +87,6 @@ function EmployeesClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text> {item.ticket} </Text>
-                  <Text> {item.id} </Text>
                 </Table.Cell>
               </Table.Row>
             ))}

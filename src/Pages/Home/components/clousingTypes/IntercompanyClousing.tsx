@@ -160,7 +160,6 @@ function IntercompanyClousing({data}: any) {
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
-                  {item.id}
                   <FilterEmployee employees={employees} employeeSelect={item.employeeName} label={false} itemId={item.id} 
                     onSelect={handleEmployeeData} disabled={data?.closingConfirmation}/>
                 </Table.Cell>

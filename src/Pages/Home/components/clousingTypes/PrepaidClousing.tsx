@@ -191,7 +191,6 @@ function PrepaidClousing({data}: any) {
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
-                  <Text>{item.id}</Text>
                   <Text>{item.client}</Text>
                 </Table.Cell>
 
