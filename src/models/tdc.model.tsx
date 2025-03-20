@@ -12,12 +12,12 @@ export interface TDCContextType {
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
   getDetails: (
     clousingId: number,
-    lineId: number | null
+    lineId: number | null | string,
   ) => Promise<BankDetails>;
   setDetails: (
     details: BankDetails,
     clousingId: number,
-    lineId: number
+    lineId: number | string,
   ) => void;
 }
 
@@ -42,7 +42,7 @@ export interface TDCDetailsContext {
 }
 
 export interface BankLineModel {
-  id: number;
+  id: number | string;
   bank: string;
   POS: number;
   physical: number;
@@ -81,7 +81,7 @@ export interface BankDetails {
 
 export interface DetailsProp {
   clousingId: number;
-  lineId: number | null;
+  lineId: number | null | string;
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;

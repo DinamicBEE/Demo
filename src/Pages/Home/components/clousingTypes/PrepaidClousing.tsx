@@ -105,7 +105,7 @@ function PrepaidClousing({data}: any) {
 
   }
 
-  function handleInputTextData(id: number, value: string, key?: string) {
+  function handleInputTextData(id: number | string, value: string, key?: string) {
 
     value = value.replace(/[^\d.]/g, "");
 

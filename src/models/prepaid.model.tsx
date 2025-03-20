@@ -25,7 +25,7 @@ export interface PrepaidModel {
 }
 
 export interface PrepaidLineModel {
-    id: number;
+    id: number | string,
     client: string;
     quantity: number;
     supplementsQuantity:number;

@@ -1,6 +1,6 @@
 // import axios from 'axios';
 // import { API_CATALOG } from "./settings"
-
+import { v4 as uuidv4 } from "uuid";
 import {
   EXPECTED_COLUMNS,
   FIELD_MAPPING,
@@ -44,7 +44,6 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
     const data = {
       ...response,
     };
-
     //return response.data
     //return response
     return new Promise((resolve) => {
@@ -70,8 +69,20 @@ export const getCashClousing = async (
   // console.log(clousingId) //employeeId
 
   try {
-    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = CashData;
+    // Instead of using the actual API endpoint
+    // const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+
+    // Create a copy of CashData to avoid mutating the original mock data
+    const cashDataCopy = {
+      ...CashData,
+      currencies: CashData.currencies.map((currency) => ({
+        ...currency,
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: currency.id === null ? "cash-" + uuidv4() : currency.id,
+      })),
+    };
+
+    const response = cashDataCopy;
 
     // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
     // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
@@ -117,15 +128,18 @@ export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = TDCMOCKData;
-
-    const data = {
-      ...response,
-    };
+    const response = {
+      ...TDCMOCKData,
+      lines: TDCMOCKData.lines.map((line) => ({
+        ...line,
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "tdc-" + uuidv4() : line.id,
+      })),
+    }
 
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(data);
+        resolve(response);
       }, 1000);
     });
   } catch (error) {
@@ -169,7 +183,7 @@ export const getTDCDetails = async (
 
 export const validateDetails = async (
   clousingId: number,
-  lineId: number,
+  lineId: number | string,
   details: BankDetails
 ): Promise<BankDetails> => {
 // console.log(clousingId, lineId);
@@ -236,14 +250,25 @@ export const getCustomerClousing = async (
   // console.log(clousingId)
 
   try {
-      const response = CustomerMOCKData;
-      /* const response = await api.get(CLIENTS, {
+    //const response = CustomerMOCKData;
+    const customerMOCKDataCopy = CustomerMOCKData.lines.map((line) => ({
+      ...line,
+      // Generate new UUID for null IDs, otherwise keep existing ID
+      id: line.id === null ? "customer-" + uuidv4() : line.id,
+    }));
+
+    const response = {
+      ...CustomerMOCKData,
+      lines: customerMOCKDataCopy,
+    };
+
+    /* const response = await api.get(CLIENTS, {
           params: {idCashRegisterClosure: clousingId},
       });
       const lines = response.data; */
-      
-      //TODO: Validar la estructura de datos que regresara la API
-      /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
+
+    //TODO: Validar la estructura de datos que regresara la API
+    /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
       const newTotalFisico = lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0);
       const newDiff = Number(newTotalPOS - newTotalFisico);
 
@@ -257,9 +282,9 @@ export const getCustomerClousing = async (
           lines: [...lines],
       } */
 
-      const data = {
-        ...response
-      }
+    const data = {
+      ...response,
+    };
 
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -270,135 +295,155 @@ export const getCustomerClousing = async (
     console.error("Error al obtener los valores generales:", error);
     return {} as CustomerModel;
   }
-}
+};
 
 /**
- * This feature gets the information 
+ * This feature gets the information
  * of the selected box specialcustomer section
- * @param {number} clousingId 
+ * @param {number} clousingId
  * @returns {Promise<CustomerModel>}
  */
-export const getSpecialCustomerClousing = async (clousingId: number): Promise<SpecialCustomerModel> => {
-  console.log(clousingId)
-  
+export const getSpecialCustomerClousing = async (
+  clousingId: number
+): Promise<SpecialCustomerModel> => {
+  console.log(clousingId);
+
   try {
-      const response = await api.get(SP_CLIENTS, {
-          params: {idCashRegisterClosure: clousingId},
-      });
-      const lines = response.data;
-      // console.log(response);
+    const response = await api.get(SP_CLIENTS, {
+      params: { idCashRegisterClosure: clousingId },
+    });
 
-      const newTotalPOS = lines.legth > 0 ? lines.map((line: any) => Number(line.bill)).reduce((acc: number, curr: number) => acc + curr, 0) : 0;
-      const newTotalFisico = lines.legth > 0 ? lines.map((line: any) => Number(line.ammountMXN)).reduce((acc: number, curr: number) => acc + curr, 0) : 0;
-      const newDiff = Number(newTotalPOS - newTotalFisico);
+    const lines = response.data.map((line: any) => ({
+      ...line,
+      // Generate new UUID for null IDs, otherwise keep existing ID
+      id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
+    }));
 
-      const data = {
-        id: clousingId,
-        total: {
-          totalPOS: newTotalPOS,
-          totalPhysical: newTotalFisico,
-          difference: Number(newDiff)
-        },
-        lines: [...lines],
+    const newTotalPOS = lines
+      .map((line: any) => Number(line.bill))
+      .reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalFisico = lines
+      .map((line: any) => Number(line.ammountMXN))
+      .reduce((acc: number, curr: number) => acc + curr, 0);
+    const newDiff = Number(newTotalPOS - newTotalFisico);
 
-      }
-      
-      return data;
+    const data = {
+      id: clousingId,
+      total: {
+        totalPOS: newTotalPOS,
+        totalPhysical: newTotalFisico,
+        difference: Number(newDiff),
+      },
+      lines: [...lines],
+    };
 
+    return data;
   } catch (error) {
-      console.error('Error al obtener los valores generales:', error);
-      return {} as SpecialCustomerModel;
+    console.error("Error al obtener los valores generales:", error);
+    return {} as SpecialCustomerModel;
   }
-}
+};
 
 /**
- * This feature gets the information 
+ * This feature gets the information
  * of the selected box prepaid section
- * @param {number} clousingId 
+ * @param {number} clousingId
  * @returns {Promise<PrepaidModel>}
  */
-export const getPrepaidClousing = async (clousingId: number): Promise<PrepaidModel> => {
+export const getPrepaidClousing = async (
+  clousingId: number
+): Promise<PrepaidModel> => {
   // console.log(clousingId)
-  
+
   try {
-      //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-      const response = PrepaidMOCKData;
+    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = PrepaidMOCKData;
 
-      const updateLines = response.lines.map((item:PrepaidLineModel)  => 
-          {
-              return {
-                  ...item,
-                  isEdit:false
-              }   
-          }
-      )
+    const updateLines = response.lines.map((item) => {
+      return {
+        ...item,
+        id: item.id === null ? "prepaid-" + uuidv4() : item.id,
+        isEdit: false,
+      };
+    });
 
-      const data = {
-          ...response,
-          lines: updateLines
-      }
-      
-      return new Promise((resolve) => {
-          setTimeout(() => {
-              resolve(data);
-          }, 1000);
-      });
+    const data = {
+      ...response,
+      lines: updateLines,
+    };
 
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 1000);
+    });
   } catch (error) {
-      console.error('Error al obtener los valores generales:', error);
-      return {} as PrepaidModel;
+    console.error("Error al obtener los valores generales:", error);
+    return {} as PrepaidModel;
   }
-}
+};
 
-export const getCouponCatalog = async (clousingId: number): Promise<CouponCatalogModel[]> => {
+export const getCouponCatalog = async (
+  clousingId: number
+): Promise<CouponCatalogModel[]> => {
   // console.log(clousingId)
-  
+
   try {
-      //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-      const response = couponCatalogMocky;
+    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = couponCatalogMocky;
 
-      // const data = {
-      //     ...response,
-      // }
-      
-      return new Promise((resolve) => {
-          setTimeout(() => {
-              resolve(response);
-          }, 1000);
-      });
+    // const data = {
+    //     ...response,
+    // }
 
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(response);
+      }, 1000);
+    });
   } catch (error) {
-      console.error('Error al obtener los valores generales:', error);
-      return [] as CouponCatalogModel[];
+    console.error("Error al obtener los valores generales:", error);
+    return [] as CouponCatalogModel[];
   }
-}
+};
 
 /**
- * This function gets the list of 
+ * This function gets the list of
  * closures from the employees section
- * @param {number} clousingId 
+ * @param {number} clousingId
  * @returns {Promise<EmployeeModel>}
  */
-export const getEmployeeClousing = async (clousingId: number): Promise<EmployeeModel> => {
-    // console.log(clousingId)
+export const getEmployeeClousing = async (
+  clousingId: number
+): Promise<EmployeeModel> => {
+  // console.log(clousingId)
 
-    try {
-      //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-      const response = EmployeeData;
+  try {
+    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const employeeDataCopy = {
+      ...EmployeeData,
+      lines: EmployeeData.lines.map((line) => ({
+        ...line,
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "employee-" + uuidv4() : line.id,
+      })),
+    };
 
-      const data = {
-        ...response,
-      };
+    const response = employeeDataCopy;
 
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(data);
-        }, 1000);
-      });
-    } catch (error) {
-      console.error("Error al obtener los valores generales:", error);
-      return [] as unknown as EmployeeModel;
-    }
+    const data = {
+      ...response,
+    };
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(data);
+      }, 1000);
+    });
+  } catch (error) {
+    console.error("Error al obtener los valores generales:", error);
+    return [] as unknown as EmployeeModel;
+  }
 };
 
 /**
@@ -463,15 +508,18 @@ export const getIntercompanyClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = intercompanyData;
-
-    const data = {
-      ...response,
+    const responseCopy = {
+      ...intercompanyData,
+      lines: intercompanyData.lines.map((line) => ({
+        ...line,
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "intercompany-" + uuidv4() : line.id,
+      })),
     };
 
     return new Promise((resolve) => {
       setTimeout(() => {
-        resolve(data);
+        resolve(responseCopy);
       }, 1000);
     });
   } catch (error) {
@@ -484,14 +532,10 @@ export const getIntercompanyClousing = async (
 export const sendCashClousing = async (body: any) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
-    const response = { success: true };
 
-    //return response
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000); // 5 segundos
-    });
+    const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
+
+    return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
     return [];
@@ -770,7 +814,7 @@ export const CashData = {
   electronicTips: 9622.32,
   currencies: [
     {
-      id: 1,
+      id: null as number | null,
       currency: "MXN",
       totalPOS: 1000,
       totalFisico: 1000,
@@ -779,7 +823,7 @@ export const CashData = {
       originalCurrency: 20,
     },
     {
-      id: 2,
+      id: null as number | null,
       currency: "USD",
       totalPOS: 1000,
       totalFisico: 1000,
@@ -788,8 +832,8 @@ export const CashData = {
       originalCurrency: 10,
     },
     {
-      id: 3,
-      currency: "EUR",
+      id: null as number | null,
+      currency: "GBP",
       totalPOS: 1000,
       totalFisico: 1000,
       difference: 0,
@@ -797,17 +841,8 @@ export const CashData = {
       originalCurrency: 5,
     },
     {
-      id: 4,
-      currency: "LIB",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 2,
-    },
-    {
-      id: 5,
-      currency: "CAN",
+      id: null as number | null,
+      currency: "CAD",
       totalPOS: 1000,
       totalFisico: 1000,
       difference: 0,
@@ -914,8 +949,8 @@ export const CustomerMOCKData = {
   },
   lines: [
     {
-      id: 2,
-      nameClient: "BRITISH ",
+      id: null,
+      nameClient: "BRITISH AIRWAYS",
       coupons: 0,
       currency: "",
       pax: 0,
@@ -924,8 +959,8 @@ export const CustomerMOCKData = {
       amountMXN: 0,
     },
     {
-      id: 3,
-      nameClient: "SUNWING",
+      id: null,
+      nameClient: "SUNWING Airlines",
       coupons: 0,
       currency: "",
       pax: 0,
@@ -934,7 +969,7 @@ export const CustomerMOCKData = {
       amountMXN: 0,
     },
     {
-      id: 4,
+      id: null,
       nameClient: "VIVA AEROBUS",
       coupons: 0,
       currency: "",
@@ -1037,7 +1072,7 @@ export const PrepaidMOCKData = {
   },
   lines: [
     {
-      id: 1,
+      id: null,
       client: "Thomas Moore",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1047,7 +1082,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 2,
+      id: null,
       client: "SSIA",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1057,7 +1092,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 3,
+      id: null,
       client: "SEASON TOURS",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1067,7 +1102,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 4,
+      id: null,
       client: "SEEK AND GO",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1077,7 +1112,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: 5,
+      id: null,
       client: "AVENTOUR",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1099,28 +1134,28 @@ export const EmployeeData = {
   },
   lines: [
     {
-      id: 1,
+      id: null,
       name: "Mario",
       lastName: "Vásquez",
-      employeeCode: "0015",
+      employeeCode: "3",
       amount: 125.0,
       reason: "Diferencia de efectivo",
       ticket: "---",
     },
     {
-      id: 2,
+      id: null,
       name: "Luis",
       lastName: "Castillo",
-      employeeCode: "0029",
+      employeeCode: "5",
       amount: 150.0,
       reason: "Consumo empelado",
       ticket: "123",
     },
     {
-      id: 3,
+      id: null,
       name: "Ramiro",
       lastName: "Diaz",
-      employeeCode: "0105",
+      employeeCode: "3",
       amount: 300.0,
       reason: "Mala elaboración del producto",
       ticket: "---",
@@ -1138,7 +1173,7 @@ const intercompanyData = {
   },
   lines: [
     {
-      id: 1,
+      id: null,
       employeeId: 0,
       employeeName: "",
       subsidiaryId: 0,
@@ -1148,7 +1183,7 @@ const intercompanyData = {
       physicalAmount: 0,
     },
     {
-      id: 2,
+      id: null,
       employeeId: 0,
       employeeName: "",
       subsidiaryId: 0,
@@ -1158,7 +1193,7 @@ const intercompanyData = {
       physicalAmount: 0,
     },
     {
-      id: 3,
+      id: null,
       employeeId: 0,
       employeeName: "",
       subsidiaryId: 0,

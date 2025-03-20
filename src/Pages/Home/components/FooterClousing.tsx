@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
-import { Button } from "@components/ui/button"
+import { Button } from "@components/ui/button";
 import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
 import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
@@ -16,10 +16,20 @@ import { useClousing } from "@context/home/clousingContext";
 import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "./ConfirmDialog";
 import Loading from "@components/Loading";
+import { ClousingSave } from "@models/saveClousing.model";
+import { CustomerLines } from "@models/customer.model";
+import { IntercompanyLine } from "@models/intercompany.model";
+import { BankLineModel, TDCModel } from "@models/tdc.model";
+import { PrepaidLineModel } from "@models/prepaid.model";
+import { EmployeeLine } from "@models/employee.model";
+import { SpecialCustomerLines } from "@models/specialCustome.model";
 
-
-function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirmation }: FooterClousing) {
-
+function FooterClousing({
+  clousingType,
+  clousingId,
+  closeDialog,
+  closingConfirmation,
+}: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
@@ -45,7 +55,6 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
   }, [clousingId, clousingType, getFooterData]);
 
   async function sendClousing() {
-
     setloading(true);
 
     const cash = await getCashData(clousingId);
@@ -56,21 +65,131 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
-    const body = {
-      id: clousingId,
-      cash: cash,
-      tdc: tdc,
-      customer: customer,
-      specialCustomer: specialCustomer,
-      employee: employee,
-      prepaid: prepaid,
-      intercompany: intercompany
-    };
+    const mapCustomerLines = (lines: CustomerLines[]) =>
+      lines.map(({ pax: valuePAX, currency, id, ...rest }) => ({
+        ...rest,
+        customers: rest.nameClient,
+        valuePAX,
+        id: typeof id === "number" ? id : null,
+        currency: 1,
+      }));
 
+    const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
+      lines.map(({ id, ...rest }) => ({
+        ...rest,
+        id: typeof id === "number" ? id : null,
+        ticket: "1",
+      }));
+
+    const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
+      lines.map(
+        ({
+          ammountMXN: amountMXN,
+          ammountUSD: valueUSD,
+          ammount: value,
+          bill: consumption,
+          check: Check,
+          couponFolio: folioCuopon,
+          couponPrice: priceCuopon,
+          pax: PAX,
+          id,
+          couponFolioUSD: folioCuoponUSD,
+          ...rest
+        }) => ({
+          ...rest,
+          id: typeof id === "number" ? id : null,
+          amountMXN,
+          valueUSD,
+          value,
+          consumption,
+          Check,
+          folioCuopon,
+          folio: folioCuopon,
+          priceCuopon,
+          PAX,
+          folioCuoponUSD,
+        })
+      );
+
+    const mapEmployeeLines = (lines: EmployeeLine[]) =>
+      lines.map(({ employeeCode, reason, ticket, ...rest }) => ({
+        // id: typeof rest.id === "number" ? rest.id : null,
+        id: typeof rest.id === "number" ? rest.id : null,
+        amount: rest.amount,
+        employeeId: Number(employeeCode),
+        reasonId: 1,
+        ticketId: 1,
+        externalId: 1,
+      }));
+
+    const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
+      lines.map((line) => ({
+        ...line,
+        id: typeof line.id === "number" ? line.id : null,
+        isEdit: line.isEdit ?? false,
+      }));
+
+    const mapTdcLines = (lines: any[]) =>
+      lines.map(({ id, ...rest }) => ({
+        ...rest,
+
+        id: typeof id === "number" ? id : null,
+        vouchers: [
+          {
+            id: 1,
+            date: "2025-03-20 17:54:43.0",
+            check: "1",
+            amount: 6.25,
+            status: false,
+          },
+        ],
+      }));
+
+    const body: ClousingSave = {
+      id: clousingId,
+      cash: {
+        electronicTips: cash.electronicTips,
+        lines: cash.currencies.map(({ id, ...rest }) => ({
+          id: typeof id === "number" ? Number(id) : null,
+          ...rest,
+        })),
+        tips: cash.tips ?? 0,
+        total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      },
+      customer: {
+        lines: mapCustomerLines(customer.lines),
+        total: customer.total,
+      },
+      intercompany: {
+        total: intercompany.total,
+        lines: mapIntercompanyLines(intercompany.lines),
+      },
+      specialCustomer: {
+        total: specialCustomer.total,
+        lines: mapSpecialCustomerLines(specialCustomer.lines),
+      },
+      employee: {
+        total: employee.total,
+        lines: mapEmployeeLines(employee.lines),
+      },
+      prepaid: {
+        total: prepaid.total,
+        lines: mapPrepaidLines(prepaid.lines),
+      },
+      tdc: {
+        idCurrency: 1,
+        total: tdc.total,
+        lines: mapTdcLines(tdc.lines),
+      },
+    };
     //console.log(body)
+    console.log(body);
+
     const response: any = await sendCashClousing(body);
 
-    if (response.success) {
+    console.log(response);
+
+    if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
@@ -83,11 +202,10 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
         specialCustomer: body.specialCustomer.total.totalPhysical,
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
-        intercompany: body.intercompany.total.totalPhysical
+        intercompany: body.intercompany.total.totalPhysical,
       });
 
       closeDialog();
-
     } else {
       console.log("Error al enviar el corte de caja");
       //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
@@ -99,47 +217,48 @@ function FooterClousing({ clousingType, clousingId, closeDialog, closingConfirma
 
   return (
     <>
-      <Box
-        p={4}
-        mb={2}
-        mt={4}
-        gap="4"
-        flexDir={{ base: "column", md: "row" }}>
-
+      <Box p={4} mb={2} mt={4} gap="4" flexDir={{ base: "column", md: "row" }}>
         <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
-
           <CurrencyInput
             name={"Total POS"}
             value={footer?.totalPOS ?? 0}
-            loading={false}/>
+            loading={false}
+          />
 
           <CurrencyInput
             name={"Total físico"}
             value={footer?.totalPhysical ?? 0}
-            loading={false}/>
+            loading={false}
+          />
 
           <CurrencyInput
             name={"Diferencia"}
             value={footer?.difference ?? 0}
-            loading={false}/>
+            loading={false}
+          />
 
-          <Button loading={loading}
+          <Button
+            loading={loading}
             colorPalette="meraPrimary"
-            onClick={async () => { setButtonLoading(true); }} disabled={closingConfirmation}>
+            onClick={async () => {
+              setButtonLoading(true);
+            }}
+            disabled={closingConfirmation}
+          >
             Confirmar Corte
           </Button>
-
         </Flex>
 
-        <Flex>
-        </Flex>
-
+        <Flex></Flex>
       </Box>
 
-      <ConfirmDialog isOpen={buttonLoading} closeDialog={() => setButtonLoading(false)} sendData={sendClousing} />
+      <ConfirmDialog
+        isOpen={buttonLoading}
+        closeDialog={() => setButtonLoading(false)}
+        sendData={sendClousing}
+      />
 
       {loading && <Loading />}
-
     </>
   );
 }

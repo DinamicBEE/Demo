@@ -28,7 +28,7 @@ export interface EmployeeModel {
 }
 
 export interface EmployeeLine {
-    id: number;
+    id: number | string;
     name: string;
     lastName: string;
     employeeCode: string;
@@ -59,9 +59,9 @@ export interface NewEmployeeModel {
 export interface EmployeeFilterProps {
     employees: Employee[]
     label: boolean;
-    itemId?: number;
+    itemId?: number | string;
     employeeSelect?: string;
-    onSelect: (empleado: Employee, itemId?: number ) => void;
+    onSelect: (empleado: Employee, itemId?: number | string ) => void;
     disabled: boolean;
 }
 

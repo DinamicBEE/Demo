@@ -26,7 +26,7 @@ export interface IntercompanyModel{
 }
 
 export interface IntercompanyLine {
-    id: number;
+    id: number | string;
     employeeId: number;
     employeeName: string;
     subsidiaryId: number;

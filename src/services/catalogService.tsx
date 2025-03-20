@@ -197,7 +197,7 @@ const currenciesS = [
   { value: 1, label: "MXN", exchangeRate: 1.0 },
   { value: 2, label: "USD", exchangeRate: 17.0 },
   { value: 3, label: "CAN", exchangeRate: 13.0 },
-  { value: 4, label: "EUR", exchangeRate: 23.0 },
+  { value: 4, label: "GBP", exchangeRate: 23.0 },
 ];
 
 const employeesMocky = [

@@ -14,7 +14,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
     const { setFooterData } = useFooter();
     const { setSpecialCustData } = useSpecialCustContext();
 
-    function handleInputTextData(value: string, id: number, key: string) {
+    function handleInputTextData(value: string, id: number | string, key: string) {
       const updatedCurrencies = specialCustomerData.lines.map((item: SpecialCustomerLines) =>
         item.id === id
           ? {
@@ -33,7 +33,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     }
 
-    function handleUpdateAmountMXN(id: number, value: string, key?: string) {
+    function handleUpdateAmountMXN(id: number | string, value: string, key?: string) {
       value = value.replace(/[^\d.]/g, "");
       console.log(key)
       

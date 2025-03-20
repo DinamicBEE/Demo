@@ -11,7 +11,7 @@ import { useHeaders } from "@context/home/headerContext";
 
 function TDCClousing({ data, location, subsidiary }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
-  const [lineSelected, setLineSeleted] = useState<number | null>(null);
+  const [lineSelected, setLineSeleted] = useState<number | null | string>(null);
   const [details, setDetails] = useState<boolean>(false);
 
   const { setFooterData } = useFooter();
@@ -34,7 +34,7 @@ function TDCClousing({ data, location, subsidiary }: any) {
     fetchData();
   }, [tdc]);
 
-  const openDiaolog = (id: number) => {
+  const openDiaolog = (id: number | string) => {
     setLineSeleted(id);
     setDetails(true);
   };

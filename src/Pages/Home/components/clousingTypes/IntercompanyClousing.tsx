@@ -90,7 +90,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
 
   }
 
-  function handleEmployeeData(employee:Employee, itemId?: number){
+  function handleEmployeeData(employee:Employee, itemId?: number | string){
 
     const updateLine: IntercompanyLine[] = intercompany?.lines.map((item:IntercompanyLine) => 
       item.id === itemId
@@ -106,7 +106,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
     
   }
 
-  function handleAmount(itemId: number, value: string){
+  function handleAmount(itemId: number | string, value: string){
 
     value = value.replace(/[^\d.]/g, "");
 
@@ -123,7 +123,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
 
   }
 
-  function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number){
+  function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number | string){
     
     const subSelect = Number(event.value[0]);
     const subName = subsidiary.items.find(item => item.value === event.value[0]).label;

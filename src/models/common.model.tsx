@@ -6,10 +6,10 @@ export interface ProtectedRouteProps {
 }
 
 export interface UserContextType {
-    user: any; // ! Modelo de datos del usuario
-    loading: boolean;
-    setLoading: (loading: boolean) => void;
-    fetchUser: (currentToken: string) => Promise<any>; // ! Modelo de datos del usuario
+  user: any; // ! Modelo de datos del usuario
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  fetchUser: (currentToken: string) => Promise<any>; // ! Modelo de datos del usuario
 }
 
 export interface CurrencyInputProps {
@@ -17,16 +17,16 @@ export interface CurrencyInputProps {
   loading: boolean;
   name?: string;
   onChange?: (value: string) => void;
-  currency?: boolean
+  currency?: boolean;
 }
 
 export interface TableInputProps {
   value: number;
-  id: number;
+  id: number | string;
   keyValue?: string;
   currency: boolean;
   disabled?: boolean;
-  onChange?: (id: number, eventValue: string, key?:string) => void;
+  onChange?: (id: number | string, eventValue: string, key?: string) => void;
 }
 
 export interface SubsidiaryModal {
