@@ -833,7 +833,7 @@ export const CashData = {
     },
     {
       id: null as number | null,
-      currency: "EUR",
+      currency: "GBP",
       totalPOS: 1000,
       totalFisico: 1000,
       difference: 0,

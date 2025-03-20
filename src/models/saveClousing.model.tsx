@@ -1,132 +1,140 @@
 // Interfaces base para tipos comunes
 interface Total {
-    totalPOS: number;
-    totalPhysical: number;
-    difference: number;
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
 }
 
 interface LineBase {
-    id: number | null;
+  id: number | null;
 }
 
 // Interfaces específicas por sección
 interface CashLine extends LineBase {
-    currency: string;
-    totalPOS: number;
-    totalFisico: number;
-    difference: number;
-    exchangeRate: number;
-    originalCurrency: number;
+  currency: string;
+  totalPOS: number;
+  totalFisico: number;
+  difference: number;
+  exchangeRate: number;
+  originalCurrency: number;
 }
 
 interface Cash {
-    electronicTips: number;
-    lines: CashLine[];
-    total: Total;
-    tips: number;
+  electronicTips: number;
+  lines: CashLine[];
+  total: Total;
+  tips: number;
 }
 
 interface TDCLine extends LineBase {
-    bank: string;
-    POS: number;
-    physical: number;
-    voucherAmount: number;
+  bank: string;
+  POS: number;
+  physical: number;
+  voucherAmount: number;
+  vouchers: {
+    id: number;
+    date: string;
+    check: string;
+    amount: number;
+    status: boolean;
+  }[];
 }
 
 interface TDC {
-    total: Total;
-    lines: TDCLine[];
+  idCurrency: number;
+  total: Total;
+  lines: TDCLine[];
 }
 
 interface CustomerLine extends LineBase {
-    customers: string;
-    coupons: number;
-    currency: number;
-    valuePAX: number;
-    amount: number;
-    exchangeRate: number;
-    amountMXN: number;
+  customers: string;
+  coupons: number;
+  currency: number;
+  valuePAX: number;
+  amount: number;
+  exchangeRate: number;
+  amountMXN: number;
 }
 
 interface Customer {
-    total: Total;
-    lines: CustomerLine[];
+  total: Total;
+  lines: CustomerLine[];
 }
 
 interface SpecialCustomerLine extends LineBase {
-    Check: number;
-    consumption: number;
-    priceCuopon: number;
-    difference: number;
-    exchangeRate: number;
-    client: string;
-    PAX: number;
-    folioCuopon: string;
-    folioCuoponUSD: string;
-    value: number;
-    valueUSD: number;
-    flight: string;
-    passengerName: string;
-    amountMXN: number;
+  Check: number;
+  consumption: number;
+  priceCuopon: number;
+  difference: number;
+  exchangeRate: number;
+  client: string;
+  PAX: number;
+  folioCuopon: string;
+  folioCuoponUSD: string;
+  value: number;
+  valueUSD: number;
+  flight: string;
+  passengerName: string;
+  amountMXN: number;
 }
 
 interface SpecialCustomer {
-    total: Total;
-    lines: SpecialCustomerLine[];
+  total: Total;
+  lines: SpecialCustomerLine[];
 }
 
 interface EmployeeLine extends LineBase {
-    employeeId: number;
-    amount: number;
-    reasonId: number;
-    ticketId: number | null;
-    externalId?: number;
+  employeeId: number;
+  amount: number;
+  reasonId: number;
+  ticketId: number | null;
+  externalId?: number;
 }
 
 interface Employee {
-    total: Total;
-    lines: EmployeeLine[];
+  total: Total;
+  lines: EmployeeLine[];
 }
 
 interface PrepaidLine extends LineBase {
-    client: string;
-    quantity: number;
-    supplementsQuantity: number;
-    unitPrice: number;
-    totalPOS: number;
-    physical: number;
-    difference: number;
-    isEdit: boolean;
+  client: string;
+  quantity: number;
+  supplementsQuantity: number;
+  unitPrice: number;
+  totalPOS: number;
+  physical: number;
+  difference: number;
+  isEdit: boolean;
 }
 
 interface Prepaid {
-    total: Total;
-    lines: PrepaidLine[];
+  total: Total;
+  lines: PrepaidLine[];
 }
 
 interface IntercompanyLine extends LineBase {
-    employeeId: number;
-    employeeName: string;
-    subsidiaryId: number;
-    subsidiaryname: string;
-    amount: number;
-    ticket: string;
-    physicalAmount: number;
+  employeeId: number;
+  employeeName: string;
+  subsidiaryId: number;
+  subsidiaryname: string;
+  amount: number;
+  ticket: string;
+  physicalAmount: number;
 }
 
 interface Intercompany {
-    total: Total;
-    lines: IntercompanyLine[];
+  total: Total;
+  lines: IntercompanyLine[];
 }
 
 // Interface principal que agrupa todo
 export interface ClousingSave {
-    id: number;
-    cash: Cash;
-    tdc: TDC;
-    customer: Customer;
-    specialCustomer: SpecialCustomer;
-    employee: Employee;
-    prepaid: Prepaid;
-    intercompany: Intercompany;
+  id: number;
+  cash: Cash;
+  tdc: TDC;
+  customer: Customer;
+  specialCustomer: SpecialCustomer;
+  employee: Employee;
+  prepaid: Prepaid;
+  intercompany: Intercompany;
 }

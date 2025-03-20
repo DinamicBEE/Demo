@@ -19,7 +19,7 @@ import Loading from "@components/Loading";
 import { ClousingSave } from "@models/saveClousing.model";
 import { CustomerLines } from "@models/customer.model";
 import { IntercompanyLine } from "@models/intercompany.model";
-import { BankLineModel } from "@models/tdc.model";
+import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { PrepaidLineModel } from "@models/prepaid.model";
 import { EmployeeLine } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
@@ -66,15 +66,13 @@ function FooterClousing({
     const intercompany = await getIntercompanyData(clousingId);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(
-        ({ pax: valuePAX, currency, id, ...rest }) => ({
-          ...rest,
-          customers: rest.nameClient,
-          valuePAX,
-          id: typeof id === "number" ? id : null,
-          currency: 1,
-        })
-      );
+      lines.map(({ pax: valuePAX, currency, id, ...rest }) => ({
+        ...rest,
+        customers: rest.nameClient,
+        valuePAX,
+        id: typeof id === "number" ? id : null,
+        currency: 1,
+      }));
 
     const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
       lines.map(({ id, ...rest }) => ({
@@ -131,11 +129,20 @@ function FooterClousing({
         isEdit: line.isEdit ?? false,
       }));
 
-    const mapTdcLines = (lines: BankLineModel[]) =>
+    const mapTdcLines = (lines: any[]) =>
       lines.map(({ id, ...rest }) => ({
         ...rest,
-        // id: typeof id === "number" ? id : null
-        id: null,
+
+        id: typeof id === "number" ? id : null,
+        vouchers: [
+          {
+            id: 1,
+            date: "2025-03-20 17:54:43.0",
+            check: "1",
+            amount: 6.25,
+            status: false,
+          },
+        ],
       }));
 
     const body: ClousingSave = {
@@ -170,6 +177,7 @@ function FooterClousing({
         lines: mapPrepaidLines(prepaid.lines),
       },
       tdc: {
+        idCurrency: 1,
         total: tdc.total,
         lines: mapTdcLines(tdc.lines),
       },
