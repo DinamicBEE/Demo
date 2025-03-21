@@ -104,28 +104,28 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.couponFolio} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuopon")}
+                    <Input textAlign="center" value={item.couponFolio} onChange={(e) => handleInputTextData(e.target.value, item.id, "couponFolio")}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.couponFolioUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "folioCuoponUSD")}
+                    <Input textAlign="center" value={item.couponFolioUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "couponFolioUSD")}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.ammount} id={item.id} currency={false} keyValue={"value"} onChange={handleUpdateAmountMXN}
+                    <TableInput value={item.ammount} id={item.id} currency={false} keyValue={"ammount"} onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.ammountUSD} id={item.id} currency={false} keyValue={"valueUSD"} onChange={handleUpdateAmountMXN}
+                    <TableInput value={item.ammountUSD} id={item.id} currency={false} keyValue={"ammountUSD"} onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>

@@ -35,13 +35,12 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     function handleUpdateAmountMXN(id: number | string, value: string, key?: string) {
       value = value.replace(/[^\d.]/g, "");
-      console.log(key)
       
       let newAmoutn = 0;
       let newValue = 0;
       let newValueUSD = 0;
 
-      if (key === "value") {
+      if (key === "ammount") {
         newValue = parseFloat(value);
         newValueUSD = 0;
         newAmoutn = parseFloat(value);
@@ -60,9 +59,9 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           item.id === id
             ? {
                 ...item,
-                value: newValue,
-                valueUSD: newValueUSD,
-                amountMXN: newAmoutn,
+                ammount: newValue,
+                ammountUSD: newValueUSD,
+                ammountMXN: newAmoutn,
               }
             : item
       );
@@ -77,11 +76,11 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     function updateContext(updateLines: SpecialCustomerLines[]){
 
-        const newTotalFisico = updateLines.reduce(
-            (acc: number, curr: { amountMXN: number; }) => acc + curr.amountMXN,
+        const newTotalFisico: number = updateLines.reduce(
+            (acc: number, curr: { ammountMXN: number; }) => Number(acc) + Number(curr.ammountMXN),
             0
         );
-
+        console.log(typeof newTotalFisico)
         const newDifference =
           specialCustomerData.total.totalPOS - newTotalFisico;
 
@@ -96,6 +95,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           total: newTotal
         }
 
+        console.log(typeof newTotalFisico)
         updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);
 
         setFooterData(newTotal, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);

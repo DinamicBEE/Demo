@@ -5,7 +5,7 @@ import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { CLOUSING_KEY } from "@models/constants.model";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
@@ -80,7 +80,8 @@ function PrepaidClousing({data}: any) {
       return
 
     }
-
+    console.log(prepaid.lines);
+    console.log(couponModel);
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
       item.id === couponModel?.lineId
         ? !couponModel.isUsed
