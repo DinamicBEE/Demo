@@ -30,7 +30,7 @@ export enum CLOUSING_KEY {
 }
 
 export const menuItems = [
-  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin'] },
+  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
   { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['admin', 'user'] },
   { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: ['user'] },
   { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: ['admin', 'user'] },
