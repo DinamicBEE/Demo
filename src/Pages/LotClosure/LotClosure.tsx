@@ -69,8 +69,8 @@ function LotClosure() {
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align="start">
-        <Button hidden={MODE === "LOCAL"}
-         onClick={test}>Test</Button>
+        {/* <Button hidden={MODE === "LOCAL"}
+         onClick={test}>Test</Button> */}
         <Heading>
           Selecciona una subsidiaria , rango de fechas y centro de consumo
         </Heading>

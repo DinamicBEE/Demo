@@ -31,7 +31,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
     async function fetchData() {
       if (!data) return;
       const customers: CustomerModel = await getCustomerData(data.id);
-
+      
       if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
 
       const currencies = await getCurrencies(subsidiary.idCurrency);

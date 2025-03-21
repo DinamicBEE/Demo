@@ -189,7 +189,9 @@ function FooterClousing({
 
     console.log(response);
 
-    if (response === "response") {
+    if (response.success) {
+      //TODO: DEvolver para el back
+      // if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal

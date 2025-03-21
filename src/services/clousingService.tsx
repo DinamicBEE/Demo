@@ -532,10 +532,20 @@ export const getIntercompanyClousing = async (
 export const sendCashClousing = async (body: any) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
+    //TODO: Devolver para consulta a back
+    // const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
 
-    const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
+    const response = { success: true };
 
-    return response.data;
+    //return response
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(response);
+      }, 1000); // 5 segundos
+    });
+
+    //TODO: Devolver para consulta a back
+    // return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
     return [];
