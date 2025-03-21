@@ -1,94 +1,92 @@
 import { useEffect, useRef, useState } from "react";
 import { EmployeeFilterProps } from "@models/employee.model";
 import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
-import { SelectLabel, SelectRoot, SelectTrigger,
-    SelectValueText, SelectContent, SelectItem,
-  } from "@components/ui/select"
+import { SelectLabel, SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem, } from "@components/ui/select"
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
 function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, disabled }: EmployeeFilterProps) {//
-	const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
-	const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
-	const searchRef = useRef<string>('');
 
-	useEffect(() => {
-		const employeeCollection = createListCollection({
-			items: employees.map(employee => ({
-				label: employee.name + ' ' + employee.lastName,
-				value: employee.id
-			})
-			)
-		})
+  const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
+  const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
+  const searchRef = useRef<string>('');
 
-		setFilteredEmpleados(employeeCollection)
+  useEffect(() => {
 
-	}, [employees])
+    const employeeCollection = createListCollection({
+      items: employees.map(employee => (
+        {
+          label: ` ${employee.name}  ${employee.lastName ? employee.lastName : ''}`,
+          value: employee.id
+        }
+      ))
+    });
 
-	function handleSearch(event: string) {
+    setFilteredEmpleados(employeeCollection)
 
-		let query: string = '';
-		if (event.toLowerCase() === 'backspace') {
-			query = searchRef.current.slice(0, -1);
-		} else if (event.length == 1) {
-			query = searchRef.current + event.toLowerCase();
-		} else {
-			query = searchRef.current;
-		}
-		setSearchQuery(query);
-		searchRef.current = query
+  }, [employees])
 
-		const filtered = employees.filter(
-			(employee) =>
-				employee.name.toLowerCase().includes(query) ||
-				employee.lastName.toLowerCase().includes(query)
-		);
+  function handleSearch(event: string) {
 
-		const employeeCollection = createListCollection({
-			items: filtered.map(employee => ({
-				label: employee.name + ' ' + employee.lastName,
-				value: employee.id
-			})
-			)
-		})
+    let query: string = '';
+    if (event.toLowerCase() === 'backspace') {
+      query = searchRef.current.slice(0, -1);
+    } else if (event.length == 1) {
+      query = searchRef.current + event.toLowerCase();
+    } else {
+      query = searchRef.current;
+    }
+    setSearchQuery(query);
+    searchRef.current = query
 
-		setFilteredEmpleados(employeeCollection)
+    const filtered = employees.filter(
+      (employee) => employee.name.toLowerCase().includes(query) || employee?.lastName.toLowerCase().includes(query)
+    );
 
-	}
+    const employeeCollection = createListCollection({
+      items: filtered.map(employee => ({
+        label: employee.name + ' ' + employee.lastName,
+        value: employee.id
+      })
+      )
+    })
 
-	function handleSelect(event: ValueChangeDetails<any>) {
-		const selectedId = Number(event.value[0]);
+    setFilteredEmpleados(employeeCollection);
+  }
 
-		const employeeSelect = employees.find((employee) => employee.id === selectedId);
+  function handleSelect(event: ValueChangeDetails<any>) {
+    const selectedId = Number(event.value[0]);
 
-		if (employeeSelect && itemId === undefined) {
-			onSelect(employeeSelect);
-		} else if (employeeSelect && itemId != undefined) {
-			onSelect(employeeSelect, itemId);
-		}
+    const employeeSelect = employees.find((employee) => employee.id === selectedId);
 
-	}
+    if (employeeSelect && itemId === undefined) {
+      onSelect(employeeSelect);
+    } else if (employeeSelect && itemId != undefined) {
+      onSelect(employeeSelect, itemId);
+    }
 
-	return (
-		<Box>
-			<SelectRoot collection={filteredEmpleados} onKeyUp={(e) => handleSearch(e.key)}
-				onValueChange={(event) => handleSelect(event)} disabled={disabled || false}>
+  }
 
-				{label && <SelectLabel>Empleado</SelectLabel>}
-				<SelectTrigger>
-					<SelectValueText placeholder={employeeSelect || searchQuery} />
-				</SelectTrigger>
+  return (
+    <Box>
+      <SelectRoot collection={filteredEmpleados} onKeyUp={(e) => handleSearch(e.key)}
+        onValueChange={(event) => handleSelect(event)} disabled={disabled || false}>
 
-				<SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
-					{filteredEmpleados.items.map((movie) => (
-						<SelectItem item={movie} key={movie.value} >
-							{movie.label}
-						</SelectItem>
-					))}
-				</SelectContent>
+        {label && <SelectLabel>Empleado</SelectLabel>}
+        <SelectTrigger>
+          <SelectValueText placeholder={employeeSelect || searchQuery} />
+        </SelectTrigger>
 
-			</SelectRoot>
-		</Box>
-	);
+        <SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
+          {filteredEmpleados.items.map((movie) => (
+            <SelectItem item={movie} key={movie.value} >
+              {movie.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+
+      </SelectRoot>
+    </Box>
+  );
 }
 
 export default FilterEmployee;

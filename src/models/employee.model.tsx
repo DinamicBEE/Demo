@@ -40,7 +40,7 @@ export interface ReasonsModel {
 export interface Employee {
     id: number;
     name: string;
-    lastName: string;
+    lastName?: string;
     employeeCode: string; 
 }
 
