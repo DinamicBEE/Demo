@@ -7,7 +7,6 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { Employee } from "@models/employee.model";
 import { TableInput } from "@components/NumericInput";
-import { useList } from "@context/home/listsContext";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
@@ -21,18 +20,16 @@ function IntercompanyClousing({ data }: any) {
   const [subsidiariesByRow, setSubsidiariesByRow] = useState<{ [key: number]: ListCollection }>({});
 
   const { getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries } = useIntercompanyContext();
-  const { getSubsidiariesData } = useList();
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
 
   useEffect(() => {
     async function fetchData() {
-
-      setLoading(true)
+      setLoading(true);
 
       const intercompanyData: IntercompanyModel = await getIntercompanyData(data?.id);
       const employeeList: Employee[] = await getEmployeesList();
-      const subsidiariesData = await getSubsidiariesData();
+      
 
       if (intercompanyData) setFooterData(intercompanyData.total, data.id, CLOUSING_KEY.INTERCOMPANY);
 
@@ -44,13 +41,9 @@ function IntercompanyClousing({ data }: any) {
 
       intercompanyData.lines.forEach((line) => {
         initialSubsidiariesByRow[line.id] = createListCollection({
-          items: subsidiariesData.map(item => ({
-            value: item.id,
-            label: item.name,
-          })),
+          items: [], // Inicialmente vacío
         });
       });
-
 
       setSubsidiariesByRow(initialSubsidiariesByRow);
       setLoading(false);
@@ -58,11 +51,9 @@ function IntercompanyClousing({ data }: any) {
     }
 
     fetchData();
-
   }, []);
 
   function updateIntercompany(updateLine: IntercompanyLine[]) {
-
     const newTotalFisico = updateLine.reduce(
       (acc: number, curr: { physicalAmount: number }) => acc + curr.physicalAmount,
       0
@@ -79,17 +70,15 @@ function IntercompanyClousing({ data }: any) {
     const intercompanyData: IntercompanyModel = {
       ...intercompany,
       lines: updateLine
-    }
+    };
 
     setIntercompany(intercompanyData);
     setIntercompanyData(intercompanyData, data?.id);
     updateTotal(newTotalFisico, data.id, CLOUSING_KEY.INTERCOMPANY);
     setFooterData(newTotal, data.id, CLOUSING_KEY.INTERCOMPANY);
-
   }
 
   async function handleEmployeeData(employee: Employee, itemId?: number) {
-
     if (!itemId) return;
 
     const updateLine: IntercompanyLine[] = intercompany?.lines.map((item: IntercompanyLine) =>
@@ -107,14 +96,12 @@ function IntercompanyClousing({ data }: any) {
     // Actualizar las subsidiarias solo para la fila actual
     const updatedSubsidiariesByRow = {
       ...subsidiariesByRow,
-
       [itemId]: createListCollection({
         items: subsidiaries.map(item => ({
           value: item.id,
           label: item.name,
         })),
       }),
-
     };
 
     setSubsidiariesByRow(updatedSubsidiariesByRow);
@@ -122,7 +109,6 @@ function IntercompanyClousing({ data }: any) {
   }
 
   function handleAmount(itemId: number, value: string) {
-
     value = value.replace(/[^\d.]/g, "");
 
     const updateLine: IntercompanyLine[] = intercompany?.lines.map((item: IntercompanyLine) =>
@@ -132,25 +118,21 @@ function IntercompanyClousing({ data }: any) {
           physicalAmount: parseFloat(value),
         }
         : item
-    )
+    );
 
     updateIntercompany(updateLine);
-
   }
 
   function handleSubsidiary(event: ValueChangeDetails<any>, itemId: number) {
-    // Verificar que subsidiariesByRow[itemId] existe y tiene items
     if (!subsidiariesByRow[itemId] || !subsidiariesByRow[itemId].items) {
       console.error("No se encontraron subsidiarias para la fila:", itemId);
       return;
     }
 
-    // Buscar la subsidiaria seleccionada
     const selectedSubsidiary = subsidiariesByRow[itemId].items.find(
       (item) => item.value === event.value[0]
     );
 
-    // Verificar que se encontró una subsidiaria válida
     if (!selectedSubsidiary) {
       console.error("No se encontró la subsidiaria seleccionada:", event.value[0]);
       return;
@@ -159,7 +141,6 @@ function IntercompanyClousing({ data }: any) {
     const subSelect = Number(event.value[0]);
     const subName = selectedSubsidiary.label;
 
-    // Actualizar la línea correspondiente en el estado
     const updateLine: IntercompanyLine[] = intercompany?.lines.map((item: IntercompanyLine) =>
       item.id === itemId
         ? {
@@ -176,11 +157,8 @@ function IntercompanyClousing({ data }: any) {
 
   return (
     <Box>
-      {/* <Toaster /> */}
-
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
-
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
@@ -194,37 +172,29 @@ function IntercompanyClousing({ data }: any) {
           <Table.Body>
             {intercompany?.lines?.map((item: IntercompanyLine) => (
               <Table.Row key={item.id}>
-
                 <Table.Cell textAlign="center">
-
                   <FilterEmployee employees={employees}
                     employeeSelect={item.employeeName}
                     label={false}
                     itemId={item.id}
                     onSelect={handleEmployeeData}
                     disabled={data?.closingConfirmation} />
-
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-
                   <SelectRoot collection={subsidiariesByRow[item.id]}
                     onValueChange={(event) => handleSubsidiary(event, item.id)} disabled={data?.closingConfirmation}>
-
                     <SelectTrigger>
                       <SelectValueText placeholder={item.subsidiaryname || "Selecciona Subsidiaria"} />
                     </SelectTrigger>
-
                     <SelectContent>
-                      {subsidiariesByRow[item.id].items.map((item) => (
-                        <SelectItem item={item} key={item.value}>
-                          {item.label}
+                      {subsidiariesByRow[item.id]?.items.map((subsidiary) => (
+                        <SelectItem item={subsidiary} key={subsidiary.value}>
+                          {subsidiary.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
-
                   </SelectRoot>
-
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
@@ -244,7 +214,6 @@ function IntercompanyClousing({ data }: any) {
                 <Table.Cell textAlign="end">
                   <TableInput value={item.physicalAmount} id={item.id} currency={true} onChange={handleAmount} disabled={data?.closingConfirmation} />
                 </Table.Cell>
-
               </Table.Row>
             ))}
           </Table.Body>
@@ -256,7 +225,6 @@ function IntercompanyClousing({ data }: any) {
           <Loading />
         </Box>
       )}
-
     </Box>
   );
 }
