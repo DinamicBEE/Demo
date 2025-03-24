@@ -8,7 +8,7 @@ const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../pages/Home/Home')),
-      roles: [1],
+      roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -18,7 +18,7 @@ const routesConfig = [
     {
       path: '/lotClosure',
       element: lazy(() => import('../pages/LotClosure/LotClosure')),
-      roles: [1, 2],
+      roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ClosureProvider>
           <Component />
@@ -28,12 +28,12 @@ const routesConfig = [
     {
       path: '/request',
       element: lazy(() => import('../pages/Requests/Requests')),
-      roles: [2],
+      roles: ['user'],
     },
     {
       path: '/approvals',
       element: lazy(() => import('../pages/Approvals/Approvals')),
-      roles: [1],
+      roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
@@ -43,7 +43,7 @@ const routesConfig = [
     {
       path: '/reportviewer',
       element: lazy(() => import('../pages/ReportViewer/ReportViewer')),
-      roles: [1, 2],
+      roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />
@@ -53,7 +53,7 @@ const routesConfig = [
     {
       path: '/currencymanagement',
       element: lazy(() => import('../pages/CurrencyManagement/CurrencyManagement')),
-      roles: [1],
+      roles: ['admin'],
     },
     {
       path: '/emptyPage',

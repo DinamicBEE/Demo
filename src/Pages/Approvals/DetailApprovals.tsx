@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DataList, DialogActionTrigger, DialogTitle, List, Textarea, VStack, Text, Spinner, Flex, useDisclosure } from "@chakra-ui/react";
 import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFooter, DialogBody } from "@components/ui/dialog";
 import { Field } from "@components/ui/field";
@@ -22,7 +22,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
   const [checked, setChecked] = useState<boolean>(false);
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
 
-  const { data: fetchDataApproval, error, isLoading } = useApi(
+  const { isLoading } = useApi(
     () => dataApproval.id ? approvalsServices.getRequestApproval(dataApproval.id) : Promise.resolve(undefined),
     {
       autoFetch: Boolean(dataApproval.id),
@@ -158,7 +158,6 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                 </form>
                 </DialogBody>
 
-
                 <DialogFooter>
                   <DialogActionTrigger asChild>
                     <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
@@ -169,7 +168,6 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                   </Button>
                 </DialogFooter>
               
-
             </DialogContent>
           </DialogRoot>
         </VStack >
