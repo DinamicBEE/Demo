@@ -187,7 +187,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                                       value={affiliation.amount}
                                       onChange={handleUpdateBankAfilations}
                                       currency={true}
-                                      disabled={lot.status === STATUS.CLOSED}
+                                      disabled={lot.status === STATUS.CLOSED || lot.status === STATUS.WITH_DIFFERENCE}
                                       keyValue={affiliation.id.toString()}
                                       key={affiliation.id}
                                       id={bank.id}
@@ -292,7 +292,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>
               <Button
-                hidden={lot.status === STATUS.CLOSED}
+                hidden={lot.status === STATUS.CLOSED || lot.status === STATUS.WITH_DIFFERENCE}
                 onClick={() => handleOpenCloseLot()}
                 colorPalette="meraInfo"
                 disabled={
