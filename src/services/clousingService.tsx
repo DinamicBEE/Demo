@@ -447,6 +447,7 @@ export const getEmployeeClousing = async (
 };
 
 /**
+ * ! DEPRECATED
  * This function sends the log
  * information of closing a new
  * employee for the employees section

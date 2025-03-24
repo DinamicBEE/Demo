@@ -6,9 +6,10 @@ import { Box, createListCollection, Group, Input, InputAddon, ListCollection, St
 import { SelectLabel, SelectRoot, SelectTrigger,
     SelectValueText, SelectContent, SelectItem,
   } from "@components/ui/select"
-import { AddEmployeeProp, Employee, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
+import { AddEmployeeProp, Employee, EmployeeLine, NewEmployeeModel, ReasonsModel } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";
+import { v4 as uuidv4 } from "uuid";
 import { sendNewEmployeeRegister } from "@services/clousingService";
 import { ResponseModel } from "@models/common.clousing.model";
 
@@ -60,29 +61,40 @@ function AddEmployee({clousingId, subsidiaryId, cdc, isOpen, onClose}: AddEmploy
       }
 
       console.log(reason)
-      const newEmployee: NewEmployeeModel = {
-        employeeId: selectEmployee.id,
+      // const newEmployee: NewEmployeeModel = {
+      //   employeeId: selectEmployee.id,
+      //   amount: amount,
+      //   reason: Number(reason[0]),
+      //   ticket: ticket,
+      // };
+
+      const newEmployee: EmployeeLine = {
+        id: "employee-" + uuidv4(),
+        //employeeId: selectEmployee.id,
+        employeeCode: selectEmployee.employeeNumber,
+        name: selectEmployee.name,
+        lastName: "",
         amount: amount,
-        reason: Number(reason[0]),
+        reason: reasonsList.find(item => item.id === Number(reason[0]))?.reasonName || "",
         ticket: ticket,
-      };
+      }
 
-      console.log(newEmployee);
+      // console.log(newEmployee);
 
-      const response: ResponseModel = await sendNewEmployeeRegister(clousingId, newEmployee);
+      // const response: ResponseModel = await sendNewEmployeeRegister(clousingId, newEmployee);
 
-      if(response.success){
+      // if(response.success){
 
-        setNewEmployee(response.data, clousingId);
+        setNewEmployee(newEmployee, clousingId);
         setLoading(false);
         onClose();
         setAmount(0);
         setReason([]);
 
-      } else {
-        alert(response.message);
-        setLoading(false);
-      }
+      // } else {
+      //   alert(response.message);
+      //   setLoading(false);
+      // }
 
     }
     

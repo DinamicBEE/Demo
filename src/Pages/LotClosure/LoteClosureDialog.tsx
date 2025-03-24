@@ -80,7 +80,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
     <>
       <DialogRoot
         scrollBehavior="inside"
-        size="cover"
+        size="full"
         open={isOpen}
         onOpenChange={() => onClose()}
         closeOnEscape={false}
