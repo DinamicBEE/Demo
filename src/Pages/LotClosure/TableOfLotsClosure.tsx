@@ -14,7 +14,6 @@ import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
 import { exportCSV } from "../../utils/exportCSV";
 import { LotClosure } from "@models/lotClosure.model";
-import Loading from "@components/Loading";
 import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
 
