@@ -39,7 +39,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
 
   const handleUpdateBankAfilations = (
-    id: number,
+    id: number | string,
     eventValue: string,
     key?: string
   ) => {
