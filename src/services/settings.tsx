@@ -8,6 +8,8 @@ export const LOCATIONS = '/crc/cash-register-closure/api/subsidiaria/store';
 export const CURRENCY = '/crc/cash-register-closure/api/currency/list';
 export const SP_CLIENTS = '/crc/cash-register-closure/api/special/client';
 export const CLIENTS = '/crc/cash-register-closure/api/general/client';
+export const CASH = 'crc/cash-register-closure/api/crc-cash/cash'
+export const TDC = '/crc/cash-register-closure/api/crc-card/card'
 
 export const EMPLOYEELIST = 'crc/cash-register-closure/crcproc/employees/employeeListbySub';
 export const REASONLIST = 'crc/cash-register-closure/crcproc/employees/reasonList';

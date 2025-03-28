@@ -23,9 +23,7 @@ import {
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
-import axios from "axios";
-import { API_LOCAL, CLIENTS, LOCATIONS, SP_CLIENTS } from "./settings";
-import Cookies from "js-cookie";
+import { CASH, CLIENTS, LOCATIONS, SP_CLIENTS, TDC } from "./settings";
 import api from "../api/index";
 
 import Papa from "papaparse";
@@ -64,13 +62,16 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @returns {Promise<CashModel>}
  */
 export const getCashClousing = async (
-  clousingId: number
-): Promise<CashModel> => {
-  // console.log(clousingId) //employeeId
-
+  clousingId: number, idCurrency: number
+): Promise<CashModel> => {  
   try {
     // Instead of using the actual API endpoint
-    // const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = await api.get(CASH, {
+      params: {
+        crcId: clousingId,
+        idCurrency: idCurrency
+      }
+    });    
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
@@ -82,21 +83,21 @@ export const getCashClousing = async (
       })),
     };
 
-    const response = cashDataCopy;
+    const dummy = cashDataCopy;
 
     // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
     // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
 
-    const newTotalPOS = response.currencies
+    const newTotalPOS = dummy.currencies
       .map((currency) => currency.totalPOS)
       .reduce((acc, curr) => acc + curr, 0);
-    const newTotalFisico = response.currencies
+    const newTotalFisico = dummy.currencies
       .map((currency) => currency.totalFisico)
       .reduce((acc, curr) => acc + curr, 0);
 
     const data = {
       //...response.data,
-      ...response,
+      ...dummy,
       total: {
         totalPOS: newTotalPOS,
         totalPhysical: newTotalFisico,
@@ -106,11 +107,7 @@ export const getCashClousing = async (
     };
 
     //return data
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
+    return data
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {} as CashModel;
@@ -123,25 +120,29 @@ export const getCashClousing = async (
  * @param {number} clousingId
  * @returns {Promise<TDCModel>}
  */
-export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
+export const getTDCClousing =
+  async (clousingId: number, idCurrency: number): Promise<TDCModel> => {
   // console.log(clousingId)
 
   try {
-    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = {
-      ...TDCMOCKData,
-      lines: TDCMOCKData.lines.map((line) => ({
+    const response = await api.get(TDC, {
+      params: {crcId: clousingId, idCurrency: idCurrency}
+    });
+    const newResponse = {
+      ...response.data,
+      lines: response.data.lines.map((line: any) => ({
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
       })),
     }
 
-    return new Promise((resolve) => {
+    /* return new Promise((resolve) => {
       setTimeout(() => {
         resolve(response);
       }, 1000);
-    });
+    }); */
+    return newResponse;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as TDCModel;

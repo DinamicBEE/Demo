@@ -410,7 +410,7 @@ export const resetFilters = async (): Promise<Row[]> => {
   return []; // Cambiar por el respaldo real
 };
 
-const arr: ReportModel = {
+/* const arr: ReportModel = {
   headers: [
     {
       code: "rvc",
@@ -747,4 +747,4 @@ const arr: ReportModel = {
     },
 
   ],
-}
+} */

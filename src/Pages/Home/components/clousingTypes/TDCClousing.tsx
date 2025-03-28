@@ -4,15 +4,16 @@ import { Box, Table, Text, FormatNumber, IconButton } from "@chakra-ui/react";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
-import { BankLineModel, TDCModel } from "@models/tdc.model";
+import { BankDetails, BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
 
-function TDCClousing({ data, location, subsidiary }: any) {
+function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null | string>(null);
   const [details, setDetails] = useState<boolean>(false);
+  const [voucher, setVoucher] = useState<BankDetails>({} as BankDetails) ;
 
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
@@ -20,8 +21,9 @@ function TDCClousing({ data, location, subsidiary }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const tdc: TDCModel = await getTDCData(data?.id);
-
+      const tdc: TDCModel = await getTDCData(data?.id, idCurrency);
+      console.log("tdc", tdc);
+      
       if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
@@ -34,7 +36,24 @@ function TDCClousing({ data, location, subsidiary }: any) {
     fetchData();
   }, [tdc]);
 
-  const openDiaolog = (id: number | string) => {
+  function formatDate( dateString: string ) {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return (`${day}/${month}/${year}`);
+  }
+
+  const openDiaolog = (id: number | string, data: any) => {
+    const newData = data.vouchers.map( (v: any) => ({ ...v, date: formatDate(v.date) }));
+    const bankDetails = {
+      ...data,
+      id: data.id,
+      bankName: data.bank,
+      total: 0,
+      details: newData
+    }
+    setVoucher(bankDetails);
     setLineSeleted(id);
     setDetails(true);
   };
@@ -70,7 +89,7 @@ function TDCClousing({ data, location, subsidiary }: any) {
                   <Table.Cell textAlign="end">
                     <Text>
                       <FormatNumber
-                        value={item.POS}
+                        value={item.pos}
                         style="currency"
                         currency="USD"
                       />
@@ -97,7 +116,7 @@ function TDCClousing({ data, location, subsidiary }: any) {
                     <IconButton
                       rounded="full"
                       variant={"ghost"}
-                      onClick={() => openDiaolog(item.id)}
+                      onClick={() => openDiaolog(item.id, item)}
                     >
                       <LuEye />
                     </IconButton>
@@ -123,6 +142,7 @@ function TDCClousing({ data, location, subsidiary }: any) {
         isOpen={details}
         onClose={closeDiaolog}
         closingConfirmation={data?.closingConfirmation}
+        voucherData={voucher}
       />
     </>
   );

@@ -8,7 +8,7 @@ export interface TDCContextType {
   detailsLoading: boolean;
   error: string;
   detailsError: string;
-  getTDCData: (clousingId: number) => Promise<TDCModel>;
+  getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
   getDetails: (
     clousingId: number,
@@ -44,7 +44,7 @@ export interface TDCDetailsContext {
 export interface BankLineModel {
   id: number | string;
   bank: string;
-  POS: number;
+  pos: number;
   physical: number;
   voucherAmount: number;
 }
@@ -63,13 +63,21 @@ export interface BankLineDetails {
   amount: number;
   success?: boolean;
   message?: string;
-  differences?: {
+  vouchers?: {
     date: string | null;
     check: string | null;
     amount: string | null;
     general: string | null;
   };
   successAdyen?: boolean;
+}
+
+export interface Voucher {
+  id: number;
+  amount: number;
+  check: string;
+  date: string;
+  status: boolean;
 }
 
 export interface BankDetails {
@@ -87,6 +95,7 @@ export interface DetailsProp {
   closingConfirmation: boolean;
   location: number;
   subsidiary: number;
+  voucherData: BankDetails;
 }
 
 export interface DialogFilesProps {

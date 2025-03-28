@@ -27,7 +27,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         tdcDetailsRef.current = newDetails;
     }
 
-    const getTDCData = useCallback( async(clousingId:number)=>{
+    const getTDCData = useCallback( async(clousingId:number, idCurrency: number)=>{
         setTDCLoading(true);
 
         if(tdcRef.current[clousingId]) {
@@ -37,7 +37,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
         try {
 
-            const data: TDCModel = await getTDCClousing(clousingId);
+            const data: TDCModel = await getTDCClousing(clousingId, idCurrency);
 
             const updateTDC: TDCContext = {
                 ...tdcRef.current,
