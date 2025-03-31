@@ -5,7 +5,7 @@ import { set } from "react-hook-form";
 export const useHandleAffiliationsData = () => {
   // Function to handle input data and update local banks
   const handleInputData = (
-    bankId: number,
+    bankId: number | string,
     inputValue: string,
     setLocalBanks: React.Dispatch<React.SetStateAction<Bank[]>>,
     localBanks: Bank[],

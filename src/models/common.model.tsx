@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export interface ProtectedRouteProps {
   children: ReactNode;
-  allowedRoles?: number[];
+  allowedRoles?: string[];
 }
 
 export interface UserContextType {

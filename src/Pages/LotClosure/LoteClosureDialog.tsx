@@ -39,7 +39,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
 
   const handleUpdateBankAfilations = (
-    id: number,
+    id: number | string,
     eventValue: string,
     key?: string
   ) => {
@@ -80,7 +80,7 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
     <>
       <DialogRoot
         scrollBehavior="inside"
-        size="cover"
+        size="full"
         open={isOpen}
         onOpenChange={() => onClose()}
         closeOnEscape={false}

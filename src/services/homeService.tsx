@@ -55,7 +55,7 @@ export function exportCSV(data: any, header: any) {
     ...data.map((item: any) => [
       item.employe,
       item.totalPOS,
-      item.totalClousing,
+      item.totalPhysical,
       item.difference,
       item.status,
       item.mxm,
@@ -64,10 +64,10 @@ export function exportCSV(data: any, header: any) {
       item.eur,
       item.lib,
       item.can,
-      item.generalCXC,
-      item.specialCXC,
+      item.customer,
+      item.specialCustomer,
       item.prepaid,
-      item.employetotal,
+      item.employees,
       item.intercompany,
     ]),
   ]

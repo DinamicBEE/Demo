@@ -8,6 +8,8 @@ export const exportCSV = (
   },
   fileName: string
 ) => {
+  console.log(table);
+  
   const replacer = (key: string, value: any) => (value === null ? "" : value); 
   const header = table.heders;
   let csv = table.data.map((row) =>
@@ -19,7 +21,7 @@ export const exportCSV = (
   const csvArray = csv.join("\r\n");
 
   var a = document.createElement("a");
-  a.href = "data:attachment/csv," + encodeURIComponent(csvArray);
+  a.href = "data:attachment/csv," + encodeURIComponent("\uFEFF" + csvArray);
   a.target = "_blank";
   a.download = fileName + ".csv";
   document.body.appendChild(a);

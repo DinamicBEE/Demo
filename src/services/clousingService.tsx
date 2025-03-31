@@ -448,6 +448,7 @@ export const getEmployeeClousing = async (
 };
 
 /**
+ * ! DEPRECATED
  * This function sends the log
  * information of closing a new
  * employee for the employees section
@@ -1083,7 +1084,7 @@ export const PrepaidMOCKData = {
   },
   lines: [
     {
-      id: null,
+      id: 1,
       client: "Thomas Moore",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1093,7 +1094,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: null,
+      id: 2,
       client: "SSIA",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1103,7 +1104,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: null,
+      id: 3,
       client: "SEASON TOURS",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1113,7 +1114,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: null,
+      id: 4,
       client: "SEEK AND GO",
       quantity: 0,
       supplementsQuantity: 0,
@@ -1123,7 +1124,7 @@ export const PrepaidMOCKData = {
       difference: 0,
     },
     {
-      id: null,
+      id: 5,
       client: "AVENTOUR",
       quantity: 0,
       supplementsQuantity: 0,

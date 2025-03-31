@@ -1,5 +1,6 @@
 import { ClousingLinesModel, TotalModel } from "./common.clousing.model";
 import { SubsidiaryModal } from "./common.model";
+import { Employee } from "./employee.model";
 
 export interface IntercompanyClousingProps {
   data: ClousingLinesModel | null;
@@ -12,6 +13,8 @@ export interface IntercompanyContextType {
     error: string;
     getIntercompanyData: (clousingId: number) => Promise<IntercompanyModel>;
     setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
+    getEmployeesList: () => Promise<Employee[]>;
+    getSubsidiaries: (idEmployee: string) => Promise<SubsidiaryModal[]>;
 }
 
 export interface IntercompanyContext {

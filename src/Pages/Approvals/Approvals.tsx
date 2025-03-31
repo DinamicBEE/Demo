@@ -1,17 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import { TableApprovals } from "./TableApprovals";
-import { RegisterApprovals } from "./RegisterApprovals";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
+import { TableApprovals } from "./TableApprovals";
+import { RegisterApprovals } from "./RegisterApprovals";
 import { DetailApprovals } from "./DetailApprovals";
 import './Approvals.css';
-import { ConfirmDialog } from "./components/ConfirmDialog";
 
 const Approvals: React.FC = () => {
 
-	const { role, switchRole } = useApprovalsRolUser();
+	const { role } = useApprovalsRolUser();
 	const { setDataApproval } = useApprovalsList();
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
@@ -30,20 +29,11 @@ const Approvals: React.FC = () => {
 
 	return (
 		<>
-			{/* Esta parte del codigo es de solo uso demostrativo para manejar los tipos de usuario. */}
-			<Flex justifyContent='end' paddingBottom={'10px'}>
-				<Flex width={'250px'}>
-					<Button onClick={switchRole}>
-						Cambiar a {role === 2 ? "supervisor" : "cajero"}
-					</Button>
-				</Flex>
-			</Flex>
-
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
 
 				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
 
-				{role == 2 &&
+				{role == "user" &&
 					<Flex justifyContent='end'>
 
 						<Flex width={'250px'}>

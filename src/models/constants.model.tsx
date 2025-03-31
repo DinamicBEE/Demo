@@ -30,10 +30,10 @@ export enum CLOUSING_KEY {
 }
 
 export const menuItems = [
-  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: [1, 2] },
-  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [1, 2] },
-  { name: 'Solicitude de ajuste', path: '/request', icon:<LuClipboardCheck />, roles: [2] },
-  { name: 'Aprobación de solicitudes', path: '/approvals', icon:<LuClipboardList />, roles: [1] },
-  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: [1,2] },
-  { name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: [1] },
+  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
+  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['admin', 'user'] },
+  { name: 'Solicitude de ajuste', path: '/approvals', icon:<LuClipboardCheck />, roles: ['user'] },
+  { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: ['admin'] },
+  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['admin', 'user'] },
+  { name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin'] },
 ];
