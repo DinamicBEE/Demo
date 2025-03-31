@@ -7,7 +7,7 @@ import {
   FileResult,
   ProcessResult,
 } from "@models/adyen.model";
-import { CashModel } from "@models/cash.model";
+import { CashLines, CashModel } from "@models/cash.model";
 import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
 import {
@@ -75,8 +75,8 @@ export const getCashClousing = async (
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
-      ...CashData,
-      currencies: CashData.currencies.map((currency) => ({
+      ...response.data,
+      currencies: response.data.currencies.map((currency: CashLines) => ({
         ...currency,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
@@ -89,11 +89,11 @@ export const getCashClousing = async (
     // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
 
     const newTotalPOS = dummy.currencies
-      .map((currency) => currency.totalPOS)
-      .reduce((acc, curr) => acc + curr, 0);
+      .map((currency: CashLines) => currency.totalPOS)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
     const newTotalFisico = dummy.currencies
-      .map((currency) => currency.totalFisico)
-      .reduce((acc, curr) => acc + curr, 0);
+      .map((currency: CashLines) => currency.totalFisico)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       //...response.data,
