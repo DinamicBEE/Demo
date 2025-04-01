@@ -35,6 +35,11 @@ export interface SubsidiaryModal {
   idCurrency: number;
 }
 
+export interface location {
+  id: number;
+  name: string;
+}
+
 export interface StoreModel {
   id: number;
   name: string;

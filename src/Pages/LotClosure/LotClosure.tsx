@@ -22,10 +22,17 @@ import {
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
+import { location, SubsidiaryModal } from "@models/common.model";
 
 function LotClosure() {
   const [companyId, setCompanyId] = useState(0);
+  const [companySelected, setCompanySelected] = useState<SubsidiaryModal>(
+    {} as SubsidiaryModal
+  );
   const [locationId, setLocationId] = useState(0);
+  const [locationSelected, setLocationSelected] = useState<location>(
+    {} as location
+  );
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
@@ -41,6 +48,21 @@ function LotClosure() {
       setShowTable(true);
     }
     fetchLotClosureData(dateRange, locationId, companyId);
+    const getCompanies = comapanies.items.find(
+      (company) => company.value === companyId
+    );
+    const getLocations = locations.items.find(
+      (location) => location.value === locationId
+    );
+    setCompanySelected({
+      id: getCompanies?.value || 0,
+      name: getCompanies?.label || "",
+      idCurrency: 0,
+    });
+    setLocationSelected({
+      id: getLocations?.value || 0,
+      name: getLocations?.label || "",
+    });
   };
 
   const onSelectedCompany = (companyIdSelected: string[]) => {
@@ -125,29 +147,28 @@ function LotClosure() {
                 onChange={setDateRange}
               />
             </Field.Root>
-            
-              <Button
-                colorPalette="meraInfo"
-                onClick={search}
-                disabled={
-                  companyId !== 0 &&
-                  locationId !== 0 &&
-                  startDate !== null &&
-                  endDate !== null
-                    ? false
-                    : true
-                }
-              >
-                Buscar
-              </Button>
 
+            <Button
+              colorPalette="meraInfo"
+              onClick={search}
+              disabled={
+                companyId !== 0 &&
+                locationId !== 0 &&
+                startDate !== null &&
+                endDate !== null
+                  ? false
+                  : true
+              }
+            >
+              Buscar
+            </Button>
           </Grid>
         </HStack>
       </VStack>
       <TableOfLotClosure
         showTable={showTable}
-        companyId={companyId}
-        locationId={locationId}
+        company={companySelected}
+        location={locationSelected}
         dateRange={dateRange}
       />
     </Box>
