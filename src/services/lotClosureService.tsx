@@ -11,6 +11,10 @@ export const getLotsClosure = async (
   companyId: number
 ) => {
   try {
+    console.log("dateRange", dateRange);
+    console.log("locationId", locationId);
+    console.log("companyId", companyId);
+    
     const response = lotsClosure;
     return new Promise<LotClosure[]>((resolve) => {
       setTimeout(() => {
@@ -131,7 +135,7 @@ const lotsClosure = [
   {
     id: 1,
     location: {
-      id: 1,
+      id: 8,
       name: "Location 1",
       company: {
         id: 1,
@@ -139,7 +143,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 1,
+      id: 16,
       name: "Company 1",
     },
     lotNumber: "14",
@@ -154,7 +158,7 @@ const lotsClosure = [
   {
     id: 7,
     location: {
-      id: 1,
+      id: 8,
       name: "Location 1",
       company: {
         id: 1,
@@ -162,7 +166,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 1,
+      id: 16,
       name: "Company 1",
     },
     lotNumber: "19",
@@ -208,7 +212,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 2,
+      id: 19,
       name: "Company 2",
     },
     lotNumber: "24",
@@ -223,7 +227,7 @@ const lotsClosure = [
   {
     id: 4,
     location: {
-      id: 3,
+      id: 2,
       name: "Location 3",
       company: {
         id: 3,
@@ -231,7 +235,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 3,
+      id: 19,
       name: "Company 3",
     },
     lotNumber: "18",
@@ -246,7 +250,7 @@ const lotsClosure = [
   {
     id: 5,
     location: {
-      id: 4,
+      id: 3,
       name: "Location 4",
       company: {
         id: 4,
@@ -254,7 +258,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 4,
+      id: 19,
       name: "Company 4",
     },
     lotNumber: "19",
@@ -269,7 +273,7 @@ const lotsClosure = [
   {
     id: 6,
     location: {
-      id: 5,
+      id: 4,
       name: "Location 5",
       company: {
         id: 5,
@@ -277,7 +281,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 5,
+      id: 19,
       name: "Company 5",
     },
     lotNumber: "99",

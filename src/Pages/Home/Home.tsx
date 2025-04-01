@@ -1,17 +1,31 @@
 import { useState, useEffect } from "react";
-import { Button, Grid, VStack, HStack,
-  Heading, createListCollection, ListCollection,
-  Field, Box, 
-  GridItem} from "@chakra-ui/react";
-import { SelectContent, SelectItem, SelectLabel,
-  SelectRoot, SelectTrigger, SelectValueText, } from "@components/ui/select";
+import {
+  Button,
+  Grid,
+  VStack,
+  HStack,
+  Heading,
+  createListCollection,
+  ListCollection,
+  Field,
+  Box,
+  GridItem,
+} from "@chakra-ui/react";
+import {
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@components/ui/select";
 import { Checkbox } from "@components/ui/checkbox";
 import { Alert } from "@components/ui/alert";
 import { useList } from "@context/home/listsContext";
 import { useClousing } from "@context/home/clousingContext";
 import TableOfTotals from "./components/TableOfTotals";
 import "./Home.css";
-import { StoreModel, SubsidiaryModal } from "@models/common.model";
+import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
@@ -20,13 +34,15 @@ function Home() {
   const [subsidiary, setSubsidiary] = useState<ListCollection>(
     createListCollection({ items: [] })
   );
-  const [SubSelect, setSubSelect] = useState<SubsidiaryModal>({} as SubsidiaryModal);
+  const [SubSelect, setSubSelect] = useState<SubsidiaryModal>(
+    {} as SubsidiaryModal
+  );
   const [stores, setStores] = useState<StoreModel[]>([]);
   const [storeBySub, setStoreBySub] = useState<ListCollection>(
     createListCollection({ items: [] })
   );
   const [isAdyen, setIsAdyen] = useState<boolean>(false);
-  const [location, setLocation] = useState<number>(0);
+  const [location, setLocation] = useState<location>({} as location);
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
   const [showTable, setShowTable] = useState<boolean>(false);
   const { getInfo, filterDataAdyen, data } = useClousing();
@@ -67,15 +83,13 @@ function Home() {
     const itemSelected = {
       ...event.items[0],
       id: event.items[0].value,
-      name: event.items[0].label    
+      name: event.items[0].label,
     };
 
     const selection = Number(event.value[0]);
 
     setSubSelect(itemSelected);
-    console.log("SubSelect", itemSelected);
-    // const selectedId = subSelect;
-    // console.log(SubSelect, selection);
+
 
     // TODO: Guardar las tiendas encontradas en stores para no repetir búsquedas
     let storeBySubsidiary = stores.filter(
@@ -171,10 +185,18 @@ function Home() {
               </SelectRoot>
             )}
 
-            {(SubSelect.id != 0 && SubSelect.id !=null) && (
+            {SubSelect.id != 0 && SubSelect.id != null && (
               <SelectRoot
                 collection={storeBySub}
-                onValueChange={(event) => setLocation(Number(event.value[0]))}
+                onValueChange={(event) => {
+                  const itemSelected = {
+                    id: event.items[0].value,
+                    name: event.items[0].label,
+                  };
+                  console.log("itemSelected", itemSelected);
+                  
+                  setLocation(itemSelected);
+                }}
               >
                 <SelectLabel>Selecciona Centro de consumo</SelectLabel>
                 <SelectTrigger>
@@ -190,7 +212,7 @@ function Home() {
               </SelectRoot>
             )}
 
-            {location != 0 && (
+            {location.id != 0 && (
               <Field.Root>
                 <Field.Label>Rango de fechas</Field.Label>
                 <DatePicker
@@ -200,13 +222,13 @@ function Home() {
                 />
               </Field.Root>
             )}
-            <GridItem colSpan={1} /> 
+            <GridItem colSpan={1} />
             {endDate && startDate && (
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location);
+                  getInfo(SubSelect.id, location.id);
                   setIsAdyen(false);
                 }}
               >

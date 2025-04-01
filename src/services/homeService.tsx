@@ -100,7 +100,7 @@ const homeData = {
   clousingLines: [
     {
       id: 1,
-      employe: "Mario Vásquez",
+      employe: "Efrain García",
       totalPOS: 46609.64,
       totalPhysical: 0,
       difference: 46609.64,
@@ -123,7 +123,7 @@ const homeData = {
     },
     {
       id: 2,
-      employe: "Franklin Cardona",
+      employe: "Elías Sanchez Rojo",
       totalPOS: 46609.64,
       totalPhysical: 0,
       difference: 46609.64,
@@ -146,7 +146,7 @@ const homeData = {
     },
     {
       id: 3,
-      employe: "Luis Castillo",
+      employe: "Gabriela Borges Cahuich",
       totalPOS: 46609.64,
       totalPhysical: 0,
       difference: 46609.64,
@@ -169,7 +169,7 @@ const homeData = {
     },
     {
       id: 4,
-      employe: "Gerardo Flores",
+      employe: "Cira Angelica Cadena Pech",
       totalPOS: 46609.64,
       totalPhysical: 0,
       difference: 46609.64,
@@ -192,7 +192,7 @@ const homeData = {
     },
     {
       id: 5,
-      employe: "Juan Mendoza",
+      employe: "Francisco Javier Aguilar Dominguez",
       totalPOS: 2500,
       totalPhysical: 2500,
       difference: 0,
@@ -216,7 +216,7 @@ const homeData = {
     },
     {
       id: 6,
-      employe: "Irving Canul",
+      employe: "Susana P Valencia Lopez",
       totalPOS: 2500,
       totalPhysical: 2500,
       difference: 0,

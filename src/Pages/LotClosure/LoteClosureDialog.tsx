@@ -30,7 +30,8 @@ import {
 import { STATUS } from "@models/status.model";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
-function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
+
+function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading } =
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<Bank[]>([]);
@@ -96,8 +97,8 @@ function LoteClosureDialog({ isOpen, onClose, lot }: LotClosureDialogProps) {
                 direction={{ base: "column", sm: "row" }}
                 gap={2}
               >
-                <Text>{localLot?.company?.name}</Text>
-                <Text> Ubicación: {localLot?.location?.name}</Text>
+                <Text>{company.name}</Text>
+                <Text> Ubicación: {location.name}</Text>
                 <Text>Cierre Lote: {lot?.dateClosed}</Text>
               </Flex>
             </DialogTitle>

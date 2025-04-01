@@ -58,6 +58,8 @@ function ClousingLayout({
           <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
           <Box>
             <HeaderClousing
+              location={location.name}
+              subsidiary={subsidiary.name}
               id={employee?.id ?? 0}
               closingConfirmation={employee?.closingConfirmation ?? false}
             ></HeaderClousing>
@@ -131,7 +133,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.CUSTOMER}>
               {value === CLOUSING_KEY.CUSTOMER && (
                 <Suspense fallback={<div>Cargando Clientes...</div>}>
-                  <CustomersClousing data={employee} subsidiary={subsidiary}/>
+                  <CustomersClousing data={employee} subsidiary={subsidiary} />
                 </Suspense>
               )}
             </Tabs.Content>
@@ -155,7 +157,11 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.EMPLOYEE}>
               {value === CLOUSING_KEY.EMPLOYEE && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <EmployeesClousing data={employee} subsidiaryId={subsidiary.id} cdc={location} />
+                  <EmployeesClousing
+                    data={employee}
+                    subsidiaryId={subsidiary.id}
+                    cdc={location.id}
+                  />
                 </Suspense>
               )}
             </Tabs.Content>
@@ -163,7 +169,11 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.INTERCOMPANY}>
               {value === CLOUSING_KEY.INTERCOMPANY && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <IntercompanyClousing data={employee} subsidiaryId={subsidiary.id} cdc={location} />
+                  <IntercompanyClousing
+                    data={employee}
+                    subsidiaryId={subsidiary.id}
+                    cdc={location.id}
+                  />
                 </Suspense>
               )}
             </Tabs.Content>
