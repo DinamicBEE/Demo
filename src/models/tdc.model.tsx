@@ -1,5 +1,6 @@
 import { ProcessResult } from "./adyen.model";
 import { TotalModel } from "./common.clousing.model";
+import { location, SubsidiaryModal } from "./common.model";
 
 export interface TDCContextType {
   tdc: TDCContext;
@@ -85,15 +86,15 @@ export interface DetailsProp {
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;
-  location: number;
-  subsidiary: number;
+  location: location;
+  subsidiary: SubsidiaryModal;
 }
 
 export interface DialogFilesProps {
   isOpen: boolean;
   onClose: () => void;
-  subsidiary: number;
-  location: number;
+  subsidiary: SubsidiaryModal;
+  location: location;
 }
 
 export interface DialogConfirmTDCProps {
