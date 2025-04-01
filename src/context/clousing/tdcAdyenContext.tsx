@@ -28,27 +28,19 @@ export function TDCAdyenClousingProvider({
   const { getStoresData, getSubsidiariesData } = useList();
 
   const fetchProcessFiles = useCallback(
-    async (Files: File[], store: number, location: number) => {
-      const storesData = await getStoresData(location);
-      const subsidiaries = await getSubsidiariesData();
-
-
-      
-
-      const storeName = storesData.find(
-        (storeContext) => storeContext.id === location
-      )?.name;
-      const locationName = subsidiaries.find(
-        (subsidiary) => subsidiary.id === store
-      )?.name;
+    async (Files: File[], store: string, location: string) => {
 
 
 
-      if (!storeName || !locationName) {
+
+      if (!store || !location) {
         return;
       }
+console.log("store", store);
+console.log("location", location);
 
-      const data = await processFiles(Files, storeName, locationName);
+
+      const data = await processFiles(Files, store, location);
       setDataFilesProcess(data);
       return data;
     },
