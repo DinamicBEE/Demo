@@ -8,6 +8,8 @@ export const exportCSV = (
   },
   fileName: string
 ) => {
+  console.log(table);
+  
   const replacer = (key: string, value: any) => (value === null ? "" : value); 
   const header = table.heders;
   let csv = table.data.map((row) =>

@@ -18,8 +18,8 @@ import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
 
 function TableOfLotClosure({
-  companyId,
-  locationId,
+  company,
+  location,
   dateRange,
   showTable,
 }: TableLotsClosureProps) {
@@ -40,7 +40,7 @@ function TableOfLotClosure({
           { label: "Numero de lote", key: "lotNumber" },
           { label: "Estado", key: "status" },
           { label: "Total POS", key: "totalPOS" },
-          { label: "Total Lote", key: "totalClousing" },
+          { label: "Total Lote", key: "totalLot" },
           { label: "Diferencia", key: "difference" },
           { label: "Empleado (Realizado por)", key: "employe" },
         ],
@@ -50,7 +50,7 @@ function TableOfLotClosure({
           lotNumber: item.lotNumber,
           status: item.status,
           totalPOS: item.totalPOS,
-          totalClousing: item.totalClousing,
+          totalLot: item.totalLot,
           difference: item.difference,
           employe: item.employe,
         })),
@@ -94,7 +94,7 @@ function TableOfLotClosure({
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
-                  fetchLotClosureData(dateRange, locationId, companyId, true);
+                  fetchLotClosureData(dateRange, location.id, company.id, true);
                 }}
                 disabled={loading}
               >
@@ -175,7 +175,7 @@ function TableOfLotClosure({
                     lotsClosure.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
-                          <Text>{item.location.name}</Text>
+                          <Text>{location.name}</Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
                           <Text
@@ -185,7 +185,7 @@ function TableOfLotClosure({
                             color="blue.500"
                             onClick={() => openDialog(item)}
                           >
-                            {item.company.name}
+                            {company.name}
                           </Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
@@ -243,6 +243,8 @@ function TableOfLotClosure({
           isOpen={isDialogOpen}
           lot={selectedLot}
           onClose={closeDialog}
+          location={location}
+          company={company}
         />
       </Suspense>
     </>

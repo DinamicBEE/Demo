@@ -2,7 +2,6 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { IconButton, Container, Flex, HStack, Image, Box } from '@chakra-ui/react';
 import { LuLogOut } from "react-icons/lu";
 import { useAuth } from '../context/AuthContext';
-import { useUser } from '../context/UserContext';
 import '../styles/Layout.css'
 import { menuItems } from '@models/constants.model';
 import { Tooltip } from './ui/tooltip';

@@ -57,7 +57,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
         const response = await getLotsClosure(dateRange, locationId, companyId);
         const transformedResponse = response.map((lot) => ({
           ...lot,
-          difference: lot.totalPOS - lot.totalClousing,
+          difference: lot.totalPOS - lot.totalLot,
         }));
         setLotsClosure(transformedResponse);
         lostClosureCache.current[locationId] = transformedResponse;

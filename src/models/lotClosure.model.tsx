@@ -1,3 +1,4 @@
+import { location, SubsidiaryModal } from "./common.model";
 import { STATUS } from "./status.model";
 import { ListCollection } from "@chakra-ui/react";
 export interface LotClosure {
@@ -41,8 +42,8 @@ export interface Location {
 }
 
 export interface TableLotsClosureProps {
-  companyId: number;
-  locationId: number;
+  company: SubsidiaryModal;
+  location: location;
   dateRange: [Date | null, Date | null];
   showTable: boolean;
 }
@@ -56,6 +57,8 @@ export interface DatePickerProps {
 }
 
 export interface LotClosureDialogProps {
+  company: SubsidiaryModal;
+  location: location;
   isOpen: boolean;
   onClose: () => void;
   lot: LotClosure;
