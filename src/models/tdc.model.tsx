@@ -27,8 +27,8 @@ export interface TDCAdyenContextType {
   setDataFilesProcess: (data: ProcessResult) => void;
   fetchProcessFiles: (
     Files: File[],
-    store: number,
-    location: number
+    store: string,
+    location: string,
   ) => Promise<ProcessResult | undefined>;
 }
 
