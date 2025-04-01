@@ -71,12 +71,24 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency
       }
-    });    
+    });
+
+    if (response.data.lines.length === 0) {
+      return {
+        ...response.data,
+        id: clousingId,
+        total: {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        }
+      }
+    }
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
       ...response.data,
-      currencies: response.data.currencies.map((currency: CashLines) => ({
+      currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
@@ -88,7 +100,7 @@ export const getCashClousing = async (
     // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
     // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
 
-    const newTotalPOS = dummy.currencies
+    const newTotalPOS = dummy.lines
       .map((currency: CashLines) => currency.totalPOS)
       .reduce((acc: number, curr: number) => acc + curr, 0);
     const newTotalFisico = dummy.currencies
@@ -313,7 +325,6 @@ export const getSpecialCustomerClousing = async (
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-
     const lines = response.data.map((line: any) => ({
       ...line,
       // Generate new UUID for null IDs, otherwise keep existing ID
