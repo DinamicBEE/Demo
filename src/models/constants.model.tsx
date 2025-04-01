@@ -35,5 +35,5 @@ export const menuItems = [
   { name: 'Solicitude de ajuste', path: '/approvals', icon:<LuClipboardCheck />, roles: ['user'] },
   { name: 'Aprobación de solicitude', path: '/approvals', icon:<LuClipboardList />, roles: ['admin'] },
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['admin', 'user'] },
-  { name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin'] },
+  // { name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin'] },
 ];
