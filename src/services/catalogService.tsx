@@ -52,11 +52,11 @@ export const getStores = async (subId: number): Promise<StoreModel[]> => {
  * with their respective exchange value
  * @returns {Promise<CurrencyModel[]>}
  */
-export const getCurrencies = async (currencyId: number): Promise<CurrencyModel[]> => {
+export const getCurrencies = async (currencyId: number, idCashClosure: number): Promise<CurrencyModel[]> => {
     try {
 
         const response = await api.get(CURRENCY,{
-          params: {idCurrency: currencyId}
+          params: {idCurrency: currencyId, idCashClosure}
         });
 
         const currencyResponse = response.data.map( (curr: any) => {

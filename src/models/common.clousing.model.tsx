@@ -157,4 +157,5 @@ export interface CustomerClousingFormProps {
   message?: string;
   title?: string;
   idCurrency: number;
+  idClousing: number;
 }

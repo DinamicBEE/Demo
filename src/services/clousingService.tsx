@@ -304,13 +304,14 @@ export const getCustomerClousing = async (
  * @returns {Promise<CustomerModel>}
  */
 export const getSpecialCustomerClousing = async (
-  clousingId: number
+  clousingId: number,
+  idCurrency: number
 ): Promise<SpecialCustomerModel> => {
   console.log(clousingId);
 
   try {
     const response = await api.get(SP_CLIENTS, {
-      params: { idCashRegisterClosure: clousingId },
+      params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
     const lines = response.data.map((line: any) => ({

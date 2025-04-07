@@ -34,7 +34,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
       
       if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
 
-      const currencies = await getCurrencies(subsidiary.idCurrency);
+      const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
 
       let createCurrenciList = createListCollection({   items: currencies })
 
@@ -142,7 +142,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
         )}
       </Box>
 
-      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency}/>
+      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency} idClousing={data!.id}/>
     </>
 
   );

@@ -10,7 +10,7 @@ import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 
 
-function SpecialCustomersClousing({ data }: any) {
+function SpecialCustomersClousing({ data, subsidiary }: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
 
   const { setFooterData } = useFooter();
@@ -20,13 +20,10 @@ function SpecialCustomersClousing({ data }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id);
-
+      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id, subsidiary.idCurrency);
       if (specialCustomer) setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
-
       setSpecialCustomer(specialCustomer);
-      updateTotal(specialCustomer.total.totalPhysical, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
-      
+      updateTotal(specialCustomer.total?.totalPhysical  || 0, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
     }
 
     fetchData();

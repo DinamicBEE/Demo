@@ -134,7 +134,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.SPECIALCUSTOMER}>
               {value === CLOUSING_KEY.SPECIALCUSTOMER && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <SpecialCustomersClousing data={employee} />
+                  <SpecialCustomersClousing data={employee} subsidiary={subsidiary} />
                 </Suspense>
               )}
             </Tabs.Content>
