@@ -18,7 +18,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   function selectCurrency(value: any, id: number | string, currencies: CurrencyModel[] | undefined) {
 
     const selectValue = value[0];
-    const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.value || "";
+    const newCurrencyId = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.value || "";
+    const newCurrency = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.label || "";
     const newExchangeRage = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
 
     if (!customerData) return;
@@ -27,8 +28,9 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       item.id === id
         ? {
           ...item,
-          currency: newCurrency.toString(),
+          currency: newCurrencyId.toString(),
           exchangeRate: newExchangeRage,
+          currencyLabel: newCurrency,
           amountMXN: item.amount > 0 ? newExchangeRage * item.amount : item.amountMXN,
         }
         : item
@@ -104,7 +106,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const newRecord: CustomerLines = {
       id: "customer-" + uuidv4(),
        // Generar un ID temporal
-      currency: currency?.label || "",
+      currency: currency?.value.toString() || "",
+      currencyLabel: currency?.label || "",
       exchangeRate,
       coupons: newCustomer.coupons,
       pax: newCustomer.pax,

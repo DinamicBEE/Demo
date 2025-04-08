@@ -71,7 +71,7 @@ function FooterClousing({
     console.log(cash);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(({ pax: valuePAX, currency, id, ...rest }) => ({
+      lines.map(({ pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
         ...rest,
         customers: rest.nameClient,
         valuePAX,

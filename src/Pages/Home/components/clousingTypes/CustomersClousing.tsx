@@ -91,7 +91,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                       onValueChange={(e) => selectCurrency(e.value, item.id, currencies)} disabled={data?.closingConfirmation}>
 
                       <SelectTrigger>
-                        <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
+                        <SelectValueText placeholder={item.currencyLabel || "Seleccionar moneda"} />
                       </SelectTrigger>
 
                       <SelectContent>
@@ -142,7 +142,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
         )}
       </Box>
 
-      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency} idClousing={data!.id}/>
+      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency} idClousing={data?.id ?? 0} />
     </>
 
   );
