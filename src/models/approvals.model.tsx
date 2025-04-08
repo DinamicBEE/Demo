@@ -12,9 +12,21 @@ export interface Approval {
 }
 
 export interface RequestOpeningForm {
-  name: string;
-  reason: string;
+  idCash: string;
   comment: string;
+  commentSupervisor?: '',
+  reason: number
+}
+
+export interface AprovalsReason {
+  id: number;
+  reason: string;
+  type: string
+}
+
+export interface AprovalsClousureCash {
+  id: number;
+  date: string;
 }
 
 export interface EditRequestForm {

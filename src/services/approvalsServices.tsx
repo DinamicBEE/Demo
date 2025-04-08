@@ -1,7 +1,7 @@
 import { createListCollection } from "@chakra-ui/react";
 import { Temporal } from "@js-temporal/polyfill";
-import { Approval,  RequestOpeningForm } from "@models/approvals.model";
-
+import { Approval, AprovalsClousureCash, AprovalsReason, RequestOpeningForm } from "@models/approvals.model";
+import api from "../api/index";
 
 export const approvalsServices = {
 
@@ -43,19 +43,10 @@ export const approvalsServices = {
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {
     try {
 
-      const response: Approval = {
-        id: getRandomExcluding(),
-        date: formatDate(),
-        state: 'Abierto',
-        typeRequest: data.name.replace(/(\bCorte (caja|lote)) .*/, "$1").toUpperCase(),
-        reasons: data.reason,
-        comment: data.comment,
-        status: 2
-      };
+    
+      const response = await api.post(`/crc/cash-register-closure/api/reason/save`, data);
 
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(response), 1000);
-      })
+      return response.data
 
     } catch (error) {
       console.log(error)
@@ -79,21 +70,18 @@ export const approvalsServices = {
   },
 
   //obtiene el listado de las cajas y lotes.
-  async getClosingList(): Promise<any> {
+  async getClosingList(idConsumerCenter: number): Promise<any> {
     try {
-      const response = closingList;
+      const response = await api.get(`/crc/cash-register-closure/api/reason/listClosing?idConsumerCenter=${idConsumerCenter}`);
+      const result: AprovalsClousureCash[] = response.data;
 
-      const collection = createListCollection({
-        items: response
-      });
+      console.log(result)
 
-      return collection
+      return result
 
     } catch (error) {
-
       console.log(error);
       return [];
-
     }
   },
 
@@ -101,16 +89,18 @@ export const approvalsServices = {
   async getReasonsList(): Promise<any> {
     try {
 
-      const response = reasonsList;
-      const collection = createListCollection({
-        items: response
-      })
+      const response = await api.get(`/crc/cash-register-closure/api/reason/list`);
+      const result: AprovalsReason[] = response.data;
 
-      return collection
+      const collection = createListCollection({
+        items: result
+      });
+
+      return collection;
 
     } catch (error) {
       console.log(error)
-      return {}
+      return [];
     }
   },
 
@@ -183,18 +173,4 @@ const listApprovals: Approval[] = [
     comment: "Error en la asignación del pago con tarjeta.",
     status: 2
   }
-];
-
-const closingList = [
-  { label: "Corte caja 10/02/25 12:00 am", value: "Corte caja 10/02/25 12:00 am" },
-  { label: "Corte lote 12/02/25 10:00 am", value: "Corte lote 12/02/25 10:00 am" },
-  { label: "Corte caja 11/02/25 11:00 am", value: "Corte caja 11/02/25 11:00 am" },
-  { label: "Corte caja 14/02/25 1:00 pm", value: "Corte caja 14/02/25 1:00 pm" },
-];
-
-const reasonsList = [
-  { label: "Diferencia/ajustes en algún importe", value: "Diferencia/ajustes en algún importe" },
-  { label: "Ajustes en cupones", value: "Ajustes en cupones" },
-  { label: "Forma de pago", value: "Forma de pago" },
-  { label: "Diferencia en última actualización", value: "Diferencia en última actualización" },
 ];
