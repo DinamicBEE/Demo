@@ -135,7 +135,7 @@ export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
       })),
-    }
+    };
 
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -186,7 +186,7 @@ export const validateDetails = async (
   lineId: number | string,
   details: BankDetails
 ): Promise<BankDetails> => {
-// console.log(clousingId, lineId);
+  // console.log(clousingId, lineId);
 
   try {
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
@@ -316,6 +316,7 @@ export const getSpecialCustomerClousing = async (
 
     const lines = response.data.map((line: any) => ({
       ...line,
+
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
     }));
@@ -535,19 +536,22 @@ export const sendCashClousing = async (body: any) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-    // const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
+    const response = await api.post(
+      "/crc/cash-register-closure/api/closure/save",
+      body
+    );
 
-    const response = { success: true };
+    /*  const response = { success: true }; */
 
     //return response
-    return new Promise((resolve) => {
+    /*  return new Promise((resolve) => {
       setTimeout(() => {
         resolve(response);
       }, 1000); // 5 segundos
-    });
+    }); */
 
     //TODO: Devolver para consulta a back
-    // return response.data;
+    return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
     return [];
@@ -1191,7 +1195,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 125.0,
-      ticket: "654",
+      ticket: "1",
       physicalAmount: 0,
     },
     {
@@ -1201,7 +1205,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 150.0,
-      ticket: "123",
+      ticket: "2",
       physicalAmount: 0,
     },
     {
@@ -1211,7 +1215,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 300.0,
-      ticket: "789",
+      ticket: "3",
       physicalAmount: 0,
     },
   ],

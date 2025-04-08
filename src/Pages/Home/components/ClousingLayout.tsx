@@ -177,6 +177,7 @@ function ClousingLayout({
           <FooterClousing
             clousingType={value}
             clousingId={employee?.id ?? 0}
+            currencyId={subsidiary.idCurrency}
             closeDialog={() => onClose()}
             closingConfirmation={employee?.closingConfirmation ?? false}
           />

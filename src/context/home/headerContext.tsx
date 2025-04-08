@@ -48,6 +48,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
+console.log("updateTotal", newTotal, clousingId, clousingType);
 
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
@@ -69,11 +70,11 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
           ...(currentHeader[clousingId]?.closures || {}),
           [clousingType]: {
             totalPhysical: newTotal,
-            difference: Math.abs(newDifference),
+            difference: newDifference,
             totalPOS: lastCashTotal,
           },
         },
-        difference: Math.abs(lastTotalPOS - newTotalClousing),
+        difference: lastTotalPOS - newTotalClousing,
         totalClousing: newTotalClousing,
       },
     };

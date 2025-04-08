@@ -35,6 +35,7 @@ export interface EmployeeLine {
     amount: number;
     reason: string;
     ticket?: string;
+    externalId?: number;
 }
 
 export interface ReasonsModel {

@@ -92,6 +92,7 @@ export interface ClousingType{
 
 export interface FooterClousing {
   clousingType: CLOUSING_KEY;
+  currencyId: number;
   clousingId: number;
   closeDialog: () => void,
   closingConfirmation: boolean
@@ -147,6 +148,11 @@ export interface ConfirmDialogProps {
     isOpen: boolean,
     closeDialog: () => void,
     sendData: () => void
+}
+
+export interface ErrorDialogProps {
+  isOpen: boolean;
+  closeDialog: () => void;
 }
 
 export interface CustomerClousingFormProps { 

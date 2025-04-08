@@ -18,7 +18,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   function selectCurrency(value: any, id: number | string, currencies: CurrencyModel[] | undefined) {
 
     const selectValue = value[0];
-    const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.label || "";
+    const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.value || "";
     const newExchangeRage = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
 
     if (!customerData) return;
@@ -27,7 +27,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       item.id === id
         ? {
           ...item,
-          currency: newCurrency,
+          currency: newCurrency.toString(),
           exchangeRate: newExchangeRage,
           amountMXN: item.amount > 0 ? newExchangeRage * item.amount : item.amountMXN,
         }
