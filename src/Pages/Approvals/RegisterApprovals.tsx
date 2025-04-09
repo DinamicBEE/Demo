@@ -136,7 +136,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                   closingList && closingList.length != 0 &&
                   (
                     <>
-                      <Separator/>
+                      <Separator />
 
                       {/* Listado de cierres de lotes y cajas */}
                       <Field label="Lista de cierre de cajas / cierre de lotes*">
@@ -197,6 +197,4 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     </>
   );
 
-}
-)
-
+});

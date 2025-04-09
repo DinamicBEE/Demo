@@ -10,132 +10,131 @@ import { ConfirmDialog } from "./components/ConfirmDialog";
 import Loading from "@components/loading";
 
 
-export const TableApprovals: React.FC<TableApprovalsProps> = memo(
-  ({ openEditDialog }) => {
+export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
 
-    const statusLabels: Record<number, string> = { 0: "Rechazado", 1: "Aprobado", 2: "En espera", };
-    const { role } = useApprovalsRolUser()
-    const { approvalsList, fectApprovals, addOrUpdateApprovalList, dataApproval } = useApprovalsList();
-    const { data: fecthData, error, isLoading } = useApi(approvalsServices.getListApprovals);
-    const { open, onOpen, onClose } = useDisclosure();
-    const [confirmData, setConfirmData] = useState<{ item: Approval; newStatus: number } | null>(null);// Estado para el diálogo de confirmación
-    const [message, setMessage] = useState<string>();
+  const statusLabels: Record<number, string> = { 1: "Rechazado", 2: "Aprobado", 3: "En espera", };
+  const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Corte de Lote' }
 
-    //este se ejecuta cuando cargan los datos desde la peticion por primera vez.
-    useEffect(() => {
-      if (fecthData && approvalsList.length === 0) fectApprovals(fecthData);
-    }, [fecthData, error]);
+  const [confirmData, setConfirmData] = useState<{ item: Approval; newStatus: number } | null>(null);// Estado para el diálogo de confirmación
+  const [message, setMessage] = useState<string>();
 
-    //este se ejecuta cuando se agrega un registro nuevo o se actualiza algun registro.
-    useEffect(() => {
-      if (dataApproval.id) addOrUpdateApprovalList(dataApproval);
-    }, [dataApproval]);
+  const { role } = useApprovalsRolUser()
+  const { open, onOpen, onClose } = useDisclosure();
+  const { approvalsList, fectApprovals, dataApproval } = useApprovalsList();
+  const { data: fecthData, error, isLoading } = useApi(approvalsServices.getListApprovalsUser);
 
+  // //este se ejecuta cuando cargan los datos desde la peticion por primera vez.
+  useEffect(() => {
+    if (fecthData && approvalsList.length === 0) fectApprovals(fecthData);
+  }, [fecthData, error]);
 
-    const handleOpenConfirm = (item: Approval, newStatus: number) => {
-      setConfirmData({ item, newStatus });
-      setMessage(newStatus == 1 ? 'Aprobar' :  'Rechazar');
-      onOpen();
-    };
+  // //este se ejecuta cuando se agrega un registro nuevo o se actualiza algun registro.
+  // useEffect(() => {
+  //   if (dataApproval.id) addOrUpdateApprovalList(dataApproval);
+  // }, [dataApproval]);
 
-    // Manejo de la confirmación
-    const handleConfirm = () => {
-      if (confirmData) {
-        addOrUpdateApprovalList({ ...confirmData.item, status: confirmData.newStatus });
-        setConfirmData(null);
-        onClose();
-      }
-    };
-    
-    return (
-      <>
-        <ConfirmDialog
-          isOpen={open}
-          onClose={onClose}
-          onConfirm={handleConfirm}
-          message={`¿Estás seguro de que deseas ${message}?`}
-          title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
-        />
+  const handleOpenConfirm = (item: Approval, newStatus: number) => {
+    setConfirmData({ item, newStatus });
+    setMessage(newStatus == 1 ? 'Aprobar' : 'Rechazar');
+    onOpen();
+  };
 
-        {isLoading && <Loading />}
+  // Manejo de la confirmación
+  const handleConfirm = () => {
+    if (confirmData) {
+      setConfirmData(null);
+      onClose();
+    }
+  };
 
-        <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
-          <Table.Root variant="outline">
+  return (
+    <>
+      <ConfirmDialog
+        isOpen={open}
+        onClose={onClose}
+        onConfirm={handleConfirm}
+        message={`¿Estás seguro de que deseas ${message}?`}
+        title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
+      />
 
-            <Table.Header>
-              <Table.Row>
-                <Table.ColumnHeader textAlign={'center'}>Solicitud</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign={'center'}>Fecha</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign={'center'}>Tipo de Solicitud</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign={'center'}>Motivo de Solicitud</Table.ColumnHeader>
+      {isLoading && <Loading />}
 
-                {role === 'admin' ?
-                  <Table.ColumnHeader textAlign={'center'}>Comentario Cajero</Table.ColumnHeader>
-                  :
-                  <Table.ColumnHeader textAlign={'center'}>Comentario Supervisor</Table.ColumnHeader>
-                }
+      <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
+        <Table.Root variant="outline">
 
-                <Table.ColumnHeader textAlign={'center'}>Estatus</Table.ColumnHeader>
+          <Table.Header>
+            <Table.Row>
+              <Table.ColumnHeader textAlign={'center'}>Solicitud</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign={'center'}>Fecha</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign={'center'}>Tipo de Solicitud</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign={'center'}>Motivo de Solicitud</Table.ColumnHeader>
 
-                {role === 'admin' && <Table.ColumnHeader textAlign={'center'}>Acciones</Table.ColumnHeader>}
-
-              </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-              {
-                approvalsList.map((item: Approval) => (
-                  <Table.Row key={item.id}>
-                    <Table.Cell textAlign={'center'}> {item.id} </Table.Cell>
-                    <Table.Cell textAlign={'center'}> {item.date} </Table.Cell>
-                    <Table.Cell textAlign={'center'}> {item.typeRequest} </Table.Cell>
-                    <Table.Cell textAlign={'center'}> {item.reasons} </Table.Cell>
-                    <Table.Cell textAlign={'center'}> {role === 'admin' ? item.comment : item.commentSupervisor} </Table.Cell>
-
-                    <Table.Cell textAlign={'center'}>
-                      <Badge colorPalette={item.status === 2 ? "meraInfo" : item.status === 0 ? "meraError" : "meraSecondary"}>
-                        {statusLabels[item.status]}
-                      </Badge>
-                    </Table.Cell>
-
-                    {
-                      role === 'admin' &&
-                      <Table.Cell textAlign={'center'}>
-
-                        {
-                          item.status === 2 &&
-                          (
-                            <>
-                              <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px'
-                                onClick={() => handleOpenConfirm(item, 1)}>
-                                Aprobar
-                              </Button>
-
-                              <Button size='xs' colorPalette='red' variant="surface" rounded="full"
-                                onClick={() => handleOpenConfirm(item, 0)}>
-                                Rechazar
-                              </Button>
-                            </>
-                          )
-                        }
-
-                        <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full"
-                          onClick={() => openEditDialog(item)}>
-                          Detalle
-                        </Button>
-
-                      </Table.Cell>
-                    }
-
-                  </Table.Row>
-                ))
+              {role === 'admin' ?
+                <Table.ColumnHeader textAlign={'center'}>Comentario Cajero</Table.ColumnHeader>
+                :
+                <Table.ColumnHeader textAlign={'center'}>Comentario Supervisor</Table.ColumnHeader>
               }
-            </Table.Body>
 
-          </Table.Root>
-        </Table.ScrollArea>
-      </>
-    );
+              <Table.ColumnHeader textAlign={'center'}>Estatus</Table.ColumnHeader>
 
-  }
-);
+              {role === 'admin' && <Table.ColumnHeader textAlign={'center'}>Acciones</Table.ColumnHeader>}
+
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            {
+              approvalsList.map((item: Approval) => (
+                <Table.Row key={item.idRequest}>
+                  <Table.Cell textAlign={'center'}> {item.idRequest} </Table.Cell>
+                  <Table.Cell textAlign={'center'}> {item.date} </Table.Cell>
+                  <Table.Cell textAlign={'center'}> {typeRequestLabel[item.typeRequest]} </Table.Cell>
+                  <Table.Cell textAlign={'center'}> {item.reason} </Table.Cell>
+                  <Table.Cell textAlign={'center'}> {role === 'admin' ? item.comment : item.commentSupervisor} </Table.Cell>
+
+                  <Table.Cell textAlign={'center'}>
+                    <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 0 ? "meraError" : "meraSecondary"}>
+                      {statusLabels[item.status]}
+                    </Badge>
+                  </Table.Cell>
+
+                  {
+                    role === 'admin' &&
+                    <Table.Cell textAlign={'center'}>
+
+                      {
+                        item.status === 3 &&
+                        (
+                          <>
+                            <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px'
+                              onClick={() => handleOpenConfirm(item, 1)}>
+                              Aprobar
+                            </Button>
+
+                            <Button size='xs' colorPalette='red' variant="surface" rounded="full"
+                              onClick={() => handleOpenConfirm(item, 0)}>
+                              Rechazar
+                            </Button>
+                          </>
+                        )
+                      }
+
+                      <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full"
+                        onClick={() => openEditDialog(item)}>
+                        Detalle
+                      </Button>
+
+                    </Table.Cell>
+                  }
+
+                </Table.Row>
+              ))
+            }
+          </Table.Body>
+
+        </Table.Root>
+      </Table.ScrollArea>
+    </>
+  );
+
+});

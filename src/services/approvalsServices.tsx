@@ -6,15 +6,14 @@ import api from "../api/index";
 export const approvalsServices = {
 
   //obtiene toda los registros de las solicitudes.
-  async getListApprovals(): Promise<any> {
+  async getListApprovalsUser(): Promise<any> {
 
     try {
 
-      const response = listApprovals
+      const response = await api.get(`/crc/cash-register-closure/api/request`);
+      const result = response.data;
 
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(response), 2000);
-      });
+      return result;
 
     } catch (error) {
       console.log(error);
@@ -24,20 +23,20 @@ export const approvalsServices = {
   },
 
   //obtiene solo un registro por id
-  async getRequestApproval(id: number): Promise<any> {
-    try {
+  // async getRequestApproval(id: number): Promise<any> {
+  //   try {
 
-      const response = listApprovals.find((item) => item.id === id);
+  //     const response = listApprovals.find((item) => item.id === id);
 
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(response), 1000);
-      });
+  //     return new Promise((resolve) => {
+  //       setTimeout(() => resolve(response), 1000);
+  //     });
 
-    } catch (error) {
-      console.log(error)
-      return {}
-    }
-  },
+  //   } catch (error) {
+  //     console.log(error)
+  //     return {}
+  //   }
+  // },
 
   //Guarda un nueva solicitud
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {
@@ -106,71 +105,62 @@ export const approvalsServices = {
 
 }
 
-const getRandomExcluding = () => {
-  let num;
-  do {
-    num = Math.floor(Math.random() * 100) + 1; // Número entre 1 y 100
-  } while ([1, 2, 3, 4, 5].includes(num));
-  return num;
-}
+//   const now = Temporal.Now.plainDateTimeISO();
 
-const formatDate = () => {
-  const now = Temporal.Now.plainDateTimeISO();
+//   return now.toLocaleString("en-US", {
+//     year: "numeric",
+//     month: "2-digit",
+//     day: "2-digit",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: true,  // Para formato AM/PM
+//   }); // Eliminar la coma entre fecha y hora
+// };
 
-  return now.toLocaleString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,  // Para formato AM/PM
-  }); // Eliminar la coma entre fecha y hora
-};
-
-const listApprovals: Approval[] = [
-  {
-    id: 1,
-    date: "10/02/2025, 1:00 PM",
-    state: "Abierto",
-    typeRequest: "CORTE DE CAJA",
-    reasons: "Diferencia/ajustes en algún importe",
-    comment: "Revisar diferencias en caja principal.",
-    status: 2
-  },
-  {
-    id: 2,
-    date: "10/02/2025, 1:00 PM",
-    state: "Con diferencia",
-    typeRequest: "CORTE  LOTE",
-    reasons: "Forma de pago",
-    comment: "Ajuste necesario en método de pago registrado.",
-    status: 2
-  },
-  {
-    id: 3,
-    date: "10/02/2025, 1:00 PM",
-    state: "Cerrado",
-    typeRequest: "CORTE CAJA",
-    reasons: "Ajustes en cupones",
-    comment: "Cupones no aplicados correctamente.",
-    status: 2
-  },
-  {
-    id: 4,
-    date: "11/02/2025, 1:00 PM",
-    state: "Reabierto",
-    typeRequest: "CIERRE LOTE",
-    reasons: "Diferencia en última actualización",
-    comment: "Revisión urgente por actualización incorrecta.",
-    status: 2
-  },
-  {
-    id: 5,
-    date: "11/02/2025, 1:00 PM",
-    state: "Abierto",
-    typeRequest: "CORTE CAJA",
-    reasons: "Forma de pago",
-    comment: "Error en la asignación del pago con tarjeta.",
-    status: 2
-  }
-];
+// const listApprovals: Approval[] = [
+//   {
+//     id: 1,
+//     date: "10/02/2025, 1:00 PM",
+//     state: "Abierto",
+//     typeRequest: "CORTE DE CAJA",
+//     reasons: "Diferencia/ajustes en algún importe",
+//     comment: "Revisar diferencias en caja principal.",
+//     status: 2
+//   },
+//   {
+//     id: 2,
+//     date: "10/02/2025, 1:00 PM",
+//     state: "Con diferencia",
+//     typeRequest: "CORTE  LOTE",
+//     reasons: "Forma de pago",
+//     comment: "Ajuste necesario en método de pago registrado.",
+//     status: 2
+//   },
+//   {
+//     id: 3,
+//     date: "10/02/2025, 1:00 PM",
+//     state: "Cerrado",
+//     typeRequest: "CORTE CAJA",
+//     reasons: "Ajustes en cupones",
+//     comment: "Cupones no aplicados correctamente.",
+//     status: 2
+//   },
+//   {
+//     id: 4,
+//     date: "11/02/2025, 1:00 PM",
+//     state: "Reabierto",
+//     typeRequest: "CIERRE LOTE",
+//     reasons: "Diferencia en última actualización",
+//     comment: "Revisión urgente por actualización incorrecta.",
+//     status: 2
+//   },
+//   {
+//     id: 5,
+//     date: "11/02/2025, 1:00 PM",
+//     state: "Abierto",
+//     typeRequest: "CORTE CAJA",
+//     reasons: "Forma de pago",
+//     comment: "Error en la asignación del pago con tarjeta.",
+//     status: 2
+//   }
+// ];

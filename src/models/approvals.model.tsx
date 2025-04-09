@@ -1,11 +1,12 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 export interface Approval {
-  id: number;
+  idRequest: number;
+  idCashBatch?: number;
   date: string;
   state: string;
   typeRequest: string;
-  reasons: string;
+  reason: string;
   comment: string; //en esta atributo se guardaria el comentario del supervisor
   commentSupervisor?: string;
   status: number
