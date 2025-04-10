@@ -1,5 +1,5 @@
 import { createListCollection } from "@chakra-ui/react";
-import { Approval, AprovalsClousureCash, AprovalsReason, RequestOpeningForm } from "@models/approvals.model";
+import { Approval, AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
 
 export const approvalsServices = {
@@ -36,17 +36,15 @@ export const approvalsServices = {
   },
 
   //Actualiza la solicitud.
-  async updateStatusRequest(data: Approval): Promise<any> {
+  async updateStatusRequest(data: RequestUpdateDetails): Promise<any> {
     try {
 
-      const response = data;
+      const response = await api.post(`/crc/cash-register-closure/api/supervisor/request`, data);
 
-      return new Promise((resolve) => {
-        setTimeout(() => resolve(response), 1000);
-      });
+      return response.data;
 
-    } catch (error) {
-
+    } catch (error: any) {
+      throw new Error(error);
     }
   },
 

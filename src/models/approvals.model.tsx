@@ -19,6 +19,14 @@ export interface RequestOpeningForm {
   reason: number
 }
 
+export interface RequestUpdateDetails { 
+  comment: string;
+  idCashLote: number;
+  idRequest: number;
+  typeRequest: string;
+  status: boolean
+}
+
 export interface AprovalsReason {
   id: number;
   reason: string;
@@ -52,7 +60,6 @@ export interface TableApprovalsProps {
 export interface StateApprovalsProps {
   state: number
 }
-
 
 export interface ClosingListSelectProps {
   register: UseFormRegister<any>; // Tipo genérico para `useForm`
