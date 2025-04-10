@@ -4,7 +4,7 @@ import { DialogRoot, DialogBackdrop, DialogBody, DialogContent, DialogTitle, Dia
 import { ConfirmacionDialogProps } from "@models/confirmationDialog";
 
 
-export const ConfirmDialog: React.FC<ConfirmacionDialogProps> = ({ isOpen, onClose, onConfirm, message, title = "Confirmación", }) => {
+export const ConfirmDialog: React.FC<ConfirmacionDialogProps> = ({ isOpen, onClose, onConfirm, message, title = "Confirmación", loading}) => {
 
   return (
     <>
@@ -23,10 +23,10 @@ export const ConfirmDialog: React.FC<ConfirmacionDialogProps> = ({ isOpen, onClo
           <DialogFooter>
 
             <DialogActionTrigger>
-              <Button colorPalette='red' onClick={() => onClose()}> Cancelar </Button>
+              <Button colorPalette='red' onClick={() => onClose()} loading={loading} disabled={loading}> Cancelar </Button>
             </DialogActionTrigger>
 
-            <Button colorPalette='green' onClick={() => onConfirm()}> Confirmar </Button>
+            <Button colorPalette='green' onClick={() => onConfirm()} loading={loading} disabled={loading}> Confirmar </Button>
 
           </DialogFooter>
         </DialogContent>

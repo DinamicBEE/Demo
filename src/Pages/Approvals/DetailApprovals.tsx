@@ -49,7 +49,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
           reset();
           onClose();
           triggerRefresh();
-        }, 1000);
+        }, 400);
 
       },
       onError: (error) => {
@@ -59,7 +59,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         setTimeout(() => {
           reset();
           onClose();
-        }, 1000);
+        }, 500);
       }
     }
   );
@@ -78,6 +78,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         onConfirm={handleConfirm}
         message="¿Estás seguro de que deseas editar esta Solicitud?"
         title="Editar Solicitud de reapertura de caja/lote."
+        loading={isLoadingEdit}
       />
 
       <VStack alignItems='start'>

@@ -94,6 +94,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         onConfirm={handleConfirm}
         message="¿Estás seguro de que deseas crear una nueva Solcitud?"
         title="Registrar nuevo Solicitud de reapertura de caja/lote."
+        loading={isLoading}
       />
 
       <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()}
@@ -189,7 +190,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                 <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
               </DialogActionTrigger>
 
-              <Button type="submit" colorPalette="meraPrimary" loading={isLoading}>
+              <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
                 Guardar
               </Button>
 
