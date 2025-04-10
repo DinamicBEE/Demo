@@ -1,20 +1,41 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 export interface Approval {
-  id: number;
+  idRequest: number;
+  idCashBatch?: number;
   date: string;
   state: string;
   typeRequest: string;
-  reasons: string;
+  reason: string;
   comment: string; //en esta atributo se guardaria el comentario del supervisor
   commentSupervisor?: string;
   status: number
 }
 
 export interface RequestOpeningForm {
-  name: string;
-  reason: string;
+  idCash: string;
   comment: string;
+  commentSupervisor?: '',
+  reason: number
+}
+
+export interface RequestUpdateDetails { 
+  comment: string;
+  idCashLote: number;
+  idRequest: number;
+  typeRequest: string;
+  status: boolean
+}
+
+export interface AprovalsReason {
+  id: number;
+  reason: string;
+  type: string
+}
+
+export interface AprovalsClousureCash {
+  id: number;
+  date: string;
 }
 
 export interface EditRequestForm {
@@ -39,7 +60,6 @@ export interface TableApprovalsProps {
 export interface StateApprovalsProps {
   state: number
 }
-
 
 export interface ClosingListSelectProps {
   register: UseFormRegister<any>; // Tipo genérico para `useForm`

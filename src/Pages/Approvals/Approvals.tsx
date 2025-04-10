@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Box, Button, Flex, Heading, useDisclosure } from "@chakra-ui/react";
+import React, { useCallback, useState } from "react";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
