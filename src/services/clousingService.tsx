@@ -258,7 +258,6 @@ export const getCustomerClousing = async (
     const lines = response.data.generalClientResponseList.map((line: any) => ({
       ...line,
       amountMXN: line.amountMx ?? 0,
-      currency: 1,
       currencyLabel: line.currency ?? "",
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customer-" + uuidv4() : line.id,
