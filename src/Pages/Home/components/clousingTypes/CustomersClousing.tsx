@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, createListCollection, ListCollection, useDisclosure } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, createListCollection, ListCollection, useDisclosure, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { SelectRoot, SelectTrigger,
     SelectValueText, SelectContent, SelectItem,
   } from "@components/ui/select"
@@ -16,15 +17,23 @@ import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
 
+const pageSize = 10;
+
 function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const [currenciesForSelect, setcurrenciesForSelect] = useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>()
-  const [CustomersData, setCustomersData] = useState<CustomerModel>()
+  const [CustomersData, setCustomersData] = useState<CustomerModel>({} as CustomerModel);
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading } = useCustomerContext();
   const { handleCoupons, selectCurrency, handleAmountPAX } = useHandleCustomer(CustomersData || {} as CustomerModel, setCustomersData, data?.id ?? 0);
   const { updateTotal } = useHeaders();
   const { open, onOpen, onClose } = useDisclosure()
+
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<CustomerLines[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     
@@ -42,10 +51,19 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
       setcurrenciesForSelect(createCurrenciList);
       setCurrencies(currencies);
       updateTotal(customers.total.totalPhysical, data.id, CLOUSING_KEY.CUSTOMER);
+    
+      const items = customers?.lines?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setPage(page);
+    const items = CustomersData?.lines?.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page])
 
   const openDialog = () => {
     onOpen();
@@ -72,7 +90,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {CustomersData?.lines?.map((item: CustomerLines) => (
+              {visibleItems?.map((item: CustomerLines) => (
                 <Table.Row key={item.id}>
 
                   <Table.Cell textAlign="center">
@@ -133,7 +151,14 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
               ))}
             </Table.Body>
           </Table.Root>
-        </Table.ScrollArea>
+        </Table.ScrollArea>.
+        <PaginationRoot count={CustomersData?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+          <HStack>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
 
         {customerLoading && (
           <Box position="fixed" top="50%" left="50%" zIndex="1">

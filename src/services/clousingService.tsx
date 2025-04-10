@@ -313,10 +313,11 @@ export const getSpecialCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
 
-    const lines = response.data.map((line: any) => ({
+    const lines = response.data.map((line: any, index: number) => ({ // ! Eliminar INDEX
       ...line,
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
+      exchangeRate: index + 1===1 ? 1 : 17, // ! Eliminar
     }));
 
     const newTotalPOS = lines

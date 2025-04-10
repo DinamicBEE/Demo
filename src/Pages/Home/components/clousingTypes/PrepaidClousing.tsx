@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Group, InputAddon, Input, Skeleton  } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Group, InputAddon, Input, Skeleton, HStack  } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { toaster, Toaster } from "@components/ui/toaster";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
@@ -10,6 +11,8 @@ import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
 
+const pageSize = 10;
+
 function PrepaidClousing({data}: any) {
   const [prepaid, setPrepaid] = useState<PrepaidModel>({} as PrepaidModel);
   const [coupons, setCoupons] = useState<CouponCatalogModel[]>([]);
@@ -19,6 +22,12 @@ function PrepaidClousing({data}: any) {
   const { setFooterData } = useFooter();
   const { getPrepaidData, getCouponData, setPrepaidData } = usePrepaidContext();
 
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<PrepaidLineModel[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
+  
   useEffect(()=>{
     async function fetchData(){
       setLoading(true);
@@ -32,11 +41,20 @@ function PrepaidClousing({data}: any) {
       
       setLoading(false);
       updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
+    
+      const items = prepaid?.lines?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData();
 
   },[])
+
+  useEffect(() => {
+    setPage(page);
+    const items = prepaid?.lines?.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page])
 
   function updateData(updatePrepaid: PrepaidLineModel[]) {
 
@@ -188,7 +206,7 @@ function PrepaidClousing({data}: any) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {prepaid?.lines?.map((item: PrepaidLineModel) => (
+            {visibleItems?.map((item: PrepaidLineModel) => (
               <Table.Row key={item.id}>
                 
                 <Table.Cell textAlign="center">
@@ -239,6 +257,13 @@ function PrepaidClousing({data}: any) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
+      <PaginationRoot count={prepaid?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
 
       {loading && (
         <Box position="fixed" top="50%" left="50%"  zIndex="1">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Input } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Input, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { TableInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
@@ -9,6 +10,7 @@ import { CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 
+const pageSize = 10;
 
 function SpecialCustomersClousing({ data }: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
@@ -17,6 +19,11 @@ function SpecialCustomersClousing({ data }: any) {
   const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
   const { handleInputTextData, handleUpdateAmountMXN } = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id)
   const { updateTotal } = useHeaders();
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     async function fetchData() {
@@ -27,12 +34,19 @@ function SpecialCustomersClousing({ data }: any) {
       setSpecialCustomer(specialCustomer);
       updateTotal(specialCustomer.total.totalPhysical, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
       
+      const items = specialCustomer?.lines?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData();
 
   }, [])
 
+  useEffect(() => {
+    setPage(page);
+    const items = specialCustomer?.lines?.slice(startRange, endRange) || [];
+    setVisibleItems(items);
+  }, [page])
 
   return (
     <Box>
@@ -59,7 +73,7 @@ function SpecialCustomersClousing({ data }: any) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {specialCustomer?.lines?.map((item: SpecialCustomerLines) => (
+            {visibleItems?.map((item: SpecialCustomerLines) => (
               <Table.Row key={item.id}>
 
                 <Table.Cell textAlign="center">
@@ -155,6 +169,13 @@ function SpecialCustomersClousing({ data }: any) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
+      <PaginationRoot count={specialCustomer?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
 
       {specialCustLoading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

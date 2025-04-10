@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, ListCollection, createListCollection } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, ListCollection, createListCollection, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { SelectRoot, SelectTrigger,
   SelectValueText, SelectContent, SelectItem,
 } from "@components/ui/select"
@@ -15,6 +16,7 @@ import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterEmployee from "@components/FilterEmployee";
 
+const pageSize = 10;
 
 function IntercompanyClousing({data}: IntercompanyClousingProps) {
   const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
@@ -25,6 +27,11 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   const { getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries } = useIntercompanyContext();
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<IntercompanyLine[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     async function fetchData() {
@@ -50,11 +57,20 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
       setSubsidiariesByRow(initialSubsidiariesByRow);
       setLoading(false);
       updateTotal(intercompanyData.total.totalPhysical, data.id, CLOUSING_KEY.INTERCOMPANY);
+    
+      const items = intercompanyData?.lines?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData()
 
   },[]);
+
+  useEffect(() => {
+    setPage(page);
+    const items = intercompany?.lines?.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page])
 
   function updateIntercompany(updateLine: IntercompanyLine[]){
     if (!data) return;
@@ -176,7 +192,7 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
           </Table.Header>
 
           <Table.Body>
-            {intercompany?.lines?.map((item: IntercompanyLine) => (
+            {visibleItems?.map((item: IntercompanyLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <FilterEmployee employees={employees}
@@ -225,6 +241,13 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
+      <PaginationRoot count={intercompany?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
 
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

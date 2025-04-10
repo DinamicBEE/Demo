@@ -1,37 +1,41 @@
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  FormatNumber,
-  Grid,
-  GridItem,
-  Group,
-  Input,
-  InputAddon,
-  Skeleton,
-  Table,
-  Tag,
-  Text,
-} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Button, FormatNumber, Grid, GridItem, Group, 
+  Input, InputAddon, Skeleton, Table, Tag, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
-import {
-  ClousingLinesModel,
-  TableOfTotalsProps,
-} from "@models/common.clousing.model";
+import { ClousingLinesModel, TableOfTotalsProps } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import "../Home.css";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../utils/getStatusColor";
 import ClousingLayout from "./ClousingLayout";
 
+const pageSize = 5;
+
 function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
   const { data, loading, error, header, getInfo, setDataRow } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<ClousingLinesModel[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
+
+  useEffect(() => {
+    const items = data.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [data])
+
+  useEffect(() => {
+    setPage(page);
+    const items = data.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page])
 
   function handleExportCSV() {
     exportCSV(data, header);
@@ -216,7 +220,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {data.map((item: ClousingLinesModel) => (
+                  {visibleItems.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
                       <Table.Cell textAlign="center">
                         <Text
@@ -392,6 +396,13 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
+            <PaginationRoot count={data.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+              <HStack>
+                <PaginationPrevTrigger />
+                <PaginationItems />
+                <PaginationNextTrigger />
+              </HStack>
+            </PaginationRoot>
           </Box>
         )}
 
