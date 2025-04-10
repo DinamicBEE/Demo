@@ -76,7 +76,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
                 <Table.Cell textAlign="center">{role === 'admin' ? item.comment : item.commentSupervisor}</Table.Cell>
                 <Table.Cell textAlign="center">
-                  <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 0 ? "meraError" : "meraSecondary"}>
+                  <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
                     {statusLabels[item.status]}
                   </Badge>
                 </Table.Cell>
