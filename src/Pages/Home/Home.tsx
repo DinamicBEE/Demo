@@ -193,7 +193,6 @@ function Home() {
                     id: event.items[0].value,
                     name: event.items[0].label,
                   };
-                  console.log("itemSelected", itemSelected);
                   
                   setLocation(itemSelected);
                 }}

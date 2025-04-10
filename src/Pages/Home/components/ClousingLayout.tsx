@@ -37,11 +37,6 @@ function ClousingLayout({
   subsidiary,
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
-
-  useEffect(() => {
-    console.log("location dialog",location);
-    
-  }, [])
   
 
   return (

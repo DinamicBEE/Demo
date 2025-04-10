@@ -22,7 +22,6 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   useEffect(() => {
     async function fetchData() {
       const tdc: TDCModel = await getTDCData(data?.id, idCurrency);
-      console.log("tdc", tdc);
       
       if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
