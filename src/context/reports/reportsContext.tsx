@@ -17,7 +17,6 @@ export const ReportProvider = ({ children }: { children: ReactNode }) => {
 
   // Función para respaldar las filas
   const respaldar = (rows: Row[]) => {
-    // console.log("respaldar",rows);
     
     setRespaldo(rows);
   };

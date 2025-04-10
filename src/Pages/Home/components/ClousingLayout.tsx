@@ -13,7 +13,7 @@ import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
 import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing";
-import { lazy, useState, Suspense } from "react";
+import { lazy, useState, Suspense, useEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { ClousingLayoutProps } from "@models/common.clousing.model";
@@ -37,6 +37,7 @@ function ClousingLayout({
   subsidiary,
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
+  
 
   return (
     <DialogRoot
@@ -106,7 +107,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.CASH}>
               {value === CLOUSING_KEY.CASH && (
                 <Suspense fallback={<div>Cargando Efectivo...</div>}>
-                  <CashClousing data={employee} />
+                  <CashClousing data={employee} idCurrency={subsidiary.idCurrency} />
                 </Suspense>
               )}
             </Tabs.Content>
@@ -117,7 +118,8 @@ function ClousingLayout({
                   <TDCClousing
                     data={employee}
                     location={location}
-                    subsidiary={subsidiary}
+                    subsidiary={subsidiary.id}
+                    idCurrency={subsidiary.idCurrency}
                   />
                 </Suspense>
               )}

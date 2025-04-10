@@ -126,7 +126,7 @@ function ReportViewer() {
 
       setUseRows(sumArr); // TODO: Reemplazar con función a API para guardar las selecciones
     }
-    
+    respaldar(sumArr);
     // updateAllRowsTotals(newArr);
   }
 

@@ -86,13 +86,12 @@ export const ReportFilterComponent = () => {
     const [startDate, endDate] = range;
     setStartDate(startDate);
     setEndDate(endDate);
-    console.log(range);
   };
 
   const applyFilters = async () => {
     let filteredRows = [...respaldo];
     setConfirmLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 5000)); 
+    await new Promise((resolve) => setTimeout(resolve, 2000)); 
     if (cdcSelected.label !== "") {
       
       filteredRows = filteredRows.filter((row) => 
@@ -100,9 +99,7 @@ export const ReportFilterComponent = () => {
     }
 
     if (empSelected.label !== "") {
-      console.log("entramos empSelected");
-      console.log(empSelected.label);
-
+      
       filteredRows = filteredRows.filter((row) => row.approved.name === empSelected.label);
     }
 
@@ -123,7 +120,7 @@ export const ReportFilterComponent = () => {
         const startDateUTC = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
         const endDateUTC = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()));
     
-        console.log(rowDateStr, rowDate, startDateUTC, endDateUTC);
+        // console.log(rowDateStr, rowDate, startDateUTC, endDateUTC);
     
         return rowDate >= startDateUTC && rowDate <= endDateUTC;
     });
@@ -139,7 +136,7 @@ export const ReportFilterComponent = () => {
     }
 
     if (confirmedChecked === true) {
-      console.log("entramos confirmedChecked");
+      // console.log("entramos confirmedChecked");
 
       filteredRows = filteredRows.filter((row) => row.confirmed === false);
     }

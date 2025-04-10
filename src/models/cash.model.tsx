@@ -5,7 +5,7 @@ export interface CashContextType {
     cashClousing: CashModel | {};
     cashLoading: boolean;
     error: string;
-    getCashData: (clousingId: number) => Promise<CashModel>;//, employeeId: number
+    getCashData: (clousingId: number, idCurrency: number) => Promise<CashModel>;//, employeeId: number
     setCashData: (cashLine:CashModel, clousingId: number) => void; // employeeId: number,
 }
 

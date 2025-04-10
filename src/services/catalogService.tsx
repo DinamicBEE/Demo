@@ -127,98 +127,98 @@ export const getReasonClousing = async (subId: number, cdc: number): Promise<Rea
 
 
 
-const sub = [
-  {
-    name: "Sub1",
-    id: 1,
-  },
-  {
-    name: "Sub2",
-    id: 2,
-  },
-  {
-    name: "Sub3",
-    id: 3,
-  },
-];
+// const sub = [
+//   {
+//     name: "Sub1",
+//     id: 1,
+//   },
+//   {
+//     name: "Sub2",
+//     id: 2,
+//   },
+//   {
+//     name: "Sub3",
+//     id: 3,
+//   },
+// ];
 
-const store = [
-  {
-    name: "Tienda 1",
-    id: 1,
-    subsidiary: {
-      name: "Sub1",
-      id: 1,
-    },
-  },
-  {
-    name: "Tienda 2",
-    id: 2,
-    subsidiary: {
-      name: "Sub1",
-      id: 1,
-    },
-  },
-  {
-    name: "Tienda 3",
-    id: 3,
-    subsidiary: {
-      name: "Sub2",
-      id: 2,
-    },
-  },
-  {
-    name: "Tienda 4",
-    id: 4,
-    subsidiary: {
-      name: "Sub2",
-      id: 2,
-    },
-  },
-  {
-    name: "Tienda 5",
-    id: 5,
-    subsidiary: {
-      name: "Sub2",
-      id: 2,
-    },
-  },
-  {
-    name: "Tienda 6",
-    id: 6,
-    subsidiary: {
-      name: "Sub3",
-      id: 3,
-    },
-  },
-];
+// const store = [
+//   {
+//     name: "Tienda 1",
+//     id: 1,
+//     subsidiary: {
+//       name: "Sub1",
+//       id: 1,
+//     },
+//   },
+//   {
+//     name: "Tienda 2",
+//     id: 2,
+//     subsidiary: {
+//       name: "Sub1",
+//       id: 1,
+//     },
+//   },
+//   {
+//     name: "Tienda 3",
+//     id: 3,
+//     subsidiary: {
+//       name: "Sub2",
+//       id: 2,
+//     },
+//   },
+//   {
+//     name: "Tienda 4",
+//     id: 4,
+//     subsidiary: {
+//       name: "Sub2",
+//       id: 2,
+//     },
+//   },
+//   {
+//     name: "Tienda 5",
+//     id: 5,
+//     subsidiary: {
+//       name: "Sub2",
+//       id: 2,
+//     },
+//   },
+//   {
+//     name: "Tienda 6",
+//     id: 6,
+//     subsidiary: {
+//       name: "Sub3",
+//       id: 3,
+//     },
+//   },
+// ];
 
-const currenciesS = [
-  { value: 1, label: "MXN", exchangeRate: 1.0 },
-  { value: 2, label: "USD", exchangeRate: 17.0 },
-  { value: 3, label: "CAN", exchangeRate: 13.0 },
-  { value: 4, label: "GBP", exchangeRate: 23.0 },
-];
+// const currenciesS = [
+//   { value: 1, label: "MXN", exchangeRate: 1.0 },
+//   { value: 2, label: "USD", exchangeRate: 17.0 },
+//   { value: 3, label: "CAN", exchangeRate: 13.0 },
+//   { value: 4, label: "GBP", exchangeRate: 23.0 },
+// ];
 
-const employeesMocky = [
-  { id: 1, name: "Irving E Canul", employeeNumber: "0151" },
-  { id: 2, name: "Franklin Cardona", employeeNumber: "0155" },
-  { id: 3, name: "Gerrardo Flores", employeeNumber: "0120" },
-  { id: 4, name: "Juan Mendoza", employeeNumber: "0101" },
-  { id: 5, name: "Luis Castillo", employeeNumber: "0091" },
-  { id: 6, name: "Mario Vázquez Arias", employeeNumber: "0085" },
-  { id: 7, name: "Victor Ivan Garrido Aragón", employeeNumber: "0075" },
-  { id: 8, name: "Ramiro Diaz", employeeNumber: "0070" },
-  { id: 9, name: "Carlos Alan Yañez Sanchez", employeeNumber: "0100" },
-  { id: 10, name: "Erick Raul Estrada Acosta", employeeNumber: "0115" },
-];
+// const employeesMocky = [
+//   { id: 1, name: "Irving E Canul", employeeNumber: "0151" },
+//   { id: 2, name: "Franklin Cardona", employeeNumber: "0155" },
+//   { id: 3, name: "Gerrardo Flores", employeeNumber: "0120" },
+//   { id: 4, name: "Juan Mendoza", employeeNumber: "0101" },
+//   { id: 5, name: "Luis Castillo", employeeNumber: "0091" },
+//   { id: 6, name: "Mario Vázquez Arias", employeeNumber: "0085" },
+//   { id: 7, name: "Victor Ivan Garrido Aragón", employeeNumber: "0075" },
+//   { id: 8, name: "Ramiro Diaz", employeeNumber: "0070" },
+//   { id: 9, name: "Carlos Alan Yañez Sanchez", employeeNumber: "0100" },
+//   { id: 10, name: "Erick Raul Estrada Acosta", employeeNumber: "0115" },
+// ];
 
-const reasonsMocky = [
-    { id: 1, reason: "CONSUMO EMPLEADO", type: "A"},
-    { id: 2, reason: "CUPÓN EXTRAVIADO", type: "A"},
-    { id: 3, reason: "DIFERENCIA EN EFECTIVO", type: "B"},
-    { id: 4, reason: "DIFERENCIA EN INVENTARIO", type: "A"},
-    { id: 5, reason: "MALA ELABORACIÓN DEL PRODUCTO", type: "B"},
-    { id: 6, reason: "VOUCHER EXTRAVIADO", type: "A"},
-    { id: 7, reason: "VOUCHER SIN FIRMA", type: "A"},
-];
+// const reasonsMocky = [
+//     { id: 1, reason: "CONSUMO EMPLEADO", type: "A"},
+//     { id: 2, reason: "CUPÓN EXTRAVIADO", type: "A"},
+//     { id: 3, reason: "DIFERENCIA EN EFECTIVO", type: "B"},
+//     { id: 4, reason: "DIFERENCIA EN INVENTARIO", type: "A"},
+//     { id: 5, reason: "MALA ELABORACIÓN DEL PRODUCTO", type: "B"},
+//     { id: 6, reason: "VOUCHER EXTRAVIADO", type: "A"},
+//     { id: 7, reason: "VOUCHER SIN FIRMA", type: "A"},
+// ];

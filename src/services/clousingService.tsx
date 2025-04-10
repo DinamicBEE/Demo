@@ -7,7 +7,7 @@ import {
   FileResult,
   ProcessResult,
 } from "@models/adyen.model";
-import { CashModel } from "@models/cash.model";
+import { CashLines, CashModel } from "@models/cash.model";
 import { HeaderData, ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
 import {
@@ -23,9 +23,7 @@ import {
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
-import axios from "axios";
-import { API_LOCAL, CLIENTS, LOCATIONS, SP_CLIENTS } from "./settings";
-import Cookies from "js-cookie";
+import { CASH, CLIENTS, LOCATIONS, SP_CLIENTS, TDC } from "./settings";
 import api from "../api/index";
 
 import Papa from "papaparse";
@@ -64,39 +62,54 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @returns {Promise<CashModel>}
  */
 export const getCashClousing = async (
-  clousingId: number
-): Promise<CashModel> => {
-  // console.log(clousingId) //employeeId
-
+  clousingId: number, idCurrency: number
+): Promise<CashModel> => {  
   try {
     // Instead of using the actual API endpoint
-    // const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = await api.get(CASH, {
+      params: {
+        crcId: clousingId,
+        idCurrency: idCurrency
+      }
+    });
+
+    if (response.data.lines.length === 0) {
+      return {
+        ...response.data,
+        id: clousingId,
+        total: {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        }
+      }
+    }
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
-      ...CashData,
-      currencies: CashData.currencies.map((currency) => ({
+      ...response.data,
+      currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
       })),
     };
 
-    const response = cashDataCopy;
+    const dummy = cashDataCopy;
 
     // const newTotalPOS = response.data.currencies.map(currency => currency.totalPOS).reduce((acc, curr) => acc + curr, 0);
     // const newTotalFisico = response.data.currencies.map(currency => currency.totalFisico).reduce((acc, curr) => acc + curr, 0)
 
-    const newTotalPOS = response.currencies
-      .map((currency) => currency.totalPOS)
-      .reduce((acc, curr) => acc + curr, 0);
-    const newTotalFisico = response.currencies
-      .map((currency) => currency.totalFisico)
-      .reduce((acc, curr) => acc + curr, 0);
+    const newTotalPOS = dummy.lines
+      .map((currency: CashLines) => currency.totalPOS)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalFisico = dummy.currencies
+      .map((currency: CashLines) => currency.totalFisico)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       //...response.data,
-      ...response,
+      ...dummy,
       total: {
         totalPOS: newTotalPOS,
         totalPhysical: newTotalFisico,
@@ -106,11 +119,7 @@ export const getCashClousing = async (
     };
 
     //return data
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
+    return data
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {} as CashModel;
@@ -123,25 +132,29 @@ export const getCashClousing = async (
  * @param {number} clousingId
  * @returns {Promise<TDCModel>}
  */
-export const getTDCClousing = async (clousingId: number): Promise<TDCModel> => {
+export const getTDCClousing =
+  async (clousingId: number, idCurrency: number): Promise<TDCModel> => {
   // console.log(clousingId)
 
   try {
-    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = {
-      ...TDCMOCKData,
-      lines: TDCMOCKData.lines.map((line) => ({
+    const response = await api.get(TDC, {
+      params: {crcId: clousingId, idCurrency: idCurrency}
+    });
+    const newResponse = {
+      ...response.data,
+      lines: response.data.lines.map((line: any) => ({
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
       })),
     }
 
-    return new Promise((resolve) => {
+    /* return new Promise((resolve) => {
       setTimeout(() => {
         resolve(response);
       }, 1000);
-    });
+    }); */
+    return newResponse;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as TDCModel;
@@ -820,65 +833,65 @@ export const HeaderDataMocky = {
   },
 };
 
-export const CashData = {
-  id: 1,
-  employeeId: 5,
-  electronicTips: 9622.32,
-  currencies: [
-    {
-      id: null as number | null,
-      currency: "MXN",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 20,
-    },
-    {
-      id: null as number | null,
-      currency: "USD",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 10,
-    },
-    {
-      id: null as number | null,
-      currency: "GBP",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 5,
-    },
-    {
-      id: null as number | null,
-      currency: "CAD",
-      totalPOS: 1000,
-      totalFisico: 1000,
-      difference: 0,
-      exchangeRate: 1,
-      originalCurrency: 1,
-    },
-  ],
-};
+// export const CashData = {
+//   id: 1,
+//   employeeId: 5,
+//   electronicTips: 9622.32,
+//   currencies: [
+//     {
+//       id: null as number | null,
+//       currency: "MXN",
+//       totalPOS: 1000,
+//       totalFisico: 1000,
+//       difference: 0,
+//       exchangeRate: 1,
+//       originalCurrency: 20,
+//     },
+//     {
+//       id: null as number | null,
+//       currency: "USD",
+//       totalPOS: 1000,
+//       totalFisico: 1000,
+//       difference: 0,
+//       exchangeRate: 1,
+//       originalCurrency: 10,
+//     },
+//     {
+//       id: null as number | null,
+//       currency: "GBP",
+//       totalPOS: 1000,
+//       totalFisico: 1000,
+//       difference: 0,
+//       exchangeRate: 1,
+//       originalCurrency: 5,
+//     },
+//     {
+//       id: null as number | null,
+//       currency: "CAD",
+//       totalPOS: 1000,
+//       totalFisico: 1000,
+//       difference: 0,
+//       exchangeRate: 1,
+//       originalCurrency: 1,
+//     },
+//   ],
+// };
 
-export const TDCMOCKData = {
-  id: 1,
-  employeId: 150,
-  total: {
-    totalPOS: 9622.32,
-    totalPhysical: 9622.32,
-    difference: 0,
-  },
-  lines: [
-    { id: 1, bank: "BBVA", POS: 2784.56, physical: 0, voucherAmount: 10 },
-    { id: 2, bank: "HSBC", POS: 208.69, physical: 150, voucherAmount: 1 },
-    { id: 3, bank: "BANREGIO", POS: 856.32, physical: 300, voucherAmount: 5 },
-    { id: 4, bank: "ADYEN", POS: 0, physical: 0, voucherAmount: 0 },
-  ],
-};
+// export const TDCMOCKData = {
+//   id: 1,
+//   employeId: 150,
+//   total: {
+//     totalPOS: 9622.32,
+//     totalPhysical: 9622.32,
+//     difference: 0,
+//   },
+//   lines: [
+//     { id: 1, bank: "BBVA", POS: 2784.56, physical: 0, voucherAmount: 10 },
+//     { id: 2, bank: "HSBC", POS: 208.69, physical: 150, voucherAmount: 1 },
+//     { id: 3, bank: "BANREGIO", POS: 856.32, physical: 300, voucherAmount: 5 },
+//     { id: 4, bank: "ADYEN", POS: 0, physical: 0, voucherAmount: 0 },
+//   ],
+// };
 
 export const TDCDetailsMOCKData = [
   {
@@ -993,86 +1006,86 @@ export const CustomerMOCKData = {
   ],
 };
 
-export const SpecialCustomerMOCKDATA = {
-  id: 1,
-  employeeId: 150,
-  total: {
-    totalPOS: 3500,
-    totalPhysical: 3500,
-    difference: 0,
-  },
-  lines: [
-    {
-      id: 1,
-      check: 420,
-      bill: 258.0,
-      couponPrice: 0,
-      difference: 0,
-      exchangeRate: 1.0,
-      client: "AMERICAN AIRLINES",
-      pax: 0,
-      couponFolio: "0",
-      couponFolioUSD: "0",
-      ammount: 1,
-      ammountUSD: 1,
-      flight: "OFCEM",
-      passengerName: "JUAN PEREZ",
-      passengerNum: "",
-      amountMXN: 1,
-    },
-    {
-      id: 2,
-      Check: 400,
-      consumption: 500.0,
-      priceCuopon: 0,
-      difference: 0,
-      exchangeRate: 1.0,
-      client: "AMERICAN AIRLINES",
-      PAX: 0,
-      folioCuopon: "0",
-      folioCuoponUSD: "0",
-      value: 1,
-      valueUSD: 1,
-      flight: "OGCEM",
-      passengerName: "JUAN PEREZ",
-      amountMXN: 1,
-    },
-    {
-      id: 3,
-      Check: 120,
-      consumption: 150.0,
-      priceCuopon: 0,
-      difference: 0,
-      exchangeRate: 17.0,
-      client: "AMERICAN AIRLINES",
-      PAX: 0,
-      folioCuopon: "0",
-      folioCuoponUSD: "0",
-      value: 1,
-      valueUSD: 1,
-      flight: "OFCIP",
-      passengerName: "JUAN PEREZ",
-      amountMXN: 1,
-    },
-    {
-      id: 4,
-      Check: 150,
-      consumption: 200.0,
-      priceCuopon: 0,
-      difference: 0,
-      exchangeRate: 1.0,
-      client: "AMERICAN AIRLINES",
-      PAX: 0,
-      folioCuopon: "0",
-      folioCuoponUSD: "0",
-      value: 1,
-      valueUSD: 1,
-      flight: "PFTRE",
-      passengerName: "JUAN PEREZ",
-      amountMXN: 1,
-    },
-  ],
-};
+// export const SpecialCustomerMOCKDATA = {
+//   id: 1,
+//   employeeId: 150,
+//   total: {
+//     totalPOS: 3500,
+//     totalPhysical: 3500,
+//     difference: 0,
+//   },
+//   lines: [
+//     {
+//       id: 1,
+//       check: 420,
+//       bill: 258.0,
+//       couponPrice: 0,
+//       difference: 0,
+//       exchangeRate: 1.0,
+//       client: "AMERICAN AIRLINES",
+//       pax: 0,
+//       couponFolio: "0",
+//       couponFolioUSD: "0",
+//       ammount: 1,
+//       ammountUSD: 1,
+//       flight: "OFCEM",
+//       passengerName: "JUAN PEREZ",
+//       passengerNum: "",
+//       amountMXN: 1,
+//     },
+//     {
+//       id: 2,
+//       Check: 400,
+//       consumption: 500.0,
+//       priceCuopon: 0,
+//       difference: 0,
+//       exchangeRate: 1.0,
+//       client: "AMERICAN AIRLINES",
+//       PAX: 0,
+//       folioCuopon: "0",
+//       folioCuoponUSD: "0",
+//       value: 1,
+//       valueUSD: 1,
+//       flight: "OGCEM",
+//       passengerName: "JUAN PEREZ",
+//       amountMXN: 1,
+//     },
+//     {
+//       id: 3,
+//       Check: 120,
+//       consumption: 150.0,
+//       priceCuopon: 0,
+//       difference: 0,
+//       exchangeRate: 17.0,
+//       client: "AMERICAN AIRLINES",
+//       PAX: 0,
+//       folioCuopon: "0",
+//       folioCuoponUSD: "0",
+//       value: 1,
+//       valueUSD: 1,
+//       flight: "OFCIP",
+//       passengerName: "JUAN PEREZ",
+//       amountMXN: 1,
+//     },
+//     {
+//       id: 4,
+//       Check: 150,
+//       consumption: 200.0,
+//       priceCuopon: 0,
+//       difference: 0,
+//       exchangeRate: 1.0,
+//       client: "AMERICAN AIRLINES",
+//       PAX: 0,
+//       folioCuopon: "0",
+//       folioCuoponUSD: "0",
+//       value: 1,
+//       valueUSD: 1,
+//       flight: "PFTRE",
+//       passengerName: "JUAN PEREZ",
+//       amountMXN: 1,
+//     },
+//   ],
+// };
 
 export const PrepaidMOCKData = {
   id: 1,

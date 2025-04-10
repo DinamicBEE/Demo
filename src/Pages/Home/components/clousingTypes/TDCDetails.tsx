@@ -20,7 +20,7 @@ import DialogConfirmTDC from "./DialogConfirmTDC";
 const pageSize = 10
 
 function TDCDetails({ clousingId, lineId, isOpen, onClose,
-  closingConfirmation, location, subsidiary}: DetailsProp) {
+  closingConfirmation, location, subsidiary, voucherData}: DetailsProp) {
   const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
@@ -41,7 +41,8 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
 
   useEffect(() => {
     async function fetchData() {
-      const detailsData: BankDetails = await getDetails(clousingId, lineId);
+      const detailsData: BankDetails = voucherData;
+      // const detailsData: BankDetails = await getDetails(clousingId, lineId);
 
       if (detailsData) {
         setDetailsLocal(detailsData);
@@ -63,7 +64,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
 
   const isCheckValid = (
     check: boolean | undefined,
-    differences:
+    vouchers:
       | {
           date: string | null;
           check: string | null;
@@ -74,15 +75,15 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   ) => {
     if (check === undefined) return "";
 
-    if (check && !differences) return "bg.success";
+    if (check && !vouchers) return "bg.success";
 
-    if (!differences) return "red.200";
+    if (!vouchers) return "red.200";
 
     const hasDifferences =
-      differences.date ||
-      differences.check ||
-      differences.amount ||
-      differences.general;
+      vouchers.date ||
+      vouchers.check ||
+      vouchers.amount ||
+      vouchers.general;
 
     if (check && !hasDifferences) {
       return "bg.success";
@@ -226,7 +227,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                       key={item.id}
                       backgroundColor={isCheckValid(
                         item.successAdyen,
-                        item.differences
+                        item.vouchers
                       )}
                     >
                       {detailsLocal?.bankName === "ADYEN" && (
@@ -305,10 +306,10 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                       </Table.Cell>
                       {detailsLocal?.bankName === "ADYEN" && (
                         <Table.Cell textAlign="center">
-                          <Text>{item.differences?.date}</Text>
-                          <Text>{item.differences?.check}</Text>
-                          <Text>{item.differences?.amount}</Text>
-                          <Text>{item.differences?.general}</Text>
+                          <Text>{item.vouchers?.date}</Text>
+                          <Text>{item.vouchers?.check}</Text>
+                          <Text>{item.vouchers?.amount}</Text>
+                          <Text>{item.vouchers?.general}</Text>
                         </Table.Cell>
                       )}
                     </Table.Row>

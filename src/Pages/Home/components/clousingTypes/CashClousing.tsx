@@ -17,7 +17,7 @@ import { CashLines, CashModel } from "@models/cash.model";
 
 const pageSize = 10;
 
-function CashClousing({ data }: any) {
+function CashClousing({ data, idCurrency }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
   const { cashLoading, getCashData } = useCashClousing();
   const { handleInputChange, handleChangeTips } = useHandleCashData(
@@ -35,7 +35,7 @@ function CashClousing({ data }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const cashData = await getCashData(data.id);
+      const cashData = await getCashData(data.id, idCurrency);
 
       if (cashData.total) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
