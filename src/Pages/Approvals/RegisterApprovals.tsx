@@ -16,7 +16,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
-  const { triggerRefresh } = useApprovalsList(); 
+  const { triggerRefresh } = useApprovalsList();
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
@@ -41,24 +41,27 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
       onSuccess: (data) => {
 
         if (data == 'create') {
-         
-          toaster.create({
-            title: `Se guardaron los datos correctamente`,
-            type: 'success',
-          });
+
+          toaster.create({ title: `Se guardaron los datos correctamente`, type: 'success' });
 
           setTimeout(() => {
-            
             triggerRefresh();
             reset();
             onClose();
-
           }, 1000);
         }
 
       },
       onError: (data) => {
-        console.log(data)
+
+        console.log(data);
+        toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
+
+        setTimeout(() => {
+          reset();
+          onClose();
+        }, 1000);
+        
       },
     }
   );

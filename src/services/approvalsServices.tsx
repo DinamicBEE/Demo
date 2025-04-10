@@ -29,9 +29,8 @@ export const approvalsServices = {
 
       return response.data
 
-    } catch (error) {
-      console.log(error)
-      return {}
+    } catch (error: any) {
+      throw new Error(error);
     }
   },
 
