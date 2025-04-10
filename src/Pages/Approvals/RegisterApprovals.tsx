@@ -1,21 +1,22 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import { useForm } from "react-hook-form";
 import { NativeSelectField, NativeSelectRoot, Separator, Stack, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
 import { Field } from "@components/ui/field";
-import { approvalsServices } from "@services/approvalsServices";
-import { useApi } from "@hooks/useApi";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
+import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
+import { approvalsServices } from "@services/approvalsServices";
 import { getStores, getSubsidiaries } from "@services/catalogService";
-// import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApi } from "@hooks/useApi";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
+  const { triggerRefresh } = useApprovalsList(); 
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
@@ -40,18 +41,20 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
       onSuccess: (data) => {
 
         if (data == 'create') {
+         
           toaster.create({
             title: `Se guardaron los datos correctamente`,
             type: 'success',
           });
 
           setTimeout(() => {
-            // addOrUpdateApprovalList(data);
+            
+            triggerRefresh();
             reset();
             onClose();
+
           }, 1000);
         }
-
 
       },
       onError: (data) => {
