@@ -250,22 +250,22 @@ export const getCustomerClousing = async (
   // console.log(clousingId)
 
   try {
-    //const response = CustomerMOCKData;
-    const customerMOCKDataCopy = CustomerMOCKData.lines.map((line) => ({
+    const response = await api.get(CLIENTS, {
+      params: { idCashRegisterClosure: clousingId },
+    });
+    console.log(response.data);
+    
+    const lines = response.data.generalClientResponseList.map((line: any) => ({
       ...line,
+      amountMXN: line.amountMx ?? 0,
+      currency: 1,
+      currencyLabel: line.currency ?? "",
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customer-" + uuidv4() : line.id,
     }));
 
-    const response = {
-      ...CustomerMOCKData,
-      lines: customerMOCKDataCopy,
-    };
-
-    /* const response = await api.get(CLIENTS, {
-          params: {idCashRegisterClosure: clousingId},
-      });
-      const lines = response.data; */
+    console.log(lines);
+    
 
     //TODO: Validar la estructura de datos que regresara la API
     /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
@@ -282,15 +282,17 @@ export const getCustomerClousing = async (
           lines: [...lines],
       } */
 
-    const data = {
-      ...response,
+    const data: CustomerModel = {
+      id: clousingId,
+      total: {
+        difference: response.data.totalDifference ?? 0,
+        totalPOS: response.data.totalPos ?? 0,
+        totalPhysical: response.data.totalPhysical ?? 0,
+      },
+      lines: [...lines],
     };
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {} as CustomerModel;
@@ -314,7 +316,9 @@ export const getSpecialCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-    const lines = response.data.map((line: any) => ({
+    console.log(response.data);
+
+    const lines = response.data.specialClientResponses.map((line: any) => ({
       ...line,
 
       // Generate new UUID for null IDs, otherwise keep existing ID
@@ -332,9 +336,9 @@ export const getSpecialCustomerClousing = async (
     const data = {
       id: clousingId,
       total: {
-        totalPOS: newTotalPOS,
-        totalPhysical: newTotalFisico,
-        difference: Number(newDiff),
+        totalPOS: response.data.totalPos ?? 0,
+        totalPhysical: response.data.totalPhysical ?? 0,
+        difference: response.data.totalDifference ?? 0,
       },
       lines: [...lines],
     };

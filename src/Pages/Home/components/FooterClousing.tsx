@@ -68,7 +68,7 @@ function FooterClousing({
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
-    console.log(cash);
+    console.log(specialCustomer);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(({ pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
@@ -136,7 +136,6 @@ function FooterClousing({
     const mapTdcLines = (lines: any[]) =>
       lines.map(({ id, ...rest }) => ({
         ...rest,
-
         id: typeof id === "number" ? id : null,
         idBank: 1001,
         vouchers: [

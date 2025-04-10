@@ -80,7 +80,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       item.id === id
         ? {
           ...item,
-          valuePAX: parseFloat(value),
+          pax: parseFloat(value),
           amount: item.coupons > 0 ? (parseFloat(value) * item.coupons) : item.amount,
           amountMXN: item.coupons > 0 && item.exchangeRate > 0 ? ((parseFloat(value) * item.coupons) * item.exchangeRate) : item.amountMXN,
         }

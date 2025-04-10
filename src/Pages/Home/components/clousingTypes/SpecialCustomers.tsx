@@ -48,9 +48,9 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
               <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Folio cupones</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Folio cupones USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Valor</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="100px">Valor</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Valor USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Vuelo</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="120px">Vuelo</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Nombre pasajero</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
             </Table.Row>
