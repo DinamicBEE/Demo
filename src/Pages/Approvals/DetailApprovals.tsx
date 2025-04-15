@@ -42,24 +42,21 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
     {
       autoFetch: false,
       onSuccess: (data) => {
-        
-        toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
+      
+        onClose();
+        reset();
+        triggerRefresh();
 
-        setTimeout(() => {
-          reset();
-          onClose();
-          triggerRefresh();
-        }, 400);
+        toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
 
       },
       onError: (error) => {
+      
+        reset();
+        onClose();
+
         console.log(error)
         toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
-
-        setTimeout(() => {
-          reset();
-          onClose();
-        }, 500);
       }
     }
   );

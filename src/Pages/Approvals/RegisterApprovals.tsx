@@ -42,26 +42,21 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
         if (data == 'create') {
 
+          onClose();
+          reset();
+          triggerRefresh();
+          
           toaster.create({ title: `Se guardaron los datos correctamente`, type: 'success' });
-
-          setTimeout(() => {
-            triggerRefresh();
-            reset();
-            onClose();
-          }, 1000);
         }
 
       },
       onError: (data) => {
 
+        reset();
+        onClose();
+
         console.log(data);
         toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
-
-        setTimeout(() => {
-          reset();
-          onClose();
-        }, 1000);
-        
       },
     }
   );
