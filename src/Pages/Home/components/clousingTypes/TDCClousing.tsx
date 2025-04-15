@@ -38,7 +38,7 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
       setCashData(tdc);
       updateTotal(tdc.total.totalPhysical, data.id, CLOUSING_KEY.TDC);
 
-      const items = tdcData?.lines?.slice(startRange, endRange) ?? [];
+      const items = tdc?.lines?.slice(startRange, endRange) ?? [];
       setVisibleItems(items);
     }
 

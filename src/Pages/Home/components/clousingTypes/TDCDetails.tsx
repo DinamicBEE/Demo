@@ -21,7 +21,7 @@ const pageSize = 10
 
 function TDCDetails({ clousingId, lineId, isOpen, onClose,
   closingConfirmation, location, subsidiary, voucherData}: DetailsProp) {
-  const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
+  const [detailsLocal, setDetailsLocal] = useState<BankDetails | undefined>({} as BankDetails);
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
@@ -48,12 +48,18 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
         setDetailsLocal(detailsData);
       }
 
-      const items = detailsData.details.slice(startRange, endRange);
+      const items = detailsData?.details?.slice(startRange, endRange) || [];
       setVisibleItems(items);
     }
 
     fetchData();
   }, [lineId]);
+
+  useEffect(() => {
+    setPage(page);
+    const items = detailsLocal?.details?.slice(startRange, endRange) || [];
+    setVisibleItems(items);
+  }, [page, detailsLocal])
 
   useEffect(() => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
@@ -317,7 +323,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot count={detailsLocal?.details.length ?? 0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+            <PaginationRoot count={detailsLocal?.details?.length ?? 0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
               <HStack>
                 <PaginationPrevTrigger />
                 <PaginationItems />

@@ -147,7 +147,7 @@ export const getTDCClousing =
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
       })),
-    }
+    };
 
     /* return new Promise((resolve) => {
       setTimeout(() => {
@@ -199,7 +199,7 @@ export const validateDetails = async (
   lineId: number | string,
   details: BankDetails
 ): Promise<BankDetails> => {
-// console.log(clousingId, lineId);
+  // console.log(clousingId, lineId);
 
   try {
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
@@ -263,22 +263,21 @@ export const getCustomerClousing = async (
   // console.log(clousingId)
 
   try {
-    //const response = CustomerMOCKData;
-    const customerMOCKDataCopy = CustomerMOCKData.lines.map((line) => ({
+    const response = await api.get(CLIENTS, {
+      params: { idCashRegisterClosure: clousingId },
+    });
+    console.log(response.data);
+    
+    const lines = response.data.generalClientResponseList.map((line: any) => ({
       ...line,
+      amountMXN: line.amountMx ?? 0,
+      currencyLabel: line.currency ?? "",
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customer-" + uuidv4() : line.id,
     }));
 
-    const response = {
-      ...CustomerMOCKData,
-      lines: customerMOCKDataCopy,
-    };
-
-    /* const response = await api.get(CLIENTS, {
-          params: {idCashRegisterClosure: clousingId},
-      });
-      const lines = response.data; */
+    console.log(lines);
+    
 
     //TODO: Validar la estructura de datos que regresara la API
     /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
@@ -295,15 +294,17 @@ export const getCustomerClousing = async (
           lines: [...lines],
       } */
 
-    const data = {
-      ...response,
+    const data: CustomerModel = {
+      id: clousingId,
+      total: {
+        difference: response.data.totalDifference ?? 0,
+        totalPOS: response.data.totalPos ?? 0,
+        totalPhysical: response.data.totalPhysical ?? 0,
+      },
+      lines: [...lines],
     };
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {} as CustomerModel;
@@ -317,17 +318,21 @@ export const getCustomerClousing = async (
  * @returns {Promise<CustomerModel>}
  */
 export const getSpecialCustomerClousing = async (
-  clousingId: number
+  clousingId: number,
+  idCurrency: number
 ): Promise<SpecialCustomerModel> => {
   console.log(clousingId);
 
   try {
     const response = await api.get(SP_CLIENTS, {
-      params: { idCashRegisterClosure: clousingId },
+      params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-    const lines = response.data.map((line: any, index: number) => ({ // ! Eliminar INDEX
+    console.log(response.data);
+
+    const lines = response.data.specialClientResponses.map((line: any, index: number) => ({// ! Eliminar INDEX
       ...line,
+
       // Generate new UUID for null IDs, otherwise keep existing ID
       id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
       exchangeRate: index + 1===1 ? 1 : 17, // ! Eliminar
@@ -344,9 +349,9 @@ export const getSpecialCustomerClousing = async (
     const data = {
       id: clousingId,
       total: {
-        totalPOS: newTotalPOS,
-        totalPhysical: newTotalFisico,
-        difference: Number(newDiff),
+        totalPOS: response.data.totalPos ?? 0,
+        totalPhysical: response.data.totalPhysical ?? 0,
+        difference: response.data.totalDifference ?? 0,
       },
       lines: [...lines],
     };
@@ -548,19 +553,22 @@ export const sendCashClousing = async (body: any) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-    // const response = await api.post("/crc/cash-register-closure/api/closure/save", body);
+    const response = await api.post(
+      "/crc/cash-register-closure/api/closure/save",
+      body
+    );
 
-    const response = { success: true };
+    /*  const response = { success: true }; */
 
     //return response
-    return new Promise((resolve) => {
+    /*  return new Promise((resolve) => {
       setTimeout(() => {
         resolve(response);
       }, 1000); // 5 segundos
-    });
+    }); */
 
     //TODO: Devolver para consulta a back
-    // return response.data;
+    return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
     return [];
@@ -964,47 +972,47 @@ export const TDCDetailsMOCKData = [
   },
 ];
 
-export const CustomerMOCKData = {
-  id: 1,
-  employeeId: 150,
-  total: {
-    totalPOS: 19622.32,
-    totalPhysical: 19622.32,
-    difference: 0,
-  },
-  lines: [
-    {
-      id: null,
-      nameClient: "BRITISH AIRWAYS",
-      coupons: 0,
-      currency: "",
-      pax: 0,
-      amount: 0,
-      exchangeRate: 0,
-      amountMXN: 0,
-    },
-    {
-      id: null,
-      nameClient: "SUNWING Airlines",
-      coupons: 0,
-      currency: "",
-      pax: 0,
-      amount: 0,
-      exchangeRate: 0,
-      amountMXN: 0,
-    },
-    {
-      id: null,
-      nameClient: "VIVA AEROBUS",
-      coupons: 0,
-      currency: "",
-      pax: 0,
-      amount: 0,
-      exchangeRate: 0,
-      amountMXN: 0,
-    },
-  ],
-};
+// export const CustomerMOCKData = {
+//   id: 1,
+//   employeeId: 150,
+//   total: {
+//     totalPOS: 19622.32,
+//     totalPhysical: 19622.32,
+//     difference: 0,
+//   },
+//   lines: [
+//     {
+//       id: null,
+//       nameClient: "BRITISH AIRWAYS",
+//       coupons: 0,
+//       currency: "",
+//       pax: 0,
+//       amount: 0,
+//       exchangeRate: 0,
+//       amountMXN: 0,
+//     },
+//     {
+//       id: null,
+//       nameClient: "SUNWING Airlines",
+//       coupons: 0,
+//       currency: "",
+//       pax: 0,
+//       amount: 0,
+//       exchangeRate: 0,
+//       amountMXN: 0,
+//     },
+//     {
+//       id: null,
+//       nameClient: "VIVA AEROBUS",
+//       coupons: 0,
+//       currency: "",
+//       pax: 0,
+//       amount: 0,
+//       exchangeRate: 0,
+//       amountMXN: 0,
+//     },
+//   ],
+// };
 
 // export const SpecialCustomerMOCKDATA = {
 //   id: 1,
@@ -1204,7 +1212,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 125.0,
-      ticket: "654",
+      ticket: "1",
       physicalAmount: 0,
     },
     {
@@ -1214,7 +1222,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 150.0,
-      ticket: "123",
+      ticket: "2",
       physicalAmount: 0,
     },
     {
@@ -1224,7 +1232,7 @@ const intercompanyData = {
       subsidiaryId: 0,
       subsidiaryname: "",
       amount: 300.0,
-      ticket: "789",
+      ticket: "3",
       physicalAmount: 0,
     },
   ],

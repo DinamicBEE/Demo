@@ -12,7 +12,7 @@ import Loading from "@components/Loading";
 
 const pageSize = 10;
 
-function SpecialCustomersClousing({ data }: any) {
+function SpecialCustomersClousing({ data, subsidiary }: any) {
   const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
 
   const { setFooterData } = useFooter();
@@ -27,10 +27,8 @@ function SpecialCustomersClousing({ data }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id);
-
+      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id, subsidiary.idCurrency);
       if (specialCustomer) setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
-
       setSpecialCustomer(specialCustomer);
       updateTotal(specialCustomer.total.totalPhysical, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
       
@@ -65,9 +63,9 @@ function SpecialCustomersClousing({ data }: any) {
               <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Folio cupones</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Folio cupones USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Valor</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="100px">Valor</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Valor USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Vuelo</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="120px">Vuelo</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Nombre pasajero</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
             </Table.Row>

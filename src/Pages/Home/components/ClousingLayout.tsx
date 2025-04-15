@@ -136,7 +136,7 @@ function ClousingLayout({
             <Tabs.Content value={CLOUSING_KEY.SPECIALCUSTOMER}>
               {value === CLOUSING_KEY.SPECIALCUSTOMER && (
                 <Suspense fallback={<div>Cargando Clientes Especiales...</div>}>
-                  <SpecialCustomersClousing data={employee} />
+                  <SpecialCustomersClousing data={employee} subsidiary={subsidiary} />
                 </Suspense>
               )}
             </Tabs.Content>
@@ -179,6 +179,7 @@ function ClousingLayout({
           <FooterClousing
             clousingType={value}
             clousingId={employee?.id ?? 0}
+            currencyId={subsidiary.idCurrency}
             closeDialog={() => onClose()}
             closingConfirmation={employee?.closingConfirmation ?? false}
           />

@@ -57,7 +57,7 @@ function CashClousing({ data, idCurrency }: any) {
     setPage(page);
     const items = cashData?.currencies?.slice(startRange, endRange);
     setVisibleItems(items);
-  }, [page])
+  }, [page, cashData])
 
   return (
     <Box>

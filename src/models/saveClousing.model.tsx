@@ -17,9 +17,11 @@ interface CashLine extends LineBase {
   difference: number;
   exchangeRate: number;
   originalCurrency: number;
+  idCurrency: number;
 }
 
 interface Cash {
+  idCurrencySub: number;
   electronicTips: number;
   lines: CashLine[];
   total: Total;
@@ -28,6 +30,7 @@ interface Cash {
 
 interface TDCLine extends LineBase {
   bank: string;
+  idBank: number;
   POS: number;
   physical: number;
   voucherAmount: number;
@@ -41,7 +44,7 @@ interface TDCLine extends LineBase {
 }
 
 interface TDC {
-  idCurrency: number;
+  idCurrencySub: number;
   total: Total;
   lines: TDCLine[];
 }

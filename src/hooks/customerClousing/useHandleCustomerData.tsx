@@ -16,10 +16,12 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   const { setCustomerData } = useCustomerContext();
 
   function selectCurrency(value: any, id: number | string, currencies: CurrencyModel[] | undefined) {
-
+    console.log("value", value, id, currencies);
     const selectValue = value[0];
-    const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.label || "";
+    const newCurrencyId = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.value || "";
+    const newCurrency = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.label || "";
     const newExchangeRage = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
+    console.log(typeof newExchangeRage)
 
     if (!customerData) return;
 
@@ -27,8 +29,9 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       item.id === id
         ? {
           ...item,
-          currency: newCurrency,
+          currency: newCurrencyId.toString(),
           exchangeRate: newExchangeRage,
+          currencyLabel: newCurrency,
           amountMXN: item.amount > 0 ? newExchangeRage * item.amount : item.amountMXN,
         }
         : item
@@ -78,7 +81,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
       item.id === id
         ? {
           ...item,
-          valuePAX: parseFloat(value),
+          pax: parseFloat(value),
           amount: item.coupons > 0 ? (parseFloat(value) * item.coupons) : item.amount,
           amountMXN: item.coupons > 0 && item.exchangeRate > 0 ? ((parseFloat(value) * item.coupons) * item.exchangeRate) : item.amountMXN,
         }
@@ -104,7 +107,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const newRecord: CustomerLines = {
       id: "customer-" + uuidv4(),
        // Generar un ID temporal
-      currency: currency?.label || "",
+      currency: currency?.value.toString() || "",
+      currencyLabel: currency?.label || "",
       exchangeRate,
       coupons: newCustomer.coupons,
       pax: newCustomer.pax,

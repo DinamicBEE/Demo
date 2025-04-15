@@ -43,7 +43,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
       
       if (customers?.total) setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
 
-      const currencies = await getCurrencies(subsidiary.idCurrency);
+      const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
 
       let createCurrenciList = createListCollection({   items: currencies })
 
@@ -63,7 +63,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
     setPage(page);
     const items = CustomersData?.lines?.slice(startRange, endRange);
     setVisibleItems(items);
-  }, [page])
+  }, [page, CustomersData])
 
   const openDialog = () => {
     onOpen();
@@ -109,7 +109,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                       onValueChange={(e) => selectCurrency(e.value, item.id, currencies)} disabled={data?.closingConfirmation}>
 
                       <SelectTrigger>
-                        <SelectValueText placeholder={item.currency || "Seleccionar moneda"} />
+                        <SelectValueText placeholder={item.currencyLabel || "Seleccionar moneda"} />
                       </SelectTrigger>
 
                       <SelectContent>
@@ -167,7 +167,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
         )}
       </Box>
 
-      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency}/>
+      <CustomerClousingForm isOpen={open} onClose={onClose} dataCustomer={CustomersData} setCustomersData={setCustomersData} idCurrency={subsidiary.idCurrency} idClousing={data?.id ?? 0} />
     </>
 
   );

@@ -58,7 +58,7 @@ function CurrencyManagement() {
     useEffect(()=>{
       async function fetchData() {
         const employeeList: Employee[] =  await getEmployees(1,1);
-        const currencies = await getCurrencies(1); //id base currency
+        const currencies = await getCurrencies(1, 1); //id base currency and id cash closure
         
         let createCurrenciList = createListCollection({
           items: currencies

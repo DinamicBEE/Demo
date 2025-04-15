@@ -17,7 +17,7 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         specialCustRef.current = newCashData;
     };
 
-    const getSpecialCustData = useCallback(async (clousingId: number)=>{
+    const getSpecialCustData = useCallback(async (clousingId: number, idCurrency: number)=>{
         setSpecialCustLoading(true);
 
         if(specialCustRef.current[clousingId]){
@@ -26,7 +26,7 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         }
 
         try {
-            const response = await getSpecialCustomerClousing(clousingId);
+            const response = await getSpecialCustomerClousing(clousingId, idCurrency);
 
             const updateSpecialCust = {
                 ...specialCustRef.current,
