@@ -1,26 +1,27 @@
 import React, { memo } from "react";
 import { Badge, Table, useDisclosure } from "@chakra-ui/react";
+import { Toaster, toaster } from "@components/ui/toaster";
 import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
-import { Approval, TableApprovalsProps } from "@models/approvals.model";
+import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
 import Loading from "@components/loading";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
-  
+
   const statusLabels: Record<number, string> = { 1: "Rechazado", 2: "Aprobado", 3: "En espera" };
   const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Corte de Lote' };
 
-  const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: number } | null>(null);
+  const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
   const [message, setMessage] = React.useState<string>();
 
   const { role } = useApprovalsRolUser();
   const { open, onOpen, onClose } = useDisclosure();
-  const { approvalsList, fectApprovals, shouldRefetch } = useApprovalsList();
+  const { approvalsList, fectApprovals, shouldRefetch, triggerRefresh } = useApprovalsList();
 
   const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
     dependencies: [shouldRefetch],
@@ -29,21 +30,51 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
     }
   });
 
-  const handleOpenConfirm = (item: Approval, newStatus: number) => {
+  const { refetch, isLoading: isLoadingEdit } = useApi(
+    () => {
+      const dataEdit: RequestUpdateDetails = {
+        idRequest: confirmData?.item.idRequest || 0,
+        idCashLote: confirmData?.item.idCashBatch || 0,
+        typeRequest: confirmData?.item.typeRequest || '',
+        comment: '', // comentario del supervisor.
+        status: confirmData?.newStatus || false
+      };
+      return approvalsServices.updateStatusRequest(dataEdit)
+    },
+    {
+      autoFetch: false,
+      onSuccess: (data) => {
+
+        toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
+
+        setConfirmData(null);
+        onClose();
+        triggerRefresh();
+
+      },
+      onError: (error) => {
+
+        console.log(error)
+        toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
+
+        setConfirmData(null);
+        onClose();
+      }
+    }
+  );
+
+  const handleOpenConfirm = (item: Approval, newStatus: boolean) => {
     setConfirmData({ item, newStatus });
-    setMessage(newStatus === 1 ? "Aprobar" : "Rechazar");
+    setMessage(newStatus ? "Aprobar" : "Rechazar");
     onOpen();
   };
 
-  const handleConfirm = () => {
-    if (confirmData) {
-      setConfirmData(null);
-      onClose();
-    }
-  };
+  const handleConfirm = () => refetch();
 
   return (
     <>
+      <Toaster />
+
       <ConfirmDialog
         isOpen={open}
         onClose={onClose}
@@ -84,10 +115,10 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                   <Table.Cell textAlign="center">
                     {item.status === 3 && (
                       <>
-                        <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px' onClick={() => handleOpenConfirm(item, 1)}>
+                        <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px' onClick={() => handleOpenConfirm(item, true)}>
                           Aprobar
                         </Button>
-                        <Button size='xs' colorPalette='red' variant="surface" rounded="full" onClick={() => handleOpenConfirm(item, 0)}>
+                        <Button size='xs' colorPalette='red' variant="surface" rounded="full" onClick={() => handleOpenConfirm(item, false)}>
                           Rechazar
                         </Button>
                       </>

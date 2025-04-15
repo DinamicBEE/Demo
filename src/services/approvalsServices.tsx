@@ -78,21 +78,5 @@ export const approvalsServices = {
       console.log(error)
       return [];
     }
-  },
-
-  //obtiene solo un registro por id
-  // async getRequestApproval(id: number): Promise<any> {
-  //   try {
-
-  //     const response = listApprovals.find((item) => item.id === id);
-
-  //     return new Promise((resolve) => {
-  //       setTimeout(() => resolve(response), 1000);
-  //     });
-
-  //   } catch (error) {
-  //     console.log(error)
-  //     return {}
-  //   }
-  // },
+  }
 }
