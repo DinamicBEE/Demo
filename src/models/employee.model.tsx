@@ -13,6 +13,7 @@ export interface EmployeeContextType {
     getEmployeetData: ( clousingId: number ) => Promise<EmployeeModel>;
     getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
     getReasonsList: ( subsidiary: number, cdc: number ) => Promise<ReasonsModel[]>;
+    getTicketsList: ( cdc: number ) => Promise<TicketModel[]>;
     setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
 }
 
@@ -22,19 +23,21 @@ export interface EmployeeContext {
 
 export interface EmployeeModel {
     id: number;
-    employeeId: number;
+    employeeId?: number;
     total: TotalModel;
     lines: EmployeeLine[]
 }
 
 export interface EmployeeLine {
     id: number | string;
-    name: string;
-    lastName: string;
-    employeeCode: string;
+    employeeName: string;
+    employeeNumber: string;
     amount: number;
     reason: string;
-    ticket?: string;
+    reasonId?: number;
+    employeeId?: number;
+    ticketNumber?: string;
+    ticketId?: number;
     externalId?: number;
 }
 
@@ -42,6 +45,12 @@ export interface ReasonsModel {
     id: number;
     reasonName: string;
     useCase: string;
+}
+
+export interface TicketModel {
+    id: number;
+    ticketNumber: string;
+    date: string;
 }
 
 export interface Employee {

@@ -24,7 +24,13 @@ import {
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
 import axios from "axios";
-import { API_LOCAL, CLIENTS, LOCATIONS, SP_CLIENTS } from "./settings";
+import {
+  API_LOCAL,
+  CLIENTS,
+  EMPLOYEE_INSERT,
+  LOCATIONS,
+  SP_CLIENTS,
+} from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 
@@ -254,7 +260,7 @@ export const getCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
     console.log(response.data);
-    
+
     const lines = response.data.generalClientResponseList.map((line: any) => ({
       ...line,
       amountMXN: line.amountMx ?? 0,
@@ -264,7 +270,6 @@ export const getCustomerClousing = async (
     }));
 
     console.log(lines);
-    
 
     //TODO: Validar la estructura de datos que regresara la API
     /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
@@ -425,26 +430,46 @@ export const getEmployeeClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const employeeDataCopy = {
+    const responseAxios = await api.get(EMPLOYEE_INSERT, {
+      params: { crcId: clousingId },
+    });
+
+    /*  const employeeDataCopy = {
       ...EmployeeData,
       lines: EmployeeData.lines.map((line) => ({
         ...line,
-        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "employee-" + uuidv4() : line.id,
+      })),
+    }; */
+    console.log(responseAxios.data);
+    
+
+    const employeeDataCopyAxios = {
+      id: clousingId,
+      total: {
+        totalPOS: responseAxios.data.totalPos ?? 0,
+        totalPhysical: responseAxios.data.totalPhysical ?? 0,
+        difference: responseAxios.data.totalDifference ?? 0,
+      },
+      lines: responseAxios.data.map((line: any) => ({
+        ...line,
+        
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
     };
 
-    const response = employeeDataCopy;
+    const response = /* employeeDataCopy; */ employeeDataCopyAxios;
 
     const data = {
       ...response,
     };
 
-    return new Promise((resolve) => {
+   /*  return new Promise((resolve) => {
       setTimeout(() => {
         resolve(data);
       }, 1000);
-    });
+    }); */
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as EmployeeModel;
@@ -468,12 +493,11 @@ export const sendNewEmployeeRegister = async (
 
   const mock: EmployeeLine = {
     id: Math.floor(Math.random() * (500 - 11)) + 11,
-    name: "mocky user",
-    lastName: "mocky user",
-    employeeCode: "mocky user" + newEmployee.employeeId,
+    employeeName: "mocky user" + newEmployee.employeeId,
+    employeeNumber: "mocky user" + newEmployee.employeeId,
     amount: newEmployee.amount,
     reason: "mocky reason" + newEmployee.reason,
-    ticket: newEmployee.ticket,
+    ticketNumber: newEmployee.ticket,
   };
 
   const success = Math.random() < 0.5;

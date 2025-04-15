@@ -65,11 +65,11 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
             {employeeLocal?.lines?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text> {item.name + ' ' + item.lastName} </Text>
+                  <Text> {item.employeeName}</Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text> {item.employeeCode} </Text>
+                  <Text> {item.employeeNumber} </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
@@ -87,7 +87,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text> {item.ticket} </Text>
+                  <Text> {item.ticketNumber ? item.ticketNumber : "---"} </Text>
                 </Table.Cell>
               </Table.Row>
             ))}
