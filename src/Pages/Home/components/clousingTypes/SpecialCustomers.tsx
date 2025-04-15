@@ -98,7 +98,8 @@ function SpecialCustomersClousing({ data }: any) {
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <FormatNumber value={item.pax} />
+                    <Input textAlign="center" value={item.pax} onChange={(e) => handleInputTextData(e.target.value, item.id, "pax")}
+                      disabled={data?.closingConfirmation} />
                   </Text>
                 </Table.Cell>
 

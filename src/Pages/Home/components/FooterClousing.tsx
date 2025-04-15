@@ -29,6 +29,7 @@ function FooterClousing({
   clousingId,
   closeDialog,
   closingConfirmation,
+  idCurrency
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [loading, setloading] = useState(false);
@@ -57,8 +58,8 @@ function FooterClousing({
   async function sendClousing() {
     setloading(true);
 
-    const cash = await getCashData(clousingId);
-    const tdc = await getTDCData(clousingId);
+    const cash = await getCashData(clousingId, idCurrency);
+    const tdc = await getTDCData(clousingId, idCurrency);
     const customer = await getCustomerData(clousingId);
     const specialCustomer = await getSpecialCustData(clousingId);
     const employee = await getEmployeetData(clousingId);
@@ -91,7 +92,7 @@ function FooterClousing({
           check: Check,
           couponFolio: folioCuopon,
           couponPrice: priceCuopon,
-          pax: PAX,
+          pax: pax,
           id,
           couponFolioUSD: folioCuoponUSD,
           ...rest
@@ -106,7 +107,7 @@ function FooterClousing({
           folioCuopon,
           folio: folioCuopon,
           priceCuopon,
-          PAX,
+          pax,
           folioCuoponUSD,
         })
       );

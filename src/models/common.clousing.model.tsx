@@ -95,6 +95,7 @@ export interface FooterClousing {
   clousingId: number;
   closeDialog: () => void,
   closingConfirmation: boolean
+  idCurrency: number;
   // data?: TotalModel | undefined;
   // loading?: boolean;
   // onChange?: () => Promise<boolean>;

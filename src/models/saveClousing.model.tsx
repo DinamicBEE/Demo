@@ -68,7 +68,7 @@ interface SpecialCustomerLine extends LineBase {
   difference: number;
   exchangeRate: number;
   client: string;
-  PAX: number;
+  pax: number;
   folioCuopon: string;
   folioCuoponUSD: string;
   value: number;
