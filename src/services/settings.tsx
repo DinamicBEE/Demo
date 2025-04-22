@@ -12,5 +12,6 @@ export const EMPLOYEE_INSERT = '/crc/cash-register-closure/crcproc/employees/cxc
 export const EMPLOYEELIST = 'crc/cash-register-closure/crcproc/employees/employeeListbySub';
 export const REASONLIST = 'crc/cash-register-closure/crcproc/employees/reasonList';
 export const TICKETS = '/crc/cash-register-closure/crcproc/employees/ticketList'
+export const INTERCOMPANY = '/crc/cash-register-closure/api/intercompany/get';
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;

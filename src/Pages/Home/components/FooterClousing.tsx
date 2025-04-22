@@ -191,7 +191,7 @@ console.log(employee);
         lines: mapTdcLines(tdc.lines),
       },
     };
-console.log("body", body);
+console.log("body", body.intercompany);
 
     const response: any = await sendCashClousing(body);
 

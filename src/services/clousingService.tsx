@@ -15,7 +15,10 @@ import {
   EmployeeModel,
   NewEmployeeModel,
 } from "@models/employee.model";
-import { IntercompanyModel } from "@models/intercompany.model";
+import {
+  IntercompanyLine,
+  IntercompanyModel,
+} from "@models/intercompany.model";
 import {
   CouponCatalogModel,
   PrepaidLineModel,
@@ -28,6 +31,7 @@ import {
   API_LOCAL,
   CLIENTS,
   EMPLOYEE_INSERT,
+  INTERCOMPANY,
   LOCATIONS,
   SP_CLIENTS,
 } from "./settings";
@@ -441,19 +445,22 @@ export const getEmployeeClousing = async (
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
     }; */
-    console.log(responseAxios.data);
-    
+    const totalPhysical = responseAxios.data.reduce(
+      (acc: number, curr: any) => acc + curr.amount,
+      0
+    );
+    const totalPOS = responseAxios.data.totalPos ?? 0;
+    const difference = totalPOS - totalPhysical;
 
     const employeeDataCopyAxios = {
       id: clousingId,
       total: {
-        totalPOS: responseAxios.data.totalPos ?? 0,
-        totalPhysical: responseAxios.data.totalPhysical ?? 0,
-        difference: responseAxios.data.totalDifference ?? 0,
+        totalPOS: totalPOS,
+        totalPhysical: totalPhysical,
+        difference: difference,
       },
       lines: responseAxios.data.map((line: any) => ({
         ...line,
-        
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
     };
@@ -464,7 +471,7 @@ export const getEmployeeClousing = async (
       ...response,
     };
 
-   /*  return new Promise((resolve) => {
+    /*  return new Promise((resolve) => {
       setTimeout(() => {
         resolve(data);
       }, 1000);
@@ -538,20 +545,42 @@ export const getIntercompanyClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = await api.get(INTERCOMPANY, {
+      params: { idCashRegisterClosure: clousingId },
+    });
+
+    const totalPhysical = response.data.reduce(
+      (acc: number, curr: any) => acc + Number(curr.physicalAmount),
+      0
+    );
+    const totalPOS = response.data.reduce(
+      (acc: number, curr: any) => acc + Number(curr.amount),
+      0
+    );
+    const difference = totalPOS - totalPhysical;
+
     const responseCopy = {
-      ...intercompanyData,
-      lines: intercompanyData.lines.map((line) => ({
+      id: clousingId,
+      employeeId: response.data.employeeId ?? 0,
+      total: {
+        totalPOS: totalPOS,
+        totalPhysical: totalPhysical,
+        difference: difference,
+      },
+      lines: response.data.map((line: any) => ({
         ...line,
+        amount: Number(line.amount),
+        physicalAmount: Number(line.physicalAmount),
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
       })),
     };
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(responseCopy);
-      }, 1000);
-    });
+    const data = {
+      ...responseCopy,
+    };
+    
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as IntercompanyModel;
