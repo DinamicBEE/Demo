@@ -119,7 +119,7 @@ interface IntercompanyLine extends LineBase {
   employeeId: number;
   employeeName: string;
   subsidiaryId: number;
-  subsidiaryname: string;
+  subsidiaryName: string;
   amount: number;
   ticket: string;
   physicalAmount: number;

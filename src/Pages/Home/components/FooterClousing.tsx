@@ -67,8 +67,7 @@ function FooterClousing({
     const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
-
-    console.log(specialCustomer);
+console.log(employee);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(({ pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
@@ -116,13 +115,13 @@ function FooterClousing({
       );
 
     const mapEmployeeLines = (lines: EmployeeLine[]) =>
-      lines.map(({ employeeCode, reason, ticket, ...rest }) => ({
+      lines.map(({ employeeNumber, reason, ticketNumber, ...rest }) => ({
         // id: typeof rest.id === "number" ? rest.id : null,
         id: typeof rest.id === "number" ? rest.id : null,
         amount: rest.amount,
-        employeeId: Number(employeeCode),
-        reasonId: 1,
-        ticketId: 1,
+        employeeId: rest.employeeId ?? 0,
+        reasonId: rest.reasonId ?? 0,
+        ticketId: rest.ticketId ?? null,
         externalId: rest?.externalId ?? undefined,
       }));
 
@@ -180,7 +179,7 @@ function FooterClousing({
       },
       employee: {
         total: employee.total,
-        lines: mapEmployeeLines(employee.lines),
+        lines: mapEmployeeLines(employee.lines.filter((line) => typeof line.id === "string")),
       },
       prepaid: {
         total: prepaid.total,
@@ -192,6 +191,7 @@ function FooterClousing({
         lines: mapTdcLines(tdc.lines),
       },
     };
+console.log("body", body.intercompany);
 
     const response: any = await sendCashClousing(body);
 

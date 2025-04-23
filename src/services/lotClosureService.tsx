@@ -135,7 +135,7 @@ const lotsClosure = [
   {
     id: 1,
     location: {
-      id: 8,
+      id: 32,
       name: "Location 1",
       company: {
         id: 1,
@@ -143,7 +143,7 @@ const lotsClosure = [
       },
     },
     company: {
-      id: 16,
+      id: 1,
       name: "Company 1",
     },
     lotNumber: "14",
