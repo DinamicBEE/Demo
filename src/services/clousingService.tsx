@@ -15,7 +15,10 @@ import {
   EmployeeModel,
   NewEmployeeModel,
 } from "@models/employee.model";
-import { IntercompanyModel } from "@models/intercompany.model";
+import {
+  IntercompanyLine,
+  IntercompanyModel,
+} from "@models/intercompany.model";
 import {
   CouponCatalogModel,
   PrepaidLineModel,
@@ -23,7 +26,18 @@ import {
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankDetails, TDCModel } from "@models/tdc.model";
-import { CASH, CLIENTS, LOCATIONS, SP_CLIENTS, TDC } from "./settings";
+import axios from "axios";
+import {
+  CASH,
+  TDC,
+  API_LOCAL,
+  CLIENTS,
+  EMPLOYEE_INSERT,
+  INTERCOMPANY,
+  LOCATIONS,
+  SP_CLIENTS,
+} from "./settings";
+import Cookies from "js-cookie";
 import api from "../api/index";
 
 import Papa from "papaparse";
@@ -267,7 +281,7 @@ export const getCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
     console.log(response.data);
-    
+
     const lines = response.data.generalClientResponseList.map((line: any) => ({
       ...line,
       amountMXN: line.amountMx ?? 0,
@@ -277,7 +291,6 @@ export const getCustomerClousing = async (
     }));
 
     console.log(lines);
-    
 
     //TODO: Validar la estructura de datos que regresara la API
     /* const newTotalPOS = lines.map((line: any) => Number(line.ammount)).reduce((acc: number, curr: number) => acc + curr, 0);
@@ -307,7 +320,15 @@ export const getCustomerClousing = async (
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return {} as CustomerModel;
+    return {
+      id: clousingId,
+      total: {
+        difference: 0,
+        totalPOS: 0,
+        totalPhysical: 0,
+      },
+      lines: [],
+    } as CustomerModel;
   }
 };
 
@@ -359,7 +380,15 @@ export const getSpecialCustomerClousing = async (
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return {} as SpecialCustomerModel;
+    return {
+      id: clousingId,
+      total: {
+        totalPOS: 0,
+        totalPhysical: 0,
+        difference: 0,
+      },
+      lines: [],
+    } as SpecialCustomerModel;
   }
 };
 
@@ -439,26 +468,49 @@ export const getEmployeeClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const employeeDataCopy = {
+    const responseAxios = await api.get(EMPLOYEE_INSERT, {
+      params: { crcId: clousingId },
+    });
+
+    /*  const employeeDataCopy = {
       ...EmployeeData,
       lines: EmployeeData.lines.map((line) => ({
         ...line,
-        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "employee-" + uuidv4() : line.id,
+      })),
+    }; */
+    const totalPhysical = responseAxios.data.reduce(
+      (acc: number, curr: any) => acc + curr.amount,
+      0
+    );
+    const totalPOS = responseAxios.data.totalPos ?? 0;
+    const difference = totalPOS - totalPhysical;
+
+    const employeeDataCopyAxios = {
+      id: clousingId,
+      total: {
+        totalPOS: totalPOS,
+        totalPhysical: totalPhysical,
+        difference: difference,
+      },
+      lines: responseAxios.data.map((line: any) => ({
+        ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
     };
 
-    const response = employeeDataCopy;
+    const response = /* employeeDataCopy; */ employeeDataCopyAxios;
 
     const data = {
       ...response,
     };
 
-    return new Promise((resolve) => {
+    /*  return new Promise((resolve) => {
       setTimeout(() => {
         resolve(data);
       }, 1000);
-    });
+    }); */
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as EmployeeModel;
@@ -482,12 +534,11 @@ export const sendNewEmployeeRegister = async (
 
   const mock: EmployeeLine = {
     id: Math.floor(Math.random() * (500 - 11)) + 11,
-    name: "mocky user",
-    lastName: "mocky user",
-    employeeCode: "mocky user" + newEmployee.employeeId,
+    employeeName: "mocky user" + newEmployee.employeeId,
+    employeeNumber: "mocky user" + newEmployee.employeeId,
     amount: newEmployee.amount,
     reason: "mocky reason" + newEmployee.reason,
-    ticket: newEmployee.ticket,
+    ticketNumber: newEmployee.ticket,
   };
 
   const success = Math.random() < 0.5;
@@ -528,20 +579,42 @@ export const getIntercompanyClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
+    const response = await api.get(INTERCOMPANY, {
+      params: { idCashRegisterClosure: clousingId },
+    });
+
+    const totalPhysical = response.data.reduce(
+      (acc: number, curr: any) => acc + Number(curr.physicalAmount),
+      0
+    );
+    const totalPOS = response.data.reduce(
+      (acc: number, curr: any) => acc + Number(curr.amount),
+      0
+    );
+    const difference = totalPOS - totalPhysical;
+
     const responseCopy = {
-      ...intercompanyData,
-      lines: intercompanyData.lines.map((line) => ({
+      id: clousingId,
+      employeeId: response.data.employeeId ?? 0,
+      total: {
+        totalPOS: totalPOS,
+        totalPhysical: totalPhysical,
+        difference: difference,
+      },
+      lines: response.data.map((line: any) => ({
         ...line,
+        amount: Number(line.amount),
+        physicalAmount: Number(line.physicalAmount),
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
       })),
     };
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(responseCopy);
-      }, 1000);
-    });
+    const data = {
+      ...responseCopy,
+    };
+    
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as IntercompanyModel;

@@ -76,6 +76,8 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     async (lotId: number, localBank: Bank[], localLotClosure: LotClosure) => {
       setUpdateBankLoading(true);
       try {
+        console.log("localBank", localBank);
+        
         const reponseUpdatedBanks = await updateBankService(localBank);
         setBanks(reponseUpdatedBanks);
         bankCache.current[lotId] = reponseUpdatedBanks;
@@ -83,6 +85,8 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           lotId,
           localLotClosure
         );
+        console.log("responseUpdatedLotClosure", responseUpdatedLotClosure);
+        
         const prevLots = lostClosureCache.current[localLotClosure.location.id];
         const updatedLots = prevLots.map((lot) =>
           lot.id === lotId ? responseUpdatedLotClosure : lot
