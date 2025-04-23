@@ -3,7 +3,7 @@ import { Suspense, lazy } from "react";
 import { ContextProvider } from "./context/ContextProvider";
 import ProtectedRoute, { PublicRoute } from "./components/ProtectedRoutes";
 import Layout from "./components/Layout";
-import "./App.css";
+//import "./App.css";
 import routesConfig from "./routes/routesConfig";
 import Loading from "./components/Loading";
 import ErrorDialog from "@components/ErrorDialog";

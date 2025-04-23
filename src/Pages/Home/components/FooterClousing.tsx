@@ -19,10 +19,10 @@ import Loading from "@components/Loading";
 import { ClousingSave } from "@models/saveClousing.model";
 import { CustomerLines } from "@models/customer.model";
 import { IntercompanyLine } from "@models/intercompany.model";
-import { BankLineModel, TDCModel } from "@models/tdc.model";
 import { PrepaidLineModel } from "@models/prepaid.model";
 import { EmployeeLine } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
+import ErrorDialog from "./ErrorDialog";
 
 function FooterClousing({
   clousingType,
@@ -32,6 +32,8 @@ function FooterClousing({
   idCurrency
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
+  const [openDialogDifference, setOpenDialogDifference] = useState(false);
+
   const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
 
@@ -61,25 +63,27 @@ function FooterClousing({
     const cash = await getCashData(clousingId, idCurrency);
     const tdc = await getTDCData(clousingId, idCurrency);
     const customer = await getCustomerData(clousingId);
-    const specialCustomer = await getSpecialCustData(clousingId);
+    const specialCustomer = await getSpecialCustData(clousingId, idCurrency);
     const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
+    console.log(specialCustomer);
+
     const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(({ pax: valuePAX, currency, id, ...rest }) => ({
+      lines.map(({ pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
         ...rest,
         customers: rest.nameClient,
         valuePAX,
         id: typeof id === "number" ? id : null,
-        currency: 1,
+        currency: Number(currency),
       }));
 
     const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
       lines.map(({ id, ...rest }) => ({
         ...rest,
         id: typeof id === "number" ? id : null,
-        ticket: "1",
+        ticket: rest.ticket,
       }));
 
     const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
@@ -105,7 +109,6 @@ function FooterClousing({
           consumption,
           Check,
           folioCuopon,
-          folio: folioCuopon,
           priceCuopon,
           pax,
           folioCuoponUSD,
@@ -120,7 +123,7 @@ function FooterClousing({
         employeeId: Number(employeeCode),
         reasonId: 1,
         ticketId: 1,
-        externalId: 1,
+        externalId: rest?.externalId ?? undefined,
       }));
 
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
@@ -133,8 +136,8 @@ function FooterClousing({
     const mapTdcLines = (lines: any[]) =>
       lines.map(({ id, ...rest }) => ({
         ...rest,
-
         id: typeof id === "number" ? id : null,
+        idBank: 1001,
         vouchers: [
           {
             id: 1,
@@ -149,9 +152,11 @@ function FooterClousing({
     const body: ClousingSave = {
       id: clousingId,
       cash: {
+        idCurrencySub: idCurrency,
         electronicTips: cash.electronicTips,
         lines: cash.currencies.map(({ id, ...rest }) => ({
           id: typeof id === "number" ? Number(id) : null,
+          idCurrency: 5, //Todo cambiar por el id de la moneda
           ...rest,
         })),
         tips: cash.tips ?? 0,
@@ -166,8 +171,12 @@ function FooterClousing({
         lines: mapIntercompanyLines(intercompany.lines),
       },
       specialCustomer: {
-        total: specialCustomer.total,
-        lines: mapSpecialCustomerLines(specialCustomer.lines),
+        total: specialCustomer.total ?? {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+        lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
         total: employee.total,
@@ -178,19 +187,15 @@ function FooterClousing({
         lines: mapPrepaidLines(prepaid.lines),
       },
       tdc: {
-        idCurrency: 1,
+        idCurrencySub: idCurrency,
         total: tdc.total,
         lines: mapTdcLines(tdc.lines),
       },
     };
-    //console.log(body)
-    console.log(body);
 
     const response: any = await sendCashClousing(body);
 
-    console.log(response);
-
-    if (response.success) {
+    if (response === "response") {
       //TODO: DEvolver para el back
       // if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
@@ -213,10 +218,21 @@ function FooterClousing({
       console.log("Error al enviar el corte de caja");
       //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
     }
-
     setloading(false);
     setButtonLoading(false);
   }
+
+  const handleDialogConfirm = () => {
+    console.log(header[clousingId]?.difference);
+
+    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
+      console.log("error");
+
+      setOpenDialogDifference(true);
+      return;
+    }
+    setButtonLoading(true);
+  };
 
   return (
     <>
@@ -244,7 +260,7 @@ function FooterClousing({
             loading={loading}
             colorPalette="meraPrimary"
             onClick={async () => {
-              setButtonLoading(true);
+              handleDialogConfirm();
             }}
             disabled={closingConfirmation}
           >
@@ -260,8 +276,11 @@ function FooterClousing({
         closeDialog={() => setButtonLoading(false)}
         sendData={sendClousing}
       />
-
       {loading && <Loading />}
+      <ErrorDialog
+        isOpen={openDialogDifference}
+        closeDialog={() => setOpenDialogDifference(false)}
+      />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber,
-  Input, Table, Text } from "@chakra-ui/react";
+import { Box, Field, Flex, FormatNumber, Input, Table, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
@@ -17,14 +17,21 @@ import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
 import { ProcessResult } from "@models/adyen.model";
 import DialogConfirmTDC from "./DialogConfirmTDC";
 
+const pageSize = 10
+
 function TDCDetails({ clousingId, lineId, isOpen, onClose,
   closingConfirmation, location, subsidiary, voucherData}: DetailsProp) {
-  const [detailsLocal, setDetailsLocal] = useState<BankDetails>();
+  const [detailsLocal, setDetailsLocal] = useState<BankDetails | undefined>({} as BankDetails);
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
   const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   const { updateLineClousing, handleInputData } = useHandleTDC(
     clousingId,
@@ -40,10 +47,19 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
       if (detailsData) {
         setDetailsLocal(detailsData);
       }
+
+      const items = detailsData?.details?.slice(startRange, endRange) || [];
+      setVisibleItems(items);
     }
 
     fetchData();
   }, [lineId]);
+
+  useEffect(() => {
+    setPage(page);
+    const items = detailsLocal?.details?.slice(startRange, endRange) || [];
+    setVisibleItems(items);
+  }, [page, detailsLocal])
 
   useEffect(() => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
@@ -212,7 +228,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 </Table.Header>
 
                 <Table.Body>
-                  {detailsLocal?.details?.map((item: BankLineDetails) => (
+                  {visibleItems?.map((item: BankLineDetails) => (
                     <Table.Row
                       key={item.id}
                       backgroundColor={isCheckValid(
@@ -220,7 +236,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                         item.vouchers
                       )}
                     >
-                      {detailsLocal.bankName === "ADYEN" && (
+                      {detailsLocal?.bankName === "ADYEN" && (
                         <Table.Cell>
                           <Checkbox
                             top="1"
@@ -233,7 +249,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                                 : true
                             }
                             onCheckedChange={(changes) => {
-                              const updatedDetails = detailsLocal.details.map(
+                              const updatedDetails = visibleItems.map(
                                 (detail) =>
                                   detail.id === item.id
                                     ? {
@@ -261,7 +277,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                       </Table.Cell>
 
                       <Table.Cell>
-                        {detailsLocal.bankName !== "ADYEN" ? (
+                        {detailsLocal?.bankName !== "ADYEN" ? (
                           <Field.Root
                             invalid={item.success != undefined && !item.success}
                           >
@@ -294,7 +310,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                           />
                         </Text>
                       </Table.Cell>
-                      {detailsLocal.bankName === "ADYEN" && (
+                      {detailsLocal?.bankName === "ADYEN" && (
                         <Table.Cell textAlign="center">
                           <Text>{item.vouchers?.date}</Text>
                           <Text>{item.vouchers?.check}</Text>
@@ -307,6 +323,13 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
+            <PaginationRoot count={detailsLocal?.details?.length ?? 0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+              <HStack>
+                <PaginationPrevTrigger />
+                <PaginationItems />
+                <PaginationNextTrigger />
+              </HStack>
+            </PaginationRoot>
 
             {detailsLoading && (
               <Box position="fixed" top="50%" left="50%" zIndex="1">

@@ -5,4 +5,5 @@ export interface ConfirmacionDialogProps {
   onConfirm: () => void;
   message: string;
   title?: string;
+  loading?: boolean
 }

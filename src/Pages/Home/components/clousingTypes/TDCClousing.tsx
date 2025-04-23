@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
-import { Box, Table, Text, FormatNumber, IconButton } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, IconButton, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
@@ -8,6 +9,8 @@ import { BankDetails, BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
+
+const pageSize = 5;
 
 function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
@@ -18,6 +21,11 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
   const {updateTotal} = useHeaders();
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<BankLineModel[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     async function fetchData() {
@@ -30,10 +38,18 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
       setCashData(tdc);
       updateTotal(tdc.total.totalPhysical, data.id, CLOUSING_KEY.TDC);
 
+      const items = tdc?.lines?.slice(startRange, endRange) ?? [];
+      setVisibleItems(items);
     }
 
     fetchData();
   }, [tdc]);
+
+  useEffect(() => {
+    setPage(page);
+    const items = tdcData?.lines?.slice(startRange, endRange) ?? [];
+    setVisibleItems(items);
+  }, [page])
 
   function formatDate( dateString: string ) {
     const date = new Date(dateString);
@@ -79,7 +95,7 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {tdcData?.lines?.map((item: BankLineModel) => (
+              {visibleItems.map((item: BankLineModel) => (
                 <Table.Row key={item.id}>
                   <Table.Cell textAlign="center">
                     <Text>{item.bank}</Text>
@@ -125,6 +141,13 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
             </Table.Body>
           </Table.Root>
         </Table.ScrollArea>
+        <PaginationRoot count={tdcData?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+          <HStack>
+            <PaginationPrevTrigger />
+            <PaginationItems />
+            <PaginationNextTrigger />
+          </HStack>
+        </PaginationRoot>
 
         {tdcLoading && (
           <Box position="fixed" top="50%" left="50%" zIndex="1">

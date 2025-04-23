@@ -1,5 +1,6 @@
 import { ProcessResult } from "./adyen.model";
 import { TotalModel } from "./common.clousing.model";
+import { location, SubsidiaryModal } from "./common.model";
 
 export interface TDCContextType {
   tdc: TDCContext;
@@ -26,8 +27,8 @@ export interface TDCAdyenContextType {
   setDataFilesProcess: (data: ProcessResult) => void;
   fetchProcessFiles: (
     Files: File[],
-    store: number,
-    location: number
+    store: string,
+    location: string,
   ) => Promise<ProcessResult | undefined>;
 }
 
@@ -93,16 +94,16 @@ export interface DetailsProp {
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;
-  location: number;
-  subsidiary: number;
+  location: location;
+  subsidiary: SubsidiaryModal;
   voucherData: BankDetails;
 }
 
 export interface DialogFilesProps {
   isOpen: boolean;
   onClose: () => void;
-  subsidiary: number;
-  location: number;
+  subsidiary: SubsidiaryModal;
+  location: location;
 }
 
 export interface DialogConfirmTDCProps {

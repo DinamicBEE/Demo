@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Button } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Button, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { EmployeeClousingProps, EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
@@ -8,14 +9,20 @@ import { CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 
+const pageSize = 10;
 
 function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
-  const [employeeLocal, setEmployee] = useState<EmployeeModel>()
+  const [employeeLocal, setEmployee] = useState<EmployeeModel>({} as EmployeeModel);
   const [dialog, setDialog] = useState<boolean>(false);
 
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
   const { updateTotal } = useHeaders();
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<EmployeeLine[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     async function fetchData() {
@@ -28,12 +35,19 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       setEmployee(employeeData)
       updateTotal(employeeData.total.totalPhysical, data.id, CLOUSING_KEY.EMPLOYEE);
       
+      const items = employeeData?.lines?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData()
 
   }, [employee])
 
+  useEffect(() => {
+    setPage(page);
+    const items = employeeLocal?.lines?.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page])
 
   const openDiaolog = () => {
     if (data?.closingConfirmation) return;
@@ -62,7 +76,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {employeeLocal?.lines?.map((item: EmployeeLine) => (
+            {visibleItems?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <Text> {item.name + ' ' + item.lastName} </Text>
@@ -94,6 +108,13 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
+      <PaginationRoot count={employeeLocal?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
 
       <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} />
 

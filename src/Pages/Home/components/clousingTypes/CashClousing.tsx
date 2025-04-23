@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Table, Text, FormatNumber } from "@chakra-ui/react";
+import { Box, Grid, Table, Text, FormatNumber, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { Toaster } from "@components/ui/toaster";
 import {
   CurrencyInput,
@@ -11,8 +12,10 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/home/headerContext";
-import Loading from "@components/loading";
-import { CashModel } from "@models/cash.model";
+import Loading from "@components/Loading";
+import { CashLines, CashModel } from "@models/cash.model";
+
+const pageSize = 10;
 
 function CashClousing({ data, idCurrency }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
@@ -24,6 +27,11 @@ function CashClousing({ data, idCurrency }: any) {
   );
   const { setFooterData } = useFooter();
   const { updateTotal } = useHeaders();
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<CashLines[]>([])
+
+  const startRange = (page - 1) * pageSize
+  const endRange = startRange + pageSize
 
   useEffect(() => {
     async function fetchData() {
@@ -36,11 +44,20 @@ function CashClousing({ data, idCurrency }: any) {
       if (cashData.total) {
         updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
       }
+
+      const items = cashData?.currencies?.slice(startRange, endRange);
+      setVisibleItems(items);
     }
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setPage(page);
+    const items = cashData?.currencies?.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page, cashData])
 
   return (
     <Box>
@@ -88,7 +105,7 @@ function CashClousing({ data, idCurrency }: any) {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {cashData?.currencies?.map((item) => (
+            {visibleItems?.map((item) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <Text>{item.currency}</Text>
@@ -150,6 +167,13 @@ function CashClousing({ data, idCurrency }: any) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
+      <PaginationRoot count={cashData?.currencies?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <HStack>
+          <PaginationPrevTrigger />
+          <PaginationItems />
+          <PaginationNextTrigger />
+        </HStack>
+      </PaginationRoot>
 
       {cashLoading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">
