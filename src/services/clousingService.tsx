@@ -303,7 +303,15 @@ export const getCustomerClousing = async (
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return {} as CustomerModel;
+    return {
+      id: clousingId,
+      total: {
+        difference: 0,
+        totalPOS: 0,
+        totalPhysical: 0,
+      },
+      lines: [],
+    } as CustomerModel;
   }
 };
 
@@ -354,7 +362,15 @@ export const getSpecialCustomerClousing = async (
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return {} as SpecialCustomerModel;
+    return {
+      id: clousingId,
+      total: {
+        totalPOS: 0,
+        totalPhysical: 0,
+        difference: 0,
+      },
+      lines: [],
+    } as SpecialCustomerModel;
   }
 };
 
