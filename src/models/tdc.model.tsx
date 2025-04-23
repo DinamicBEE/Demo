@@ -13,12 +13,12 @@ export interface TDCContextType {
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
   getDetails: (
     clousingId: number,
-    lineId: number | null | string,
+    lineId: number | null,
   ) => Promise<BankDetails>;
   setDetails: (
     details: BankDetails,
     clousingId: number,
-    lineId: number | string,
+    lineId: number,
   ) => void;
 }
 

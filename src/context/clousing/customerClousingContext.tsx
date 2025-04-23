@@ -31,11 +31,17 @@ export function CustomerClousingProvider({ children }: { children: ReactNode }) 
 		try {
 
 			const data = await getCustomerClousing(clousingId);
-			const updateCustomer = { ...customerRef.current, [clousingId]: data }
+
+			if (!data.success) {
+				setCustomerLoading(false);
+				return {} as CustomerModel;
+			}
+			
+			const updateCustomer = { ...customerRef.current, [clousingId]: data.data }
 
 			updateCustomerData(updateCustomer);
 
-			return data;
+			return data.data as CustomerModel;
 
 		} catch (error) {
 

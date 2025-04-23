@@ -28,13 +28,18 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         try {
             const response = await getCashClousing(clousingId, idCurrency);
 
+            if (!response.success) {
+                setCashLoading(false);
+                return {} as CashModel;
+            }
+
             const updateCash: CashContext = {
                 ...cashRef.current,
-                [clousingId]: response
+                [clousingId]: response.data
             }
             updateCashData(updateCash)
 
-            return response;
+            return response.data as CashModel;
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));
             return {} as CashModel;

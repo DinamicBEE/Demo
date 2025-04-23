@@ -48,7 +48,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
-console.log("updateTotal", newTotal, clousingId, clousingType);
+//console.log("updateTotal", newTotal, clousingId, clousingType);
 
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
