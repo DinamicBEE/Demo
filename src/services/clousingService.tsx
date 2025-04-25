@@ -617,7 +617,16 @@ export const getIntercompanyClousing = async (
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return [] as unknown as IntercompanyModel;
+    return {
+      id: clousingId,
+      employeeId: 0,
+      total: {
+        totalPOS: 0,
+        totalPhysical: 0,
+        difference: 0,
+      },
+      lines: [],
+    }
   }
 };
 
