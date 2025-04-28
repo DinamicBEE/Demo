@@ -43,7 +43,7 @@ export const useHandleTDCAdyen = () => {
       return {
         ...detail,
         successAdyen: dateMatch && checkMatch && amountMatch,
-        differences: {
+        vouchers: {
           date: isGeneralError ? null : !dateMatch ? "Fecha no coincide" : null,
           check: isGeneralError ? null : !checkMatch ? "Check no coincide" : null,
           amount: isGeneralError ? null : !amountMatch ? "Monto no coincide" : null,

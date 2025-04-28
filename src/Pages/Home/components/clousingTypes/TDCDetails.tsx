@@ -66,6 +66,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
       return;
     }
     updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
+    
   }, [dataFilesProcess.consolidatedData]);
 
   const isCheckValid = (
