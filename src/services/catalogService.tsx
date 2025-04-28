@@ -1,7 +1,7 @@
 import { CurrencyModel } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal } from "@models/common.model";
-import { Employee, ReasonsModel } from "@models/employee.model";
-import { CURRENCY, EMPLOYEELIST, LOCATIONS, REASONLIST, SUBSIDIARIES } from "./settings"
+import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
+import { CURRENCY, EMPLOYEELIST, LOCATIONS, REASONLIST, SUBSIDIARIES, TICKETS } from "./settings"
 import Cookies from 'js-cookie';
 import api from '../api/index';
 
@@ -122,6 +122,25 @@ export const getReasonClousing = async (subId: number, cdc: number): Promise<Rea
         console.error('Error al obtener la lista de motivos:', error);
         return [] as unknown as ReasonsModel[]
     }
+
+}
+
+export const getTicketListClousing  = async (cdc: number): Promise<TicketModel[]> => {
+  try {
+    if (cdc === null) throw new Error("Error al obtener la lista de  tickets");
+
+    const response = await api.get(TICKETS, {
+      params: {crcId: cdc}
+    });     
+
+    const reasons = response.data
+
+    return reasons;
+      
+  } catch (error) {
+      console.error('Error al obtener la lista de motivos:', error);
+      return [] as unknown as TicketModel[]
+  }
 
 }
 
