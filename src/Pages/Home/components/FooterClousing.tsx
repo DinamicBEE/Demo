@@ -67,15 +67,16 @@ function FooterClousing({
     const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
-console.log(employee);
+
+console.log(tdc);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(({ pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
+      lines.map(({ currencyId, pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
         ...rest,
         customers: rest.nameClient,
         valuePAX,
         id: typeof id === "number" ? id : null,
-        currency: Number(currency),
+        currency: currencyId
       }));
 
     const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
@@ -139,7 +140,7 @@ console.log(employee);
         idBank: 1001,
         vouchers: [
           {
-            id: 1,
+            id: null,
             date: "2025-03-20 17:54:43.0",
             check: "1",
             amount: 6.25,
@@ -147,17 +148,17 @@ console.log(employee);
           },
         ],
       }));
+      
 
     const body: ClousingSave = {
       id: clousingId,
       cash: {
         idCurrencySub: idCurrency,
         electronicTips: cash.electronicTips,
-        lines: cash.currencies.map(({ id, ...rest }) => ({
+        lines: cash && cash.currencies ? cash.currencies.map(({ id, ...rest }) => ({
           id: typeof id === "number" ? Number(id) : null,
-          idCurrency: 5, //Todo cambiar por el id de la moneda
           ...rest,
-        })),
+        })) : [],
         tips: cash.tips ?? 0,
         total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
@@ -191,7 +192,7 @@ console.log(employee);
         lines: mapTdcLines(tdc.lines),
       },
     };
-console.log("body", body.intercompany);
+console.log(body);
 
     const response: any = await sendCashClousing(body);
 

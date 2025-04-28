@@ -29,6 +29,7 @@ export interface CustomerLines {
     exchangeRate: number;
     amountMXN: number;
     currencyLabel: string;
+    currencyId: number;
 }
 
 export interface CustomerModel {
