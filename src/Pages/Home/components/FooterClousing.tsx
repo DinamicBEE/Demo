@@ -29,7 +29,7 @@ function FooterClousing({
   clousingId,
   closeDialog,
   closingConfirmation,
-  currencyId,
+  idCurrency
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -60,10 +60,10 @@ function FooterClousing({
   async function sendClousing() {
     setloading(true);
 
-    const cash = await getCashData(clousingId);
-    const tdc = await getTDCData(clousingId);
+    const cash = await getCashData(clousingId, idCurrency);
+    const tdc = await getTDCData(clousingId, idCurrency);
     const customer = await getCustomerData(clousingId);
-    const specialCustomer = await getSpecialCustData(clousingId, currencyId);
+    const specialCustomer = await getSpecialCustData(clousingId, idCurrency);
     const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
@@ -95,7 +95,7 @@ console.log(employee);
           check: Check,
           couponFolio: folioCuopon,
           couponPrice: priceCuopon,
-          pax: PAX,
+          pax: pax,
           id,
           couponFolioUSD: folioCuoponUSD,
           ...rest
@@ -109,7 +109,7 @@ console.log(employee);
           Check,
           folioCuopon,
           priceCuopon,
-          PAX,
+          pax,
           folioCuoponUSD,
         })
       );
@@ -151,7 +151,7 @@ console.log(employee);
     const body: ClousingSave = {
       id: clousingId,
       cash: {
-        idCurrencySub: currencyId,
+        idCurrencySub: idCurrency,
         electronicTips: cash.electronicTips,
         lines: cash.currencies.map(({ id, ...rest }) => ({
           id: typeof id === "number" ? Number(id) : null,
@@ -186,7 +186,7 @@ console.log(employee);
         lines: mapPrepaidLines(prepaid.lines),
       },
       tdc: {
-        idCurrencySub: currencyId,
+        idCurrencySub: idCurrency,
         total: tdc.total,
         lines: mapTdcLines(tdc.lines),
       },
