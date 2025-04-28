@@ -20,6 +20,7 @@ export const useHandleTDCAdyen = () => {
     if (detailsLocal.details.length !== dataFilesProcess.consolidatedData.length) {
       console.error("La cantidad de detalles locales no coincide con la cantidad de datos consolidados.");
     }
+console.log("detailsLocal", dataFilesProcess.consolidatedData);
 
     // Crear conjuntos únicos para comparación eficiente
     const checkDate = new Set<string>(
@@ -34,10 +35,11 @@ export const useHandleTDCAdyen = () => {
 
     // Actualizar detalles y encontrar diferencias
     const updatedDetails = detailsLocal.details.map((detail) => {
+      console.log("detail", detail);
+      
       const dateMatch = checkDate.has(detail.date);
       const checkMatch = checkCheck.has(Number(detail.check));
       const amountMatch = checkAmount.has(Number(detail.amount));
-
       const isGeneralError = !dateMatch && !checkMatch && !amountMatch;
 
       return {
@@ -45,7 +47,7 @@ export const useHandleTDCAdyen = () => {
         successAdyen: dateMatch && checkMatch && amountMatch,
         vouchers: {
           date: isGeneralError ? null : !dateMatch ? "Fecha no coincide" : null,
-          check: isGeneralError ? null : !checkMatch ? "Check no coincide" : null,
+          check: isGeneralError ? null : !checkMatch ? "Cheque no coincide" : null,
           amount: isGeneralError ? null : !amountMatch ? "Monto no coincide" : null,
           general: isGeneralError ? "Este dato no viene en los datos consolidados" : null,
         },

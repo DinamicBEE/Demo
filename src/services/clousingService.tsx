@@ -39,7 +39,7 @@ import {
 } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
-
+import { parse, format, isValid } from "date-fns";
 import Papa from "papaparse";
 /**
  * This function gets the totals
@@ -76,15 +76,16 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @returns {Promise<CashModel>}
  */
 export const getCashClousing = async (
-  clousingId: number, idCurrency: number
-): Promise<CashModel> => {  
+  clousingId: number,
+  idCurrency: number
+): Promise<CashModel> => {
   try {
     // Instead of using the actual API endpoint
     const response = await api.get(CASH, {
       params: {
         crcId: clousingId,
-        idCurrency: idCurrency
-      }
+        idCurrency: idCurrency,
+      },
     });
 
     if (response.data.lines.length === 0) {
@@ -95,8 +96,8 @@ export const getCashClousing = async (
           totalPOS: 0,
           totalPhysical: 0,
           difference: 0,
-        }
-      }
+        },
+      };
     }
 
     // Create a copy of CashData to avoid mutating the original mock data
@@ -133,7 +134,7 @@ export const getCashClousing = async (
     };
 
     //return data
-    return data
+    return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {} as CashModel;
@@ -146,13 +147,15 @@ export const getCashClousing = async (
  * @param {number} clousingId
  * @returns {Promise<TDCModel>}
  */
-export const getTDCClousing =
-  async (clousingId: number, idCurrency: number): Promise<TDCModel> => {
+export const getTDCClousing = async (
+  clousingId: number,
+  idCurrency: number
+): Promise<TDCModel> => {
   // console.log(clousingId)
 
   try {
     const response = await api.get(TDC, {
-      params: {crcId: clousingId, idCurrency: idCurrency}
+      params: { crcId: clousingId, idCurrency: idCurrency },
     });
     const newResponse = {
       ...response.data,
@@ -351,13 +354,16 @@ export const getSpecialCustomerClousing = async (
 
     console.log(response.data);
 
-    const lines = response.data.specialClientResponses.map((line: any, index: number) => ({// ! Eliminar INDEX
-      ...line,
+    const lines = response.data.specialClientResponses.map(
+      (line: any, index: number) => ({
+        // ! Eliminar INDEX
+        ...line,
 
-      // Generate new UUID for null IDs, otherwise keep existing ID
-      id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
-      exchangeRate: index + 1===1 ? 1 : 17, // ! Eliminar
-    }));
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
+        exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
+      })
+    );
 
     const newTotalPOS = lines
       .map((line: any) => Number(line.bill))
@@ -613,7 +619,7 @@ export const getIntercompanyClousing = async (
     const data = {
       ...responseCopy,
     };
-    
+
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
@@ -626,7 +632,7 @@ export const getIntercompanyClousing = async (
         difference: 0,
       },
       lines: [],
-    }
+    };
   }
 };
 
@@ -762,6 +768,21 @@ export const processFiles = async (
           ) {
             const account = row[csvColumn] as string;
             transformedRow[targetField] = account.split("_")[0];
+          } else if (
+            csvColumn === "Creation Date" &&
+            typeof row[csvColumn] === "string"
+          ) {
+            const dateSplit = (row[csvColumn] as string).split(" ");
+            const dateShort = dateSplit[0];
+
+            // Parsear indicando el formato de entrada (dd/MM/yy)
+            const fechaParseada = parse(dateShort, "dd/MM/yy", new Date());
+
+            // Luego la formateas con el formato deseado (dd/MM/yyyy)
+            const fechaFormateada = format(fechaParseada, "dd/MM/yyyy");
+
+            // Verificar si la fecha es válida
+            transformedRow[targetField] = fechaFormateada;
           }
           // Transferencia directa para otros campos
           else {
