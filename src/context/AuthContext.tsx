@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      setState((prev) => ({ ...prev, error: null }));
       try {
         const tokens = await loginUser(username, password);
         Cookies.set("username", username);
@@ -89,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: false,
       error: null,
       user: null,
+      isLoading: false,
     }));
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
