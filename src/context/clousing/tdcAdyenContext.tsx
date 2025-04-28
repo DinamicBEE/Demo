@@ -30,15 +30,9 @@ export function TDCAdyenClousingProvider({
   const fetchProcessFiles = useCallback(
     async (Files: File[], store: string, location: string) => {
 
-
-
-
       if (!store || !location) {
         return;
       }
-console.log("store", store);
-console.log("location", location);
-
 
       const data = await processFiles(Files, store, location);
       setDataFilesProcess(data);

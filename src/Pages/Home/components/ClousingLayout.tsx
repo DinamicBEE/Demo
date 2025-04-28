@@ -118,7 +118,7 @@ function ClousingLayout({
                   <TDCClousing
                     data={employee}
                     location={location}
-                    subsidiary={subsidiary.id}
+                    subsidiary={subsidiary}
                     idCurrency={subsidiary.idCurrency}
                   />
                 </Suspense>
