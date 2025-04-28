@@ -1,151 +1,138 @@
-import { createContext, useState, useContext, useEffect, useCallback, ReactNode, useMemo, } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  ReactNode,
+} from "react";
 import Cookies from "js-cookie";
-import { AuthContextType, Tokens } from "@models/auth.model";
+import { AuthContextType, Tokens, IUser } from "@models/auth.model";
 import { getUserRol, loginUser } from "@services/authService";
-import { MODE } from "@services/settings";
-import { getUserInfo } from "@services/userService";
-import { loadData } from "../indexedDB/localDB";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-
 export const useAuth = () => useContext(AuthContext);
 
+interface AuthState {
+  isAuthenticated: boolean;
+  error: string | null;
+  user: IUser | null;
+  isLoading: boolean;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [state, setState] = useState<AuthState>({
+    isAuthenticated: false,
+    error: null,
+    user: null,
+    isLoading: true,
+  });
 
-  const setTokens = (tokens: Tokens) => {
-
-    const userToken = MODE === "LOCAL" ? tokens.token : tokens.accessToken;
-
-    Cookies.set("accessToken", userToken, {
-      expires: 1 / 96, // 15 minutos
+  const setTokens = useCallback(({ accessToken, refreshToken }: Tokens) => {
+    Cookies.set("accessToken", accessToken, {
+      expires: 2 / 24, // 2 hours
       sameSite: "Strict",
       secure: true,
     });
+    Cookies.set("refreshToken", refreshToken, {
+      expires: 7, // 7 days
+      sameSite: "Strict",
+      secure: true,
+    });
+    setState((prev) => ({
+      ...prev,
+      isAuthenticated: true,
+      error: null,
+    }));
+  }, []);
 
-    if (MODE === "BACK") {
-      Cookies.set("refreshToken", tokens.refreshToken, {
-        expires: 7, // 7 días
-        sameSite: "Strict",
-        secure: true,
-      });
+  const setUserWithRole = useCallback(async (username: string) => {
+    try {
+      const { userRole } = await getUserRol();
+      setState((prev) => ({
+        ...prev,
+        user: { first_name: username, role: userRole },
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        error: "Error al obtener el rol del usuario",
+      }));
     }
-
-    setToken(tokens.accessToken);
-    setError(null);
-    setIsAuthenticated(true);
-  };
+  }, []);
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
-
-      setError(null);
-
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
       try {
-
-        const { accessToken, refreshToken, token } = await loginUser(username, password);
-        const userToken = MODE === "LOCAL" ? token : accessToken;
-
-        if (userToken) {
-
-          //Esta linea solo trae los dato de prueba.
-          const { data } = await getUserInfo(userToken);
-
-          if (data) {
-
-            setTokens({ accessToken, refreshToken, token });
-            setUser(data);
-
-            const result: any = await getUserRol();
-
-            await loadData.userData.put({ key: 'userRole', value: result.userRole });
-
-            // Actualizar el estado del usuario con el rol obtenido
-            setUser((prevUser: any) => ({ ...prevUser, role: result.userRole }));
-          }
-
-        }
+        const tokens = await loginUser(username, password);
+        Cookies.set("username", username);
+        setTokens(tokens);
+        await setUserWithRole(username);
       } catch (err: any) {
-        setError(err.message);
-        setIsAuthenticated(false);
-        setToken(null);
+        setState((prev) => ({
+          ...prev,
+          isAuthenticated: false,
+          error: err.message || "Login failed",
+          user: null,
+        }));
+      } finally {
+        setState((prev) => ({ ...prev, isLoading: false }));
       }
     },
     []
   );
 
-  const logOut = useCallback(async () => {
-    setIsAuthenticated(false);
-    setToken(null);
-    setError(null);
-    setUser(null); // Reiniciar el estado del usuario
-
+  const logOut = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      isAuthenticated: false,
+      error: null,
+      user: null,
+    }));
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
-    Cookies.remove('username');
-
-    // Eliminar solo el registro del rol del usuario
-    await loadData.userData.delete("userRole");
-    console.log("Rol eliminado de IndexedDB");
+    Cookies.remove("username");
   }, []);
 
   useEffect(() => {
     const initializeAuth = async () => {
-      try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+      const accessToken = Cookies.get("accessToken");
+      const refreshToken = Cookies.get("refreshToken");
+      const username = Cookies.get("username");
 
-        const accessToken = Cookies.get("accessToken");
-
-        if (accessToken) {
-
-          setToken(accessToken);
-
-          const { data } = await getUserInfo(accessToken);
-
-          if (data) {
-            setUser({ ...data, role: 1 });
-            setIsAuthenticated(true);
-
-            // Obtener el rol desde IndexedDB
-            const userRecord = await loadData.userData.get("userRole");
-            const role = userRecord ? userRecord.value : null;
-
-            // Actualizar el estado del usuario con el rol obtenido
-            setUser((prevUser: any) => ({ ...prevUser, role }));
-
-          }
-
-        } else {
-          setIsAuthenticated(false);
-        }
-
-        setError(null);
-
-      } catch {
-        setError("Error al inicializar autenticación");
-      } finally {
-        setIsLoading(false);
+      if (!username) {
+        logOut();
+        return;
       }
+
+      if (accessToken || refreshToken) {
+        await setUserWithRole(username);
+        setState((prev) => ({
+          ...prev,
+          isAuthenticated: true,
+          error: null,
+        }));
+      }
+      setState((prev) => ({ ...prev, isLoading: false }));
     };
 
     initializeAuth();
   }, []);
 
-  const value = useMemo(
-    () => ({
-      isAuthenticated,
-      handleLogin,
-      logOut,
-      token,
-      error,
-      isLoading,
-      user
-    }),
-    [isAuthenticated, handleLogin, logOut, token, error, isLoading, user]
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: state.isAuthenticated,
+        error: state.error,
+        user: state.user,
+        isLoading: state.isLoading,
+        handleLogin,
+        logOut,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -7,7 +7,7 @@ import { toast } from "../utils/index";
 
 const setNewTokens = (accessToken: string, refreshToken: string) => {
   Cookies.set("accessToken", accessToken, {
-    expires: 1 / 96, // 15 minutos
+    expires: 2 / 24, // 2 horas
     sameSite: "Strict",
     secure: true,
   });
