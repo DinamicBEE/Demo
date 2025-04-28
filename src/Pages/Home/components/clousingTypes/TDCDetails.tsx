@@ -231,7 +231,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 <Table.Body>
                   {visibleItems?.map((item: BankLineDetails) => (
                     <Table.Row
-                      key={item.id}
+                      key={`${item.id}-${item.check}-${item.amount}`}
                       backgroundColor={isCheckValid(
                         item.successAdyen,
                         item.vouchers

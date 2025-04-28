@@ -29,7 +29,7 @@ function FooterClousing({
   clousingId,
   closeDialog,
   closingConfirmation,
-  idCurrency
+  idCurrency,
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -68,16 +68,25 @@ function FooterClousing({
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
-console.log(tdc);
+    console.log("aaaaa", tdc);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(({ currencyId, pax: valuePAX, currency, id, currencyLabel, ...rest }) => ({
-        ...rest,
-        customers: rest.nameClient,
-        valuePAX,
-        id: typeof id === "number" ? id : null,
-        currency: currencyId
-      }));
+      lines.map(
+        ({
+          currencyId,
+          pax: valuePAX,
+          currency,
+          id,
+          currencyLabel,
+          ...rest
+        }) => ({
+          ...rest,
+          customers: rest.nameClient,
+          valuePAX,
+          id: typeof id === "number" ? id : null,
+          currency: currencyId,
+        })
+      );
 
     const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
       lines.map(({ id, ...rest }) => ({
@@ -133,32 +142,28 @@ console.log(tdc);
         isEdit: line.isEdit ?? false,
       }));
 
-    const mapTdcLines = (lines: any[]) =>
-      lines.map(({ id, ...rest }) => ({
+    const mapTdcLines = (lines: any[]) => {
+      console.log("lineaaaaaa", lines);
+
+      return lines.map(({ id, vouchers, ...rest }) => ({
         ...rest,
         id: typeof id === "number" ? id : null,
-        idBank: 1001,
-        vouchers: [
-          {
-            id: null,
-            date: "2025-03-20 17:54:43.0",
-            check: "1",
-            amount: 6.25,
-            status: false,
-          },
-        ],
+        vouchers: vouchers,
       }));
-      
+    };
 
     const body: ClousingSave = {
       id: clousingId,
       cash: {
         idCurrencySub: idCurrency,
         electronicTips: cash.electronicTips,
-        lines: cash && cash.currencies ? cash.currencies.map(({ id, ...rest }) => ({
-          id: typeof id === "number" ? Number(id) : null,
-          ...rest,
-        })) : [],
+        lines:
+          cash && cash.currencies
+            ? cash.currencies.map(({ id, ...rest }) => ({
+                id: typeof id === "number" ? Number(id) : null,
+                ...rest,
+              }))
+            : [],
         tips: cash.tips ?? 0,
         total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
@@ -180,7 +185,9 @@ console.log(tdc);
       },
       employee: {
         total: employee.total,
-        lines: mapEmployeeLines(employee.lines.filter((line) => typeof line.id === "string")),
+        lines: mapEmployeeLines(
+          employee.lines.filter((line) => typeof line.id === "string")
+        ),
       },
       prepaid: {
         total: prepaid.total,
@@ -192,7 +199,7 @@ console.log(tdc);
         lines: mapTdcLines(tdc.lines),
       },
     };
-console.log(body);
+    console.log(body.tdc);
 
     const response: any = await sendCashClousing(body);
 

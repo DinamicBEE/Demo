@@ -222,7 +222,7 @@ export const validateDetails = async (
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
     let data: BankDetails;
 
-    if (lineId == 3) {
+ /*    if (lineId == 3) {
       data = {
         ...details,
         details: details.details.map((detial) => {
@@ -233,7 +233,7 @@ export const validateDetails = async (
           };
         }),
       };
-    } else if (details.bankName === "ADYEN") {
+    } else */ if (details.bankName === "ADYEN") {
       data = {
         ...details,
         details: details.details.map((detial) => {
@@ -246,7 +246,7 @@ export const validateDetails = async (
       data = {
         ...details,
         details: details.details.map((detial) => {
-          const success = Math.random() < 0.5;
+          const success = true; //Math.random() < 0.5;
 
           return {
             ...detial,
