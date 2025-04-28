@@ -6,22 +6,24 @@ import Loading from "./Loading";
 
 function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuth();
+  console.log("ProtectedRoute", { isAuthenticated, isLoading, user });
 
   if (isLoading) return <Loading />;
-  
+
   if (!isAuthenticated || !user) return <Navigate to="/" replace />;
-  
-  if (allowedRoles && user.role && !allowedRoles.includes(user.role)) return <Navigate to="/emptyPage" replace />;
+
+  if (allowedRoles && user.role && !allowedRoles.includes(user.role))
+    return <Navigate to="/emptyPage" replace />;
 
   return children;
 }
 
 export function PublicRoute({ children }: { children: ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) return <Loading />;
-  
-  return isAuthenticated ? <Navigate to="/home" replace /> : children;
+  if (isAuthenticated && user) return <Navigate to="/home" replace />;
+  return children;
 }
 
 export default ProtectedRoute;
