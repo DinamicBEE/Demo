@@ -210,6 +210,12 @@ function FooterClousing({
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
+      const status =
+        header[body.id] && header[body.id].difference !== 0
+          ? STATUS.WITH_DIFFERENCE
+          : STATUS.Close;
+
+      console.log("status", status);
 
       setDataClousing({
         id: body.id,
@@ -224,7 +230,7 @@ function FooterClousing({
         status:
           header[body.id] && header[body.id].difference !== 0
             ? STATUS.WITH_DIFFERENCE
-            : STATUS.Close
+            : STATUS.Close,
       });
 
       closeDialog();
