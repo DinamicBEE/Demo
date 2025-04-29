@@ -1,6 +1,6 @@
 export enum STATUS {
-    CLOSED = 'Cerrado',
+    Close = 'Cerrado',
     REOPENED = 'Reabierto',
     WITH_DIFFERENCE = 'Con Diferencia',
-    OPEN = 'Abierto',
+    Open = 'Abierto',
 }

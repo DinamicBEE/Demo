@@ -17,14 +17,14 @@ export const useHandleAffiliationsData = () => {
     if (cleanedValue < 0) return;
 
     const updatedBanks = localBanks.map((bank) => {
-      if (bank.id === bankId) {
-        const updatedAffiliations = bank.afilations.map((affiliation) => {
-          if (affiliation.id.toString() === affiliationKey) {
+      if (bank.bankTerminalId === bankId) {
+        const updatedAffiliations = bank.affiliationList.map((affiliation) => {
+          if (affiliation.affiliationId.toString() === affiliationKey) {
             return { ...affiliation, amount: cleanedValue };
           }
           return affiliation;
         });
-        return { ...bank, afilations: updatedAffiliations };
+        return { ...bank, affiliationList: updatedAffiliations };
       }
       return bank;
     });
@@ -33,7 +33,7 @@ export const useHandleAffiliationsData = () => {
     const banksWithDifference = calculateDifference(banksWithTotalLot);
 
     const totalLot = banksWithDifference.reduce(
-      (acc, bank) => acc + bank.lot,
+      (acc, bank) => acc + bank.totalBatch,
       0
     );
     const totalDifference = banksWithDifference.reduce(
@@ -41,25 +41,29 @@ export const useHandleAffiliationsData = () => {
       0
     );
 
-    setLocalLot({ ...localLot, totalLot, difference: totalDifference });
+    setLocalLot({
+      ...localLot,
+      totalLote: totalLot,
+      difference: totalDifference,
+    });
     setLocalBanks(banksWithDifference);
   };
 
   // Helper function to calculate total lot for each bank
   const calculateTotalLot = (banks: Bank[]) => {
     return banks.map((bank) => {
-      const totalLot = bank.afilations.reduce(
+      const totalLot = bank.affiliationList.reduce(
         (acc, affiliation) => acc + affiliation.amount,
         0
       );
-      return { ...bank, lot: totalLot };
+      return { ...bank, totalBatch: totalLot };
     });
   };
 
   // Helper function to calculate difference for each bank
   const calculateDifference = (banks: Bank[]) => {
     return banks.map((bank) => {
-      const difference = bank.totalPOS - bank.lot;
+      const difference = bank.totalPos - bank.totalBatch;
       return { ...bank, difference };
     });
   };

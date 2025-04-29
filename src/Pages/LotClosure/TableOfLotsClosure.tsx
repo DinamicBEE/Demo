@@ -37,7 +37,7 @@ function TableOfLotClosure({
         heders: [
           { label: "Ubicación", key: "location" },
           { label: "Empresa", key: "company" },
-          { label: "Numero de lote", key: "lotNumber" },
+          //{ label: "Numero de lote", key: "lotNumber" },
           { label: "Estado", key: "status" },
           { label: "Total POS", key: "totalPOS" },
           { label: "Total Lote", key: "totalLot" },
@@ -45,14 +45,14 @@ function TableOfLotClosure({
           { label: "Empleado (Realizado por)", key: "employe" },
         ],
         data: lotsClosure.map((item) => ({
-          location: item.location.name,
-          company: item.company.name,
-          lotNumber: item.lotNumber,
+          location: item.consumerCenter,
+          company: item.subsidiary,
+        //  lotNumber: item.lotNumber,
           status: item.status,
-          totalPOS: item.totalPOS,
-          totalLot: item.totalLot,
+          totalPOS: item.totalPos,
+          totalLot: item.totalLote,
           difference: item.difference,
-          employe: item.employe,
+          employe: item.employeeName,
         })),
       },
       "lotes-cierre"
@@ -68,6 +68,7 @@ function TableOfLotClosure({
     setSelectedLot({} as LotClosure);
     setIsDialogOpen(false);
   };
+
 
   return (
     <>
@@ -114,9 +115,9 @@ function TableOfLotClosure({
                     <Table.ColumnHeader textAlign="center">
                       Empresa
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+               {/*      <Table.ColumnHeader textAlign="center">
                       Numero de lote
-                    </Table.ColumnHeader>
+                    </Table.ColumnHeader> */}
                     <Table.ColumnHeader textAlign="center">
                       Estado
                     </Table.ColumnHeader>
@@ -175,7 +176,7 @@ function TableOfLotClosure({
                     lotsClosure.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
-                          <Text>{location.name}</Text>
+                          <Text>{item.consumerCenter}</Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
                           <Text
@@ -185,12 +186,12 @@ function TableOfLotClosure({
                             color="blue.500"
                             onClick={() => openDialog(item)}
                           >
-                            {company.name}
+                            {item.subsidiary}
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="center">
+                      {/*   <Table.Cell textAlign="center">
                           <Text>{item.lotNumber}</Text>
-                        </Table.Cell>
+                        </Table.Cell> */}
                         <Table.Cell textAlign="center">
                           <Tag.Root colorPalette={statusColor(item.status)}>
                             <Tag.Label>{item.status}</Tag.Label>
@@ -199,7 +200,7 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              value={item.totalPOS}
+                              value={item.totalPos}
                               style="currency"
                               currency="USD"
                             />
@@ -208,7 +209,7 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              value={item.totalLot}
+                              value={item.totalLote}
                               style="currency"
                               currency="USD"
                             />
@@ -217,18 +218,19 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              value={
+                             /*  value={
                                 item.status === STATUS.OPEN
                                   ? 0
                                   : item.totalPOS - item.totalLot
-                              }
+                              } */
+                             value={item.difference}
                               style="currency"
                               currency="USD"
                             />
                           </Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
-                          <Text>{item.employe}</Text>
+                          <Text>{item.employeeName}</Text>
                         </Table.Cell>
                       </Table.Row>
                     ))}

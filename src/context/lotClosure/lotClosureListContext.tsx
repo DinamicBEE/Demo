@@ -11,13 +11,13 @@ import {
   getBanks,
   getLotsClosure,
   updateBankService,
-  updateLotClosure,
 } from "@services/lotClosureService";
 import {
   LotClosureContextType,
   LotClosure,
   Bank,
 } from "@models/lotClosure.model";
+import { STATUS } from "@models/status.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -55,12 +55,8 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           lostClosureCache.current = {};
         }
         const response = await getLotsClosure(dateRange, locationId, companyId);
-        const transformedResponse = response.map((lot) => ({
-          ...lot,
-          difference: lot.totalPOS - lot.totalLot,
-        }));
-        setLotsClosure(transformedResponse);
-        lostClosureCache.current[locationId] = transformedResponse;
+        lostClosureCache.current[locationId] = response;
+        setLotsClosure(response);
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -74,25 +70,58 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
 
   const updateBank = useCallback(
     async (lotId: number, localBank: Bank[], localLotClosure: LotClosure) => {
+      setError("");
       setUpdateBankLoading(true);
       try {
         console.log("localBank", localBank);
-        
-        const reponseUpdatedBanks = await updateBankService(localBank);
-        setBanks(reponseUpdatedBanks);
-        bankCache.current[lotId] = reponseUpdatedBanks;
-        const responseUpdatedLotClosure = await updateLotClosure(
-          lotId,
-          localLotClosure
-        );
-        console.log("responseUpdatedLotClosure", responseUpdatedLotClosure);
-        
-        const prevLots = lostClosureCache.current[localLotClosure.location.id];
-        const updatedLots = prevLots.map((lot) =>
-          lot.id === lotId ? responseUpdatedLotClosure : lot
-        );
-        setLotsClosure(updatedLots);
-        lostClosureCache.current[localLotClosure.location.id] = updatedLots;
+        console.log("localLotClosure", localLotClosure);
+        console.log("lotId", lotId);
+
+        const body = {
+          cashRegisterClosureId: localLotClosure.cashRegisterClosureId,
+          batchClosureId: localLotClosure.id,
+          totalPos: localLotClosure.totalPos,
+          totalLote: localLotClosure.totalLote,
+          difference: localLotClosure.difference,
+          batchDetailsRequest: localBank.map((bank) => ({
+            batchDetailsId: bank.batchDetailsId,
+            bankTerminalId: bank.bankTerminalId,
+            totalPos: bank.totalPos,
+            totalCrc: bank.totalCrc,
+            totalBatch: bank.totalBatch,
+            difference: bank.difference,
+            lines: bank.affiliationList.map((line) => ({
+              affiliationDetailsId: line.affiliationDetailsId,
+              affiliationId: line.affiliationId,
+              amount: line.amount,
+            })),
+          })),
+        };
+
+        const response = await updateBankService(body);
+
+        if (response === "CONFIRMED") {
+          setBanks(localBank);
+          bankCache.current[lotId] = localBank;
+          const updatedLot = {
+            ...localLotClosure,
+            status:
+              localLotClosure.difference === 0
+                ? STATUS.Close
+                : STATUS.WITH_DIFFERENCE,
+            difference: localLotClosure.difference,
+          };
+          const prevLots =
+            lostClosureCache.current[localLotClosure.consumerCenterId];
+          const updatedLots = prevLots.map((lot) =>
+            lot.id === lotId ? updatedLot : lot
+          );
+          setLotsClosure(updatedLots);
+          lostClosureCache.current[localLotClosure.consumerCenterId] =
+            updatedLots;
+        }
+
+
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
         throw error;
@@ -122,29 +151,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     [banks]
   );
 
-  const updateBankAfilations = useCallback(
-    (bankId: number, amount: string, afilationId: number) => {
-      const auxAmount = Number(amount.replace(/[^\d.]/g, ""));
-      if (auxAmount < 0) return;
-
-      setBanks((prevBanks) =>
-        prevBanks.map((bank) =>
-          bank.id === bankId
-            ? {
-                ...bank,
-                afilations: bank.afilations.map((afilation) =>
-                  afilation.id === afilationId
-                    ? { ...afilation, amount: auxAmount }
-                    : afilation
-                ),
-              }
-            : bank
-        )
-      );
-    },
-    []
-  );
-
   const value = useMemo(
     () => ({
       lotsClosure,
@@ -160,7 +166,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       fetchLotClosureData,
       fetchBanks,
       updateBank,
-      updateBankAfilations,
     }),
     [
       lotsClosure,
@@ -176,7 +181,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       fetchLotClosureData,
       updateBank,
       fetchBanks,
-      updateBankAfilations,
     ]
   );
 

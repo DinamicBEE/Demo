@@ -31,8 +31,14 @@ import { STATUS } from "@models/status.model";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
 
-function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosureDialogProps) {
-  const { updateBank, fetchBanks, loadingBanks, updateBankLoading } =
+function LoteClosureDialog({
+  isOpen,
+  onClose,
+  lot,
+  company,
+  location,
+}: LotClosureDialogProps) {
+  const { updateBank, fetchBanks, loadingBanks, updateBankLoading, error } =
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<Bank[]>([]);
   const [openCloseLot, setOpenCloseLot] = useState(false);
@@ -61,9 +67,11 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
 
   const handleSave = async () => {
     await updateBank(localLot.id, localBanks, localLot);
-    setOpenCloseLot(false);
-    onClose();
-    toast("Lote cerrado correctamente", "success");
+    if (error !== "") {
+      setOpenCloseLot(false);
+      onClose();
+      toast("Lote cerrado correctamente", "success");
+    }
   };
 
   useEffect(() => {
@@ -99,7 +107,7 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
               >
                 <Text>{company.name}</Text>
                 <Text> Ubicación: {location.name}</Text>
-                <Text>Cierre Lote: {lot?.dateClosed}</Text>
+                {/* <Text>Cierre Lote: {lot?.dateClosed}</Text> */}
               </Flex>
             </DialogTitle>
             <DialogCloseTrigger />
@@ -116,12 +124,12 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
                   <Flex gap={2} direction={{ base: "column", md: "row" }}>
                     <CurrencyInput
                       name={"Total Micros"}
-                      value={localLot?.totalPOS}
+                      value={localLot?.totalPos}
                       loading={false}
                     />
                     <CurrencyInput
                       name={"Total lote"}
-                      value={localLot?.totalLot}
+                      value={localLot?.totalLote}
                       loading={false}
                     />
                     <CurrencyInput
@@ -133,25 +141,25 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
                   {localBanks.length > 0 &&
                     !loadingBanks &&
                     localBanks.map((bank) => (
-                      <Box key={bank.id}>
+                      <Box key={bank.batchDetailsId}>
                         <Text fontWeight="bold" textStyle="md">
-                          {bank.bank}
+                          {bank.bankTerminalName}
                         </Text>
                         <Separator marginTop={4} marginBottom={4} size={"md"} />
                         <Flex gap={2} direction={{ base: "column", md: "row" }}>
                           <CurrencyInput
                             name={"POS"}
-                            value={bank.totalPOS}
+                            value={bank.totalPos}
                             loading={false}
                           />
                           <CurrencyInput
                             name={"Corte caja"}
-                            value={bank.totalClousing}
+                            value={bank.totalCrc}
                             loading={false}
                           />
                           <CurrencyInput
                             name={"Lote"}
-                            value={bank.lot}
+                            value={bank.totalBatch}
                             loading={false}
                           />
                           <CurrencyInput
@@ -178,20 +186,23 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
                               </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                              {bank.afilations.map((affiliation) => (
-                                <Table.Row key={affiliation.id}>
+                              {bank.affiliationList.map((affiliation) => (
+                                <Table.Row key={affiliation.affiliationId}>
                                   <Table.Cell textAlign="center">
-                                    <Text>{affiliation.name}</Text>
+                                    <Text>{affiliation.affiliation}</Text>
                                   </Table.Cell>
                                   <Table.Cell textAlign="center" width={"50%"}>
                                     <TableInput
                                       value={affiliation.amount}
                                       onChange={handleUpdateBankAfilations}
                                       currency={true}
-                                      disabled={lot.status === STATUS.CLOSED || lot.status === STATUS.WITH_DIFFERENCE}
-                                      keyValue={affiliation.id.toString()}
-                                      key={affiliation.id}
-                                      id={bank.id}
+                                      disabled={
+                                        lot.status === STATUS.Close ||
+                                        lot.status === STATUS.WITH_DIFFERENCE
+                                      }
+                                      keyValue={affiliation.affiliationId.toString()}
+                                      key={affiliation.affiliationId}
+                                      id={bank.bankTerminalId}
                                     />
                                   </Table.Cell>
                                 </Table.Row>
@@ -293,13 +304,16 @@ function LoteClosureDialog({ isOpen, onClose, lot,company,location }: LotClosure
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>
               <Button
-                hidden={lot.status === STATUS.CLOSED || lot.status === STATUS.WITH_DIFFERENCE}
+                hidden={
+                  lot.status === STATUS.Close ||
+                  lot.status === STATUS.WITH_DIFFERENCE
+                }
                 onClick={() => handleOpenCloseLot()}
                 colorPalette="meraInfo"
                 disabled={
                   localBanks.length === 0 ||
                   localBanks.some((bank) => {
-                    return bank.afilations.some(
+                    return bank.affiliationList.some(
                       (afiliation) => afiliation.amount === 0
                     );
                   })

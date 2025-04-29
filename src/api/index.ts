@@ -49,13 +49,12 @@ api.interceptors.request.use(
 let isRefreshing = false;
 let refreshPromise: Promise<any> | null = null;
 
-
 // Interceptor de respuesta para manejar errores y renovación de token
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as any;
-    
+
     if (
       originalRequest &&
       error.response?.status === 401 &&
@@ -64,7 +63,7 @@ api.interceptors.response.use(
       MODE === "BACK"
     ) {
       originalRequest._retry = true;
-      
+
       // If a refresh is already in progress, wait for it to complete
       if (isRefreshing) {
         try {
@@ -77,7 +76,7 @@ api.interceptors.response.use(
           return Promise.reject(err);
         }
       }
-      
+
       // Start a new token refresh process
       isRefreshing = true;
       refreshPromise = new Promise(async (resolve, reject) => {
@@ -95,9 +94,10 @@ api.interceptors.response.use(
             setNewTokens(accessToken, newRefreshToken);
 
             // Establecer el nuevo encabezado Authorization
-            api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+            api.defaults.headers.common["Authorization"] =
+              `Bearer ${accessToken}`;
             originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
-            
+
             resolve(true);
           } else {
             throw new Error("Error al renovar el token");
@@ -111,7 +111,7 @@ api.interceptors.response.use(
           refreshPromise = null;
         }
       });
-      
+
       try {
         await refreshPromise;
         // Reintentar la solicitud original con el nuevo token
@@ -120,9 +120,14 @@ api.interceptors.response.use(
         return Promise.reject(err);
       }
     }
-    
-    const errorResponse = getValidationsError(error, window.location.pathname);
-    toast(errorResponse, "error");
+    if (window.location.pathname !== "/home") {
+      const errorResponse = getValidationsError(
+        error,
+        window.location.pathname
+      );
+
+      toast(errorResponse, "error");
+    }
     return Promise.reject(error);
   }
 );
