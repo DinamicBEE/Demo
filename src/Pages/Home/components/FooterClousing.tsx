@@ -60,8 +60,8 @@ function FooterClousing({
   async function sendClousing() {
     setloading(true);
 
-    const cash = await getCashData(clousingId);
-    const tdc = await getTDCData(clousingId);
+    const cash = await getCashData(clousingId, currencyId);
+    const tdc = await getTDCData(clousingId, currencyId);
     const customer = await getCustomerData(clousingId);
     const specialCustomer = await getSpecialCustData(clousingId, currencyId);
     const employee = await getEmployeetData(clousingId);
