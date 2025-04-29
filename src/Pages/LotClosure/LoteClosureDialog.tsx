@@ -67,7 +67,7 @@ function LoteClosureDialog({
 
   const handleSave = async () => {
     await updateBank(localLot.id, localBanks, localLot);
-    if (error !== "") {
+    if (error === "") {
       setOpenCloseLot(false);
       onClose();
       toast("Lote cerrado correctamente", "success");
