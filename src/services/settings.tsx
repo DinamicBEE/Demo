@@ -15,7 +15,7 @@ export const EMPLOYEELIST = 'crc/cash-register-closure/crcproc/employees/employe
 export const REASONLIST = 'crc/cash-register-closure/crcproc/employees/reasonList';
 export const TICKETS = '/crc/cash-register-closure/crcproc/employees/ticketList'
 export const INTERCOMPANY = '/crc/cash-register-closure/api/intercompany/get';
-
+export const GET_CLOUSINGS = 'https://localhost:8085/crc/cash-register-closure/api/registerclosure/search';
 //Cierrre de Lote
 export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByCC';
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';

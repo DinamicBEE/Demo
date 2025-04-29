@@ -23,6 +23,7 @@ import { PrepaidLineModel } from "@models/prepaid.model";
 import { EmployeeLine } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
+import { STATUS } from "@models/status.model";
 
 function FooterClousing({
   clousingType,
@@ -209,6 +210,7 @@ function FooterClousing({
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
+
       setDataClousing({
         id: body.id,
         date: header[body.id].totalClousing,
@@ -219,6 +221,10 @@ function FooterClousing({
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
+        status:
+          header[body.id] && header[body.id].difference !== 0
+            ? STATUS.WITH_DIFFERENCE
+            : STATUS.Close
       });
 
       closeDialog();

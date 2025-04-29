@@ -222,7 +222,7 @@ export const validateDetails = async (
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
     let data: BankDetails;
 
- /*    if (lineId == 3) {
+    /*    if (lineId == 3) {
       data = {
         ...details,
         details: details.details.map((detial) => {
@@ -286,8 +286,8 @@ export const getCustomerClousing = async (
     console.log(response.data);
     const lines = response.data.generalClientResponseList.map((line: any) => {
       // Desestructurar el objeto para separar amountMx del resto de propiedades
-      const { amountMx,coupons, ...restOfLine } = line;
-      
+      const { amountMx, coupons, ...restOfLine } = line;
+
       // Crear nuevo objeto con las propiedades deseadas
       return {
         ...restOfLine,
@@ -430,13 +430,26 @@ export const getPrepaidClousing = async (
       };
     });
 
-    const data = {
+    /*   const data = {
       ...response,
+      
       lines: updateLines,
+    }; */
+
+    const data: PrepaidModel = {
+      employeeId: 0,
+      id: clousingId,
+      total: {
+        totalPOS: 0,
+        totalPhysical: 0,
+        difference: 0,
+      },
+      lines: [],
     };
 
     return new Promise((resolve) => {
       setTimeout(() => {
+        //acomdar
         resolve(data);
       }, 1000);
     });
@@ -935,7 +948,7 @@ export const HeaderDataMocky = {
   cdc: "No seleccionada",
   location: "No seleccionado",
   subsidiary: "No seleccionado",
-  date: "2021-10-10 10:00",
+  date: "27/04/2025",
   totalPOS: 3500,
   totalClousing: 3500,
   difference: 0,

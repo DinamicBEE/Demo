@@ -1,7 +1,9 @@
 // import axios from "axios";
 // import { API_HOME } from "./settings";
+import api from "../api/index";
 import { ClousingModel } from "@models/common.clousing.model";
-
+import { GET_CLOUSINGS } from "./settings";
+import { getStatus } from "../utils/getStatus";
 //const BASE_URL = "https://run.mocky.io/v3";
 
 /**
@@ -12,21 +14,73 @@ import { ClousingModel } from "@models/common.clousing.model";
  * @param {number} store
  * @returns {Promise<ClousingModel>}
  */
-export const getGeneralInfo = async (subsidiary:number, store:number): Promise<ClousingModel> => {
-    
-    try {
-        // console.log(subsidiary, store)
-        //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
-        //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
-        const response = homeData;
+export const getGeneralInfo = async (
+  subsidiary: number,
+  store: number
+): Promise<ClousingModel> => {
+  try {
+    // console.log(subsidiary, store)
+    //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
+    //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
+    console.log(subsidiary, store);
 
-    //return response.data
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000);
+    const response = await api.get(GET_CLOUSINGS, {
+      params: {
+        consumeCenter: store,
+      },
     });
+    const totalPOS = response.data.registerClosure.reduce(
+      (acc: number, line: any) => acc + line.totalPOS,
+      0
+    );
+    const totalPhysical = response.data.registerClosure.reduce(
+      (acc: number, line: any) => acc + line.totalPhysical,
+      0
+    );
+    
+    const transformedData = {
+      header: {
+        subsidiaryName: "DIVIERTETE",
+        storeName: "BAR GGRILL LS CUN T2A",
+        date: "27/04/25",
+        time: "15:40",
+        totalPOS:totalPOS,
+        totalPhysical: totalPhysical,
+        difference:
+          totalPOS - totalPhysical,
+      },
+      clousingLines: response.data.registerClosure.map(
+        (line: any) => ({
+          id: line.crcId,
+          employe: "AXEL ISRAEL",
+          totalPOS: line.totalPOS,
+          totalPhysical: line.totalPhysical,
+          difference: line.totalPOS - line.totalPhysical,
+          status: getStatus(line.status),
+          extra: line.exta,
+          mxm: line.mxn,
+          usd: line.usd,
+          eur: line.eur,
+          lib: line.lib,
+          can: line.can,
+          customer: line.customer,
+          specialCustomer: line.specialCustomer,
+          prepaid: line.prepaid,
+          employees: line.employees,
+          intercompany: line.intercompany,
+          service: 0,
+          discount: 0,
+          iva: 150,
+          closingConfirmation: false,
+        })
+      ),
+    };
+    console.log(transformedData);
+    
+    return transformedData as ClousingModel;
   } catch (error) {
+    console.log(error);
+    
     console.error("Error al obtener las Subsidiarias: ", error);
     return {} as ClousingModel;
   }
@@ -74,7 +128,7 @@ export function exportCSV(data: any, header: any) {
     .map((row) => row.join(","))
     .join("\n");
 
-  const bom = "\uFEFF";  
+  const bom = "\uFEFF";
   const blob = new Blob([bom + csvString], { type: "text/csv;charset=utf-8;" });
 
   const url = URL.createObjectURL(blob);
@@ -238,5 +292,5 @@ const homeData = {
       adyenTotal: 10,
       closingConfirmation: false,
     },
-  ]
+  ],
 };
