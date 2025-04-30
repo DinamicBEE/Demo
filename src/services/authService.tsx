@@ -1,4 +1,4 @@
-import { Tokens } from "@models/auth.model";
+import { IRole, Tokens } from "@models/auth.model";
 import api from "../api/index";
 import { API_AUTH, MODE } from "./settings";
 import Cookies from "js-cookie";
@@ -11,28 +11,32 @@ import Cookies from "js-cookie";
  * @param {String} password
  * @returns {Promise<Object>}
  */
-export const loginUser = async (login: string, password: string): Promise<Tokens> => {
+export const loginUser = async (
+  login: string,
+  password: string
+): Promise<Tokens> => {
   try {
-
-    const response = await api.post(
-      MODE === "LOCAL" ? "/login" : "/auth/authentication/api/v1/auth/signin",
-      MODE === "LOCAL" ? { email: login, password } : { login, password }
-    );
+    const response = await api.post("/auth/authentication/api/v1/auth/signin", {
+      login,
+      password,
+    });
 
     const loginInfo = JSON.parse(response.config.data);
 
     Cookies.set("username", loginInfo.login);
 
     return response.data;
-
   } catch (error: any) {
     throw new Error(error);
   }
 };
 
-export const refreshAuthToken = async (refreshToken: string): Promise<Tokens> => {
+export const refreshAuthToken = async (
+  refreshToken: string
+) => {
   try {
-    const response = await api.post( `/auth/authentication/api/v1/auth/refresh`,
+    const response = await api.post(
+      `/auth/authentication/api/v1/auth/refresh`,
       {
         refreshToken,
       }
@@ -45,17 +49,13 @@ export const refreshAuthToken = async (refreshToken: string): Promise<Tokens> =>
   }
 };
 
-export const getUserRol = async () => {
-
+export const getUserRol = async (): Promise<IRole> => {
   try {
-    const response = await api.get('/auth/authentication/api/test/echo-role');
+    const response = await api.get("/auth/authentication/api/test/echo-role");
     const result = response;
-    
-    return result.data
 
+    return result.data;
   } catch (error: any) {
-    throw new Error(
-      error || "Error al intentar refrescar el token"
-    );
+    throw new Error(error || "Error al intentar refrescar el token");
   }
-}
+};

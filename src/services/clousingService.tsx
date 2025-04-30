@@ -226,7 +226,7 @@ export const validateDetails = async (
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
     let data: BankDetails;
 
-    if (lineId == 3) {
+ /*    if (lineId == 3) {
       data = {
         ...details,
         details: details.details.map((detial) => {
@@ -237,7 +237,7 @@ export const validateDetails = async (
           };
         }),
       };
-    } else if (details.bankName === "ADYEN") {
+    } else */ if (details.bankName === "ADYEN") {
       data = {
         ...details,
         details: details.details.map((detial) => {
@@ -250,7 +250,7 @@ export const validateDetails = async (
       data = {
         ...details,
         details: details.details.map((detial) => {
-          const success = Math.random() < 0.5;
+          const success = true; //Math.random() < 0.5;
 
           return {
             ...detial,
@@ -287,14 +287,23 @@ export const getCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
     console.log(response.data);
-
-    const lines = response.data.generalClientResponseList.map((line: any) => ({
-      ...line,
-      amountMXN: line.amountMx ?? 0,
-      currencyLabel: line.currency ?? "",
-      // Generate new UUID for null IDs, otherwise keep existing ID
-      id: line.id === null ? "customer-" + uuidv4() : line.id,
-    }));
+    const lines = response.data.generalClientResponseList.map((line: any) => {
+      // Desestructurar el objeto para separar amountMx del resto de propiedades
+      const { amountMx,coupons, ...restOfLine } = line;
+      
+      // Crear nuevo objeto con las propiedades deseadas
+      return {
+        ...restOfLine,
+        amountMXN: Number(amountMx) ?? 0,
+        coupons: Number(coupons) ?? 0,
+        amount: Number(line.amount) ?? 0,
+        exchangeRate: Number(line.exchangeRate) ?? 0,
+        valuePAX: Number(line.pax) ?? 0,
+        currencyLabel: line.currency ?? "",
+        // Generate new UUID for null IDs, otherwise keep existing ID
+        id: line.id === null ? "customer-" + uuidv4() : line.id,
+      };
+    });
 
     console.log(lines);
 
