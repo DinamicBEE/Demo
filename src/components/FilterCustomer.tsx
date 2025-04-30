@@ -90,7 +90,7 @@ function FilterCustomer({
         onValueChange={(event) => handleSelect(event)}
         disabled={disabled || false}
       >
-        {label && <SelectLabel>Empleado</SelectLabel>}
+        {label && <SelectLabel>Cliente</SelectLabel>}
         <SelectTrigger>
           <SelectValueText placeholder={customerSelect || searchQuery} />
         </SelectTrigger>
