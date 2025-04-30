@@ -200,7 +200,7 @@ function FooterClousing({
         lines: mapTdcLines(tdc.lines),
       },
     };
-    console.log(body.tdc);
+    console.log(body);
 
     const response: any = await sendCashClousing(body);
 
@@ -227,10 +227,10 @@ function FooterClousing({
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
-        status:
-          header[body.id] && header[body.id].difference !== 0
+        status: STATUS.Close,
+        /*   header[body.id] && header[body.id].difference !== 0
             ? STATUS.WITH_DIFFERENCE
-            : STATUS.Close,
+            : STATUS.Close, */
       });
 
       closeDialog();

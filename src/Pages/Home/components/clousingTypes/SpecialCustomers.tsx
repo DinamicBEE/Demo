@@ -182,7 +182,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                   </Text> */}
                   <FilterCustomer
                     customers={customers}
-                    label={true}
+                    label={false}
                     onSelect={(customer: { value: number; label: string }) => {
                       handleInputTextData(
                         customer.label,
