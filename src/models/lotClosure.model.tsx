@@ -3,7 +3,19 @@ import { STATUS } from "./status.model";
 import { ListCollection } from "@chakra-ui/react";
 export interface LotClosure {
   id: number;
-  company: Company;
+  cashRegisterClosureId: number;
+  employeeId: number;
+  subId: number;
+  consumerCenterId: number;
+  statusId: number;
+  employeeName: string;
+  consumerCenter: string;
+  subsidiary: string;
+  status: STATUS;
+  totalPos: number;
+  totalLote: number;
+  difference: number;
+/*   company: Company;
   location: Location;
   lotNumber: string;
   totalLot: number;
@@ -12,23 +24,28 @@ export interface LotClosure {
   totalClousing: number;
   difference: number;
   employe: string;
-  dateClosed: string;
+  dateClosed: string; */
 }
 
 export interface Bank {
-  id: number;
-  lotClosureId: number;
-  bank: string;
-  totalPOS: number;
-  totalClousing: number;
+  bankTerminalId: number;
+  bankTerminalName: string;
+  batchClosureId: number;
+  batchDetailsId: number;
   difference: number;
-  lot: number;
-  afilations: {
-    id: number;
-    name: string;
-    amount: number;
-  }[];
+  totalBatch: number;
+  totalCrc: number;
+  totalPos: number;
+  affiliationList: Afilation[];
 }
+
+export interface Afilation {
+  affiliation: string;
+  affiliationDetailsId: number | null;
+  affiliationId: number;
+  amount: number;
+}
+
 
 export interface Company {
   id: number;
@@ -83,11 +100,6 @@ export interface LotClosureContextType {
   ) => Promise<void>;
   fetchBanks: (lotId: number) => Promise<Bank[]>;
   updateBank: (lotId: number, bank: Bank[], lot: LotClosure) => Promise<void>;
-  updateBankAfilations: (
-    bankId: number,
-    amount: string,
-    afilationId: number
-  ) => void;
 }
 
 export interface LotCatalogContextType {

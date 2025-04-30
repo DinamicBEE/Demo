@@ -43,11 +43,11 @@ function LotClosure() {
     useLotCatalogList();
   const [showTable, setShowTable] = useState(false);
 
-  const search = () => {
+  const search = async () => {
     if (lotsClosure.length === 0) {
       setShowTable(true);
     }
-    fetchLotClosureData(dateRange, locationId, companyId);
+    await fetchLotClosureData(dateRange, locationId, companyId);
     const getCompanies = comapanies.items.find(
       (company) => company.value === companyId
     );

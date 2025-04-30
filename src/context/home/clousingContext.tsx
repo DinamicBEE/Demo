@@ -83,6 +83,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
                 employees: dataClousing.employee,
                 intercompany: dataClousing.intercompany,
                 prepaid: dataClousing.prepaid,
+                status: dataClousing.status,
               }
             : item
         )

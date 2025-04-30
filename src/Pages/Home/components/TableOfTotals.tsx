@@ -99,7 +99,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
               <Skeleton loading={loading}>
                 <Input
                   placeholder="No seleccionada"
-                  defaultValue={header.date}
+                  defaultValue={2023-10-10}
                 />
               </Skeleton>
             </Group>
@@ -160,7 +160,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
           </Grid>
         </Box>
 
-        {data.length > 1 && (
+        {data.length >= 1 && (
           <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px">
               <Table.Root size="sm" variant="outline">

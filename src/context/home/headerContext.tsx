@@ -103,7 +103,7 @@ function createObjectHeader(dataRow: ClousingLinesModel) {
     cdc: "No seleccionada",
     location: "No seleccionado",
     subsidiary: "No seleccionado",
-    date: "2021-10-10 10:00",
+    date: "27/04/25",
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
     difference: dataRow.difference,

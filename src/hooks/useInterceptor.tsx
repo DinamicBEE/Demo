@@ -13,7 +13,7 @@ export const useInterceptor = () => {
         return response;
       },
       (error) => {
-        if (window.location.pathname !== "/") {
+        if (window.location.pathname !== "/" && window.location.pathname !== "/home" ) {
           const errorMessage = getValidationsError(
             error,
             window.location.pathname

@@ -24,12 +24,14 @@ export const defaultErrors: Record<string, string> = {
 
 const specificErrors: Record<string, Record<string, string>> = {
   "/": loginErrors,
+  "home": loginErrors,
 };
 
 export const getValidationsError = (
   error: AxiosError,
   path: string
-): string => {
+): string  => {
+
   const errorCode = error.code as string;
   const serverMessage = error.response?.data;
   // Unir errores específicos del path con los errores por defecto

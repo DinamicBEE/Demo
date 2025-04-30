@@ -18,7 +18,7 @@ export interface TDCContextType {
   setDetails: (
     details: BankDetails,
     clousingId: number,
-    lineId: number,
+    lineId: number | string,
   ) => void;
 }
 
