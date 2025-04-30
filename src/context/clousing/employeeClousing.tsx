@@ -139,8 +139,7 @@ export function EmployeeClousingProvider({
         0
       );
 
-      const newDifference =
-        (currentRegister.total?.totalPOS || 0) - (newTotalPhysical || 0);
+      const newDifference = (newTotalPhysical || 0);
 
       const newTotal: TotalModel = {
         totalPOS: currentRegister.total?.totalPOS || 0,
