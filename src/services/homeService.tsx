@@ -52,7 +52,7 @@ export const getGeneralInfo = async (
       clousingLines: response.data.registerClosure.map(
         (line: any) => ({
           id: line.crcId,
-          employe: "AXEL ISRAEL",
+          employe: line.employe,
           totalPOS: line.totalPOS,
           totalPhysical: line.totalPhysical,
           difference: line.totalPOS - line.totalPhysical,

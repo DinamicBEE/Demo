@@ -75,6 +75,18 @@ export interface EmployeeFilterProps {
     disabled: boolean;
 }
 
+export interface CustomerFilter{
+    customers: {
+        value: number,
+        label: string,
+    }[],
+    label: boolean;
+    itemId?: number | string;
+    customerSelect?: string;
+    onSelect: (customer: any, itemId?: number | string ) => void;
+    disabled: boolean;
+}
+
 export interface AddEmployeeProp {
     clousingId: number;
     subsidiaryId: number;

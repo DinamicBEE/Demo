@@ -1,50 +1,87 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Input, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Table,
+  Text,
+  FormatNumber,
+  Input,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { TableInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
-import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext"
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHandleSpecialCustomerData";
-import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
+import {
+  SpecialCustomerLines,
+  SpecialCustomerModel,
+} from "@models/specialCustome.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
+import FilterCustomer from "@components/FilterCustomer";
+import { getCustomers } from "@services/catalogService";
 
 const pageSize = 10;
 
 function SpecialCustomersClousing({ data, subsidiary }: any) {
-  const [specialCustomer, setSpecialCustomer] = useState<SpecialCustomerModel>()
-
+  const [specialCustomer, setSpecialCustomer] =
+    useState<SpecialCustomerModel>();
+  const [customers, setCustomers] = useState<{ value: number; label: string }[]>(
+    []
+  );
   const { setFooterData } = useFooter();
   const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
-  const { handleInputTextData, handleUpdateAmountMXN } = useHandleSpecialCustomer(specialCustomer || {} as SpecialCustomerModel, setSpecialCustomer, data?.id)
+  const { handleInputTextData, handleUpdateAmountMXN } =
+    useHandleSpecialCustomer(
+      specialCustomer || ({} as SpecialCustomerModel),
+      setSpecialCustomer,
+      data?.id
+    );
   const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
-  const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([])
+  const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([]);
 
-  const startRange = (page - 1) * pageSize
-  const endRange = startRange + pageSize
+  const startRange = (page - 1) * pageSize;
+  const endRange = startRange + pageSize;
 
   useEffect(() => {
     async function fetchData() {
-      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(data?.id, subsidiary.idCurrency);
-      if (specialCustomer) setFooterData(specialCustomer.total, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
+      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(
+        data?.id,
+        subsidiary.idCurrency
+      );
+      const customersApi = await getCustomers();
+      if (specialCustomer)
+        setFooterData(
+          specialCustomer.total,
+          data.id,
+          CLOUSING_KEY.SPECIALCUSTOMER
+        );
       setSpecialCustomer(specialCustomer);
-      updateTotal(specialCustomer.total.totalPhysical, data.id, CLOUSING_KEY.SPECIALCUSTOMER);
-      
+      updateTotal(
+        specialCustomer.total.totalPhysical,
+        data.id,
+        CLOUSING_KEY.SPECIALCUSTOMER
+      );
+      setCustomers(customersApi);
       const items = specialCustomer?.lines?.slice(startRange, endRange);
       setVisibleItems(items);
     }
 
     fetchData();
-
-  }, [])
+  }, []);
 
   useEffect(() => {
     setPage(page);
     const items = specialCustomer?.lines?.slice(startRange, endRange) || [];
     setVisibleItems(items);
-  }, [page])
+  }, [page]);
 
   return (
     <Box>
@@ -55,120 +92,231 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader textAlign="center">Cheque</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Consumo</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Precio cupón</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Diferencia</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Tipo de cambio</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Cliente</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Consumo
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Precio cupón
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Diferencia
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Tipo de cambio
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Cliente
+              </Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Folio cupones</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Folio cupones USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center" minW="100px">Valor</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Valor USD</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center" minW="120px">Vuelo</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Nombre pasajero</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Folio cupones
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Folio cupones USD
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="100px">
+                Valor
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Valor USD
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="120px">
+                Vuelo
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Nombre pasajero
+              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
+                Monto MXN
+              </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {visibleItems?.map((item: SpecialCustomerLines) => (
               <Table.Row key={item.id}>
+                <Table.Cell textAlign="center">
+                  <Text>{item.check}</Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber
+                      value={item.bill}
+                      style="currency"
+                      currency="USD"
+                    />
+                  </Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <FormatNumber
+                    value={item.couponPrice}
+                    style="currency"
+                    currency="USD"
+                  />
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber
+                      value={item.difference}
+                      style="currency"
+                      currency="USD"
+                    />
+                  </Text>
+                </Table.Cell>
+
+                <Table.Cell textAlign="end">
+                  <Text>
+                    <FormatNumber
+                      value={item.exchangeRate}
+                      style="currency"
+                      currency="USD"
+                    />
+                  </Text>
+                </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text>
-                    {item.check}
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber value={item.bill} style="currency" currency="USD" />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <FormatNumber value={item.couponPrice} style="currency" currency="USD" />
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber value={item.difference} style="currency" currency="USD" />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber value={item.exchangeRate} style="currency" currency="USD" />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
+                  {/*  <Text>
                     {item.client}
+                  </Text> */}
+                  <FilterCustomer
+                    customers={customers}
+                    label={true}
+                    onSelect={(customer: { value: number; label: string }) => {
+                      handleInputTextData(
+                        customer.label,
+                        item.id,
+                        "client"
+                      );
+                    }}
+                    disabled={false}
+                  ></FilterCustomer>
+                </Table.Cell>
+
+                <Table.Cell textAlign="center">
+                  <Text>
+                    <Input
+                      textAlign="center"
+                      value={item.pax}
+                      onChange={(e) =>
+                        handleInputTextData(e.target.value, item.id, "pax")
+                      }
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.pax} onChange={(e) => handleInputTextData(e.target.value, item.id, "pax")}
-                      disabled={data?.closingConfirmation} />
+                    <Input
+                      textAlign="center"
+                      value={item.couponFolio}
+                      onChange={(e) =>
+                        handleInputTextData(
+                          e.target.value,
+                          item.id,
+                          "couponFolio"
+                        )
+                      }
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.couponFolio} onChange={(e) => handleInputTextData(e.target.value, item.id, "couponFolio")}
-                      disabled={data?.closingConfirmation} />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input textAlign="center" value={item.couponFolioUSD} onChange={(e) => handleInputTextData(e.target.value, item.id, "couponFolioUSD")}
-                      disabled={data?.closingConfirmation} />
+                    <Input
+                      textAlign="center"
+                      value={item.couponFolioUSD}
+                      onChange={(e) =>
+                        handleInputTextData(
+                          e.target.value,
+                          item.id,
+                          "couponFolioUSD"
+                        )
+                      }
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.ammount} id={item.id} currency={false} keyValue={"ammount"} onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation} />
+                    <TableInput
+                      value={item.ammount}
+                      id={item.id}
+                      currency={false}
+                      keyValue={"ammount"}
+                      onChange={handleUpdateAmountMXN}
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <TableInput value={item.ammountUSD} id={item.id} currency={false} keyValue={"ammountUSD"} onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation} />
+                    <TableInput
+                      value={item.ammountUSD}
+                      id={item.id}
+                      currency={false}
+                      keyValue={"ammountUSD"}
+                      onChange={handleUpdateAmountMXN}
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.flight} onChange={(e) => handleInputTextData(e.target.value, item.id, "flight")}
-                      disabled={data?.closingConfirmation} />
+                    <Input
+                      textAlign="center"
+                      value={item.flight}
+                      onChange={(e) =>
+                        handleInputTextData(e.target.value, item.id, "flight")
+                      }
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Text>
-                    <Input textAlign="center" value={item.passengerName} onChange={(e) => handleInputTextData(e.target.value, item.id, "passengerName")}
-                      disabled={data?.closingConfirmation} />
+                    <Input
+                      textAlign="center"
+                      value={item.passengerName}
+                      onChange={(e) =>
+                        handleInputTextData(
+                          e.target.value,
+                          item.id,
+                          "passengerName"
+                        )
+                      }
+                      disabled={data?.closingConfirmation}
+                    />
                   </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    <FormatNumber value={item.ammountMXN} style="currency" currency="USD" />
+                    <FormatNumber
+                      value={item.ammountMXN}
+                      style="currency"
+                      currency="USD"
+                    />
                   </Text>
                 </Table.Cell>
-
               </Table.Row>
             ))}
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
-      <PaginationRoot count={specialCustomer?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+      <PaginationRoot
+        count={specialCustomer?.lines?.length ?? 0}
+        pageSize={pageSize}
+        page={page}
+        onPageChange={(e) => setPage(e.page)}
+      >
         <HStack>
           <PaginationPrevTrigger />
           <PaginationItems />
@@ -181,9 +329,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
           <Loading />
         </Box>
       )}
-
     </Box>
-  )
+  );
 }
 
 export default SpecialCustomersClousing;
