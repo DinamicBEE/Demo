@@ -33,7 +33,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)
-      updateTotal(employeeData.total.totalPhysical, data.id, CLOUSING_KEY.EMPLOYEE);
+      updateTotal(-(employeeData.total.totalPhysical), data.id, CLOUSING_KEY.EMPLOYEE);
       
       const items = employeeData?.lines?.slice(startRange, endRange);
       setVisibleItems(items);

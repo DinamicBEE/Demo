@@ -28,7 +28,6 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
-  const [chequeValue, setChequeValue] = useState("");
   const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([])
   const detailsRef = useRef<BankLineDetails[]>([]);
 
@@ -44,7 +43,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   useEffect(() => {
     async function fetchData() {
       const detailsData: BankDetails = voucherData;
-      // const detailsData: BankDetails = await getDetails(clousingId, lineId);
+
       
       if (detailsData) {
         setDetailsLocal(detailsData);
@@ -68,29 +67,6 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
     updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
     
   }, [dataFilesProcess.consolidatedData]);
-
-  useEffect(() => {
-    function handleCheque(cheque: string) {
-      console.log("Cheque", cheque);
-      let items: any[] = [];
-  
-      if (detailsRef.current.length > 0) {
-        items = detailsRef.current;
-        //console.log("Items", items);
-      }
-  
-      detailsLocal?.details?.map((item) => {
-        if(item.check.toLowerCase() === cheque.toLowerCase()) {
-          items.push(item);  
-        }
-      })
-      console.log("Items", items);
-      setVisibleItems(items);
-      detailsRef.current = items;
-    }
-    handleCheque(chequeValue);
-  }, [chequeValue]); 
-
 
   const isCheckValid = (
     check: boolean | undefined,
@@ -195,15 +171,6 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
               >
                 Subir archivos
               </Button>
-            )}
-
-            {detailsLocal?.bankName != "ADYEN" && (
-                    <Group attached mb={4}>
-                      <InputAddon>Cheque</InputAddon>
-                      <Skeleton loading={loading}>
-                        <Input placeholder="Código de Barras" onChange={(e) => setChequeValue(e.target.value)}/>
-                      </Skeleton>
-                    </Group>
             )}
 
             <Table.ScrollArea borderWidth="1px" rounded="md">
