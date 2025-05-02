@@ -60,7 +60,9 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   }
 
   const openDiaolog = (id: number | string, data: any) => {
-    const newData = data.vouchers.map( (v: any) => ({ ...v, date: formatDate(v.date) }));
+    const newData = data.vouchers.map( (v: any) => ({ ...v, date: formatDate(v.date),
+      originalDate: v.date
+     }));
     const bankDetails = {
       ...data,
       id: data.id,

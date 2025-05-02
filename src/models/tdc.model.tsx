@@ -112,4 +112,6 @@ export interface DialogConfirmTDCProps {
   nameBank: string;
   onAccept: () => void;
   loading: boolean;
+  detailsLocal: BankDetails;
+  detailsLineId: any;
 }

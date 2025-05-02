@@ -72,7 +72,11 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
             return tdcDetailsRef.current[clousingId]?.[lineId];
         }
 
-        try {
+        setDetailsLoading(false);
+        
+
+
+      /*   try {
 
             const data: BankDetails = await getTDCDetails(clousingId, lineId)
 
@@ -101,7 +105,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
             setDetailsLoading(false);
 
         }
-
+ */
     },[tdcDetails]);
 
     const setDetails = useCallback( async(details: BankDetails, clousingId: number, lineId: number) => {

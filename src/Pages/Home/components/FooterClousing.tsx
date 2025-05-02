@@ -24,6 +24,7 @@ import { EmployeeLine } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
+import { BankDetails } from "@models/tdc.model";
 
 function FooterClousing({
   clousingType,
@@ -48,6 +49,7 @@ function FooterClousing({
   const { getPrepaidData } = usePrepaidContext();
   const { setDataClousing } = useClousing();
   const { header } = useHeaders();
+  const { getDetails } = useTDCContext();
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -69,7 +71,38 @@ function FooterClousing({
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
-    console.log("aaaaa", tdc);
+    /*  const detailsDatas: BankDetails = await getDetails(
+      clousingId,
+      tdc.lines.map((line) => line.id)
+    ); */
+
+    const detailsDatas = await Promise.all(
+      tdc.lines.map((line) => {
+        return getDetails(clousingId, line.id);
+      })
+    );
+    //filtra diferente de undefined
+    const filterDetails = detailsDatas.filter((detail) => detail !== undefined);
+    console.log("detailsDatas", detailsDatas);
+
+    const newTDC = tdc.lines.map((line) => {
+      const details = filterDetails.find((detail) => detail.id === line.id);
+      return {
+        ...line,
+        voucherAmount: details?.details.length ?? 0,
+        details:
+          details?.details.map((detail: any) => ({
+            amount: detail.amount,
+            check: detail.check,
+            date: detail.originalDate,
+            id: detail.id,
+            status: detail.success,
+            voucherId: detail.voucherId,
+          })) ?? [],
+      };
+    });
+
+    console.log("newTDC", newTDC);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
@@ -144,12 +177,10 @@ function FooterClousing({
       }));
 
     const mapTdcLines = (lines: any[]) => {
-      console.log("lineaaaaaa", lines);
-
-      return lines.map(({ id, vouchers, ...rest }) => ({
+      return lines.map(({ id, vouchers, details, ...rest }) => ({
         ...rest,
         id: typeof id === "number" ? id : null,
-        vouchers: vouchers,
+        vouchers: details,
       }));
     };
 
@@ -197,7 +228,7 @@ function FooterClousing({
       tdc: {
         idCurrencySub: idCurrency,
         total: tdc.total,
-        lines: mapTdcLines(tdc.lines),
+        lines: mapTdcLines(newTDC),
       },
     };
     console.log(body);

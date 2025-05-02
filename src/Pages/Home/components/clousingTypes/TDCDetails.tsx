@@ -1,11 +1,35 @@
-import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber, Input, Table, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import { useEffect, useState, useRef } from "react";
+import {
+  Box,
+  Field,
+  Flex,
+  FormatNumber,
+  Input,
+  Table,
+  Text,
+  Group,
+  InputAddon,
+  Skeleton,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
-  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import {
+  DialogRoot,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogFooter,
+} from "@components/ui/dialog";
 import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
@@ -17,21 +41,33 @@ import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
 import { ProcessResult } from "@models/adyen.model";
 import DialogConfirmTDC from "./DialogConfirmTDC";
 
-const pageSize = 10
+const pageSize = 10;
 
-function TDCDetails({ clousingId, lineId, isOpen, onClose,
-  closingConfirmation, location, subsidiary, voucherData}: DetailsProp) {
-  const [detailsLocal, setDetailsLocal] = useState<BankDetails | undefined>({} as BankDetails);
+function TDCDetails({
+  clousingId,
+  lineId,
+  isOpen,
+  onClose,
+  closingConfirmation,
+  location,
+  subsidiary,
+  voucherData,
+}: DetailsProp) {
+  const [detailsLocal, setDetailsLocal] = useState<BankDetails | undefined>(
+    {} as BankDetails
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
   const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
-  const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([])
+  const [chequeValue, setChequeValue] = useState("");
+  const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([]);
+  const [detailsRef, setDetailsRed] = useState<BankLineDetails[]>([]);
 
-  const startRange = (page - 1) * pageSize
-  const endRange = startRange + pageSize
+  const startRange = (page - 1) * pageSize;
+  const endRange = startRange + pageSize;
 
   const { updateLineClousing, handleInputData } = useHandleTDC(
     clousingId,
@@ -42,14 +78,13 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   useEffect(() => {
     async function fetchData() {
       const detailsData: BankDetails = voucherData;
-      // const detailsData: BankDetails = await getDetails(clousingId, lineId);
-
+      setDetailsRed([]);
+      const detailsDatas: BankDetails = await getDetails(clousingId, lineId);
+      setVisibleItems(detailsDatas?.details);
+      setDetailsLocal(detailsData);
       if (detailsData) {
         setDetailsLocal(detailsData);
       }
-
-      const items = detailsData?.details?.slice(startRange, endRange) || [];
-      setVisibleItems(items);
     }
 
     fetchData();
@@ -57,17 +92,63 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
 
   useEffect(() => {
     setPage(page);
-    const items = detailsLocal?.details?.slice(startRange, endRange) || [];
+    const items =
+      detailsLocal?.bankName === "ADYEN"
+        ? detailsLocal?.details?.slice(startRange, endRange) || []
+        : detailsRef.slice(startRange, endRange) || [];
     setVisibleItems(items);
-  }, [page, detailsLocal])
+  }, [page]);
 
   useEffect(() => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
       return;
     }
     updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
-    
   }, [dataFilesProcess.consolidatedData]);
+
+  useEffect(() => {
+    function handleCheque(cheque: string) {
+      console.log("Cheque", cheque);
+      let items: any[] = [];
+
+      if (detailsRef.length > 0) {
+        items = detailsRef;
+        //console.log("Items", items);
+      }
+
+      /*  detailsLocal?.details?.map((item) => {
+        if(item.check.toLowerCase() === cheque.toLowerCase()) {
+          items.push(item);  
+        }
+      })
+      console.log("Items", items);
+      setVisibleItems(items);
+      detailsRef.current = items; */
+      const filteredItems = detailsLocal?.details?.find(
+        (item) => item.check?.toLowerCase() === cheque.toLowerCase()
+      );
+      const update = [filteredItems, ...detailsRef];
+      setVisibleItems(
+        update.filter((item): item is BankLineDetails => item !== undefined)
+      );
+      setDetailsRed(
+        update.filter((item): item is BankLineDetails => item !== undefined)
+      );
+      /*       detailsRef = update.filter(
+        (item): item is BankLineDetails => item !== undefined
+      ); */
+      const total = detailsRef.reduce(
+        (acc: number, curr: BankLineDetails) => acc + Number(curr.amount),
+        0
+      );
+      const newTotal: any = {
+        ...detailsLocal,
+        total: total,
+      };
+      setDetailsLocal(newTotal);
+    }
+    handleCheque(chequeValue);
+  }, [chequeValue]);
 
   const isCheckValid = (
     check: boolean | undefined,
@@ -87,10 +168,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
     if (!vouchers) return "red.200";
 
     const hasDifferences =
-      vouchers.date ||
-      vouchers.check ||
-      vouchers.amount ||
-      vouchers.general;
+      vouchers.date || vouchers.check || vouchers.amount || vouchers.general;
 
     if (check && !hasDifferences) {
       return "bg.success";
@@ -111,8 +189,10 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
         const detailsValidated: BankDetails = await validateDetails(
           clousingId,
           lineId,
+          detailsRef,
           detailsLocal
         );
+        console.log("detailsValidated", detailsValidated);
 
         setDetailsLocal(detailsValidated);
 
@@ -123,15 +203,17 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
         );
 
         if (allSuccess) {
+          console.log(detailsValidated);
+
           updateLineClousing(detailsValidated);
           onClose();
-        
         }
         setIsOpenDialogSave(false);
       } else if (detailsLocal.bankName === "ADYEN") {
         const detailsValidated: BankDetails = await validateDetails(
           clousingId,
           lineId,
+          detailsRef,
           detailsLocal
         );
         setDetailsLocal(detailsValidated);
@@ -140,7 +222,6 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
         onClose();
         setIsOpenDialogSave(false);
       }
-
       setLoading(false);
     }
   }
@@ -173,6 +254,19 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 Subir archivos
               </Button>
             )}
+
+            {detailsLocal?.bankName != "ADYEN" && (
+              <Group attached mb={4}>
+                <InputAddon>Cheque</InputAddon>
+                <Skeleton loading={loading}>
+                  <Input
+                    placeholder="No. Cheque"
+                    onChange={(e) => setChequeValue(e.target.value)}
+                  />
+                </Skeleton>
+              </Group>
+            )}
+
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
@@ -324,7 +418,12 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot count={detailsLocal?.details?.length ?? 0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+            <PaginationRoot
+              count={detailsLocal?.details?.length ?? 0}
+              pageSize={pageSize}
+              page={page}
+              onPageChange={(e) => setPage(e.page)}
+            >
               <HStack>
                 <PaginationPrevTrigger />
                 <PaginationItems />
@@ -352,8 +451,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 //   onClick={() => saveDetails()}
                 onClick={() => setIsOpenDialogSave(true)}
                 disabled={
-                  closingConfirmation || 
-                  (detailsLocal?.bankName === "ADYEN" && !(dataFilesProcess && dataFilesProcess.consolidatedData))
+                  closingConfirmation ||
+                  (detailsLocal?.bankName === "ADYEN" &&
+                    !(dataFilesProcess && dataFilesProcess.consolidatedData))
                 }
               >
                 Guardar
@@ -376,6 +476,8 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
         onClose={() => setIsOpenDialogSave(false)}
         nameBank={detailsLocal?.bankName || ""}
         loading={loading}
+        detailsLocal={detailsLocal || ({} as BankDetails)}
+        detailsLineId={detailsRef}
       />
     </>
   );

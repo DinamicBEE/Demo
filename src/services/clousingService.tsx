@@ -25,7 +25,7 @@ import {
   PrepaidModel,
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
-import { BankDetails, TDCModel } from "@models/tdc.model";
+import { BankDetails, BankLineDetails, TDCModel } from "@models/tdc.model";
 import axios from "axios";
 import {
   CASH,
@@ -214,6 +214,7 @@ export const getTDCDetails = async (
 export const validateDetails = async (
   clousingId: number,
   lineId: number | string,
+  BankLineDetails: BankLineDetails[],
   details: BankDetails
 ): Promise<BankDetails> => {
   // console.log(clousingId, lineId);
@@ -236,16 +237,12 @@ export const validateDetails = async (
     } else */ if (details.bankName === "ADYEN") {
       data = {
         ...details,
-        details: details.details.map((detial) => {
-          return {
-            ...detial,
-          };
-        }),
+        details: BankLineDetails
       };
     } else {
       data = {
         ...details,
-        details: details.details.map((detial) => {
+        details: BankLineDetails.map((detial) => {
           const success = true; //Math.random() < 0.5;
 
           return {

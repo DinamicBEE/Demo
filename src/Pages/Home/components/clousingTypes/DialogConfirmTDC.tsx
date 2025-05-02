@@ -16,7 +16,11 @@ function DialogConfirmTDC({
   onClose,
   nameBank,
   loading,
+  detailsLocal,
+  detailsLineId,
 }: DialogConfirmTDCProps) {
+  console.log("DialogConfirmTDC", detailsLocal, detailsLineId);
+
   return (
     <DialogRoot
       open={isOpen}
@@ -34,7 +38,25 @@ function DialogConfirmTDC({
         </DialogHeader>
 
         <DialogBody>
-          <p>¿Está seguro que desea cerrar TDC - {nameBank}?</p>
+          {detailsLineId?.length !== detailsLocal?.details?.length ? (
+            <Flex
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              gap={2}
+            >
+              <p>La cantidad de voucher no coincide</p>
+            </Flex>
+          ) : (
+            <Flex
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+              gap={2}
+            >
+              <p>¿Estas seguro que deseas aprobar el cierre de {nameBank}?</p>
+            </Flex>
+          )}
         </DialogBody>
 
         <DialogFooter>
