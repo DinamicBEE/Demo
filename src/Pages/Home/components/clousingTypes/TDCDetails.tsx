@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber, Input, Table, Text, HStack } from "@chakra-ui/react";
+import { useEffect, useState, useRef } from "react";
+import { Box, Field, Flex, FormatNumber, Input, Table, Text, Group, InputAddon, Skeleton, HStack } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
@@ -29,6 +29,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([])
+  const detailsRef = useRef<BankLineDetails[]>([]);
 
   const startRange = (page - 1) * pageSize
   const endRange = startRange + pageSize
@@ -42,14 +43,12 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
   useEffect(() => {
     async function fetchData() {
       const detailsData: BankDetails = voucherData;
-      // const detailsData: BankDetails = await getDetails(clousingId, lineId);
 
+      
       if (detailsData) {
         setDetailsLocal(detailsData);
       }
 
-      const items = detailsData?.details?.slice(startRange, endRange) || [];
-      setVisibleItems(items);
     }
 
     fetchData();
@@ -57,9 +56,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
 
   useEffect(() => {
     setPage(page);
-    const items = detailsLocal?.details?.slice(startRange, endRange) || [];
+    const items = detailsLocal?.bankName === "ADYEN" ? detailsLocal?.details?.slice(startRange, endRange) || [] : detailsRef.current.slice(startRange, endRange) || [];
     setVisibleItems(items);
-  }, [page, detailsLocal])
+  }, [page])
 
   useEffect(() => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
@@ -173,6 +172,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose,
                 Subir archivos
               </Button>
             )}
+
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
