@@ -11,10 +11,10 @@ export interface TDCContextType {
   detailsError: string;
   getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
-  getDetails: (
+/*   getDetails: (
     clousingId: number,
     lineId: number | null | string,
-  ) => Promise<Voucher>;
+  ) => Promise<Voucher>; */
   setDetails: (
     details: BankLineModel,
     clousingId: number,
@@ -81,7 +81,7 @@ export interface Voucher {
   date: string;
   check: string;
   amount: number;
-  status: string;
+  status: boolean;
   message?: string;
   dateDisplay?: string;
   difference?: {

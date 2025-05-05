@@ -63,53 +63,7 @@ console.log('data', data);
 
     },[tdc]);
 
-    const getDetails = useCallback( async(clousingId:number, lineId:number | null)=>{
-        setDetailsLoading(true);
-
-        if (lineId === null) return Promise.resolve({ id: 0, bankName: '', total: 0, details: [] } as BankDetails);
-
-        if(tdcDetailsRef.current[clousingId]?.[lineId]) {
-            setDetailsLoading(false);
-            return tdcDetailsRef.current[clousingId]?.[lineId];
-        }
-
-        setDetailsLoading(false);
-        
-
-
-      /*   try {
-
-            const data: BankDetails = await getTDCDetails(clousingId, lineId)
-
-            const currentClousingData = tdcDetailsRef.current[clousingId] || {};
-
-            const updateDetails = {
-                ...tdcDetailsRef.current,
-                [clousingId]:{
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [lineId]: data
-                }
-            }
-
-            updateTDCDetails(updateDetails)
-            
-            return data;
-            
-        } catch (error) {
-            
-            setDetailsError(error instanceof Error ? error.message : String(error));
-            
-            throw error;
-
-        } finally {
-
-            setDetailsLoading(false);
-
-        }
- */
-    },[tdcDetails]);
-
-    const setDetails = useCallback( async(details: BankLineModel, clousingId: number, lineId: number) => {
+    const setDetails = useCallback( async(details: BankLineModel, clousingId: number, lineId: number | string) => {
 
         const currentLines = tdcDetailsRef.current[clousingId] || {};
 
@@ -149,11 +103,11 @@ console.log('data', data);
             detailsError,
             getTDCData,
             setTDCData,
-            getDetails,
+            
             setDetails
         }),
         [tdc, tdcDetails, tdcLoading, detailsLoading, error, detailsError, 
-            getTDCData, setTDCData, getDetails, setDetails]
+            getTDCData, setTDCData, setDetails]
     );
 
     return (

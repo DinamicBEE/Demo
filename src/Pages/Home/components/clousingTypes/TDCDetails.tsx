@@ -74,18 +74,19 @@ function TDCDetails({
     clousingId,
     lineId ?? 0
   );
-  const { getDetails, detailsLoading, setDetails } = useTDCContext();
+  const { detailsLoading, setDetails } = useTDCContext();
 
   useEffect(() => {
     async function fetchData() {
       if (lineId === null) return;
-      setPage(page);
+      setPage(1);
+
+      setDetailsLocal(bankDetails);
       setVisibleItems(
         bankDetails.vouchers
           .filter((item) => item.status)
           .slice(startRange, endRange)
       );
-      setDetailsLocal(bankDetails);
       setLocalAmount(
         bankDetails.vouchers
           .filter((item) => item.status)
@@ -97,11 +98,13 @@ function TDCDetails({
   }, [lineId]);
 
   useEffect(() => {
-    if (lineId === null) return;
+    if (lineId === null && detailsLocal === undefined) return;
+    if (!detailsLocal?.vouchers) return;
     setPage(page);
-    const items = bankDetails.vouchers
+    const items = detailsLocal.vouchers
       .filter((item) => item.status)
       .slice(startRange, endRange);
+  /*     const items = detailsLocal.vouchers */
     setVisibleItems(items);
   }, [page]);
 
@@ -192,6 +195,7 @@ function TDCDetails({
     };
 
     setDetailsLocal(updatedDetailsLocal);
+    
     setVisibleItems(
       updatedDetailsLocal.vouchers
         .filter((item) => item.status)
