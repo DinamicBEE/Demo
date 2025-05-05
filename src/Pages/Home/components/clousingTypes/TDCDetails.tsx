@@ -30,7 +30,7 @@ import {
   DialogCloseTrigger,
   DialogFooter,
 } from "@components/ui/dialog";
-import { BankDetails, BankLineDetails, DetailsProp } from "@models/tdc.model";
+import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
@@ -40,6 +40,7 @@ import { useTDCAdyenContext } from "@context/clousing/tdcAdyenContext";
 import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
 import { ProcessResult } from "@models/adyen.model";
 import DialogConfirmTDC from "./DialogConfirmTDC";
+import FilterVoucher from "@components/FilterVouchers";
 
 const pageSize = 10;
 
@@ -51,10 +52,10 @@ function TDCDetails({
   closingConfirmation,
   location,
   subsidiary,
-  voucherData,
+  bankDetails,
 }: DetailsProp) {
-  const [detailsLocal, setDetailsLocal] = useState<BankDetails | undefined>(
-    {} as BankDetails
+  const [detailsLocal, setDetailsLocal] = useState<BankLineModel | undefined>(
+    {} as BankLineModel
   );
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
@@ -63,9 +64,9 @@ function TDCDetails({
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const [chequeValue, setChequeValue] = useState("");
-  const [visibleItems, setVisibleItems] = useState<BankLineDetails[]>([]);
-  const [detailsRef, setDetailsRed] = useState<BankLineDetails[]>([]);
-
+  const [visibleItems, setVisibleItems] = useState<Voucher[]>([]);
+  const [localAmount, setLocalAmount] = useState<number>(0);
+  // const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
@@ -77,78 +78,39 @@ function TDCDetails({
 
   useEffect(() => {
     async function fetchData() {
-      const detailsData: BankDetails = voucherData;
-      setDetailsRed([]);
-      const detailsDatas: BankDetails = await getDetails(clousingId, lineId);
-      setVisibleItems(detailsDatas?.details);
-      setDetailsLocal(detailsData);
-      if (detailsData) {
-        setDetailsLocal(detailsData);
-      }
+      if (lineId === null) return;
+      setPage(page);
+      setVisibleItems(
+        bankDetails.vouchers
+          .filter((item) => item.status)
+          .slice(startRange, endRange)
+      );
+      setDetailsLocal(bankDetails);
+      setLocalAmount(
+        bankDetails.vouchers
+          .filter((item) => item.status)
+          .reduce((acc, curr) => acc + curr.amount, 0)
+      );
     }
 
     fetchData();
   }, [lineId]);
 
   useEffect(() => {
+    if (lineId === null) return;
     setPage(page);
-    const items =
-      detailsLocal?.bankName === "ADYEN"
-        ? detailsLocal?.details?.slice(startRange, endRange) || []
-        : detailsRef.slice(startRange, endRange) || [];
+    const items = bankDetails.vouchers
+      .filter((item) => item.status)
+      .slice(startRange, endRange);
     setVisibleItems(items);
   }, [page]);
 
   useEffect(() => {
-    if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
+    if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
     updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
   }, [dataFilesProcess.consolidatedData]);
-
-  useEffect(() => {
-    function handleCheque(cheque: string) {
-      console.log("Cheque", cheque);
-      let items: any[] = [];
-
-      if (detailsRef.length > 0) {
-        items = detailsRef;
-        //console.log("Items", items);
-      }
-
-      /*  detailsLocal?.details?.map((item) => {
-        if(item.check.toLowerCase() === cheque.toLowerCase()) {
-          items.push(item);  
-        }
-      })
-      console.log("Items", items);
-      setVisibleItems(items);
-      detailsRef.current = items; */
-      const filteredItems = detailsLocal?.details?.find(
-        (item) => item.check?.toLowerCase() === cheque.toLowerCase()
-      );
-      const update = [filteredItems, ...detailsRef];
-      setVisibleItems(
-        update.filter((item): item is BankLineDetails => item !== undefined)
-      );
-      setDetailsRed(
-        update.filter((item): item is BankLineDetails => item !== undefined)
-      );
-      /*       detailsRef = update.filter(
-        (item): item is BankLineDetails => item !== undefined
-      ); */
-      const total = detailsRef.reduce(
-        (acc: number, curr: BankLineDetails) => acc + Number(curr.amount),
-        0
-      );
-      const newTotal: any = {
-        ...detailsLocal,
-        total: total,
-      };
-      setDetailsLocal(newTotal);
-    }
-    handleCheque(chequeValue);
-  }, [chequeValue]);
 
   const isCheckValid = (
     check: boolean | undefined,
@@ -185,35 +147,19 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      if (detailsLocal.bankName !== "ADYEN") {
-        const detailsValidated: BankDetails = await validateDetails(
-          clousingId,
-          lineId,
-          detailsRef,
-          detailsLocal
-        );
-        console.log("detailsValidated", detailsValidated);
+      if (detailsLocal.bank !== "ADYEN") {
+        console.log("detailsLocal on Save", detailsLocal);
 
-        setDetailsLocal(detailsValidated);
-
-        setDetails(detailsValidated, clousingId, lineId);
-
-        const allSuccess = detailsValidated.details.every(
-          (item) => item.success
-        );
-
-        if (allSuccess) {
-          console.log(detailsValidated);
-
-          updateLineClousing(detailsValidated);
-          onClose();
-        }
+        //  setDetails(detailsLocal, clousingId, lineId);
+        updateLineClousing(detailsLocal);
+        onClose();
         setIsOpenDialogSave(false);
-      } else if (detailsLocal.bankName === "ADYEN") {
-        const detailsValidated: BankDetails = await validateDetails(
+      } else if (detailsLocal.bank === "ADYEN") {
+        const detailsValidated: BankLineModel = await validateDetails(
           clousingId,
           lineId,
-          detailsRef,
+          // selectedVouchers,
+          detailsLocal.vouchers.filter((item) => item.status),
           detailsLocal
         );
         setDetailsLocal(detailsValidated);
@@ -225,6 +171,38 @@ function TDCDetails({
       setLoading(false);
     }
   }
+
+  const onSelect = (item: Voucher) => {
+    const updatedDetails = detailsLocal?.vouchers.map((voucher) =>
+      voucher.id === item.id && voucher.amount === item.amount
+        ? {
+            ...voucher,
+            status: true, // Convert boolean to string
+          }
+        : voucher
+    );
+    console.log("updatedDetails", updatedDetails);
+
+    if (updatedDetails === undefined) return;
+    if (detailsLocal === undefined) return;
+
+    const updatedDetailsLocal: BankLineModel = {
+      ...detailsLocal,
+      vouchers: updatedDetails as Voucher[],
+    };
+
+    setDetailsLocal(updatedDetailsLocal);
+    setVisibleItems(
+      updatedDetailsLocal.vouchers
+        .filter((item) => item.status)
+        .slice(startRange, endRange)
+    );
+    setLocalAmount(
+      updatedDetailsLocal.vouchers
+        .filter((item) => item.status)
+        .reduce((acc, curr) => acc + curr.amount, 0)
+    );
+  };
 
   return (
     <>
@@ -239,11 +217,11 @@ function TDCDetails({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{detailsLocal?.bankName}</DialogTitle>
+            <DialogTitle>{detailsLocal?.bank}</DialogTitle>
           </DialogHeader>
 
           <DialogBody>
-            {detailsLocal?.bankName === "ADYEN" && (
+            {detailsLocal?.bank === "ADYEN" && (
               <Button
                 colorPalette="meraPrimary"
                 marginBottom={4}
@@ -255,28 +233,38 @@ function TDCDetails({
               </Button>
             )}
 
-            {detailsLocal?.bankName != "ADYEN" && (
-              <Group attached mb={4}>
-                <InputAddon>Cheque</InputAddon>
+            {detailsLocal?.bank != "ADYEN" && (
+              <Flex mb={4} width="100%">
+                {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
                   <Input
                     placeholder="No. Cheque"
                     onChange={(e) => setChequeValue(e.target.value)}
                   />
-                </Skeleton>
-              </Group>
+                </Skeleton> */}
+
+                <FilterVoucher
+                  label={true}
+                  disabled={closingConfirmation}
+                  onSelect={onSelect}
+                  vouchers={
+                    detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
+                  }
+                  voucherSelect={chequeValue}
+                />
+              </Flex>
             )}
 
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
-                    {detailsLocal?.bankName === "ADYEN" && (
+                    {detailsLocal?.bank === "ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         <Checkbox
                           top="1"
                           aria-label="Select row"
-                          checked={detailsLocal.details.every(
+                          checked={detailsLocal.vouchers.every(
                             (item) => item.successAdyen
                           )}
                           disabled={
@@ -286,7 +274,7 @@ function TDCDetails({
                               : true
                           }
                           onCheckedChange={(changes) => {
-                            const updatedDetails = detailsLocal.details.map(
+                            const updatedDetails = detailsLocal.vouchers.map(
                               (detail) => ({
                                 ...detail,
                                 successAdyen: changes.checked as boolean,
@@ -314,7 +302,7 @@ function TDCDetails({
                     <Table.ColumnHeader textAlign="end">
                       Importe
                     </Table.ColumnHeader>
-                    {detailsLocal?.bankName === "ADYEN" && (
+                    {detailsLocal?.bank === "ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
                       </Table.ColumnHeader>
@@ -323,15 +311,15 @@ function TDCDetails({
                 </Table.Header>
 
                 <Table.Body>
-                  {visibleItems?.map((item: BankLineDetails) => (
+                  {visibleItems?.map((item: Voucher) => (
                     <Table.Row
                       key={`${item.id}-${item.check}-${item.amount}`}
                       backgroundColor={isCheckValid(
                         item.successAdyen,
-                        item.vouchers
+                        item.difference
                       )}
                     >
-                      {detailsLocal?.bankName === "ADYEN" && (
+                      {detailsLocal?.bank === "ADYEN" && (
                         <Table.Cell>
                           <Checkbox
                             top="1"
@@ -368,13 +356,13 @@ function TDCDetails({
                         </Table.Cell>
                       )}
                       <Table.Cell textAlign="center">
-                        <Text>{item.date}</Text>
+                        <Text>{item.dateDisplay}</Text>
                       </Table.Cell>
 
                       <Table.Cell>
-                        {detailsLocal?.bankName !== "ADYEN" ? (
+                        {/*   {detailsLocal?.bank !== "ADYEN" ? (
                           <Field.Root
-                            invalid={item.success != undefined && !item.success}
+                            invalid={item.status != undefined && !item.status}
                           >
                             <Input
                               textAlign="center"
@@ -384,16 +372,15 @@ function TDCDetails({
                                 handleInputData(
                                   e.target.value,
                                   item.id,
-                                  detailsLocal || ({} as BankDetails),
+                                  detailsLocal || ({} as BankLineModel),
                                   setDetailsLocal
                                 )
                               }
                             />
                             <Field.ErrorText>{item.message}</Field.ErrorText>
                           </Field.Root>
-                        ) : (
-                          <Text>{item.check}</Text>
-                        )}
+                        ) : ( */}
+                        <Text>{item.check}</Text>
                       </Table.Cell>
 
                       <Table.Cell textAlign="end">
@@ -405,12 +392,12 @@ function TDCDetails({
                           />
                         </Text>
                       </Table.Cell>
-                      {detailsLocal?.bankName === "ADYEN" && (
+                      {detailsLocal?.bank === "ADYEN" && (
                         <Table.Cell textAlign="center">
-                          <Text>{item.vouchers?.date}</Text>
-                          <Text>{item.vouchers?.check}</Text>
-                          <Text>{item.vouchers?.amount}</Text>
-                          <Text>{item.vouchers?.general}</Text>
+                          <Text>{item.difference?.date}</Text>
+                          <Text>{item.difference?.check}</Text>
+                          <Text>{item.difference?.amount}</Text>
+                          <Text>{item.difference?.general}</Text>
                         </Table.Cell>
                       )}
                     </Table.Row>
@@ -418,18 +405,24 @@ function TDCDetails({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot
-              count={detailsLocal?.details?.length ?? 0}
-              pageSize={pageSize}
-              page={page}
-              onPageChange={(e) => setPage(e.page)}
-            >
-              <HStack>
-                <PaginationPrevTrigger />
-                <PaginationItems />
-                <PaginationNextTrigger />
-              </HStack>
-            </PaginationRoot>
+            {detailsLocal?.vouchers?.filter((item) => item.status).length !==
+              0 && (
+              <PaginationRoot
+                count={
+                  detailsLocal?.vouchers?.filter((item) => item.status)
+                    .length ?? 0
+                }
+                pageSize={pageSize}
+                page={page}
+                onPageChange={(e) => setPage(e.page)}
+              >
+                <HStack>
+                  <PaginationPrevTrigger />
+                  <PaginationItems />
+                  <PaginationNextTrigger />
+                </HStack>
+              </PaginationRoot>
+            )}
 
             {detailsLoading && (
               <Box position="fixed" top="50%" left="50%" zIndex="1">
@@ -441,7 +434,7 @@ function TDCDetails({
           <DialogFooter>
             <Flex gap={4}>
               <CurrencyInput
-                value={detailsLocal?.total}
+                value={localAmount}
                 name={"Total"}
                 loading={detailsLoading || false}
               />
@@ -452,7 +445,7 @@ function TDCDetails({
                 onClick={() => setIsOpenDialogSave(true)}
                 disabled={
                   closingConfirmation ||
-                  (detailsLocal?.bankName === "ADYEN" &&
+                  (detailsLocal?.bank === "ADYEN" &&
                     !(dataFilesProcess && dataFilesProcess.consolidatedData))
                 }
               >
@@ -474,10 +467,9 @@ function TDCDetails({
         isOpen={isOpenDialogSave}
         onAccept={saveDetails}
         onClose={() => setIsOpenDialogSave(false)}
-        nameBank={detailsLocal?.bankName || ""}
+        nameBank={detailsLocal?.bank || ""}
         loading={loading}
-        detailsLocal={detailsLocal || ({} as BankDetails)}
-        detailsLineId={detailsRef}
+        detailsLocal={detailsLocal || ({} as BankLineModel)}
       />
     </>
   );

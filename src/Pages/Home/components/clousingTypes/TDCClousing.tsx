@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
-import { Box, Table, Text, FormatNumber, IconButton, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Table,
+  Text,
+  FormatNumber,
+  IconButton,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
-import { BankDetails, BankLineModel, TDCModel } from "@models/tdc.model";
+import { Voucher, BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
@@ -16,21 +28,24 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null | string>(null);
   const [details, setDetails] = useState<boolean>(false);
-  const [voucher, setVoucher] = useState<BankDetails>({} as BankDetails) ;
+  const [voucher, setVoucher] = useState<Voucher[]>([]);
+  const [bankSelected, setBankSelected] = useState<BankLineModel>(
+    {} as BankLineModel
+  );
 
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
-  const {updateTotal} = useHeaders();
+  const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
-  const [visibleItems, setVisibleItems] = useState<BankLineModel[]>([])
+  const [visibleItems, setVisibleItems] = useState<BankLineModel[]>([]);
 
-  const startRange = (page - 1) * pageSize
-  const endRange = startRange + pageSize
+  const startRange = (page - 1) * pageSize;
+  const endRange = startRange + pageSize;
 
   useEffect(() => {
     async function fetchData() {
       const tdc: TDCModel = await getTDCData(data?.id, idCurrency);
-      
+
       if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
@@ -49,34 +64,34 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
     setPage(page);
     const items = tdcData?.lines?.slice(startRange, endRange) ?? [];
     setVisibleItems(items);
-  }, [page])
+  }, [page]);
 
-  function formatDate( dateString: string ) {
+  function formatDate(dateString: string) {
     const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-    return (`${day}/${month}/${year}`);
+    return `${day}/${month}/${year}`;
   }
 
-  const openDiaolog = (id: number | string, data: any) => {
-    const newData = data.vouchers.map( (v: any) => ({ ...v, date: formatDate(v.date),
-      originalDate: v.date
-     }));
-    const bankDetails = {
+  const openDiaolog = (id: number | string, data: BankLineModel) => {
+    const newData: Voucher[] = data.vouchers.map((v: Voucher) => ({
+      ...v,
+     dateDisplay: formatDate(v.date),
+    }));
+    setBankSelected({
       ...data,
-      id: data.id,
-      bankName: data.bank,
-      total: 0,
-      details: newData
-    }
-    setVoucher(bankDetails);
+      vouchers: newData,
+    });
+    setVoucher(newData);
     setLineSeleted(id);
     setDetails(true);
   };
 
   const closeDiaolog = () => {
     setLineSeleted(null);
+    setVoucher([]);
+    setBankSelected({} as BankLineModel);
     setDetails(false);
   };
 
@@ -89,11 +104,19 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
           <Table.Root size="sm" variant="outline">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader textAlign="center">Banco</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  Banco
+                </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">POS</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">Físico</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">Cantidad Vouchers</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  Físico
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  Cantidad Vouchers
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  Acciones
+                </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -143,7 +166,12 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
             </Table.Body>
           </Table.Root>
         </Table.ScrollArea>
-        <PaginationRoot count={tdcData?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+        <PaginationRoot
+          count={tdcData?.lines?.length ?? 0}
+          pageSize={pageSize}
+          page={page}
+          onPageChange={(e) => setPage(e.page)}
+        >
           <HStack>
             <PaginationPrevTrigger />
             <PaginationItems />
@@ -166,7 +194,7 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
         isOpen={details}
         onClose={closeDiaolog}
         closingConfirmation={data?.closingConfirmation}
-        voucherData={voucher}
+        bankDetails={bankSelected}
       />
     </>
   );

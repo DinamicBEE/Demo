@@ -17,10 +17,7 @@ function DialogConfirmTDC({
   nameBank,
   loading,
   detailsLocal,
-  detailsLineId,
 }: DialogConfirmTDCProps) {
-  console.log("DialogConfirmTDC", detailsLocal, detailsLineId);
-
   return (
     <DialogRoot
       open={isOpen}
@@ -38,7 +35,7 @@ function DialogConfirmTDC({
         </DialogHeader>
 
         <DialogBody>
-          {detailsLineId?.length !== detailsLocal?.details?.length ? (
+         {/*  {detailsLineId?.length !== detailsLocal?.details?.length ? (
             <Flex
               direction="column"
               justifyContent="center"
@@ -56,7 +53,7 @@ function DialogConfirmTDC({
             >
               <p>¿Estas seguro que deseas aprobar el cierre de {nameBank}?</p>
             </Flex>
-          )}
+          )} */}
         </DialogBody>
 
         <DialogFooter>

@@ -1,95 +1,101 @@
 import { useHeaders } from "@context/home/headerContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { BankDetails, BankLineDetails, BankLineModel, TDCModel } from "@models/tdc.model";
+import { Voucher, BankLineModel, TDCModel } from "@models/tdc.model";
 import { TotalModel } from "@models/common.clousing.model";
 import { CLOUSING_KEY } from "@models/constants.model";
 
-export const useHandleTDC = (clousingId: number, lineId: number | string ) => {
+export const useHandleTDC = (clousingId: number, lineId: number | string) => {
+  const { updateTotal } = useHeaders();
+  const { setDetails, tdc, setTDCData } = useTDCContext();
 
-    const { updateTotal } = useHeaders();
-    const { setDetails, tdc, setTDCData } = useTDCContext();
+  function handleInputData(
+    value: string,
+    id: number | string,
+    details: BankLineModel,
+    setDetail: any
+  ) {
+    if (lineId === null) return;
 
-    function handleInputData(value: string, id: number | string, details: BankDetails, setDetail: any,) {
-      if (lineId === null) return;
+    const updateLines = details?.vouchers.map((item: Voucher) =>
+      item.id === id
+        ? {
+            ...item,
+            check: value,
+          }
+        : item
+    );
 
-      const updateLines = details?.details.map((item: BankLineDetails) =>
-        item.id === id
-          ? {
-              ...item,
-              check: value,
-            }
-          : item
-      );
+    const updateBankDetails: BankLineModel = {
+      ...details!,
+      vouchers: updateLines || [],
+    };
 
-      const updateBankDetails: BankDetails = {
-        ...details!,
-        details: updateLines || [],
-      };
+    setDetail(updateBankDetails);
 
-      setDetail(updateBankDetails);
+    setDetails(updateBankDetails, clousingId, lineId);
+  }
 
-      setDetails(updateBankDetails, clousingId, lineId);
-    }
+  function updateLineClousing(detailsValidated: BankLineModel) {
+    const tdcData = tdc?.[clousingId];
 
-    function updateLineClousing(detailsValidated: BankDetails) {
-      const tdcData = tdc?.[clousingId];
+    const newPhysical = detailsValidated.vouchers
+      .filter((item: Voucher) => item.status)
+      .reduce((acc: number, curr: Voucher) => acc + curr.amount, 0);
 
-      const newPhysical = detailsValidated.details.reduce(
-        (acc: number, curr: BankLineDetails) => acc + curr.amount,
-        0
-      );
+    const successCount = detailsValidated.vouchers.filter(
+      (item: Voucher) => item.status
+    ).length;
 
-      const successCount = detailsValidated.details.filter(
-        (item: BankLineDetails) => item.success
-      ).length;
-      const successCountAdyen = detailsValidated.details.filter(
-        (item: BankLineDetails) => item.successAdyen
-      )
+    const successCountAdyen = detailsValidated.vouchers.filter(
+      (item: Voucher) => item.successAdyen
+    );
 
-      const newPhysicalAdyen = successCountAdyen.map((item: BankLineDetails) => item.amount).reduce(
-        (acc: number, curr: number) => acc + curr,
-        0
-      );
+    const newPhysicalAdyen = successCountAdyen
+      .map((item: Voucher) => item.amount)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
 
-      const updateLines = tdcData?.lines?.map((item: BankLineModel) =>
-        lineId === item.id
-          ? {
-              ...item,
-              voucherAmount: detailsValidated.bankName === "ADYEN" ? successCountAdyen.length : successCount,
-              physical: detailsValidated.bankName === "ADYEN" ? newPhysicalAdyen : newPhysical,
-            }
-          : item
-      );
+    const updateLines = tdcData?.lines?.map((item: BankLineModel) =>
+      lineId === item.id
+        ? {
+            ...item,
+            voucherAmount:
+              detailsValidated.bank === "ADYEN"
+                ? successCountAdyen.length
+                : successCount,
+            physical:
+              detailsValidated.bank === "ADYEN"
+                ? newPhysicalAdyen
+                : newPhysical,
+            vouchers: detailsValidated.vouchers,
+          }
+        : item
+    );
 
-      const newTotalPhysical = updateLines?.reduce(
-        (acc: number, curr: BankLineModel) => acc + curr.physical,
-        0
-      );
+    const newTotalPhysical = updateLines?.reduce(
+      (acc: number, curr: BankLineModel) => acc + curr.physical,
+      0
+    );
 
-      const newDifference =
-        (tdcData?.total?.totalPOS || 0) - (newTotalPhysical || 0);
+    const newDifference =
+      (tdcData?.total?.totalPOS || 0) - (newTotalPhysical || 0);
 
-      const newTotal: TotalModel = {
-        totalPOS: tdcData?.total?.totalPOS || 0,
-        totalPhysical: newTotalPhysical || 0,
-        difference: newDifference,
-      };
+    const newTotal: TotalModel = {
+      totalPOS: tdcData?.total?.totalPOS || 0,
+      totalPhysical: newTotalPhysical || 0,
+      difference: newDifference,
+    };
 
-      const updateTDCData: TDCModel = {
-        id: tdcData?.id || 0,
-        employeId: tdcData?.employeId || 0,
-        total: newTotal,
-        lines: updateLines || [],
-      };
+    const updateTDCData: TDCModel = {
+      id: tdcData?.id || 0,
+      employeId: tdcData?.employeId || 0,
+      total: newTotal,
+      lines: updateLines || [],
+    };
 
-      updateTotal(
-        newTotalPhysical || 0,
-        clousingId,
-        CLOUSING_KEY.TDC
-      );
+    updateTotal(newTotalPhysical || 0, clousingId, CLOUSING_KEY.TDC);
 
-      setTDCData(updateTDCData, clousingId);
-    }
+    setTDCData(updateTDCData, clousingId);
+  }
 
-    return { handleInputData, updateLineClousing };
-}
+  return { handleInputData, updateLineClousing };
+};
