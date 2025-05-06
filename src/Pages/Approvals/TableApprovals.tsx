@@ -8,7 +8,7 @@ import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext"
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
-import Loading from "@components/loading";
+import Loading from "@components/Loading";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
