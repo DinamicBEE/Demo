@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { getTDCClousing, getTDCDetails } from '@services/clousingService';
-import { BankDetails, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
+import { BankLineModel, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
 const tdcContext = createContext<TDCContextType>({} as TDCContextType);
 
@@ -38,6 +38,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         try {
 
             const data: TDCModel = await getTDCClousing(clousingId, idCurrency);
+console.log('data', data);
 
             const updateTDC: TDCContext = {
                 ...tdcRef.current,
@@ -62,49 +63,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
     },[tdc]);
 
-    const getDetails = useCallback( async(clousingId:number, lineId:number | null)=>{
-        setDetailsLoading(true);
-
-        if (lineId === null) return Promise.resolve({ id: 0, bankName: '', total: 0, details: [] } as BankDetails);
-
-        if(tdcDetailsRef.current[clousingId]?.[lineId]) {
-            setDetailsLoading(false);
-            return tdcDetailsRef.current[clousingId]?.[lineId];
-        }
-
-        try {
-
-            const data: BankDetails = await getTDCDetails(clousingId, lineId)
-
-            const currentClousingData = tdcDetailsRef.current[clousingId] || {};
-
-            const updateDetails = {
-                ...tdcDetailsRef.current,
-                [clousingId]:{
-                    ...(typeof currentClousingData === 'object' ? currentClousingData : {}),
-                    [lineId]: data
-                }
-            }
-
-            updateTDCDetails(updateDetails)
-            
-            return data;
-            
-        } catch (error) {
-            
-            setDetailsError(error instanceof Error ? error.message : String(error));
-            
-            throw error;
-
-        } finally {
-
-            setDetailsLoading(false);
-
-        }
-
-    },[tdcDetails]);
-
-    const setDetails = useCallback( async(details: BankDetails, clousingId: number, lineId: number) => {
+    const setDetails = useCallback( async(details: BankLineModel, clousingId: number, lineId: number | string) => {
 
         const currentLines = tdcDetailsRef.current[clousingId] || {};
 
@@ -144,11 +103,11 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
             detailsError,
             getTDCData,
             setTDCData,
-            getDetails,
+            
             setDetails
         }),
         [tdc, tdcDetails, tdcLoading, detailsLoading, error, detailsError, 
-            getTDCData, setTDCData, getDetails, setDetails]
+            getTDCData, setTDCData, setDetails]
     );
 
     return (

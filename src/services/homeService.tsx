@@ -4,6 +4,7 @@ import api from "../api/index";
 import { ClousingModel } from "@models/common.clousing.model";
 import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
+import {format} from "date-fns";
 //const BASE_URL = "https://run.mocky.io/v3";
 
 /**
@@ -16,17 +17,28 @@ import { getStatus } from "../utils/getStatus";
  */
 export const getGeneralInfo = async (
   subsidiary: number,
-  store: number
+  store: number,
+  page: number,
+  startDate: Date,
+  endDate: Date
 ): Promise<ClousingModel> => {
   try {
     // console.log(subsidiary, store)
     //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
     //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
-    console.log(subsidiary, store);
+    //2025-04-02
+    // 2025-05-05T06:00:00.000Z
+console.log();
 
+    const startDateFormat = format(startDate, "yyyy-MM-dd");
+    const endDateFormat = format(endDate, "yyyy-MM-dd");
     const response = await api.get(GET_CLOUSINGS, {
       params: {
         consumeCenter: store,
+        startDate: startDateFormat,
+        endDate: endDateFormat,
+        page: page,
+        size: 10,
       },
     });
     const totalPOS = response.data.registerClosure.reduce(
@@ -39,6 +51,10 @@ export const getGeneralInfo = async (
     );
     
     const transformedData = {
+      pagination: {
+        totaRegistros: response.data.totaRegistro,
+        totalPagina: response.data.totalPagina,
+      },
       header: {
         subsidiaryName: "DIVIERTETE",
         storeName: "BAR GGRILL LS CUN T2A",
@@ -75,13 +91,9 @@ export const getGeneralInfo = async (
         })
       ),
     };
-    console.log(transformedData);
     
     return transformedData as ClousingModel;
   } catch (error) {
-    console.log(error);
-    
-    console.error("Error al obtener las Subsidiarias: ", error);
     return {} as ClousingModel;
   }
 };

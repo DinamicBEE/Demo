@@ -90,7 +90,6 @@ function Home() {
 
     setSubSelect(itemSelected);
 
-
     // TODO: Guardar las tiendas encontradas en stores para no repetir búsquedas
     let storeBySubsidiary = stores.filter(
       (item) => item.subsidiary === selection
@@ -193,7 +192,7 @@ function Home() {
                     id: event.items[0].value,
                     name: event.items[0].label,
                   };
-                  
+
                   setLocation(itemSelected);
                 }}
               >
@@ -227,7 +226,7 @@ function Home() {
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location.id);
+                  getInfo(SubSelect.id, location.id, 0, startDate, endDate);
                   setIsAdyen(false);
                 }}
               >
@@ -248,7 +247,14 @@ function Home() {
               >Adyen</Checkbox> */}
       </VStack>
 
-      {showTable && <TableOfTotals subsidiary={SubSelect} store={location} />}
+      {showTable && (
+        <TableOfTotals
+          subsidiary={SubSelect}
+          store={location}
+          startDate={startDate ?? new Date()}
+          endDate={endDate ?? new Date()}
+        />
+      )}
     </Box>
   );
 }

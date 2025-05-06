@@ -24,6 +24,7 @@ import { EmployeeLine } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
+import { BankLineModel, Voucher } from "@models/tdc.model";
 
 function FooterClousing({
   clousingType,
@@ -37,6 +38,7 @@ function FooterClousing({
 
   const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
+  const [isConfirm, setIsConfirm] = useState(false);
 
   const { getFooterData } = useFooter();
   const { getCashData } = useCashClousing();
@@ -68,8 +70,6 @@ function FooterClousing({
     const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
-
-    console.log("aaaaa", tdc);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
@@ -143,13 +143,19 @@ function FooterClousing({
         isEdit: line.isEdit ?? false,
       }));
 
-    const mapTdcLines = (lines: any[]) => {
-      console.log("lineaaaaaa", lines);
-
-      return lines.map(({ id, vouchers, ...rest }) => ({
+    const mapTdcLines = (lines: BankLineModel[]) => {
+      return lines.map(({ ...rest }) => ({
         ...rest,
-        id: typeof id === "number" ? id : null,
-        vouchers: vouchers,
+        id: typeof rest.id === "number" ? rest.id : null,
+        POS: rest.pos,
+        vouchers: rest.vouchers.map((voucher) => ({
+          id: voucher.id,
+          date: voucher.date,
+          check: voucher.check,
+          amount: voucher.amount,
+          status: voucher.status, // Convert string to boolean
+          voucherId: voucher.voucherId,
+        })),
       }));
     };
 
@@ -202,9 +208,9 @@ function FooterClousing({
     };
     console.log(body);
 
-    const response: any = await sendCashClousing(body);
+    const response: any ="aa"// await sendCashClousing(body);
 
-    if (response === "response") {
+    if (response === "aa") {
       //TODO: DEvolver para el back
       // if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
@@ -227,6 +233,21 @@ function FooterClousing({
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
+        mxm: body.cash.lines.find(
+          (line) => line.currency === "MXN"
+        )?.totalFisico ?? 0,
+        usd: body.cash.lines.find(
+          (line) => line.currency === "USD"
+        )?.totalFisico ?? 0,
+        eur: body.cash.lines.find(
+          (line) => line.currency === "EUR"
+        )?.totalFisico ?? 0,
+        lib: body.cash.lines.find(
+          (line) => line.currency === "LIB"
+        )?.totalFisico ?? 0,
+        can: body.cash.lines.find(
+          (line) => line.currency === "CAN"
+        )?.totalFisico ?? 0,
         status: STATUS.Close,
         /*   header[body.id] && header[body.id].difference !== 0
             ? STATUS.WITH_DIFFERENCE
@@ -242,7 +263,7 @@ function FooterClousing({
     setButtonLoading(false);
   }
 
-  const handleDialogConfirm = () => {
+  const handleDialogConfirm = (isConfirm:boolean) => {
     console.log(header[clousingId]?.difference);
 
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
@@ -252,6 +273,7 @@ function FooterClousing({
       return;
     }
     setButtonLoading(true);
+    setIsConfirm(isConfirm);
   };
 
   return (
@@ -278,9 +300,20 @@ function FooterClousing({
 
           <Button
             loading={loading}
+            colorPalette="meraWarning"
+            onClick={async () => {
+              handleDialogConfirm(false);
+            }}
+            disabled={closingConfirmation}
+          >
+            Guardar Corte
+          </Button>
+
+          <Button
+            loading={loading}
             colorPalette="meraPrimary"
             onClick={async () => {
-              handleDialogConfirm();
+              handleDialogConfirm(true);
             }}
             disabled={closingConfirmation}
           >
@@ -295,6 +328,7 @@ function FooterClousing({
         isOpen={buttonLoading}
         closeDialog={() => setButtonLoading(false)}
         sendData={sendClousing}
+        isConfrim={isConfirm}
       />
       {loading && <Loading />}
       <ErrorDialog

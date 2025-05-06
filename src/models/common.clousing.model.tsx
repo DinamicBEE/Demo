@@ -4,13 +4,17 @@ import { CLOUSING_KEY } from "./constants.model";
 export interface ClousingModel {
   header: HeaderClousingModel;
   clousingLines: ClousingLinesModel[];
+  pagination: {
+    totaRegistros: number;
+    totalPagina: number;
+  };
 }
 
 export interface HeaderClousingModel {
   subsidiaryName: string;
   storeName: string;
   date: string;
-  time:string;
+  time: string;
   totalPOS: number;
   totalPhysical: number;
   difference: number;
@@ -46,24 +50,38 @@ export interface ClousingContextType {
   data: ClousingLinesModel[];
   loading: boolean;
   error: string;
-  getInfo: (subsidiary: number, store: number) => void;
+  getInfo: (
+    subsidiary: number,
+    store: number,
+    page: number,
+    startDate: Date,
+    endDate: Date
+  ) => void;
   dataClousing: any;
   setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
-  dataRow: any
-  setDataRow: any
+  dataRow: any;
+  setDataRow: any;
   filterDataAdyen: (isAdyen: boolean) => void;
+  pagination: {
+    totaRegistros: number;
+    totalPagina: number;
+  };
 }
 
 export interface HeaderContextType {
-  header: HeaderContext
+  header: HeaderContext;
   error: string;
   loading: boolean;
   getHeader: (clousingData: ClousingLinesModel) => HeaderData;
-  updateTotal: (newtotal: number, clousingId: number, clousingType: CLOUSING_KEY) => void;
+  updateTotal: (
+    newtotal: number,
+    clousingId: number,
+    clousingType: CLOUSING_KEY
+  ) => void;
 }
 
 export interface HeaderContext {
-   [key: number]: HeaderData
+  [key: number]: HeaderData;
 }
 
 export interface HeaderData {
@@ -77,25 +95,25 @@ export interface HeaderData {
   service: number;
   discountPOS: number;
   discountClousing?: number;
-  closures: ClousingType
+  closures: ClousingType;
 }
 
-export interface ClousingType{
+export interface ClousingType {
   cash: TotalModel;
   customer: TotalModel;
   specialCustomer: TotalModel;
   tdc: TotalModel;
   employee: TotalModel;
   prepaid: TotalModel;
-  intercompany: TotalModel
+  intercompany: TotalModel;
 }
 
 export interface FooterClousing {
   clousingType: CLOUSING_KEY;
   currencyId: number;
   clousingId: number;
-  closeDialog: () => void,
-  closingConfirmation: boolean
+  closeDialog: () => void;
+  closingConfirmation: boolean;
   idCurrency: number;
   // data?: TotalModel | undefined;
   // loading?: boolean;
@@ -115,21 +133,28 @@ export interface CurrencyModel {
 }
 
 export interface AlertClousing {
-  title:string;
+  title: string;
   description?: string;
   type: string;
 }
 
 export interface FooterContextType {
-  setFooterData: (footerData: TotalModel, clousingId: number, clousingType: string) => void;
-  getFooterData: (clousingId: number, clousingType: string) => Promise<TotalModel>;
+  setFooterData: (
+    footerData: TotalModel,
+    clousingId: number,
+    clousingType: string
+  ) => void;
+  getFooterData: (
+    clousingId: number,
+    clousingType: string
+  ) => Promise<TotalModel>;
 }
 
 export interface ResponseModel {
   success: boolean;
   data?: any;
   error?: string;
-  message?: string
+  message?: string;
 }
 
 export interface ClousingLayoutProps {
@@ -143,12 +168,15 @@ export interface ClousingLayoutProps {
 export interface TableOfTotalsProps {
   subsidiary: SubsidiaryModal;
   store: location;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface ConfirmDialogProps {
-    isOpen: boolean,
-    closeDialog: () => void,
-    sendData: () => void
+  isOpen: boolean;
+  closeDialog: () => void;
+  sendData: () => void;
+  isConfrim: boolean;
 }
 
 export interface ErrorDialogProps {
@@ -156,7 +184,7 @@ export interface ErrorDialogProps {
   closeDialog: () => void;
 }
 
-export interface CustomerClousingFormProps { 
+export interface CustomerClousingFormProps {
   isOpen: boolean;
   onClose: () => void;
   dataCustomer: any;
