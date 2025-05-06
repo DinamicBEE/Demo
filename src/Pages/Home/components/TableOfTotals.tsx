@@ -48,6 +48,23 @@ function TableOfTotals({
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [page, setPage] = useState(1);
+  const [totals, setTotals] = useState({
+    totalPOS: 0,
+    totalPhysical: 0,
+    difference: 0,
+    extra: 0,
+    mxm: 0,
+    usd: 0,
+    eur: 0,
+    lib: 0,
+    can: 0,
+    customer: 0,
+    specialCustomer: 0,
+    prepaid: 0,
+    employees: 0,
+    intercompany: 0,
+    adyenTotal: 0,
+  });
   // const [visibleItems, setVisibleItems] = useState<ClousingLinesModel[]>([])
 
   const startRange = (page - 1) * pageSize;
@@ -63,6 +80,50 @@ function TableOfTotals({
     const items = data.slice(startRange, endRange);
     setVisibleItems(items);
   }, [page]) */
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const newTotals: any = data.reduce(
+        (acc, curr) => {
+          acc.totalPOS += curr.totalPOS || 0;
+          acc.totalPhysical += curr.totalPhysical || 0;
+          acc.difference += curr.difference || 0;
+          acc.extra += curr.extra || 0;
+          acc.mxm += curr.mxm || 0;
+          acc.usd += curr.usd || 0;
+          acc.eur += curr.eur || 0;
+          acc.lib += curr.lib || 0;
+          acc.can += curr.can || 0;
+          acc.customer += curr.customer || 0;
+          acc.specialCustomer += curr.specialCustomer || 0;
+          acc.prepaid += curr.prepaid || 0;
+          acc.employees += curr.employees || 0;
+          acc.intercompany += curr.intercompany || 0;
+          acc.adyenTotal += curr.adyenTotal || 0;
+          return acc;
+        },
+        {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+          extra: 0,
+          mxm: 0,
+          usd: 0,
+          eur: 0,
+          lib: 0,
+          can: 0,
+          customer: 0,
+          specialCustomer: 0,
+          prepaid: 0,
+          employees: 0,
+          intercompany: 0,
+          adyenTotal: 0,
+        }
+      );      
+      setTotals(newTotals);
+    }
+    
+  },[data])
 
   function handleExportCSV() {
     exportCSV(data, header);
@@ -419,7 +480,57 @@ function TableOfTotals({
                         </Text>
                       </Table.Cell>
                     </Table.Row>
+                    
                   ))}
+                  <Table.Row bg="gray.100" fontWeight="bold">
+                    <Table.Cell textAlign="center">Totales</Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.totalPOS} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.totalPhysical} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.difference} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell /> {/* Estatus (vacío) */}
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.extra} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.mxm} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.usd} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.eur} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.lib} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.can} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.customer} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.specialCustomer} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.prepaid} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.employees} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.intercompany} style="currency" currency="USD" />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber value={totals.adyenTotal} style="currency" currency="USD" />
+                    </Table.Cell>
+                  </Table.Row>
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
