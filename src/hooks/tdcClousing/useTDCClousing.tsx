@@ -40,7 +40,10 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
 
     const newPhysical = detailsValidated.vouchers
       .filter((item: Voucher) => item.status)
-      .reduce((acc: number, curr: Voucher) => acc + curr.amount, 0);
+      .reduce((acc: number, curr: Voucher) => {
+        // Redondeo en cada paso de la acumulación
+        return Number((acc + curr.amount).toFixed(2));
+      }, 0);
 
     const successCount = detailsValidated.vouchers.filter(
       (item: Voucher) => item.status
@@ -72,7 +75,8 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
     );
 
     const newTotalPhysical = updateLines?.reduce(
-      (acc: number, curr: BankLineModel) => acc + curr.physical,
+      (acc: number, curr: BankLineModel) =>
+        Number((acc + curr.physical).toFixed(2)),
       0
     );
 

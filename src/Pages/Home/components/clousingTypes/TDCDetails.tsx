@@ -177,13 +177,17 @@ function TDCDetails({
         .slice(startRange, endRange)
     );
     setLocalAmount(
-      updatedDetailsLocal.vouchers
-        .filter((item) => item.status)
-        .reduce((acc, curr) => acc + curr.amount, 0)
+      Number(
+        updatedDetailsLocal.vouchers
+          .filter((item) => item.status)
+          .reduce((acc, curr) => acc + curr.amount, 0)
+          .toFixed(2)
+      )
     );
     setVouchersSelected(
       updatedDetailsLocal.vouchers.filter((item) => item.status).length
     );
+    
   };
 
   return (
