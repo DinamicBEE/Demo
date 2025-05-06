@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Layout.css";
 import { menuItems } from "@models/constants.model";
 import { Tooltip } from "./ui/tooltip";
-
+import image from "../assets/meraLogo.png";
 function Layout() {
   const { logOut, user } = useAuth();
 
@@ -28,7 +28,7 @@ function Layout() {
             alignContent="center"
           >
             <HStack className="links-container">
-              <Image src="src\assets\meraLogo.png" className="header-img" />
+              <Image src={image} className="header-img" />
               <HStack>
                 {menuItems
                   .filter(
