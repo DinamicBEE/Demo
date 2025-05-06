@@ -125,6 +125,7 @@ export interface DialogConfirmTDCProps {
   onAccept: () => void;
   loading: boolean;
   detailsLocal: BankLineModel;
+  detailsOriginal: BankLineModel
 }
 
 export interface VoucherFilter{

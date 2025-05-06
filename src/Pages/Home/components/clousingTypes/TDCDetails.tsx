@@ -104,7 +104,7 @@ function TDCDetails({
     const items = detailsLocal.vouchers
       .filter((item) => item.status)
       .slice(startRange, endRange);
-  /*     const items = detailsLocal.vouchers */
+    /*     const items = detailsLocal.vouchers */
     setVisibleItems(items);
   }, [page]);
 
@@ -195,7 +195,7 @@ function TDCDetails({
     };
 
     setDetailsLocal(updatedDetailsLocal);
-    
+
     setVisibleItems(
       updatedDetailsLocal.vouchers
         .filter((item) => item.status)
@@ -474,6 +474,7 @@ function TDCDetails({
         nameBank={detailsLocal?.bank || ""}
         loading={loading}
         detailsLocal={detailsLocal || ({} as BankLineModel)}
+        detailsOriginal={bankDetails}
       />
     </>
   );
