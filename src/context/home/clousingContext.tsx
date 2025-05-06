@@ -49,22 +49,15 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       totalPOS: 0,
       totalPhysical: 0,
       difference: 0,
-      // Incluye otros campos necesarios del HeaderClousingModel aquí
     };
-    // Recorrer todas las claves en el caché
     Object.keys(dataCache.current).forEach((key) => {
-      // Solo procesar las entradas que pertenecen a esta consulta base
       if (key.startsWith(queryKey)) {
         const pageData = dataCache.current[key];
-
-        // Acumular los valores del header de cada página
         if (pageData && pageData.header) {
           accumulatedHeaders.totalPOS += pageData.header.totalPOS || 0;
           accumulatedHeaders.totalPhysical +=
             pageData.header.totalPhysical || 0;
-          accumulatedHeaders.difference += pageData.header.difference || 0;
-          // Acumula otros campos según sea necesario
-          
+          accumulatedHeaders.difference += pageData.header.difference || 0;      
         }
       }
     });
