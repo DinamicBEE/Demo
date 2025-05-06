@@ -7,7 +7,7 @@ import { ClosureProvider } from '../context/lotClosure/lotClosureProvider';
 const routesConfig = [
     {
       path: '/home',
-      element: lazy(() => import('../pages/Home/Home')),
+      element: lazy(() => import('../Pages/Home/Home')),
       roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
@@ -17,7 +17,7 @@ const routesConfig = [
     },
     {
       path: '/lotClosure',
-      element: lazy(() => import('../pages/LotClosure/LotClosure')),
+      element: lazy(() => import('../Pages/LotClosure/LotClosure')),
       roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ClosureProvider>
@@ -27,12 +27,12 @@ const routesConfig = [
     },
     {
       path: '/request',
-      element: lazy(() => import('../pages/Requests/Requests')),
+      element: lazy(() => import('../Pages/Requests/Requests')),
       roles: ['user'],
     },
     {
       path: '/approvals',
-      element: lazy(() => import('../pages/Approvals/Approvals')),
+      element: lazy(() => import('../Pages/Approvals/Approvals')),
       roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
@@ -42,7 +42,7 @@ const routesConfig = [
     },
     {
       path: '/reportviewer',
-      element: lazy(() => import('../pages/ReportViewer/ReportViewer')),
+      element: lazy(() => import('../Pages/ReportViewer/ReportViewer')),
       roles: ['admin', 'user'],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
@@ -52,12 +52,12 @@ const routesConfig = [
     },
     {
       path: '/currencymanagement',
-      element: lazy(() => import('../pages/CurrencyManagement/CurrencyManagement')),
+      element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
       roles: ['admin'],
     },
     {
       path: '/emptyPage',
-      element: lazy(() => import('../pages/Empty/EmptyPage')),
+      element: lazy(() => import('../Pages/Empty/EmptyPage')),
       roles: [],
     },
   ];
