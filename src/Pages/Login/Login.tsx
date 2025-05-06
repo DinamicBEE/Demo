@@ -6,6 +6,7 @@ import { PasswordInput } from "@components/ui/password-input";
 import { Alert } from "@components/ui/alert";
 import { Button } from "@components/ui/button";
 import { useAuth } from "@context/AuthContext";
+import image from "../../assets/meraClean.png";
 import "./login.css";
 
 function Login() {
@@ -123,7 +124,7 @@ function Login() {
               bg="white"
             >
               <VStack align="stretch" display="flex" flexDir="column" justifyContent="center">
-                <Image className="mera-logo-login" src="src\assets\meraClean.png" />
+                <Image className="mera-logo-login" src={image} />
                 <Heading size="2xl" color="meraPalette.primary">
                   Iniciar Sesión
                 </Heading>
@@ -150,6 +151,7 @@ function Login() {
                       errorText={errors.password?.message}
                     >
                       <PasswordInput
+                      
                         //placeholder="••••••"
                         {...register("password", {
                           required: "La contraseña es obligatoria",

@@ -98,6 +98,12 @@ div input{
 
 .login-input, [id=":r5:"] {
   background: rgba(255, 255, 255, 0.5);
+
+}
+
+[id=":r2:"] {
+  background: rgba(255, 255, 255, 0.5);
+  --focus-ring-color: var(--chakra-colors-green-600) !important;
 }
 
 [id=":r5:"]:focus-visible {
