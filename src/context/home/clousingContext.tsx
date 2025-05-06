@@ -188,6 +188,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
             : item
         )
       );
+     
     }
   }, [dataClousing]);
 

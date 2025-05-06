@@ -1,82 +1,98 @@
-import { ReactNode, useRef } from 'react';
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
-import { getCustomerClousing } from '@services/clousingService';
-import { CustomerContext, CustomerContextType, CustomerModel } from '@models/customer.model';
+import { ReactNode, useRef } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
+import { getCustomerClousing } from "@services/clousingService";
+import {
+  CustomerContext,
+  CustomerContextType,
+  CustomerModel,
+} from "@models/customer.model";
 
-
-const customerContext = createContext<CustomerContextType>({} as CustomerContextType);
+const customerContext = createContext<CustomerContextType>(
+  {} as CustomerContextType
+);
 
 export const useCustomerContext = () => useContext(customerContext);
 
-export function CustomerClousingProvider({ children }: { children: ReactNode }) {
+export function CustomerClousingProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const [customer, setCustomer] = useState<CustomerContext>({});
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [error, setError] = useState("");
+  const customerRef = useRef<CustomerContext>(customer);
 
-	const [customer, setCustomer] = useState<CustomerContext>({});
-	const [customerLoading, setCustomerLoading] = useState(false);
-	const [error, setError] = useState("");
-	const customerRef = useRef<CustomerContext>(customer);
+  const updateCustomerData = (newCustomerhData: CustomerContext) => {
+    setCustomer(newCustomerhData);
+    customerRef.current = newCustomerhData;
+  };
 
-	const updateCustomerData = (newCustomerhData: CustomerContext) => {
-		setCustomer(newCustomerhData);
-		customerRef.current = newCustomerhData;
-	};
+  const getCustomerData = useCallback(
+    async (clousingId: number) => {
+      setCustomerLoading(true);
 
-	const getCustomerData = useCallback(async (clousingId: number) => {
-		setCustomerLoading(true);
+      if (customerRef.current[clousingId]) {
+        setCustomerLoading(false);
+        return customerRef.current[clousingId];
+      }
 
-		if (customerRef.current[clousingId]) {
-			setCustomerLoading(false);
-			return customerRef.current[clousingId];
-		}
+      try {
+        const data = await getCustomerClousing(clousingId);
 
-		try {
+        if (!data.success) {
+          setCustomerLoading(false);
+          return data.data;
+        }
 
-			const data = await getCustomerClousing(clousingId);
+        const updateCustomer = {
+          ...customerRef.current,
+          [clousingId]: data.data,
+        };
 
-			if (!data.success) {
-				setCustomerLoading(false);
-				return {} as CustomerModel;
-			}
-			
-			const updateCustomer = { ...customerRef.current, [clousingId]: data.data }
+        updateCustomerData(updateCustomer);
 
-			updateCustomerData(updateCustomer);
+        return data.data as CustomerModel;
+      } catch (error) {
+        setError(error instanceof Error ? error.message : String(error));
 
-			return data.data as CustomerModel;
+        return {} as CustomerModel;
+      } finally {
+        setCustomerLoading(false);
+      }
+    },
+    [customer]
+  );
 
-		} catch (error) {
+  const setCustomerData = useCallback(
+    (customer: CustomerModel, clousingId: number) => {
+      const updateCustomer = { ...customerRef.current, [clousingId]: customer };
 
-			setError(error instanceof Error ? error.message : String(error));
+      updateCustomerData(updateCustomer);
+    },
+    []
+  );
 
-			return {} as CustomerModel
+  const value = useMemo(
+    () => ({
+      customer,
+      customerLoading,
+      error,
+      getCustomerData,
+      setCustomerData,
+    }),
+    [customer, customerLoading, error, getCustomerData, setCustomerData]
+  );
 
-		} finally {
-			setCustomerLoading(false);
-		}
-
-	}, [customer]);
-
-	const setCustomerData = useCallback((customer: CustomerModel, clousingId: number) => {
-
-		const updateCustomer = { ...customerRef.current, [clousingId]: customer }
-
-		updateCustomerData(updateCustomer)
-
-	}, []);
-
-	const value = useMemo(
-		() => ({
-			customer,
-			customerLoading,
-			error,
-			getCustomerData,
-			setCustomerData
-		}),
-		[customer, customerLoading, error, getCustomerData, setCustomerData]
-	);
-
-	return (
-		<customerContext.Provider value={value}>
-			{children}
-		</customerContext.Provider>
-	);
-};
+  return (
+    <customerContext.Provider value={value}>
+      {children}
+    </customerContext.Provider>
+  );
+}

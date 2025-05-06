@@ -30,7 +30,7 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
 
             if (!response.success) {
                 setSpecialCustLoading(false);
-                return {} as SpecialCustomerModel;
+                return response.data;
             }
 
             const updateSpecialCust = {
