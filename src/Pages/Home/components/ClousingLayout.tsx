@@ -7,7 +7,7 @@ import {
   DialogCloseTrigger,
   DialogFooter,
 } from "@components/ui/dialog";
-import { Tabs, Box } from "@chakra-ui/react";
+import { Tabs, Box, useTabs } from "@chakra-ui/react";
 import { IoCashOutline, IoCardOutline } from "react-icons/io5";
 import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
@@ -37,7 +37,19 @@ function ClousingLayout({
   subsidiary,
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
-  
+
+  const tabs = useTabs({
+      defaultValue: CLOUSING_KEY.CASH,
+      onValueChange: (e) => {
+        setValue(e.value as CLOUSING_KEY);
+      },
+    });
+
+    useEffect(() => {
+      if (isOpen) {
+        tabs.setValue(CLOUSING_KEY.CASH);
+      }
+    },[isOpen])
 
   return (
     <DialogRoot
@@ -62,16 +74,17 @@ function ClousingLayout({
         </DialogHeader>
 
         <DialogBody>
-          <Tabs.Root
-            onValueChange={(e) => {
+          <Tabs.RootProvider
+            /* onValueChange={(e: any) => {
               setValue(e.value as CLOUSING_KEY);
-            }}
+            }} */
             variant="outline"
             defaultValue={value}
             unmountOnExit
             colorPalette="green"
             justify="center"
             size="lg"
+            value={tabs}
           >
             <Tabs.List>
               <Tabs.Trigger value={CLOUSING_KEY.CASH}>
@@ -172,7 +185,7 @@ function ClousingLayout({
                 </Suspense>
               )}
             </Tabs.Content>
-          </Tabs.Root>
+          </Tabs.RootProvider>
         </DialogBody>
 
         <DialogFooter>

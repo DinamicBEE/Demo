@@ -28,15 +28,20 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         try {
             const response = await getSpecialCustomerClousing(clousingId, idCurrency);
 
+            if (!response.success) {
+                setSpecialCustLoading(false);
+                return {} as SpecialCustomerModel;
+            }
+
             const updateSpecialCust = {
                 ...specialCustRef.current,
-                [clousingId]: response
+                [clousingId]: response.data
     
             }
 
             updateSpecialCustData(updateSpecialCust)
 
-            return response;
+            return response.data as SpecialCustomerModel;
             
         } catch (error) {
             setError(error instanceof Error ? error.message : String(error));

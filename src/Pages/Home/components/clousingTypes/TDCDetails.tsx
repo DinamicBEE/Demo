@@ -1,35 +1,12 @@
-import { useEffect, useState, useRef } from "react";
-import {
-  Box,
-  Field,
-  Flex,
-  FormatNumber,
-  Input,
-  Table,
-  Text,
-  Group,
-  InputAddon,
-  Skeleton,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { useEffect, useState } from "react";
+import { Box, Field, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger,
+  PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogFooter,
-} from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
+  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";

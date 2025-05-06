@@ -81,7 +81,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
     setPage(page);
     const items = specialCustomer?.lines?.slice(startRange, endRange) || [];
     setVisibleItems(items);
-  }, [page]);
+  }, [specialCustomer, page]);
 
   return (
     <Box>
@@ -195,16 +195,15 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text>
                     <Input
                       textAlign="center"
                       value={item.pax}
+                      type="number"
                       onChange={(e) =>
                         handleInputTextData(e.target.value, item.id, "pax")
                       }
                       disabled={data?.closingConfirmation}
                     />
-                  </Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
