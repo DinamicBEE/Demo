@@ -143,7 +143,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                       {/* Listado de cierres de lotes y cajas */}
                       <Field label="Lista de cierre de cajas / cierre de lotes*">
                         <NativeSelectRoot size="md">
-                          <NativeSelectField placeholder="Seleccione una opcion" {...register('idCash', { required: 'Este campo es requerido' })}>
+                          <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}>
                             {
                               closingList != undefined &&
                               closingList.map((item: any) => (<option key={item.id} value={item.id}>{item.date}</option>))
@@ -151,7 +151,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                           </NativeSelectField>
                         </NativeSelectRoot>
 
-                        {errors.idCash && <Text color="red" textStyle='xs'>{errors.idCash?.message}</Text>}
+                        {errors.id && <Text color="red" textStyle='xs'>{errors.id?.message}</Text>}
                       </Field>
 
                       {/* Listado motivos */}

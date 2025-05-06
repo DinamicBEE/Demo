@@ -13,7 +13,7 @@ export interface Approval {
 }
 
 export interface RequestOpeningForm {
-  idCash: string;
+  id: string;
   comment: string;
   commentSupervisor?: '',
   reason: number
