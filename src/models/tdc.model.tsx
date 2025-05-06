@@ -4,19 +4,19 @@ import { location, SubsidiaryModal } from "./common.model";
 
 export interface TDCContextType {
   tdc: TDCContext;
-  tdcDetails: BankDetails | {};
+  tdcDetails: Voucher | {};
   tdcLoading: boolean;
   detailsLoading: boolean;
   error: string;
   detailsError: string;
   getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
-  getDetails: (
+/*   getDetails: (
     clousingId: number,
-    lineId: number | null,
-  ) => Promise<BankDetails>;
+    lineId: number | null | string,
+  ) => Promise<Voucher>; */
   setDetails: (
-    details: BankDetails,
+    details: BankLineModel,
     clousingId: number,
     lineId: number | string,
   ) => void;
@@ -38,16 +38,18 @@ export interface TDCContext {
 
 export interface TDCDetailsContext {
   [key: number]: {
-    [key: number]: BankDetails;
+    [key: number]: BankLineModel;
   };
 }
 
 export interface BankLineModel {
   id: number | string;
+  idBank: number;
   bank: string;
-  pos: number;
   physical: number;
+  pos: number;
   voucherAmount: number;
+  vouchers: Voucher[];
 }
 
 export interface TDCModel {
@@ -57,7 +59,7 @@ export interface TDCModel {
   lines: BankLineModel[];
 }
 
-export interface BankLineDetails {
+/* export interface BankLineDetails {
   id: number;
   date: string;
   check: string;
@@ -71,22 +73,32 @@ export interface BankLineDetails {
     general: string | null;
   };
   successAdyen?: boolean;
-}
+} */
 
 export interface Voucher {
   id: number;
-  amount: number;
-  check: string;
+  voucherId:null | number;
   date: string;
+  check: string;
+  amount: number;
   status: boolean;
+  message?: string;
+  dateDisplay?: string;
+  difference?: {
+    date: string | null;
+    check: string | null;
+    amount: string | null;
+    general: string | null;
+  };
+  successAdyen?: boolean;
 }
 
-export interface BankDetails {
+/* export interface BankDetails {
   id: number;
   bankName: string;
   total: number;
   details: BankLineDetails[];
-}
+} */
 
 export interface DetailsProp {
   clousingId: number;
@@ -96,7 +108,7 @@ export interface DetailsProp {
   closingConfirmation: boolean;
   location: location;
   subsidiary: SubsidiaryModal;
-  voucherData: BankDetails;
+  bankDetails: BankLineModel;
 }
 
 export interface DialogFilesProps {
@@ -112,4 +124,15 @@ export interface DialogConfirmTDCProps {
   nameBank: string;
   onAccept: () => void;
   loading: boolean;
+  detailsLocal: BankLineModel;
+  detailsOriginal: BankLineModel
+}
+
+export interface VoucherFilter{
+  vouchers: Voucher[];
+  label: boolean;
+  itemId?: number | string;
+  voucherSelect?: string;
+  onSelect: (voucher: any, itemId?: number | string ) => void;
+  disabled: boolean;
 }

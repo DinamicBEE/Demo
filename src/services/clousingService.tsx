@@ -25,7 +25,7 @@ import {
   PrepaidModel,
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
-import { BankDetails, TDCModel } from "@models/tdc.model";
+import { BankLineModel, Voucher, TDCModel } from "@models/tdc.model";
 import axios from "axios";
 import {
   CASH,
@@ -218,40 +218,24 @@ export const getTDCDetails = async (
 export const validateDetails = async (
   clousingId: number,
   lineId: number | string,
-  details: BankDetails
-): Promise<BankDetails> => {
+  BankLineDetails: Voucher[],
+  details: BankLineModel
+): Promise<BankLineModel> => {
   // console.log(clousingId, lineId);
 
   try {
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
-    let data: BankDetails;
+    let data: BankLineModel;
 
-    /*    if (lineId == 3) {
+    if (details.bank === "ADYEN") {
       data = {
         ...details,
-        details: details.details.map((detial) => {
-          return {
-            ...detial,
-            success: true,
-            message: undefined,
-          };
-        }),
+        vouchers: BankLineDetails,
       };
-    } else */ if (details.bankName === "ADYEN") {
+    } /* else {
       data = {
         ...details,
-        details: details.details.map((detial) => {
-          return {
-            ...detial,
-          };
-        }),
-      };
-    } else {
-      data = {
-        ...details,
-        details: details.details.map((detial) => {
-          const success = true; //Math.random() < 0.5;
-
+        vouchers: BankLineDetails.map((detial) => {
           return {
             ...detial,
             success,
@@ -259,7 +243,7 @@ export const validateDetails = async (
           };
         }),
       };
-    }
+    } */
 
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -268,7 +252,7 @@ export const validateDetails = async (
     });
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
-    return [] as unknown as BankDetails;
+    return [] as unknown as BankLineModel;
   }
 };
 

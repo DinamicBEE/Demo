@@ -1,12 +1,33 @@
 import { useEffect, useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Group, 
-  Input, InputAddon, Skeleton, Table, Tag, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Button,
+  FormatNumber,
+  Grid,
+  GridItem,
+  Group,
+  Input,
+  InputAddon,
+  Skeleton,
+  Table,
+  Tag,
+  Text,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
-import { ClousingLinesModel, TableOfTotalsProps } from "@models/common.clousing.model";
+import {
+  ClousingLinesModel,
+  TableOfTotalsProps,
+} from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import "../Home.css";
 import { STATUS } from "@models/status.model";
@@ -15,27 +36,33 @@ import ClousingLayout from "./ClousingLayout";
 
 const pageSize = 5;
 
-function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
-  const { data, loading, error, header, getInfo, setDataRow } = useClousing();
+function TableOfTotals({
+  subsidiary,
+  store,
+  endDate,
+  startDate,
+}: TableOfTotalsProps) {
+  const { data, loading, error, header, getInfo, setDataRow, pagination } =
+    useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [page, setPage] = useState(1);
-  const [visibleItems, setVisibleItems] = useState<ClousingLinesModel[]>([])
+  // const [visibleItems, setVisibleItems] = useState<ClousingLinesModel[]>([])
 
-  const startRange = (page - 1) * pageSize
-  const endRange = startRange + pageSize
+  const startRange = (page - 1) * pageSize;
+  const endRange = startRange + pageSize;
 
-  useEffect(() => {
+  /*   useEffect(() => {
     const items = data.slice(startRange, endRange);
     setVisibleItems(items);
-  }, [data])
+  }, [data]) */
 
-  useEffect(() => {
+  /*   useEffect(() => {
     setPage(page);
     const items = data.slice(startRange, endRange);
     setVisibleItems(items);
-  }, [page])
+  }, [page]) */
 
   function handleExportCSV() {
     exportCSV(data, header);
@@ -99,7 +126,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
               <Skeleton loading={loading}>
                 <Input
                   placeholder="No seleccionada"
-                  defaultValue={2023-10-10}
+                  defaultValue={2023 - 10 - 10}
                 />
               </Skeleton>
             </Group>
@@ -152,7 +179,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
             <Button
               colorPalette="meraInfo"
               onClick={() => {
-                getInfo(subsidiary.id, store.id);
+                getInfo(subsidiary.id, store.id, page - 1, startDate, endDate);
               }}
             >
               Actualizar Información
@@ -182,7 +209,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                       Estatus
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
-                      Extas
+                      Extras
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       MXN
@@ -220,7 +247,7 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {visibleItems.map((item: ClousingLinesModel) => (
+                  {data.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
                       <Table.Cell textAlign="center">
                         <Text
@@ -396,7 +423,15 @@ function TableOfTotals({ subsidiary, store }: TableOfTotalsProps) {
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot count={data.length} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+            <PaginationRoot
+              count={pagination.totaRegistros}
+              pageSize={10}
+              page={page}
+              onPageChange={(e) => {
+                setPage(e.page);
+                getInfo(subsidiary.id, store.id, e.page - 1, startDate, endDate);
+              }}
+            >
               <HStack>
                 <PaginationPrevTrigger />
                 <PaginationItems />
