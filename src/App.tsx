@@ -7,7 +7,7 @@ import Layout from "./components/Layout";
 import routesConfig from "./routes/routesConfig";
 import Loading from "./components/Loading";
 import ErrorDialog from "@components/ErrorDialog";
-const Login = lazy(() => import("./pages/Login/Login"));
+const Login = lazy(() => import("./pages/Login/Login.tsx"));
 
 function App() {
   return (
