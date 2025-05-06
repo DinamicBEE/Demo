@@ -123,7 +123,7 @@ function Login() {
               bg="white"
             >
               <VStack align="stretch" display="flex" flexDir="column" justifyContent="center">
-                <Image className="mera-logo-login" src="src\assets\meraClean.png" />
+                <Image className="mera-logo-login" src="public\meraClean.png" />
                 <Heading size="2xl" color="meraPalette.primary">
                   Iniciar Sesión
                 </Heading>
