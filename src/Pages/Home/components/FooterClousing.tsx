@@ -208,9 +208,9 @@ function FooterClousing({
     };
     console.log(body);
 
-    const response: any ="aa"// await sendCashClousing(body);
+    const response: any = await sendCashClousing(body);
 
-    if (response === "aa") {
+    if (response === "response") {
       //TODO: DEvolver para el back
       // if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
