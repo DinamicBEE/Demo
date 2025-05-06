@@ -17,7 +17,7 @@ function DialogConfirmTDC({
   nameBank,
   loading,
   detailsLocal,
-  detailsOriginal,
+  vouchersSelected,
 }: DialogConfirmTDCProps) {
   return (
     <DialogRoot
@@ -36,8 +36,7 @@ function DialogConfirmTDC({
         </DialogHeader>
 
         <DialogBody>
-          {detailsLocal?.vouchers?.filter((item) => item.status).length !==
-          detailsOriginal?.vouchers?.filter((item) => !item.status).length ? (
+          {detailsLocal?.voucherAmount !== vouchersSelected ? (
             <Flex
               direction="column"
               justifyContent="center"

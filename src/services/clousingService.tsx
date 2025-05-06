@@ -167,6 +167,7 @@ export const getTDCClousing = async (
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
+        voucherAmountDisplay: 0,
       })),
     };
 
@@ -182,38 +183,7 @@ export const getTDCClousing = async (
   }
 };
 
-/**
- * This feature retrieves the details
- * of card payments from the bank’s
- * consolidated account
- * @param {number} clousingId
- * @param {number} lineId
- * @returns {Promise<BankDetails>}
- */
-export const getTDCDetails = async (
-  clousingId: number,
-  lineId: number
-): Promise<BankDetails> => {
-  // console.log(clousingId, lineId);
 
-  try {
-    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = TDCDetailsMOCKData.find((item) => item.id === lineId);
-
-    if (!response) {
-      return [] as unknown as BankDetails;
-    }
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        return resolve(response);
-      }, 1000);
-    });
-  } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
-    return [] as unknown as BankDetails;
-  }
-};
 
 export const validateDetails = async (
   clousingId: number,

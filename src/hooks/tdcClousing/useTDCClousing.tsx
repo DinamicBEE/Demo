@@ -58,7 +58,7 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
       lineId === item.id
         ? {
             ...item,
-            voucherAmount:
+            voucherAmountDisplay:
               detailsValidated.bank === "ADYEN"
                 ? successCountAdyen.length
                 : successCount,

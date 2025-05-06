@@ -112,7 +112,10 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
                   Físico
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Cantidad Vouchers
+                  Cantidad Vouchers totales
+                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">
+                  Cantidad Vouchers seleccionados
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
                   Acciones
@@ -149,6 +152,12 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
                   <Table.Cell textAlign="center">
                     <Text>
                       <FormatNumber value={item.voucherAmount} />
+                    </Text>
+                  </Table.Cell>
+
+                  <Table.Cell textAlign="center">
+                    <Text>
+                      <FormatNumber value={item.voucherAmountDisplay} />
                     </Text>
                   </Table.Cell>
 

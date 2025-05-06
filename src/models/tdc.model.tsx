@@ -49,6 +49,7 @@ export interface BankLineModel {
   physical: number;
   pos: number;
   voucherAmount: number;
+  voucherAmountDisplay: number;
   vouchers: Voucher[];
 }
 
@@ -125,7 +126,7 @@ export interface DialogConfirmTDCProps {
   onAccept: () => void;
   loading: boolean;
   detailsLocal: BankLineModel;
-  detailsOriginal: BankLineModel
+  vouchersSelected: number;
 }
 
 export interface VoucherFilter{

@@ -43,6 +43,7 @@ function TDCDetails({
   const [chequeValue, setChequeValue] = useState("");
   const [visibleItems, setVisibleItems] = useState<Voucher[]>([]);
   const [localAmount, setLocalAmount] = useState<number>(0);
+  const [vouchersSelected, setVouchersSelected] = useState(0);
   // const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -69,6 +70,9 @@ function TDCDetails({
           .filter((item) => item.status)
           .reduce((acc, curr) => acc + curr.amount, 0)
       );
+      setVouchersSelected(
+        bankDetails.vouchers.filter((item) => item.status).length
+      );
     }
 
     fetchData();
@@ -81,7 +85,6 @@ function TDCDetails({
     const items = detailsLocal.vouchers
       .filter((item) => item.status)
       .slice(startRange, endRange);
-    /*     const items = detailsLocal.vouchers */
     setVisibleItems(items);
   }, [page]);
 
@@ -128,9 +131,6 @@ function TDCDetails({
 
     if (lineId !== null && detailsLocal !== undefined) {
       if (detailsLocal.bank !== "ADYEN") {
-        console.log("detailsLocal on Save", detailsLocal);
-
-        //  setDetails(detailsLocal, clousingId, lineId);
         updateLineClousing(detailsLocal);
         onClose();
         setIsOpenDialogSave(false);
@@ -161,8 +161,6 @@ function TDCDetails({
           }
         : voucher
     );
-    console.log("updatedDetails", updatedDetails);
-
     if (updatedDetails === undefined) return;
     if (detailsLocal === undefined) return;
 
@@ -182,6 +180,9 @@ function TDCDetails({
       updatedDetailsLocal.vouchers
         .filter((item) => item.status)
         .reduce((acc, curr) => acc + curr.amount, 0)
+    );
+    setVouchersSelected(
+      updatedDetailsLocal.vouchers.filter((item) => item.status).length
     );
   };
 
@@ -341,26 +342,6 @@ function TDCDetails({
                       </Table.Cell>
 
                       <Table.Cell>
-                        {/*   {detailsLocal?.bank !== "ADYEN" ? (
-                          <Field.Root
-                            invalid={item.status != undefined && !item.status}
-                          >
-                            <Input
-                              textAlign="center"
-                              value={item.check}
-                              disabled={closingConfirmation}
-                              onChange={(e) =>
-                                handleInputData(
-                                  e.target.value,
-                                  item.id,
-                                  detailsLocal || ({} as BankLineModel),
-                                  setDetailsLocal
-                                )
-                              }
-                            />
-                            <Field.ErrorText>{item.message}</Field.ErrorText>
-                          </Field.Root>
-                        ) : ( */}
                         <Text>{item.check}</Text>
                       </Table.Cell>
 
@@ -451,7 +432,7 @@ function TDCDetails({
         nameBank={detailsLocal?.bank || ""}
         loading={loading}
         detailsLocal={detailsLocal || ({} as BankLineModel)}
-        detailsOriginal={bankDetails}
+        vouchersSelected={vouchersSelected}
       />
     </>
   );

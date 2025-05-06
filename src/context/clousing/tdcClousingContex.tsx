@@ -1,6 +1,6 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
-import { getTDCClousing, getTDCDetails } from '@services/clousingService';
+import { getTDCClousing } from '@services/clousingService';
 import { BankLineModel, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
 
 const tdcContext = createContext<TDCContextType>({} as TDCContextType);

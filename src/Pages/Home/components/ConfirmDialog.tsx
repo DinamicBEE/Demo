@@ -23,21 +23,24 @@ function ConfirmDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {isConfrim ? "Confirmar Envio" : "Guardar Cierre de Caja"}
+            {isConfrim ? "Confirmar corte de caja" : "Guardar Corte de Caja"}
           </DialogTitle>
         </DialogHeader>
         <DialogBody>
           {isConfrim ? (
             <>
               <h2>
-                Esta apunto de enviar el cierre de caja, una vez confirmado no
-                se podrá realizar ningun ajuste extra.
+                Esta apunto de enviar el corte de caja, una vez confirmado no se
+                podrá realizar ningun ajuste extra.
               </h2>
               <br />
               <h2>¿Desea confirmar el envio del corte de caja completo?</h2>
             </>
           ) : (
-            <h2>Esta apunto de guardar el cierre de caja.</h2>
+            <h2>
+              Esta apunto de guardar el corte de caja, podra realizar ajustes
+              posteriormente.
+            </h2>
           )}
         </DialogBody>
 
