@@ -58,8 +58,9 @@ console.log();
       header: {
         subsidiaryName: "DIVIERTETE",
         storeName: "BAR GGRILL LS CUN T2A",
-        date: "27/04/25",
-        time: "15:40",
+        date: endDateFormat,
+        time: format(new Date(), "HH:mm"),
+        //Sacar timepo en vivo
         totalPOS:totalPOS,
         totalPhysical: totalPhysical,
         difference:
@@ -74,7 +75,7 @@ console.log();
           difference: line.totalPOS - line.totalPhysical,
           status: getStatus(line.status),
           extra: line.exta,
-          mxm: line.mxn,
+          mxm: line.generalTotal,
           usd: line.usd,
           eur: line.eur,
           lib: line.lib,
@@ -94,7 +95,22 @@ console.log();
     
     return transformedData as ClousingModel;
   } catch (error) {
-    return {} as ClousingModel;
+    return {
+      header: {
+        subsidiaryName: "",
+        storeName: "",
+        date: "",
+        time: "",
+        totalPOS: 0,
+        totalPhysical: 0,
+        difference: 0,
+      },
+      clousingLines: [],
+      pagination: {
+        totaRegistros: 0,
+        totalPagina: 0,
+      },
+    }
   }
 };
 
