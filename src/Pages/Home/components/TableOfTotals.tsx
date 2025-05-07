@@ -224,8 +224,9 @@ function TableOfTotals({
               <InputAddon>Fecha</InputAddon>
               <Skeleton loading={loading}>
                 <Input
+                  disabled
                   placeholder="No seleccionada"
-                  defaultValue={2023 - 10 - 10}
+                  defaultValue={header.date}
                 />
               </Skeleton>
             </Group>
@@ -233,6 +234,7 @@ function TableOfTotals({
               <InputAddon>Hora</InputAddon>
               <Skeleton loading={loading}>
                 <Input
+                  disabled
                   placeholder="No seleccionada"
                   defaultValue={header.time}
                 />
