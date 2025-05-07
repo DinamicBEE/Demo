@@ -13,6 +13,7 @@ export interface CustomerContextType {
     error: string;
     getCustomerData: (clousingId: number) => Promise<CustomerModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
+    customerRef: React.MutableRefObject<CustomerContext>;
 }
 
 export interface CustomerContext {

@@ -65,9 +65,10 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         cashLoading,
         error,
         getCashData,
-        setCashData
+        setCashData,
+        cashRef,
         }),
-        [cashClousing, cashLoading, error, getCashData, setCashData]
+        [cashClousing, cashLoading, error, getCashData, setCashData, cashRef]
     );
     
     return (

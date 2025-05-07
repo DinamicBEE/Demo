@@ -43,6 +43,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     {} as ClousingLinesModel
   );
   const dataCache = useRef<{ [key: string]: ClousingModel }>({});
+  const queryKey = useRef<string>("");
+  const setQueryKey = useRef<string>("");
 
   const accumulatedHeader = (queryKey: string) => {
     const accumulatedHeaders = {
@@ -57,7 +59,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           accumulatedHeaders.totalPOS += pageData.header.totalPOS || 0;
           accumulatedHeaders.totalPhysical +=
             pageData.header.totalPhysical || 0;
-          accumulatedHeaders.difference += pageData.header.difference || 0;      
+          accumulatedHeaders.difference += pageData.header.difference || 0;
         }
       }
     });
@@ -70,17 +72,25 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       store: number,
       page: number,
       startDate: Date,
-      endDate: Date
+      endDate: Date,
+      isSearch: boolean = false
     ) => {
       try {
         // Clave para identificar la consulta sin incluir página
         const queryKey = `${subsidiary}-${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
-
+        /*    queryKey.current = queryKey;
+        setQueryKey.current = queryKey;
+ */
         // Clave para esta página específica
         const pageKey = `${queryKey}-page-${page}`;
 
+        if (isSearch) {
+          // Limpiar caché si es una búsqueda
+          dataCache.current = {};
+        }
+
         // Verificar si esta página ya está en caché
-        if (dataCache.current[pageKey]) {
+        if (dataCache.current[pageKey] && !isSearch) {
           // Actualizar header y pagination desde los datos de esta página
           const accumulated = accumulatedHeader(queryKey);
           const data = {
@@ -170,7 +180,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           item.id == dataClousing.id
             ? {
                 ...item,
-                closingConfirmation: true,
+                closingConfirmation: dataClousing.closingConfirmation,
                 totalPhysical: dataClousing.totalClousing,
                 difference: dataClousing.difference,
                 customer: dataClousing.customer,
@@ -188,7 +198,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
             : item
         )
       );
-     
     }
   }, [dataClousing]);
 

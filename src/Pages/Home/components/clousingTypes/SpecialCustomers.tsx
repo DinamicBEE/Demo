@@ -52,6 +52,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
 
   useEffect(() => {
     async function fetchData() {
+      console.log("subsidiary", subsidiary);
+      
       const specialCustomer: SpecialCustomerModel = await getSpecialCustData(
         data?.id,
         subsidiary.idCurrency
@@ -104,10 +106,10 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
               <Table.ColumnHeader textAlign="center">
                 Tipo de cambio
               </Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">
+              <Table.ColumnHeader textAlign="center" minW="200px">
                 Cliente
               </Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center" minW="100px">PAX</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">
                 Folio cupones
               </Table.ColumnHeader>
@@ -182,6 +184,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                   </Text> */}
                   <FilterCustomer
                     customers={customers}
+                    customerSelect={item.client}
                     label={false}
                     onSelect={(customer: { value: number; label: string }) => {
                       handleInputTextData(

@@ -69,8 +69,9 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
             specialCustLoading,
             error,
             getSpecialCustData,
-            setSpecialCustData   
-        }),[specialCust, specialCustLoading, error, getSpecialCustData, setSpecialCustData]
+            setSpecialCustData, 
+            specialCustRef
+        }),[specialCust, specialCustLoading, error, getSpecialCustData, setSpecialCustData, specialCustRef]
     );
 
     return (

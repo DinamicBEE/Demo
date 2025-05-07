@@ -55,7 +55,8 @@ export interface ClousingContextType {
     store: number,
     page: number,
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    isSearch: boolean,
   ) => void;
   dataClousing: any;
   setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
@@ -163,6 +164,7 @@ export interface ClousingLayoutProps {
   employee: ClousingLinesModel | null;
   location: location;
   subsidiary: SubsidiaryModal;
+  isEdit?: boolean;
 }
 
 export interface TableOfTotalsProps {
@@ -170,13 +172,22 @@ export interface TableOfTotalsProps {
   store: location;
   startDate: Date;
   endDate: Date;
+  page: number;
+  setPage: (page: number) => void;
+
 }
 
 export interface ConfirmDialogProps {
   isOpen: boolean;
   closeDialog: () => void;
-  sendData: () => void;
+  sendData: (isConfrim: boolean) => void;
   isConfrim: boolean;
+}
+
+export interface ExitDialogProps {
+  isOpen: boolean;
+  closeDialog: () => void;
+  closeOnExit: () => void;
 }
 
 export interface ErrorDialogProps {

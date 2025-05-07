@@ -98,9 +98,10 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
             error,
             getPrepaidData,
             getCouponData,
-            setPrepaidData
+            setPrepaidData,
+            prepaidRef
         }),
-        [prepaid, prepaidLoading, error, getPrepaidData, getCouponData, setPrepaidData]
+        [prepaid, prepaidLoading, error, getPrepaidData, getCouponData, setPrepaidData, prepaidRef]
     );
 
     return (

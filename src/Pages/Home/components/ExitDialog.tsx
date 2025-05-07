@@ -9,39 +9,24 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@components/ui/dialog";
-import { ConfirmDialogProps } from "@models/common.clousing.model";
+import { ExitDialogProps } from "@models/common.clousing.model";
 
-function ConfirmDialog({
+function ExitDialog({
   isOpen,
   closeDialog,
-  sendData,
-  isConfrim,
-}: ConfirmDialogProps) {
+  closeOnExit
+}: ExitDialogProps) {
   return (
     <DialogRoot open={isOpen} onOpenChange={closeDialog}>
       <DialogBackdrop />
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {!isConfrim ? "Confirmar corte de caja" : "Guardar Corte de Caja"}
+            Cerrar Corte de Caja
           </DialogTitle>
         </DialogHeader>
         <DialogBody>
-          {!isConfrim ? (
-            <>
-              <h2>
-                Esta apunto de enviar el corte de caja, una vez confirmado no se
-                podrá realizar ningun ajuste extra.
-              </h2>
-              <br />
-              <h2>¿Desea confirmar el envio del corte de caja completo?</h2>
-            </>
-          ) : (
-            <h2>
-              Esta apunto de guardar el corte de caja, podra realizar ajustes
-              posteriormente.
-            </h2>
-          )}
+            Se perderán todos los cambios realizados en el corte de caja, ¿Está seguro de que desea salir?
         </DialogBody>
 
         <DialogFooter>
@@ -51,8 +36,7 @@ function ConfirmDialog({
           <Button
             colorPalette="meraPrimary"
             onClick={() => {
-              sendData(isConfrim);
-              closeDialog();
+              closeOnExit();
             }}
           >
             Confirmar
@@ -63,4 +47,4 @@ function ConfirmDialog({
   );
 }
 
-export default ConfirmDialog;
+export default ExitDialog;

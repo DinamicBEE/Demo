@@ -124,9 +124,10 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 			getIntercompanyData,
 			setIntercompanyData,
 			getEmployeesList,
-			getSubsidiaries
+			getSubsidiaries,
+			setIntercompany
 		}),
-		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries]
+		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries, setIntercompany]
 	);
 
 	return (
