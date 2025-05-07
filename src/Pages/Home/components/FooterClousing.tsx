@@ -35,6 +35,7 @@ function FooterClousing({
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
+  const [USDmenssage, setUSDmenssage] = useState(false);
 
   const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
@@ -263,8 +264,30 @@ function FooterClousing({
     setButtonLoading(false);
   }
 
-  const handleDialogConfirm = (isConfirm:boolean) => {
+  const handleDialogConfirm = async (isConfirm:boolean) => {
     console.log(header[clousingId]?.difference);
+
+    const cash = await getCashData(clousingId, idCurrency);
+
+    const isUSD = cash.currencies.some((line) => line.currency === "USD");
+
+    if(isUSD) {
+      
+      const totalPos = cash.currencies.find(
+        (line) => line.currency === "USD"
+      )?.totalPOS;
+      const totalPhysical = cash.currencies.find(
+        (line) => line.currency === "USD"
+      )?.totalFisico;
+
+      const difference = ((totalPos ?? 0) - (totalPhysical ?? 0)) != 0 ? true : false;
+
+      setOpenDialogDifference(difference);
+      setUSDmenssage(difference);
+      if (difference === true) return;
+
+    }
+
 
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
       console.log("error");
@@ -272,6 +295,7 @@ function FooterClousing({
       setOpenDialogDifference(true);
       return;
     }
+    
     setButtonLoading(true);
     setIsConfirm(isConfirm);
   };
@@ -333,6 +357,7 @@ function FooterClousing({
       {loading && <Loading />}
       <ErrorDialog
         isOpen={openDialogDifference}
+        usdMessage={USDmenssage}
         closeDialog={() => setOpenDialogDifference(false)}
       />
     </>

@@ -181,6 +181,7 @@ export interface ConfirmDialogProps {
 
 export interface ErrorDialogProps {
   isOpen: boolean;
+  usdMessage: boolean
   closeDialog: () => void;
 }
 
