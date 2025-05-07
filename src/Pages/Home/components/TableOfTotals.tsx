@@ -493,7 +493,7 @@ function TableOfTotals({
                     <Table.Cell textAlign="end">
                       <FormatNumber value={totals.difference} style="currency" currency="USD" />
                     </Table.Cell>
-                    <Table.Cell /> {/* Estatus (vacío) */}
+                    <Table.Cell />
                     <Table.Cell textAlign="end">
                       <FormatNumber value={totals.extra} style="currency" currency="USD" />
                     </Table.Cell>

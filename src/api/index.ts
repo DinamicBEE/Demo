@@ -1,4 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import https from 'https';
+import { Buffer } from 'buffer';
 import Cookies from "js-cookie";
 import { API_AUTH, MODE } from "../services/settings";
 import { refreshAuthToken } from "@services/authService";
@@ -24,12 +26,25 @@ const removeTokens = () => {
   Cookies.remove("refreshToken");
 };
 
+const getHttpsAgent = () => {
+  if (process.env.KAFKA_CERT_BASE64) {
+    const certBuffer = Buffer.from(process.env.KAFKA_CERT_BASE64, 'base64');
+    return new https.Agent({
+      pfx: certBuffer,
+      passphrase: process.env.KAFKA_CERT_PASSWORD || '',
+      rejectUnauthorized: true,
+    });
+  }
+  return undefined;
+};
+
 // Configuración base del cliente Axios
 const api = axios.create({
   baseURL: API_AUTH,
   headers: {
     "Content-Type": "application/json",
   },
+  httpsAgent: getHttpsAgent(),
 });
 
 // Interceptor de solicitud para agregar el token al encabezado
