@@ -9,6 +9,7 @@
     "dev:back": "vite --mode back",
     "build": "vite build",
     "build:back": "vite build --mode back",
+    "start": "vite preview",
     "lint": "eslint .",
     "preview": "vite preview"
   },

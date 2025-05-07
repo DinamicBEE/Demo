@@ -86,8 +86,9 @@ export function CustomerClousingProvider({
       error,
       getCustomerData,
       setCustomerData,
+      customerRef,
     }),
-    [customer, customerLoading, error, getCustomerData, setCustomerData]
+    [customer, customerLoading, error, getCustomerData, setCustomerData, customerRef]
   );
 
   return (

@@ -41,13 +41,16 @@ function TableOfTotals({
   store,
   endDate,
   startDate,
+  page,
+  setPage,
 }: TableOfTotalsProps) {
   const { data, loading, error, header, getInfo, setDataRow, pagination } =
     useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
-  const [page, setPage] = useState(1);
+  const [isEdit, setIsEdit] = useState(false);
+  /* const [page, setPage] = useState(1); */
   const [totals, setTotals] = useState({
     totalPOS: 0,
     totalPhysical: 0,
@@ -119,19 +122,54 @@ function TableOfTotals({
           intercompany: 0,
           adyenTotal: 0,
         }
-      );      
+      );
       setTotals(newTotals);
     }
-    
-  },[data])
+  }, [data]);
 
   function handleExportCSV() {
-    exportCSV(data, header);
+    // Create a copy of the data array
+    const dataWithTotals = [...data];
+
+    // Add totals row as the last item
+    dataWithTotals.push({
+      id: 90000,
+      employe: "TOTALES",
+      totalPOS: Number(totals.totalPOS.toFixed(2)),
+      totalPhysical: Number(totals.totalPhysical.toFixed(2)),
+      difference: Number(totals.difference.toFixed(2)),
+      extra: Number(totals.extra.toFixed(2)),
+      mxm: Number(totals.mxm.toFixed(2)),
+      usd: Number(totals.usd.toFixed(2)),
+      eur: Number(totals.eur.toFixed(2)),
+      lib: Number(totals.lib.toFixed(2)),
+      can: Number(totals.can.toFixed(2)),
+      customer: Number(totals.customer.toFixed(2)),
+      specialCustomer: Number(totals.specialCustomer.toFixed(2)),
+      prepaid: Number(totals.prepaid.toFixed(2)),
+      employees: Number(totals.employees.toFixed(2)),
+      intercompany: Number(totals.intercompany.toFixed(2)),
+      adyenTotal: Number(totals.adyenTotal.toFixed(2)),
+      status: "",
+      closingConfirmation: true,
+      discount: 0,
+      iva: 0,
+      service: 0,
+    });
+
+    exportCSV(dataWithTotals, header);
   }
 
   const openDialog = (item: any) => {
     setSelectedEmployee(item);
+    if (item.status === "Con Diferencia" || item.status === "Close") {
+      item.closingConfirmation = true;
+    } else {
+      item.closingConfirmation = false;
+    }
+
     setIsDialogOpen(true);
+    setIsEdit(true);
     setDataRow(item);
   };
 
@@ -240,7 +278,14 @@ function TableOfTotals({
             <Button
               colorPalette="meraInfo"
               onClick={() => {
-                getInfo(subsidiary.id, store.id, page - 1, startDate, endDate);
+                getInfo(
+                  subsidiary.id,
+                  store.id,
+                  page - 1,
+                  startDate,
+                  endDate,
+                  true
+                );
               }}
             >
               Actualizar Información
@@ -480,55 +525,114 @@ function TableOfTotals({
                         </Text>
                       </Table.Cell>
                     </Table.Row>
-                    
                   ))}
                   <Table.Row bg="gray.100" fontWeight="bold">
                     <Table.Cell textAlign="center">Totales</Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.totalPOS} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.totalPOS}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.totalPhysical} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.totalPhysical}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.difference} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.difference}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell /> {/* Estatus (vacío) */}
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.extra} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.extra}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.mxm} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.mxm}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.usd} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.usd}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.eur} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.eur}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.lib} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.lib}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.can} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.can}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.customer} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.customer}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.specialCustomer} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.specialCustomer}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.prepaid} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.prepaid}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.employees} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.employees}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.intercompany} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.intercompany}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      <FormatNumber value={totals.adyenTotal} style="currency" currency="USD" />
+                      <FormatNumber
+                        value={totals.adyenTotal}
+                        style="currency"
+                        currency="USD"
+                      />
                     </Table.Cell>
                   </Table.Row>
                 </Table.Body>
@@ -540,7 +644,14 @@ function TableOfTotals({
               page={page}
               onPageChange={(e) => {
                 setPage(e.page);
-                getInfo(subsidiary.id, store.id, e.page - 1, startDate, endDate);
+                getInfo(
+                  subsidiary.id,
+                  store.id,
+                  e.page - 1,
+                  startDate,
+                  endDate,
+                  false
+                );
               }}
             >
               <HStack>
@@ -561,6 +672,7 @@ function TableOfTotals({
         onClose={closeDialog}
         location={store}
         subsidiary={subsidiary}
+        isEdit={isEdit}
       ></ClousingLayout>
     </>
   );

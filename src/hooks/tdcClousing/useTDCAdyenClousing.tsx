@@ -1,23 +1,23 @@
 import { ProcessResult } from "@models/adyen.model";
 import { Bank, LotClosure } from "@models/lotClosure.model";
-import { BankDetails } from "@models/tdc.model";
+import { BankLineModel } from "@models/tdc.model";
 import React from "react";
 
 export const useHandleTDCAdyen = () => {
   const updateLocalBanksAdyen = (
     dataFilesProcess: ProcessResult,
-    detailsLocal: BankDetails,
+    detailsLocal: BankLineModel,
     setDetailsLocal: React.Dispatch<
-      React.SetStateAction<BankDetails | undefined>
+      React.SetStateAction<BankLineModel | undefined>
     >
   ) => {
     // Validación temprana
-    if (!dataFilesProcess.consolidatedData || !detailsLocal?.details) {
+    if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
 
     // Verificación de error general
-    if (detailsLocal.details.length !== dataFilesProcess.consolidatedData.length) {
+    if (detailsLocal.vouchers.length !== dataFilesProcess.consolidatedData.length) {
       console.error("La cantidad de detalles locales no coincide con la cantidad de datos consolidados.");
     }
 console.log("detailsLocal", dataFilesProcess.consolidatedData);
@@ -34,7 +34,7 @@ console.log("detailsLocal", dataFilesProcess.consolidatedData);
     );
 
     // Actualizar detalles y encontrar diferencias
-    const updatedDetails = detailsLocal.details.map((detail) => {
+    const updatedDetails = detailsLocal.vouchers.map((detail) => {
       console.log("detail", detail);
       
       const dateMatch = checkDate.has(detail.date);
@@ -45,7 +45,7 @@ console.log("detailsLocal", dataFilesProcess.consolidatedData);
       return {
         ...detail,
         successAdyen: dateMatch && checkMatch && amountMatch,
-        vouchers: {
+        difference: {
           date: isGeneralError ? null : !dateMatch ? "Fecha no coincide" : null,
           check: isGeneralError ? null : !checkMatch ? "Cheque no coincide" : null,
           amount: isGeneralError ? null : !amountMatch ? "Monto no coincide" : null,
@@ -56,7 +56,7 @@ console.log("detailsLocal", dataFilesProcess.consolidatedData);
 
     // Verificar cambios
     const hasChanges = updatedDetails.some(
-      (detail, index) => detail.successAdyen !== detailsLocal.details[index].successAdyen
+      (detail, index) => detail.successAdyen !== detailsLocal.vouchers[index].successAdyen
     );
 
     // Actualizar si hay cambios
@@ -67,16 +67,16 @@ console.log("detailsLocal", dataFilesProcess.consolidatedData);
       }));
 
       // Llamar a updateLocalBanksTotal después de actualizar los detalles
-      updateLocalBanksTotal({ ...detailsLocal, details: updatedDetails }, setDetailsLocal);
+      updateLocalBanksTotal({ ...detailsLocal, vouchers: updatedDetails }, setDetailsLocal);
     }
   };
 
   const updateLocalBanksTotal = (
-    detailsLocal: BankDetails,
-    setDetailsLocal: React.Dispatch<React.SetStateAction<BankDetails | undefined>>
+    detailsLocal: BankLineModel,
+    setDetailsLocal: React.Dispatch<React.SetStateAction<BankLineModel | undefined>>
   ) => {
-    if (detailsLocal.details) {
-      const total = detailsLocal.details
+    if (detailsLocal.vouchers) {
+      const total = detailsLocal.vouchers
         .filter(detail => detail.successAdyen) // Filtrar solo los detalles con successAdyen en true
         .reduce(
           (acc, detail) => {

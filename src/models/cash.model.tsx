@@ -7,6 +7,7 @@ export interface CashContextType {
     error: string;
     getCashData: (clousingId: number, idCurrency: number) => Promise<CashModel>;//, employeeId: number
     setCashData: (cashLine:CashModel, clousingId: number) => void; // employeeId: number,
+    cashRef: React.MutableRefObject<CashContext>
 }
 
 export interface CashContext {

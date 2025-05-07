@@ -20,6 +20,7 @@ export interface TDCContextType {
     clousingId: number,
     lineId: number | string,
   ) => void;
+  tdcRef: React.MutableRefObject<TDCContext>
 }
 
 export interface TDCAdyenContextType {

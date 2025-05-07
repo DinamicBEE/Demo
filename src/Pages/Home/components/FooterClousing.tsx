@@ -41,15 +41,17 @@ function FooterClousing({
   const [isConfirm, setIsConfirm] = useState(false);
 
   const { getFooterData } = useFooter();
-  const { getCashData } = useCashClousing();
-  const { getTDCData } = useTDCContext();
-  const { getCustomerData } = useCustomerContext();
-  const { getSpecialCustData } = useSpecialCustContext();
-  const { getEmployeetData } = useEmployeeContext();
-  const { getIntercompanyData } = useIntercompanyContext();
-  const { getPrepaidData } = usePrepaidContext();
+  const { getCashData, cashRef } = useCashClousing();
+  const { getTDCData,tdcRef } = useTDCContext();
+  const { getCustomerData,customerRef } = useCustomerContext();
+  const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
+  const { getEmployeetData, setEmployee } = useEmployeeContext();
+  const { getIntercompanyData,setIntercompany } = useIntercompanyContext();
+  const { getPrepaidData, prepaidRef } = usePrepaidContext();
   const { setDataClousing } = useClousing();
   const { header } = useHeaders();
+
+  
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -60,7 +62,7 @@ function FooterClousing({
     fetchFooterData();
   }, [clousingId, clousingType, getFooterData]);
 
-  async function sendClousing() {
+  async function sendClousing(isConfirm: boolean) {
     setloading(true);
 
     const cash = await getCashData(clousingId, idCurrency);
@@ -208,7 +210,8 @@ function FooterClousing({
     };
     console.log(body);
 
-    const response: any = await sendCashClousing(body);
+    const response: any = await sendCashClousing(body, isConfirm);
+console.log("response", response);
 
     if (response === "response") {
       //TODO: DEvolver para el back
@@ -216,12 +219,12 @@ function FooterClousing({
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
-      const status =
+      const statuss =
         header[body.id] && header[body.id].difference !== 0
           ? STATUS.WITH_DIFFERENCE
           : STATUS.Close;
 
-      console.log("status", status);
+
 
       setDataClousing({
         id: body.id,
@@ -248,13 +251,24 @@ function FooterClousing({
         can: body.cash.lines.find(
           (line) => line.currency === "CAN"
         )?.totalFisico ?? 0,
-        status: STATUS.Close,
+        status: isConfirm === true ? STATUS.Open : statuss,
+        closingConfirmation: !isConfirm
+
         /*   header[body.id] && header[body.id].difference !== 0
             ? STATUS.WITH_DIFFERENCE
             : STATUS.Close, */
       });
 
       closeDialog();
+      if (isConfirm === true) {
+        cashRef.current = {}
+        tdcRef.current = {};
+        customerRef.current = {};
+        specialCustRef.current = {};
+        setEmployee({});
+        setIntercompany({});
+        prepaidRef.current = {};
+      }
     } else {
       console.log("Error al enviar el corte de caja");
       //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
@@ -264,10 +278,8 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = (isConfirm:boolean) => {
-    console.log(header[clousingId]?.difference);
 
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
-      console.log("error");
 
       setOpenDialogDifference(true);
       return;
@@ -302,7 +314,7 @@ function FooterClousing({
             loading={loading}
             colorPalette="meraWarning"
             onClick={async () => {
-              handleDialogConfirm(false);
+              handleDialogConfirm(true);
             }}
             disabled={closingConfirmation}
           >
@@ -313,7 +325,7 @@ function FooterClousing({
             loading={loading}
             colorPalette="meraPrimary"
             onClick={async () => {
-              handleDialogConfirm(true);
+              handleDialogConfirm(false);
             }}
             disabled={closingConfirmation}
           >

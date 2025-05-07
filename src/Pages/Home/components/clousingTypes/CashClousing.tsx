@@ -17,7 +17,7 @@ import { CashLines, CashModel } from "@models/cash.model";
 
 const pageSize = 10;
 
-function CashClousing({ data, idCurrency }: any) {
+function CashClousing({ data, idCurrency, isEdit }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
   const { cashLoading, getCashData } = useCashClousing();
   const { handleInputChange, handleChangeTips } = useHandleCashData(

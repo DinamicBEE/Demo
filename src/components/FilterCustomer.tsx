@@ -69,6 +69,8 @@ function FilterCustomer({
   }
 
   function handleSelect(event: ValueChangeDetails<any>) {
+    console.log("event", event);
+    
     const selectedId = Number(event.value[0]);
 
     const customerSelect = customers.find(
