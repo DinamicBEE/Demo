@@ -226,6 +226,7 @@ function CashClousing({ data, idCurrency }: any) {
             onClose={closeDialog}
             onSave={handleSaveFromDialog}
             currencyId={selectedCurrencyId}
+            data={data}
           />
         </Box>
       )}
