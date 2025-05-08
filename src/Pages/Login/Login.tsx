@@ -23,8 +23,6 @@ function Login() {
     setloading(true);
     await handleLogin(data.user, data.password);
     setloading(false);  
-    console.log("");
-      
   };
 
   return (
