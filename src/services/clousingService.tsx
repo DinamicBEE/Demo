@@ -202,7 +202,7 @@ export const validateDetails = async (
     //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
     let data: BankLineModel;
 
-    if (details.bank === "ADYEN") {
+    if (details.bank === "TPV ADYEN") {
       data = {
         ...details,
         vouchers: BankLineDetails,

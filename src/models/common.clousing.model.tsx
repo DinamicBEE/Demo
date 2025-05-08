@@ -193,6 +193,7 @@ export interface ExitDialogProps {
 
 export interface ErrorDialogProps {
   isOpen: boolean;
+  usdMessage: boolean
   closeDialog: () => void;
 }
 
