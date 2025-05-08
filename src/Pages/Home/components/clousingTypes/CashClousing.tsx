@@ -70,7 +70,7 @@ function CashClousing({ data, idCurrency }: any) {
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
-      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id === currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
+      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
       return { ...prev, currencies: updatedCurrencies };
     });
   };

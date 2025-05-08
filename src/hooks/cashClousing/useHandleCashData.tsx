@@ -24,8 +24,11 @@ function handleInputChange(
 
   value = value.replace(/[^\d.]/g, "");
 
+  console.log("handleInputChange", value, itemId, updatedDenominations);
+  
+
   const updatedData = cashData.currencies.map((item: CashLines) =>
-    item.id === itemId
+    item.id == itemId
       ? {
           ...item,
           totalFisico: parseFloat(value),
@@ -34,6 +37,9 @@ function handleInputChange(
         }
       : item
   );
+
+  console.log("updatedData", updatedData);
+  
 
   const newTotalPhysical = updatedData.reduce(
     (acc: number, curr: { totalFisico: number }) => acc + curr.totalFisico,
