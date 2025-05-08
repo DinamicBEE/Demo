@@ -18,7 +18,7 @@ const pageSize = 10;
 
 function CashClousing({ data, idCurrency }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
-  const { cashLoading, getCashData } = useCashClousing();
+  const { cashLoading, getCashData, setCashClousingSelect } = useCashClousing();
   const { handleChangeTips, handleInputChange } = useHandleCashData(cashData, setCashData, data?.id);
   const { setFooterData } = useFooter();
   const { updateTotal } = useHeaders();
@@ -57,15 +57,22 @@ function CashClousing({ data, idCurrency }: any) {
     setVisibleItems(items);
   }, [page, cashData])
 
-  const openDialog = useCallback((currencyId: string) => {
+  const openDialog = useCallback((currencyId: string, item: any) => {
     setIsDialogOpen(true);
     setSelectedCurrencyId(currencyId);
+    setCashClousingSelect(item);
   }, []);
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
-  const handleSaveFromDialog = (currencyId: string, total: number) => {
+  const handleSaveFromDialog = (currencyId: string, total: number, updatedDenominations: any[]) => {
     handleInputChange(currencyId, total.toString());
+
+    // Actualiza también las denominaciones si lo necesitas:
+    setCashData((prev) => {
+      const updatedCurrencies = prev.currencies.map((currency) => currency.id === currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
+      return { ...prev, currencies: updatedCurrencies };
+    });
   };
 
   return (
@@ -145,13 +152,12 @@ function CashClousing({ data, idCurrency }: any) {
                           disabled={true}
                         />
 
-                        <Button marginLeft={4} onClick={() => openDialog(String(item.id))}>
+                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)}>
                           <CiSquarePlus />
                         </Button>
                       </>
 
                     )}
-
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
@@ -205,12 +211,15 @@ function CashClousing({ data, idCurrency }: any) {
       </Box>
 
       {isDialogOpen && selectedCurrencyId !== null && (
-        <CashClousingDetails
-          isOpen={isDialogOpen}
-          onClose={closeDialog}
-          onSave={handleSaveFromDialog}
-          currencyId={selectedCurrencyId}
-        />
+        <Box position="fixed" top="50%" left="50%" zIndex="1"
+          transform="translate(-50%, -50%)" width="100%" height="100%">
+          <CashClousingDetails
+            isOpen={isDialogOpen}
+            onClose={closeDialog}
+            onSave={handleSaveFromDialog}
+            currencyId={selectedCurrencyId}
+          />
+        </Box>
       )}
 
     </>

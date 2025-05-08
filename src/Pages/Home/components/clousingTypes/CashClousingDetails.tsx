@@ -1,45 +1,37 @@
-import {
-  DialogActionTrigger,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  FormatNumber,
-  Input,
-  Table,
-} from "@chakra-ui/react";
+import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, FormatNumber, Input, Table} from "@chakra-ui/react";
 import { Button } from "@components/ui/button";
-import React, { useState, useMemo } from "react";
+import { useCashClousing } from "@context/clousing/cashClousingContext";
+import React, { useEffect, useState } from "react";
 
 interface CashClousingDetailsProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (currencyId: string, total: number) => void;
+  onSave: (currencyId: string, total: number, updatedDenominations: any[]) => void;
   currencyId: string;
 }
 
 export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, }) => {
-  
-  const [denominations, setDenominations] = useState([
-    { id: null, idDenimination: 1, denomination: 500.0, amount: 2 },
-    { id: null, idDenimination: 2, denomination: 100.0, amount: 2 },
-  ]);
+
+  const { cashClousingSelect } = useCashClousing();
+  const [denominations, setDenominations] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (cashClousingSelect?.denominations) {
+      setDenominations([...cashClousingSelect.denominations]);
+    }
+  }, [cashClousingSelect]);
 
   const handleChangeAmount = (index: number, value: string) => {
     const numericValue = parseInt(value) || 0;
     const updated = [...denominations];
-    updated[index].amount = numericValue;
+    updated[index] = { ...updated[index], amount: numericValue };
     setDenominations(updated);
   };
 
-  const total = useMemo(() => {
-    return denominations.reduce((sum, item) => sum + item.denomination * item.amount, 0);
-  }, [denominations]);
+  const total = denominations.reduce((sum, item) => sum + item.denomination * item.amount, 0);
 
   const handleSave = () => {
-    const total = denominations.reduce((sum, d) => sum + d.amount * d.denomination, 0);
-    onSave(currencyId, total);
+    onSave(currencyId, total, denominations);
     onClose();
   };
 
@@ -52,9 +44,9 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
       closeOnEscape={false}
       closeOnInteractOutside={false}
     >
+      <DialogBackdrop />
       <DialogContent>
-        <DialogHeader>Lista de Denominaciones.</DialogHeader>
-
+        <DialogHeader>Lista de Denominaciones. <b>Total POS: ${cashClousingSelect.totalPOS}</b></DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
             <Table.Root size="sm" variant="outline">
@@ -66,8 +58,8 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {denominations.map((item, index) => (
-                  <Table.Row key={item.idDenimination}>
+                {denominations.map((item: any, index: number) => (
+                  <Table.Row key={item.idDenomination ?? index}>
                     <Table.Cell textAlign="center">${item.denomination}</Table.Cell>
                     <Table.Cell textAlign="center">
                       <Input
@@ -98,17 +90,13 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
             </Table.Root>
           </Table.ScrollArea>
         </DialogBody>
-
         <DialogFooter>
-
           <DialogActionTrigger asChild>
             <Button colorPalette="meraError">Cancelar</Button>
           </DialogActionTrigger>
-
           <Button type="submit" colorPalette="meraPrimary" onClick={handleSave}>
             Guardar
           </Button>
-
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
