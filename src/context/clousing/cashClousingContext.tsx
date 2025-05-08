@@ -42,9 +42,12 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
             updateCashData(updateCash)
 
             return response.data as CashModel;
+
         } catch (error) {
+            
             setError(error instanceof Error ? error.message : String(error));
             return {} as CashModel;
+            
         } finally {
             setCashLoading(false);
         }

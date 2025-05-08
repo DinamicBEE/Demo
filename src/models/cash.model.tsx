@@ -26,6 +26,13 @@ export interface CashModel {
 
 }
 
+export interface Denomination {
+    id: number | null;
+    idDenomination: number;
+    denomination:number;
+    amount: number;
+  }
+
 export interface CashLines {
     id: number | string;
     idCurrency: number;
@@ -35,4 +42,5 @@ export interface CashLines {
     difference: number;
     exchangeRate: number;
     originalCurrency: number;
+    denominations: Denomination
 }

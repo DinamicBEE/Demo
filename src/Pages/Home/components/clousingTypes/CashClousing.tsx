@@ -16,7 +16,7 @@ import { CashClousingDetails } from "./CashClousingDetails";
 
 const pageSize = 10;
 
-function CashClousing({ data, idCurrency, isEdit }: any) {
+function CashClousing({ data, idCurrency }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
   const { cashLoading, getCashData, setCashClousingSelect } = useCashClousing();
   const { handleChangeTips, handleInputChange } = useHandleCashData(cashData, setCashData, data?.id);
@@ -65,12 +65,12 @@ function CashClousing({ data, idCurrency, isEdit }: any) {
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
-  const handleSaveFromDialog = (currencyId: string, total: number, updatedDenominations: any[]) => {
-    handleInputChange(currencyId, total.toString());
+  const handleSaveFromDialog = (currencyId: string, total: number, updatedDenominations: any) => {
+    handleInputChange(currencyId, total.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
-    setCashData((prev) => {
-      const updatedCurrencies = prev.currencies.map((currency) => currency.id === currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
+    setCashData((prev: any) => {
+      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id === currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
       return { ...prev, currencies: updatedCurrencies };
     });
   };
@@ -212,7 +212,7 @@ function CashClousing({ data, idCurrency, isEdit }: any) {
 
       {isDialogOpen && selectedCurrencyId !== null && (
         <Box position="fixed" top="50%" left="50%" zIndex="1"
-          transform="translate(-50%, -50%)" width="100%" height="100%">
+        transform="translate(-50%, -50%)" width="100%" height="100%">
           <CashClousingDetails
             isOpen={isDialogOpen}
             onClose={closeDialog}
