@@ -11,6 +11,8 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
     const [cashLoading, setCashLoading] = useState(false);
     const [error, setError] = useState("");
     const cashRef = useRef<CashContext>(cashClousing);    
+
+    const [cashClousingSelect, setCashClousingSelect] = useState<any>({});
     
     const updateCashData = (newCashData: CashContext) => {
         setCashClousing(newCashData);
@@ -67,8 +69,10 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         getCashData,
         setCashData,
         cashRef,
+        cashClousingSelect,
+        setCashClousingSelect,
         }),
-        [cashClousing, cashLoading, error, getCashData, setCashData, cashRef]
+        [cashClousing, cashLoading, error, getCashData, setCashData, cashRef, cashClousingSelect, setCashClousingSelect]
     );
     
     return (

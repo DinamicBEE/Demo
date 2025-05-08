@@ -8,6 +8,8 @@ export interface CashContextType {
     getCashData: (clousingId: number, idCurrency: number) => Promise<CashModel>;//, employeeId: number
     setCashData: (cashLine:CashModel, clousingId: number) => void; // employeeId: number,
     cashRef: React.MutableRefObject<CashContext>
+    cashClousingSelect: any,
+    setCashClousingSelect: any
 }
 
 export interface CashContext {
