@@ -91,7 +91,7 @@ function HeaderClousing({
         />
 
         <CurrencyInput
-          value={localHeader?.difference}
+          value={Math.abs(localHeader?.difference || 0)}
           name={"Diferencia"}
           loading={false}
         />

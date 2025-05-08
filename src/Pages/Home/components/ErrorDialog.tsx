@@ -28,7 +28,7 @@ function ErrorDialog({ isOpen, usdMessage, closeDialog }: ErrorDialogProps) {
         <DialogBody> 
           {usdMessage ? ` El corte de caja no se puede cerrar con diferencia en dolares, por favor
           verifique los datos ingresados y vuelva a intentarlo.` 
-          : `El corte de caja no se puede cerrar con diferencia negativa, por favor
+          : `El corte de caja no se puede cerrar con diferencia, por favor
           verifique los datos ingresados y vuelva a intentarlo.`}
         </DialogBody>
            <DialogCloseTrigger />

@@ -75,7 +75,7 @@ console.log();
           difference: line.totalPOS - line.totalPhysical,
           status: getStatus(line.status),
           extra: line.exta,
-          mxm: line.generalTotal,
+          mxm: line.generalTotal || 0,
           usd: line.usd,
           eur: line.eur,
           lib: line.lib,

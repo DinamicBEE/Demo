@@ -43,16 +43,14 @@ function FooterClousing({
 
   const { getFooterData } = useFooter();
   const { getCashData, cashRef } = useCashClousing();
-  const { getTDCData,tdcRef } = useTDCContext();
-  const { getCustomerData,customerRef } = useCustomerContext();
+  const { getTDCData, tdcRef } = useTDCContext();
+  const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
   const { getEmployeetData, setEmployee } = useEmployeeContext();
-  const { getIntercompanyData,setIntercompany } = useIntercompanyContext();
+  const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
   const { setDataClousing } = useClousing();
   const { header } = useHeaders();
-
-  
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -212,7 +210,7 @@ function FooterClousing({
     console.log(body);
 
     const response: any = await sendCashClousing(body, isConfirm);
-console.log("response", response);
+    console.log("response", response);
 
     if (response === "response") {
       //TODO: DEvolver para el back
@@ -221,11 +219,9 @@ console.log("response", response);
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
       const statuss =
-        header[body.id] && header[body.id].difference !== 0
+        header[body.id] && Number(header[body.id].difference?.toFixed(2)) !== 0
           ? STATUS.WITH_DIFFERENCE
           : STATUS.Close;
-
-
 
       setDataClousing({
         id: body.id,
@@ -237,23 +233,23 @@ console.log("response", response);
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
-        mxm: body.cash.lines.find(
-          (line) => line.currency === "MXN"
-        )?.totalFisico ?? 0,
-        usd: body.cash.lines.find(
-          (line) => line.currency === "USD"
-        )?.totalFisico ?? 0,
-        eur: body.cash.lines.find(
-          (line) => line.currency === "EUR"
-        )?.totalFisico ?? 0,
-        lib: body.cash.lines.find(
-          (line) => line.currency === "LIB"
-        )?.totalFisico ?? 0,
-        can: body.cash.lines.find(
-          (line) => line.currency === "CAN"
-        )?.totalFisico ?? 0,
+        mxm:
+          body.cash.lines.find((line) => line.currency === "MXN")
+            ?.totalFisico ?? 0,
+        usd:
+          body.cash.lines.find((line) => line.currency === "USD")
+            ?.totalFisico ?? 0,
+        eur:
+          body.cash.lines.find((line) => line.currency === "EUR")
+            ?.totalFisico ?? 0,
+        lib:
+          body.cash.lines.find((line) => line.currency === "LIB")
+            ?.totalFisico ?? 0,
+        can:
+          body.cash.lines.find((line) => line.currency === "CAN")
+            ?.totalFisico ?? 0,
         status: isConfirm === true ? STATUS.Open : statuss,
-        closingConfirmation: !isConfirm
+        closingConfirmation: !isConfirm,
 
         /*   header[body.id] && header[body.id].difference !== 0
             ? STATUS.WITH_DIFFERENCE
@@ -262,7 +258,7 @@ console.log("response", response);
 
       closeDialog();
       if (isConfirm === true) {
-        cashRef.current = {}
+        cashRef.current = {};
         tdcRef.current = {};
         customerRef.current = {};
         specialCustRef.current = {};
@@ -278,15 +274,14 @@ console.log("response", response);
     setButtonLoading(false);
   }
 
-  const handleDialogConfirm = async (isConfirm:boolean) => {
+  const handleDialogConfirm = async (isConfirm: boolean) => {
     console.log(header[clousingId]?.difference);
 
     const cash = await getCashData(clousingId, idCurrency);
 
     const isUSD = cash.currencies.some((line) => line.currency === "USD");
 
-    if(isUSD) {
-      
+    if (isUSD) {
       const totalPos = cash.currencies.find(
         (line) => line.currency === "USD"
       )?.totalPOS;
@@ -294,21 +289,23 @@ console.log("response", response);
         (line) => line.currency === "USD"
       )?.totalFisico;
 
-      const difference = ((totalPos ?? 0) - (totalPhysical ?? 0)) != 0 ? true : false;
+      const difference =
+        (totalPos ?? 0) - (totalPhysical ?? 0) != 0 ? true : false;
 
       setOpenDialogDifference(difference);
       setUSDmenssage(difference);
       if (difference === true) return;
-
     }
 
-
-    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
-
+    if (
+      header[clousingId]?.difference &&
+      Number(header[clousingId]?.difference.toFixed(2)) !== 0 &&
+      isConfirm === false
+    ) {
       setOpenDialogDifference(true);
       return;
     }
-    
+
     setButtonLoading(true);
     setIsConfirm(isConfirm);
   };
