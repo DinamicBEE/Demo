@@ -79,6 +79,7 @@ export interface TDCModel {
 
 export interface Voucher {
   id: number;
+  idCustom: number;
   voucherId:null | number;
   date: string;
   check: string;

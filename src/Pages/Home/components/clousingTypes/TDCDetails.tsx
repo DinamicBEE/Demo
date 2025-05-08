@@ -154,7 +154,7 @@ function TDCDetails({
 
   const onSelect = (item: Voucher) => {
     const updatedDetails = detailsLocal?.vouchers.map((voucher) =>
-      voucher.id === item.id && voucher.amount === item.amount
+      voucher.idCustom === item.idCustom && voucher.amount === item.amount
         ? {
             ...voucher,
             status: true, // Convert boolean to string
@@ -299,7 +299,7 @@ function TDCDetails({
                 <Table.Body>
                   {visibleItems?.map((item: Voucher) => (
                     <Table.Row
-                      key={`${item.id}-${item.check}-${item.amount}`}
+                      key={`${item.idCustom}-${item.check}-${item.amount}`}
                       backgroundColor={isCheckValid(
                         item.successAdyen,
                         item.difference
