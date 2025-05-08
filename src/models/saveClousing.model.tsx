@@ -18,6 +18,14 @@ interface CashLine extends LineBase {
   exchangeRate: number;
   originalCurrency: number;
   idCurrency: number;
+  denomination: denomination[];
+}
+
+interface denomination {
+  id: number | null;
+  idDenomination: number;
+  denomination:number;
+  amount: number;
 }
 
 interface Cash {

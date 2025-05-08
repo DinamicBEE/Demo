@@ -167,7 +167,7 @@ function FooterClousing({
         electronicTips: cash.electronicTips,
         lines:
           cash && cash.currencies
-            ? cash.currencies.map(({ id, ...rest }) => ({
+            ? (cash.currencies as any[]).map(({ id, ...rest }) => ({
                 id: typeof id === "number" ? Number(id) : null,
                 ...rest,
               }))
@@ -209,6 +209,7 @@ function FooterClousing({
     };
     console.log(body);
 
+    //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
     console.log("response", response);
 
@@ -246,7 +247,7 @@ function FooterClousing({
           body.cash.lines.find((line) => line.currency === "LIB")
             ?.totalFisico ?? 0,
         can:
-          body.cash.lines.find((line) => line.currency === "CAN")
+          body.cash.lines.find((line) => line.currency === "CAD")
             ?.totalFisico ?? 0,
         status: isConfirm === true ? STATUS.Open : statuss,
         closingConfirmation: !isConfirm,

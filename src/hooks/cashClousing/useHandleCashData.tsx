@@ -15,50 +15,58 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
   const { setFooterData } = useFooter();
   const { setCashData } = useCashClousing();
 
-  function handleInputChange(itemId: number | string, value:string) {
-    
-    value = value.replace(/[^\d.]/g, "");
-    
-    const updatedData = cashData.currencies.map((item: CashLines) =>
-      item.id === itemId
-        ? {
-            ...item,
-            totalFisico: parseFloat(value),
-            difference: item.totalPOS - parseFloat(value),
-          }
-        : item
-    );
-    
-    const newTotalPhysical = updatedData.reduce(
-      (acc: number, curr: { totalFisico: number; }) => acc + curr.totalFisico,
-      0
-    );
+function handleInputChange(
+  itemId: number | string,
+  value: string,
+  updatedDenominations?: CashLines["denominations"]
+) {
+  
 
-    const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
+  value = value.replace(/[^\d.]/g, "");
 
-    const newTotal: TotalModel = {
-      totalPOS: cashData.total?.totalPOS || 0,
-      totalPhysical: newTotalPhysical,
-      difference: newDifference,
-    }
-    
-    const updateCashdata = {
-      ...cashData,
-      currencies: updatedData,
-      total: newTotal
-    };
+  console.log("handleInputChange", value, itemId, updatedDenominations);
+  
 
+  const updatedData = cashData.currencies.map((item: CashLines) =>
+    item.id == itemId
+      ? {
+          ...item,
+          totalFisico: parseFloat(value),
+          difference: item.totalPOS - parseFloat(value),
+          denominations: updatedDenominations ?? item.denominations,
+        }
+      : item
+  );
 
-    setData(updateCashdata);
-    cashRef.current = updateCashdata
+  console.log("updatedData", updatedData);
+  
 
-    updateTotal(newTotalPhysical, clousingId, CLOUSING_KEY.CASH)
+  const newTotalPhysical = updatedData.reduce(
+    (acc: number, curr: { totalFisico: number }) => acc + curr.totalFisico,
+    0
+  );
 
-    setFooterData(newTotal, clousingId, CLOUSING_KEY.CASH);
+  const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
 
-    setCashData(cashRef.current,  clousingId)
-
+  const newTotal: TotalModel = {
+    totalPOS: cashData.total?.totalPOS || 0,
+    totalPhysical: newTotalPhysical,
+    difference: newDifference,
   };
+
+  const updateCashdata = {
+    ...cashData,
+    currencies: updatedData,
+    total: newTotal,
+  };
+
+  setData(updateCashdata);
+  cashRef.current = updateCashdata;
+
+  updateTotal(newTotalPhysical, clousingId, CLOUSING_KEY.CASH);
+  setFooterData(newTotal, clousingId, CLOUSING_KEY.CASH);
+  setCashData(cashRef.current, clousingId);
+}
 
   function handleChangeTips(value: string) {
     
