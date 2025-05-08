@@ -26,7 +26,7 @@ function ErrorDialog({ isOpen, closeDialog }: ErrorDialogProps) {
           <DialogTitle>El corte de caja no se puede cerrar</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          El corte de caja no se puede cerrar con diferencia negativa, por favor
+          El corte de caja no se puede cerrar con diferencia, por favor
           verifique los datos ingresados y vuelva a intentarlo.
         </DialogBody>
            <DialogCloseTrigger />

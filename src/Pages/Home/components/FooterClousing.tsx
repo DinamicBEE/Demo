@@ -279,7 +279,9 @@ console.log("response", response);
 
   const handleDialogConfirm = (isConfirm:boolean) => {
 
-    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
+    if (header[clousingId]?.difference && header[clousingId]?.difference != 0 &&
+      isConfirm === false
+    ) {
 
       setOpenDialogDifference(true);
       return;
