@@ -89,6 +89,7 @@ console.log();
           discount: 0,
           iva: 150,
           closingConfirmation: false,
+          creationDate: format(line.creationDate, "dd/MM/yyyy"),
         })
       ),
     };

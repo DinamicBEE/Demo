@@ -155,6 +155,7 @@ function TableOfTotals({
       discount: 0,
       iva: 0,
       service: 0,
+      creationDate: "",
     });
 
     exportCSV(dataWithTotals, header);
