@@ -76,8 +76,9 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @returns {Promise<CashModel>}
  */
 export const getCashClousing = async (
-  clousingId: number, idCurrency: number
-): Promise<ResponseModel> => {  
+  clousingId: number,
+  idCurrency: number
+): Promise<ResponseModel> => {
   try {
     // Instead of using the actual API endpoint
     const response = await api.get(CASH, {
@@ -132,15 +133,15 @@ export const getCashClousing = async (
     const responseData: ResponseModel = {
       success: true,
       data: data,
-    }
+    };
 
     return responseData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     const responseData: ResponseModel = {
       success: false,
-      data: {} as CashModel
-    }
+      data: {} as CashModel,
+    };
     return responseData;
   }
 };
@@ -167,7 +168,7 @@ export const getTDCClousing = async (
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
-        voucherAmountDisplay: 0,
+        voucherAmountDisplay: line.vouchers.filter((v: any) => v.status).length,
       })),
     };
 
@@ -182,8 +183,6 @@ export const getTDCClousing = async (
     return [] as unknown as TDCModel;
   }
 };
-
-
 
 export const validateDetails = async (
   clousingId: number,
@@ -235,7 +234,6 @@ export const validateDetails = async (
 export const getCustomerClousing = async (
   clousingId: number
 ): Promise<ResponseModel> => {
-
   try {
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
@@ -274,14 +272,14 @@ export const getCustomerClousing = async (
     const responseData: ResponseModel = {
       success: true,
       data: data,
-    }
+    };
 
     return responseData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     const responseData: ResponseModel = {
       success: false,
-      data: { 
+      data: {
         id: clousingId,
         total: {
           totalPOS: 0,
@@ -289,8 +287,8 @@ export const getCustomerClousing = async (
           difference: 0,
         },
         lines: [],
-      } as CustomerModel
-    }
+      } as CustomerModel,
+    };
     return responseData;
   }
 };
@@ -346,11 +344,10 @@ export const getSpecialCustomerClousing = async (
     const responseData: ResponseModel = {
       success: true,
       data: data,
-    }
+    };
 
     return responseData;
   } catch (error) {
-
     const responseData: ResponseModel = {
       success: false,
       data: {
@@ -361,8 +358,8 @@ export const getSpecialCustomerClousing = async (
           difference: 0,
         },
         lines: [],
-      } as SpecialCustomerModel
-    }
+      } as SpecialCustomerModel,
+    };
     return responseData;
   }
 };
@@ -619,24 +616,18 @@ export const getIntercompanyClousing = async (
 };
 
 //TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
-export const sendCashClousing = async (body: any) => {
+export const sendCashClousing = async (body: any, isConfirm: boolean) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
+    console.log(body);
+    console.log(isConfirm);
+    
+    
     const response = await api.post(
-      "/crc/cash-register-closure/api/closure/save",
-      body
+      "/crc/cash-register-closure/api/closure/save?isPreguardado=" +isConfirm,
+      body,
     );
-
-    /*  const response = { success: true }; */
-
-    //return response
-    /*  return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000); // 5 segundos
-    }); */
-
     //TODO: Devolver para consulta a back
     return response.data;
   } catch (error) {

@@ -52,6 +52,8 @@ function Home() {
     null,
   ]);
   const [startDate, endDate] = dateRange;
+  const [page, setPage] = useState<number>(1);
+  const [isSearch, setIsSearch] = useState<string>("");
 
   useEffect(() => {
     async function fetchData() {
@@ -226,8 +228,9 @@ function Home() {
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location.id, 0, startDate, endDate);
+                  getInfo(SubSelect.id, location.id, 0, startDate, endDate, true);
                   setIsAdyen(false);
+                  setPage(1);
                 }}
               >
                 Buscar
@@ -253,6 +256,8 @@ function Home() {
           store={location}
           startDate={startDate ?? new Date()}
           endDate={endDate ?? new Date()}
+          page={page}
+          setPage={setPage}
         />
       )}
     </Box>

@@ -12,6 +12,7 @@ export interface specialCustContextType {
     specialCustLine: SpecialCustomerModel,
     clousingId: number
   ) => void;
+  specialCustRef: React.MutableRefObject<SpecialCustomerContext>;
 }
 
 export interface SpecialCustomerContext {

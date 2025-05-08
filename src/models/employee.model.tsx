@@ -15,6 +15,7 @@ export interface EmployeeContextType {
     getReasonsList: ( subsidiary: number, cdc: number ) => Promise<ReasonsModel[]>;
     getTicketsList: ( cdc: number ) => Promise<TicketModel[]>;
     setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
+    setEmployee :  React.Dispatch<React.SetStateAction<EmployeeContext>>
 }
 
 export interface EmployeeContext {

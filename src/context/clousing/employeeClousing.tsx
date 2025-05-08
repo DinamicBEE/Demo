@@ -171,6 +171,7 @@ export function EmployeeClousingProvider({
       getReasonsList,
       getTicketsList,
       setNewEmployee,
+      setEmployee,
     }),
     [
       employee,
@@ -181,6 +182,7 @@ export function EmployeeClousingProvider({
       getReasonsList,
       getTicketsList,
       setNewEmployee,
+      setEmployee,
     ]
   );
 

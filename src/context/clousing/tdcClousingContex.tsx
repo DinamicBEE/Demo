@@ -103,11 +103,11 @@ console.log('data', data);
             detailsError,
             getTDCData,
             setTDCData,
-            
+            tdcRef,
             setDetails
         }),
         [tdc, tdcDetails, tdcLoading, detailsLoading, error, detailsError, 
-            getTDCData, setTDCData, setDetails]
+            getTDCData, setTDCData, setDetails, tdcRef]
     );
 
     return (

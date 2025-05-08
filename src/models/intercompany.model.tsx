@@ -15,6 +15,7 @@ export interface IntercompanyContextType {
     setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
     getEmployeesList: () => Promise<Employee[]>;
     getSubsidiaries: (idEmployee: string) => Promise<SubsidiaryModal[]>;
+    setIntercompany: React.Dispatch<React.SetStateAction<IntercompanyContext>>;
 }
 
 export interface IntercompanyContext {
