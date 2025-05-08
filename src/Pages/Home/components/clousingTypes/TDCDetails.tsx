@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger,
-  PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Field,
+  Flex,
+  FormatNumber,
+  Table,
+  Text,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
-  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import {
+  DialogRoot,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogFooter,
+} from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
@@ -187,7 +206,6 @@ function TDCDetails({
     setVouchersSelected(
       updatedDetailsLocal.vouchers.filter((item) => item.status).length
     );
-    
   };
 
   return (
@@ -207,6 +225,18 @@ function TDCDetails({
           </DialogHeader>
 
           <DialogBody>
+            <Flex gap={4}>
+              <CurrencyInput
+                value={detailsLocal?.pos}
+                name={"Total POS"}
+                loading={detailsLoading || false}
+              />
+              <CurrencyInput
+                value={localAmount}
+                name={"Total"}
+                loading={detailsLoading || false}
+              />
+            </Flex>
             {detailsLocal?.bank === "ADYEN" && (
               <Button
                 colorPalette="meraPrimary"
@@ -220,7 +250,8 @@ function TDCDetails({
             )}
 
             {detailsLocal?.bank != "ADYEN" && (
-              <Flex mb={4} width="100%">
+
+              <Flex mb={4} mt={4} width="100%">
                 {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
                   <Input
@@ -399,11 +430,11 @@ function TDCDetails({
 
           <DialogFooter>
             <Flex gap={4}>
-              <CurrencyInput
+           {/*    <CurrencyInput
                 value={localAmount}
                 name={"Total"}
                 loading={detailsLoading || false}
-              />
+              /> */}
 
               <Button
                 colorPalette="meraPrimary"
