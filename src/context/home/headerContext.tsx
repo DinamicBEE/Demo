@@ -20,6 +20,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   const getHeader = (clousingData: ClousingLinesModel) => {
     setLoading(true);
+console.log(clousingData);
 
     if (headerRef.current[clousingData.id]) {
       setLoading(false);
@@ -99,11 +100,13 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 }
 
 function createObjectHeader(dataRow: ClousingLinesModel) {
+  console.log(dataRow);
+  
   const headerData: HeaderData = {
     cdc: "No seleccionada",
     location: "No seleccionado",
     subsidiary: "No seleccionado",
-    date: "27/04/25",
+    date: dataRow.creationDate,
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
     difference: dataRow.difference,
