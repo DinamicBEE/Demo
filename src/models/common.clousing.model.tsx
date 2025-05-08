@@ -80,6 +80,7 @@ export interface HeaderContextType {
     clousingId: number,
     clousingType: CLOUSING_KEY
   ) => void;
+  headerRef: React.MutableRefObject<HeaderContext>;
 }
 
 export interface HeaderContext {

@@ -36,6 +36,7 @@ const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
 const EmployeesClousing = lazy(
   () => import("./clousingTypes/EmployeesClousing")
 );
+import { useHeaders } from "@context/home/headerContext";
 
 function ClousingLayout({
   isOpen,
@@ -68,6 +69,7 @@ function ClousingLayout({
   const { prepaidRef } = usePrepaidContext();
   const { tdcRef } = useTDCContext();
   const { setIntercompany } = useIntercompanyContext();
+  const { headerRef } = useHeaders();
   return (
     <>
       <DialogRoot
@@ -252,6 +254,7 @@ function ClousingLayout({
           prepaidRef.current = {};
           setEmployee({} as any);
           setIntercompany({} as any);
+          headerRef.current = {};
         }}
         isOpen={openDialogExit}
       ></ExitDialog>
