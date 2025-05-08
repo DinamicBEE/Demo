@@ -22,7 +22,9 @@ function Login() {
   const onSubmit = async (data: { user: string; password: string }) => {
     setloading(true);
     await handleLogin(data.user, data.password);
-    setloading(false);    
+    setloading(false);  
+    console.log("");
+      
   };
 
   return (
