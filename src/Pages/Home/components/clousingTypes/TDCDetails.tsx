@@ -130,11 +130,11 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      if (detailsLocal.bank !== "ADYEN") {
+      if (detailsLocal.bank !== "TPV ADYEN") {
         updateLineClousing(detailsLocal);
         onClose();
         setIsOpenDialogSave(false);
-      } else if (detailsLocal.bank === "ADYEN") {
+      } else if (detailsLocal.bank === "TPV ADYEN") {
         const detailsValidated: BankLineModel = await validateDetails(
           clousingId,
           lineId,
@@ -207,7 +207,7 @@ function TDCDetails({
           </DialogHeader>
 
           <DialogBody>
-            {detailsLocal?.bank === "ADYEN" && (
+            {detailsLocal?.bank === "TPV ADYEN" && (
               <Button
                 colorPalette="meraPrimary"
                 marginBottom={4}
@@ -219,7 +219,7 @@ function TDCDetails({
               </Button>
             )}
 
-            {detailsLocal?.bank != "ADYEN" && (
+            {detailsLocal?.bank != "TPV ADYEN" && (
               <Flex mb={4} width="100%">
                 {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
@@ -245,7 +245,7 @@ function TDCDetails({
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
-                    {detailsLocal?.bank === "ADYEN" && (
+                    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         <Checkbox
                           top="1"
@@ -288,7 +288,7 @@ function TDCDetails({
                     <Table.ColumnHeader textAlign="end">
                       Importe
                     </Table.ColumnHeader>
-                    {detailsLocal?.bank === "ADYEN" && (
+                    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
                       </Table.ColumnHeader>
@@ -305,7 +305,7 @@ function TDCDetails({
                         item.difference
                       )}
                     >
-                      {detailsLocal?.bank === "ADYEN" && (
+                      {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell>
                           <Checkbox
                             top="1"
@@ -358,7 +358,7 @@ function TDCDetails({
                           />
                         </Text>
                       </Table.Cell>
-                      {detailsLocal?.bank === "ADYEN" && (
+                      {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell textAlign="center">
                           <Text>{item.difference?.date}</Text>
                           <Text>{item.difference?.check}</Text>
@@ -411,7 +411,7 @@ function TDCDetails({
                 onClick={() => setIsOpenDialogSave(true)}
                 disabled={
                   closingConfirmation ||
-                  (detailsLocal?.bank === "ADYEN" &&
+                  (detailsLocal?.bank === "TPV ADYEN" &&
                     !(dataFilesProcess && dataFilesProcess.consolidatedData))
                 }
               >
