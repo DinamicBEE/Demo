@@ -162,7 +162,7 @@ function TableOfTotals({
 
   const openDialog = (item: any) => {
     setSelectedEmployee(item);
-    if (item.status === "Con Diferencia" || item.status === "Close") {
+    if (item.status.toLowerCase() !== "Open".toLowerCase()) {
       item.closingConfirmation = true;
     } else {
       item.closingConfirmation = false;
