@@ -21,6 +21,7 @@ function handleInputChange(
   updatedDenominations?: CashLines["denominations"]
 ) {
   
+
   value = value.replace(/[^\d.]/g, "");
 
   const updatedData = cashData.currencies.map((item: CashLines) =>
@@ -29,7 +30,7 @@ function handleInputChange(
           ...item,
           totalFisico: parseFloat(value),
           difference: item.totalPOS - parseFloat(value),
-          denominations: updatedDenominations ?? item.denominations, // 👈 actualiza denominaciones si vienen
+          denominations: updatedDenominations ?? item.denominations,
         }
       : item
   );
