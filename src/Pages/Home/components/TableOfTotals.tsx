@@ -162,10 +162,13 @@ function TableOfTotals({
 
   const openDialog = (item: any) => {
     setSelectedEmployee(item);
-    if (item.status.toLowerCase() !== "Open".toLowerCase()) {
-      item.closingConfirmation = true;
-    } else {
+
+    console.log('estatus de caja',item.status)
+
+    if (item.status.toLowerCase() === "Abierto".toLowerCase() || item.status.toLowerCase() === "open".toLowerCase()) {
       item.closingConfirmation = false;
+    } else {
+      item.closingConfirmation = true;
     }
 
     setIsDialogOpen(true);
