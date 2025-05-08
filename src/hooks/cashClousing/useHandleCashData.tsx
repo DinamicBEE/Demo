@@ -20,6 +20,7 @@ function handleInputChange(
   value: string,
   updatedDenominations?: CashLines["denominations"]
 ) {
+  
   value = value.replace(/[^\d.]/g, "");
 
   const updatedData = cashData.currencies.map((item: CashLines) =>

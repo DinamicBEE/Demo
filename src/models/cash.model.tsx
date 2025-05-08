@@ -42,5 +42,5 @@ export interface CashLines {
     difference: number;
     exchangeRate: number;
     originalCurrency: number;
-    denominations: Denomination
+    denominations: any
 }
