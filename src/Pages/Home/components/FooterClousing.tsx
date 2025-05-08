@@ -166,7 +166,7 @@ function FooterClousing({
         electronicTips: cash.electronicTips,
         lines:
           cash && cash.currencies
-            ? cash.currencies.map(({ id, ...rest }) => ({
+            ? (cash.currencies as any[]).map(({ id, ...rest }) => ({
                 id: typeof id === "number" ? Number(id) : null,
                 ...rest,
               }))
