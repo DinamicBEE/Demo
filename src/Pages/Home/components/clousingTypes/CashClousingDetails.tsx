@@ -107,6 +107,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
                         textAlign="center"
                         disabled={data?.closingConfirmation ?? false}
                       />
+
                     </Table.Cell>
                     <Table.Cell textAlign="center">
                       <FormatNumber
