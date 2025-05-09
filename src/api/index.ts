@@ -26,17 +26,17 @@ const removeTokens = () => {
   Cookies.remove("refreshToken");
 };
 
-const getHttpsAgent = () => {
-  if (process.env.KAFKA_CERT_BASE64) {
-    const certBuffer = Buffer.from(process.env.KAFKA_CERT_BASE64, 'base64');
-    return new https.Agent({
-      pfx: certBuffer,
-      passphrase: process.env.KAFKA_CERT_PASSWORD || '',
-      rejectUnauthorized: true,
-    });
-  }
-  return undefined;
-};
+// const getHttpsAgent = () => {
+//   if (process.env.KAFKA_CERT_BASE64) {
+//     const certBuffer = Buffer.from(process.env.KAFKA_CERT_BASE64, 'base64');
+//     return new https.Agent({
+//       pfx: certBuffer,
+//       passphrase: process.env.KAFKA_CERT_PASSWORD || '',
+//       rejectUnauthorized: true,
+//     });
+//   }
+//   return undefined;
+// };
 
 // Configuración base del cliente Axios
 const api = axios.create({
@@ -44,7 +44,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  httpsAgent: getHttpsAgent(),
+  // httpsAgent: getHttpsAgent(),
 });
 
 // Interceptor de solicitud para agregar el token al encabezado

@@ -181,14 +181,21 @@ function CashClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
+                    
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS/item.exchangeRate}
+                       value={item.totalPOS/item.exchangeRate}
                         //value={item.originalCurrency}
                         style="currency"
                         currency="USD"
                       />
                     </Text>
+                   {/*  <FormatNumber
+                       value={item.totalPOS/item.exchangeRate}
+                        value={item.originalCurrency}
+                        style="currency"
+                        currency="USD"
+                      /> */}
                   </Table.Cell>
 
                 </Table.Row>
@@ -219,6 +226,7 @@ function CashClousing({ data, idCurrency }: any) {
             onClose={closeDialog}
             onSave={handleSaveFromDialog}
             currencyId={selectedCurrencyId}
+            data={data}
           />
         </Box>
       )}

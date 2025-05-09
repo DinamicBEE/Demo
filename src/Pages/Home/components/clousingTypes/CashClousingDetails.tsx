@@ -1,4 +1,15 @@
-import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogRoot, FormatNumber, Input, Table} from "@chakra-ui/react";
+import {
+  DialogActionTrigger,
+  DialogBackdrop,
+  DialogBody,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  FormatNumber,
+  Input,
+  Table,
+} from "@chakra-ui/react";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
@@ -6,12 +17,22 @@ import React, { useEffect, useState } from "react";
 interface CashClousingDetailsProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (currencyId: string, total: number, updatedDenominations: any[]) => void;
+  onSave: (
+    currencyId: string,
+    total: number,
+    updatedDenominations: any[]
+  ) => void;
   currencyId: string;
+  data?: any;
 }
 
-export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, }) => {
-
+export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  currencyId,
+  data,
+}) => {
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
 
@@ -28,7 +49,10 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
     setDenominations(updated);
   };
 
-  const total = denominations.reduce((sum, item) => sum + item.denomination * item.amount, 0);
+  const total = denominations.reduce(
+    (sum, item) => sum + item.denomination * item.amount,
+    0
+  );
 
   const handleSave = () => {
     onSave(currencyId, total, denominations);
@@ -46,27 +70,41 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
     >
       <DialogBackdrop />
       <DialogContent>
-        <DialogHeader>Lista de Denominaciones. <b>Total POS: ${cashClousingSelect.totalPOS}</b></DialogHeader>
+        <DialogHeader>
+          Lista de Denominaciones.{" "}
+          <b>Total POS: ${cashClousingSelect.totalPOS}</b>
+        </DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
             <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row bg="bg.subtle">
-                  <Table.ColumnHeader textAlign="center">Denominación</Table.ColumnHeader>
-                  <Table.ColumnHeader textAlign="center">Cantidad</Table.ColumnHeader>
-                  <Table.ColumnHeader textAlign="center">Subtotal</Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">
+                    Denominación
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">
+                    Cantidad
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader textAlign="center">
+                    Subtotal
+                  </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
                 {denominations.map((item: any, index: number) => (
                   <Table.Row key={item.idDenomination ?? index}>
-                    <Table.Cell textAlign="center">${item.denomination}</Table.Cell>
+                    <Table.Cell textAlign="center">
+                      ${item.denomination}
+                    </Table.Cell>
                     <Table.Cell textAlign="center">
                       <Input
                         type="number"
                         value={item.amount}
-                        onChange={(e) => handleChangeAmount(index, e.target.value)}
+                        onChange={(e) =>
+                          handleChangeAmount(index, e.target.value)
+                        }
                         textAlign="center"
+                        disabled={data?.closingConfirmation ?? false}
                       />
                     </Table.Cell>
                     <Table.Cell textAlign="center">
@@ -83,7 +121,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
                     Total:
                   </Table.Cell>
                   <Table.Cell textAlign="center" fontWeight="bold">
-                    <FormatNumber value={total} style="currency" currency="USD" />
+                    <FormatNumber
+                      value={total}
+                      style="currency"
+                      currency="USD"
+                    />
                   </Table.Cell>
                 </Table.Row>
               </Table.Body>
@@ -94,7 +136,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
           <DialogActionTrigger asChild>
             <Button colorPalette="meraError">Cancelar</Button>
           </DialogActionTrigger>
-          <Button type="submit" colorPalette="meraPrimary" onClick={handleSave}>
+          <Button type="submit" colorPalette="meraPrimary" onClick={handleSave} disabled={data?.closingConfirmation ?? false}>
             Guardar
           </Button>
         </DialogFooter>

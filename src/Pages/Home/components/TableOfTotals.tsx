@@ -155,19 +155,23 @@ function TableOfTotals({
       discount: 0,
       iva: 0,
       service: 0,
+      creationDate: "",
     });
 
     exportCSV(dataWithTotals, header);
   }
 
   const openDialog = (item: any) => {
-    setSelectedEmployee(item);
-    if (item.status === "Con Diferencia" || item.status === "Close") {
-      item.closingConfirmation = true;
-    } else {
+    
+    console.log('estatus de caja',item.status)
+
+    if (item.status.toLowerCase() === "Abierto".toLowerCase() || item.status.toLowerCase() === "open".toLowerCase()) {
       item.closingConfirmation = false;
+    } else {
+      item.closingConfirmation = true;
     }
 
+    setSelectedEmployee(item);
     setIsDialogOpen(true);
     setIsEdit(true);
     setDataRow(item);

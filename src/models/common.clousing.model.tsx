@@ -43,6 +43,7 @@ export interface ClousingLinesModel {
   iva: number;
   closingConfirmation: boolean;
   adyenTotal?: number;
+  creationDate: string;
 }
 
 export interface ClousingContextType {

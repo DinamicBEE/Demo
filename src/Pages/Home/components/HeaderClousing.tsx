@@ -25,6 +25,8 @@ function HeaderClousing({
   useEffect(() => {
     if (!header[id]) {
       const headerData = getHeader(dataRow);
+      console.log("headerData", headerData);
+      
       setLocalHeader(headerData);
     } else {
       setLocalHeader(header[id]);
