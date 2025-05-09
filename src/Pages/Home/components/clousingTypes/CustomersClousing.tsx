@@ -81,7 +81,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
             <Table.Header>
               <Table.Row>
                 <Table.ColumnHeader textAlign="center">Clientes</Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">Cupones</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">Moneda</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">Valor PAX</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
