@@ -20,6 +20,7 @@ interface CashClousingDetailsProps {
   onSave: (
     currencyId: string,
     total: number,
+    totalMXN: number,
     updatedDenominations: any[]
   ) => void;
   currencyId: string;
@@ -51,13 +52,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
     setDenominations(updated);
   };
 
-  const total = denominations.reduce(
-    (sum, item) => sum + item.denomination * item.amount,
-    0
-  );
+  const total = denominations.reduce((sum, item) => sum + item.denomination * item.amount, 0);
+  const totalMXN = (total * cashClousingSelect.exchangeRate)
 
   const handleSave = () => {
-    onSave(currencyId, total, denominations);
+    onSave(currencyId, total, totalMXN, denominations);
     onClose();
   };
 
@@ -74,7 +73,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
       <DialogContent>
         <DialogHeader>
           Lista de Denominaciones.{" "}
-          <b>Total POS: ${cashClousingSelect.originalCurrency/cashClousingSelect.exchangeRate}</b>
+          <b>Total POS: ${(cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)}</b>
         </DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
