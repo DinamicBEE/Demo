@@ -29,6 +29,7 @@ function HeaderClousing({
       
       setLocalHeader(headerData);
     } else {
+      console.log("header", header[id]);
       setLocalHeader(header[id]);
     }
   }, [header]);
@@ -93,7 +94,7 @@ function HeaderClousing({
         />
 
         <CurrencyInput
-          value={Math.abs(localHeader?.difference || 0)}
+          value={Number(localHeader?.difference?.toFixed(2))}
           name={"Diferencia"}
           loading={false}
         />

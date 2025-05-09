@@ -50,7 +50,7 @@ function FooterClousing({
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
   const { setDataClousing } = useClousing();
-  const { header } = useHeaders();
+  const { header, headerRef } = useHeaders();
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -211,7 +211,6 @@ function FooterClousing({
 
     //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
-    console.log("response", response);
 
     if (response === "response") {
       //TODO: DEvolver para el back
@@ -251,25 +250,22 @@ function FooterClousing({
             ?.totalFisico ?? 0,
         status: isConfirm === true ? STATUS.Open : statuss,
         closingConfirmation: !isConfirm,
-
-        /*   header[body.id] && header[body.id].difference !== 0
-            ? STATUS.WITH_DIFFERENCE
-            : STATUS.Close, */
       });
 
-      closeDialog();
       if (isConfirm === true) {
-        cashRef.current = {};
-        tdcRef.current = {};
-        customerRef.current = {};
-        specialCustRef.current = {};
-        setEmployee({});
-        setIntercompany({});
-        prepaidRef.current = {};
+        delete cashRef.current[employee.id];
+        delete customerRef.current[employee.id];
+        delete specialCustRef.current[employee.id];
+        delete prepaidRef.current[employee.id];
+        delete tdcRef.current[employee.id];
+        delete headerRef.current[employee.id];
+
+        setEmployee({} as any);
+        setIntercompany({} as any);
+        delete headerRef.current[employee.id];
       }
+      closeDialog();
     } else {
-      console.log("Error al enviar el corte de caja");
-      //showToast(ALERTCLOUSING_MODEL.ERROR, response.error);
     }
     setloading(false);
     setButtonLoading(false);
@@ -282,7 +278,7 @@ function FooterClousing({
 
     const isUSD = cash.currencies.some((line) => line.currency === "USD");
 
-    if (isUSD) {
+    if (isUSD && isConfirm === false) {
       const totalPos = cash.currencies.find(
         (line) => line.currency === "USD"
       )?.totalPOS;

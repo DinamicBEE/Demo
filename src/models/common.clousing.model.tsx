@@ -57,7 +57,7 @@ export interface ClousingContextType {
     page: number,
     startDate: Date,
     endDate: Date,
-    isSearch: boolean,
+    isSearch: boolean
   ) => void;
   dataClousing: any;
   setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
@@ -78,7 +78,9 @@ export interface HeaderContextType {
   updateTotal: (
     newtotal: number,
     clousingId: number,
-    clousingType: CLOUSING_KEY
+    clousingType: CLOUSING_KEY,
+    isUpdate?: boolean,
+    valueCurrent?: number
   ) => void;
   headerRef: React.MutableRefObject<HeaderContext>;
 }
@@ -93,6 +95,7 @@ export interface HeaderData {
   subsidiary?: string;
   date?: string;
   totalPOS?: number;
+  totalPOSAux?: number;
   totalClousing?: number;
   difference?: number;
   service: number;
@@ -176,7 +179,6 @@ export interface TableOfTotalsProps {
   endDate: Date;
   page: number;
   setPage: (page: number) => void;
-
 }
 
 export interface ConfirmDialogProps {
@@ -194,7 +196,7 @@ export interface ExitDialogProps {
 
 export interface ErrorDialogProps {
   isOpen: boolean;
-  usdMessage: boolean
+  usdMessage: boolean;
   closeDialog: () => void;
 }
 

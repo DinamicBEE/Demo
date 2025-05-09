@@ -49,7 +49,7 @@ function FilterVoucher({
     const voucherCollection = createListCollection({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
-        value: `${voucher.id} - ${voucher.amount}`,
+        value: `${voucher.idCustom} - ${voucher.amount}`,
         description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
