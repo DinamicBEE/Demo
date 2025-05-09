@@ -36,6 +36,8 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
 
+  console.log(cashClousingSelect)
+
   useEffect(() => {
     if (cashClousingSelect?.denominations) {
       setDenominations([...cashClousingSelect.denominations]);
@@ -72,7 +74,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
       <DialogContent>
         <DialogHeader>
           Lista de Denominaciones.{" "}
-          <b>Total POS: ${cashClousingSelect.totalPOS}</b>
+          <b>Total POS: ${cashClousingSelect.originalCurrency/cashClousingSelect.exchangeRate}</b>
         </DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
