@@ -169,6 +169,12 @@ export const getTDCClousing = async (
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "tdc-" + uuidv4() : line.id,
         voucherAmountDisplay: line.vouchers.filter((v: any) => v.status).length,
+        vouchers: line.vouchers.map((v: any) => ({
+          ...v,
+          // Generate new UUID for null IDs, otherwise keep existing ID
+          idCustom: "voucher-" + uuidv4(),
+          dateDisplay: format(new Date(v.date), "dd/MM/yyyy"),
+        })),
       })),
     };
 

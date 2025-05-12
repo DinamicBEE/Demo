@@ -43,6 +43,7 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     customerRef.current = updateCustomerData;
 
     setCustomerData(customerRef.current, clousingId)
+    updateContext(updatedCurrencies);
   }
 
   function handleCoupons(id: number | string, value: string) {

@@ -23,7 +23,7 @@ function FilterVoucher({
     const voucherCollection = createListCollection({
       items: vouchers.map((voucher) => ({
         label: `${voucher.check}`,
-        value: `${voucher.id} - ${voucher.amount}`,
+        value: `${voucher.idCustom} - ${voucher.amount}`,
         description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
@@ -49,7 +49,7 @@ function FilterVoucher({
     const voucherCollection = createListCollection({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
-        value: `${voucher.id} - ${voucher.amount}`,
+        value: `${voucher.idCustom} - ${voucher.amount}`,
         description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
@@ -63,7 +63,7 @@ function FilterVoucher({
     
     
     const voucherSelect = vouchers.find(
-      (voucher) => voucher.id === Number(selectedValue) && voucher.amount === Number(selectedAmount)
+      (voucher) => voucher.idCustom === selectedValue && voucher.amount === Number(selectedAmount)
     );
     console.log("voucherSelect", voucherSelect);
     

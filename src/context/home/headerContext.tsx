@@ -98,7 +98,8 @@ console.log("data", clousingData);
     updateTotal,
     loading,
     error,
-    getHeader
+    getHeader,
+    headerRef,
   }
 
   return (

@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger,
-  PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Field,
+  Flex,
+  FormatNumber,
+  Table,
+  Text,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
-  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import {
+  DialogRoot,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogFooter,
+} from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
@@ -154,7 +173,7 @@ function TDCDetails({
 
   const onSelect = (item: Voucher) => {
     const updatedDetails = detailsLocal?.vouchers.map((voucher) =>
-      voucher.id === item.id && voucher.amount === item.amount
+      voucher.idCustom === item.idCustom && voucher.amount === item.amount
         ? {
             ...voucher,
             status: true, // Convert boolean to string
@@ -187,7 +206,6 @@ function TDCDetails({
     setVouchersSelected(
       updatedDetailsLocal.vouchers.filter((item) => item.status).length
     );
-    
   };
 
   return (
@@ -207,7 +225,19 @@ function TDCDetails({
           </DialogHeader>
 
           <DialogBody>
-            {detailsLocal?.bank === "TPV ADYEN" && (
+            <Flex gap={4}>
+              <CurrencyInput
+                value={detailsLocal?.pos}
+                name={"Total POS"}
+                loading={detailsLoading || false}
+              />
+              <CurrencyInput
+                value={localAmount}
+                name={"Total"}
+                loading={detailsLoading || false}
+              />
+            </Flex>
+            {detailsLocal?.bank === "ADYEN" && (
               <Button
                 colorPalette="meraPrimary"
                 marginBottom={4}
@@ -219,8 +249,9 @@ function TDCDetails({
               </Button>
             )}
 
-            {detailsLocal?.bank != "TPV ADYEN" && (
-              <Flex mb={4} width="100%">
+            {detailsLocal?.bank != "ADYEN" && (
+
+              <Flex mb={4} mt={4} width="100%">
                 {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
                   <Input
@@ -299,7 +330,7 @@ function TDCDetails({
                 <Table.Body>
                   {visibleItems?.map((item: Voucher) => (
                     <Table.Row
-                      key={`${item.id}-${item.check}-${item.amount}`}
+                      key={`${item.idCustom}-${item.check}-${item.amount}`}
                       backgroundColor={isCheckValid(
                         item.successAdyen,
                         item.difference
@@ -399,11 +430,11 @@ function TDCDetails({
 
           <DialogFooter>
             <Flex gap={4}>
-              <CurrencyInput
+           {/*    <CurrencyInput
                 value={localAmount}
                 name={"Total"}
                 loading={detailsLoading || false}
-              />
+              /> */}
 
               <Button
                 colorPalette="meraPrimary"

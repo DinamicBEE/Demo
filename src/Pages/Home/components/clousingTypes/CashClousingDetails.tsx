@@ -10,6 +10,7 @@ import {
   Input,
   Table,
 } from "@chakra-ui/react";
+import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ interface CashClousingDetailsProps {
   onSave: (
     currencyId: string,
     total: number,
+    totalMXN: number,
     updatedDenominations: any[]
   ) => void;
   currencyId: string;
@@ -49,13 +51,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
     setDenominations(updated);
   };
 
-  const total = denominations.reduce(
-    (sum, item) => sum + item.denomination * item.amount,
-    0
-  );
+  const total = denominations.reduce((sum, item) => sum + item.denomination * item.amount, 0);
+  const totalMXN = (total * cashClousingSelect.exchangeRate)
 
   const handleSave = () => {
-    onSave(currencyId, total, denominations);
+    onSave(currencyId, total, totalMXN, denominations);
     onClose();
   };
 
@@ -72,7 +72,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
       <DialogContent>
         <DialogHeader>
           Lista de Denominaciones.{" "}
-          <b>Total POS: ${cashClousingSelect.totalPOS}</b>
+          <b>Total POS: ${(cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)}</b>
         </DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
@@ -97,15 +97,16 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
                       ${item.denomination}
                     </Table.Cell>
                     <Table.Cell textAlign="center">
-                      <Input
-                        type="number"
+
+                      <CurrencyInputNumber
+                        loading={false}
                         value={item.amount}
-                        onChange={(e) =>
-                          handleChangeAmount(index, e.target.value)
-                        }
-                        textAlign="center"
+                        currency={false}
+                        onChange={(value) => handleChangeAmount(index, String(value ?? 0))} // convierte a string si es necesario
+                        allowDecimals={false}
                         disabled={data?.closingConfirmation ?? false}
                       />
+
                     </Table.Cell>
                     <Table.Cell textAlign="center">
                       <FormatNumber
