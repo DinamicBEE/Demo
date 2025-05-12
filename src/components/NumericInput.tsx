@@ -74,11 +74,18 @@ function TableInput({ value, id, currency, keyValue, onChange, disabled }: Table
     );
 }
 
-function CurrencyInputNumber({ name, value, onChange, currency = false, allowDecimals = true, }:
-    CurrencyInputProps & {
-        onChange?: (floatValue: number | undefined) => void;
-        allowDecimals?: boolean;
-    }) {
+function CurrencyInputNumber({
+    name,
+    value,
+    onChange,
+    currency = false,
+    allowDecimals = true,
+    disabled = false,
+}: CurrencyInputProps & {
+    onChange?: (floatValue: number | undefined) => void;
+    allowDecimals?: boolean;
+    disabled?: boolean;
+}) {
 
     return (
         <NumericFormat
