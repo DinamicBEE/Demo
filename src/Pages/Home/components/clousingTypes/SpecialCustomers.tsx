@@ -143,7 +143,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                 <Table.Cell textAlign="end">
                   <Text>
                     <FormatNumber
-                      value={item.bill}
+                      value={item.couponPrice}
+                      //value={item.bill}
                       style="currency"
                       currency="USD"
                     />
