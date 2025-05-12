@@ -826,9 +826,10 @@ export const processFiles = async (
 
                     // Validar si ambos valores coinciden con los proporcionados
                     // Solo filtramos si los valores de storeName y location no están vacíos
+           
                     return (
-                      (!storeName || recordStore === storeName) &&
-                      (!location || recordLocation === location)
+                      (!storeName || recordStore.toLowerCase() === storeName.toLowerCase()) &&
+                      (!location || recordLocation.toLowerCase() === location.toLowerCase())
                     );
                   });
 

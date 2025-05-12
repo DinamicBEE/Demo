@@ -56,7 +56,7 @@ function TDCDetails({
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
-  const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
+  const { updateLocalBanksAdyen } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const [chequeValue, setChequeValue] = useState("");
@@ -111,7 +111,16 @@ function TDCDetails({
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
-    updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
+    updateLocalBanksAdyen(
+      dataFilesProcess,
+      detailsLocal,
+      setDetailsLocal,
+      setVisibleItems,
+      setLocalAmount,
+      setVouchersSelected,
+      startRange,
+      endRange
+    );
   }, [dataFilesProcess.consolidatedData]);
 
   const isCheckValid = (
@@ -149,15 +158,15 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      if (detailsLocal.bank !== "TPV ADYEN") {
-        updateLineClousing(detailsLocal);
-        onClose();
-        setIsOpenDialogSave(false);
-      } else if (detailsLocal.bank === "TPV ADYEN") {
+      /*    if (detailsLocal.bank !== "TPV ADYEN") { */
+      updateLineClousing(detailsLocal);
+      onClose();
+      setIsOpenDialogSave(false);
+      /* } */ /* else if (detailsLocal.bank === "TPV ADYEN") {
         const detailsValidated: BankLineModel = await validateDetails(
           clousingId,
           lineId,
-          // selectedVouchers,
+          selectedVouchers,
           detailsLocal.vouchers.filter((item) => item.status),
           detailsLocal
         );
@@ -166,7 +175,7 @@ function TDCDetails({
         updateLineClousing(detailsValidated);
         onClose();
         setIsOpenDialogSave(false);
-      }
+      } */
       setLoading(false);
     }
   }
@@ -215,6 +224,7 @@ function TDCDetails({
         closeOnEscape={false}
         closeOnInteractOutside={false}
         scrollBehavior="inside"
+        size={"lg"}
         onOpenChange={() => {
           onClose(), setDataFilesProcess({} as ProcessResult);
         }}
@@ -228,31 +238,37 @@ function TDCDetails({
             <Flex gap={4}>
               <CurrencyInput
                 value={detailsLocal?.pos}
-                name={"Total POS"}
+                name={"POS"}
                 loading={detailsLoading || false}
               />
               <CurrencyInput
                 value={localAmount}
-                name={"Total"}
+                name={"Físico"}
+                loading={detailsLoading || false}
+              />
+              <CurrencyInput
+                value={(detailsLocal?.pos ?? 0) - localAmount}
+                name={"Diferencia"}
                 loading={detailsLoading || false}
               />
             </Flex>
-            {detailsLocal?.bank === "ADYEN" && (
-              <Button
-                colorPalette="meraPrimary"
-                marginBottom={4}
-                size={"xs"}
-                width={"50% !important"}
-                onClick={() => setIsOpenDialogFiles(true)}
-              >
-                Subir archivos
-              </Button>
+            {detailsLocal?.bank?.toLowerCase().includes("a") && (
+           
+              <Flex mt={4} width="100%">
+                <Button
+                  colorPalette="meraPrimary"
+                  size={"xs"}
+                  width={"50% !important"}
+                  onClick={() => setIsOpenDialogFiles(true)}
+                >
+                  Subir archivos
+                </Button>
+              </Flex>
             )}
+            {/*  {detailsLocal?.bank != "ADYEN" && ( */}
 
-            {detailsLocal?.bank != "ADYEN" && (
-
-              <Flex mb={4} mt={4} width="100%">
-                {/*  <InputAddon>Cheque</InputAddon>
+            <Flex mb={4} mt={4} width="100%">
+              {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
                   <Input
                     placeholder="No. Cheque"
@@ -260,23 +276,23 @@ function TDCDetails({
                   />
                 </Skeleton> */}
 
-                <FilterVoucher
-                  label={true}
-                  disabled={closingConfirmation}
-                  onSelect={onSelect}
-                  vouchers={
-                    detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
-                  }
-                  voucherSelect={chequeValue}
-                />
-              </Flex>
-            )}
+              <FilterVoucher
+                label={true}
+                disabled={closingConfirmation}
+                onSelect={onSelect}
+                vouchers={
+                  detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
+                }
+                voucherSelect={chequeValue}
+              />
+            </Flex>
+            {/*    )} */}
 
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
-                    {detailsLocal?.bank === "TPV ADYEN" && (
+                    {/*   {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         <Checkbox
                           top="1"
@@ -309,7 +325,7 @@ function TDCDetails({
                           }}
                         />
                       </Table.ColumnHeader>
-                    )}
+                    )} */}
                     <Table.ColumnHeader textAlign="center">
                       Fecha de cierre
                     </Table.ColumnHeader>
@@ -319,11 +335,11 @@ function TDCDetails({
                     <Table.ColumnHeader textAlign="end">
                       Importe
                     </Table.ColumnHeader>
-                    {detailsLocal?.bank === "TPV ADYEN" && (
+                    {/*    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
                       </Table.ColumnHeader>
-                    )}
+                    )} */}
                   </Table.Row>
                 </Table.Header>
 
@@ -331,12 +347,12 @@ function TDCDetails({
                   {visibleItems?.map((item: Voucher) => (
                     <Table.Row
                       key={`${item.idCustom}-${item.check}-${item.amount}`}
-                      backgroundColor={isCheckValid(
+                      /*   backgroundColor={isCheckValid(
                         item.successAdyen,
                         item.difference
-                      )}
+                      )} */
                     >
-                      {detailsLocal?.bank === "TPV ADYEN" && (
+                      {/*   {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell>
                           <Checkbox
                             top="1"
@@ -371,7 +387,7 @@ function TDCDetails({
                             }}
                           />
                         </Table.Cell>
-                      )}
+                      )} */}
                       <Table.Cell textAlign="center">
                         <Text>{item.dateDisplay}</Text>
                       </Table.Cell>
@@ -389,14 +405,14 @@ function TDCDetails({
                           />
                         </Text>
                       </Table.Cell>
-                      {detailsLocal?.bank === "TPV ADYEN" && (
+                      {/*      {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell textAlign="center">
                           <Text>{item.difference?.date}</Text>
                           <Text>{item.difference?.check}</Text>
                           <Text>{item.difference?.amount}</Text>
                           <Text>{item.difference?.general}</Text>
                         </Table.Cell>
-                      )}
+                      )} */}
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -430,7 +446,7 @@ function TDCDetails({
 
           <DialogFooter>
             <Flex gap={4}>
-           {/*    <CurrencyInput
+              {/*    <CurrencyInput
                 value={localAmount}
                 name={"Total"}
                 loading={detailsLoading || false}
@@ -441,9 +457,9 @@ function TDCDetails({
                 //   onClick={() => saveDetails()}
                 onClick={() => setIsOpenDialogSave(true)}
                 disabled={
-                  closingConfirmation ||
+                  closingConfirmation /* ||
                   (detailsLocal?.bank === "TPV ADYEN" &&
-                    !(dataFilesProcess && dataFilesProcess.consolidatedData))
+                    !(dataFilesProcess && dataFilesProcess.consolidatedData)) */
                 }
               >
                 Guardar
