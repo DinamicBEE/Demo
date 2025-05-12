@@ -10,6 +10,7 @@ import {
   Input,
   Table,
 } from "@chakra-ui/react";
+import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
@@ -36,8 +37,6 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
 }) => {
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
-
-  console.log(cashClousingSelect)
 
   useEffect(() => {
     if (cashClousingSelect?.denominations) {
@@ -98,13 +97,13 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
                       ${item.denomination}
                     </Table.Cell>
                     <Table.Cell textAlign="center">
-                      <Input
-                        type="number"
+
+                      <CurrencyInputNumber
+                        loading={false}
                         value={item.amount}
-                        onChange={(e) =>
-                          handleChangeAmount(index, e.target.value)
-                        }
-                        textAlign="center"
+                        currency={false}
+                        onChange={(value) => handleChangeAmount(index, String(value ?? 0))} // convierte a string si es necesario
+                        allowDecimals={false}
                         disabled={data?.closingConfirmation ?? false}
                       />
 
