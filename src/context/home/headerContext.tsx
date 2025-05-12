@@ -16,6 +16,8 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   const updateHeaderState = (newHeader: any) => {
     setHeader(newHeader);
     headerRef.current = newHeader;
+
+    console.log("headerRef", headerRef.current);
   };
 
   const getHeader = (clousingData: ClousingLinesModel) => {
@@ -28,8 +30,9 @@ console.log(clousingData);
     }
 
     try {
-
+console.log("data", clousingData);
       const data = createObjectHeader(clousingData);
+      console.log("data", data);
 
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 
@@ -50,7 +53,8 @@ console.log(clousingData);
 
   const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
 //console.log("updateTotal", newTotal, clousingId, clousingType);
-
+    //console.log("headerRef", headerRef.current);
+    
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
 
@@ -58,7 +62,12 @@ console.log(clousingData);
     const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
 
     const lastTotalPOS = (currentHeader[clousingId]?.totalPOS || 0);
-    const lastTotalClousing = (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal;
+
+    //Validar que todos los valores de totalPhysical sean diferentes de 0
+    const allValues = Object.values(currentHeader[clousingId]?.closures || {}).every((value) => value.totalPhysical == 0);
+    //console.log("allValues", allValues);
+    const lastTotalClousing = !allValues ? 
+      (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal : 0;
 
     const newDifference = lastCashTotal - newTotal
     const newTotalClousing = lastTotalClousing + newTotal;
