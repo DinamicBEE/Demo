@@ -33,23 +33,19 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
 
-  console.log(cashClousingSelect)
-
   useEffect(() => {
     if (cashClousingSelect?.denominations) {
       setDenominations([...cashClousingSelect.denominations]);
     }
   }, [cashClousingSelect]);
 
-  
-  
- const handleChangeAmount = (index: number, value: string) => {
-  const numericValue = parseFloat(value) || 0;
+  const handleChangeAmount = (index: number, value: string) => {
+    const numericValue = parseFloat(value) || 0;
 
-  const updated = [...denominations];
-  updated[index] = { ...updated[index], amount: numericValue };
-  setDenominations(updated);
-};
+    const updated = [...denominations];
+    updated[index] = { ...updated[index], amount: numericValue };
+    setDenominations(updated);
+  };
 
   const total = denominations.reduce((sum, item) => {
     if (item.denomination === "Cambio") {
