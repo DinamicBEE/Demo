@@ -141,7 +141,7 @@ function FooterClousing({
       lines.map((line) => ({
         ...line,
         id: typeof line.id === "number" ? line.id : null,
-        isEdit: line.isEdit ?? false,
+        isEdit: line.edit,
       }));
 
     const mapTdcLines = (lines: BankLineModel[]) => {

@@ -36,6 +36,8 @@ import {
   INTERCOMPANY,
   LOCATIONS,
   SP_CLIENTS,
+  GET_COUPONS,
+  GET_PREPAID,
 } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
@@ -383,24 +385,36 @@ export const getPrepaidClousing = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = PrepaidMOCKData;
-
-    const updateLines = response.lines.map((item) => {
-      return {
-        ...item,
-        id: item.id === null ? "prepaid-" + uuidv4() : item.id,
-        isEdit: false,
-      };
+    const response = await api.get(GET_PREPAID, {
+      params: { idCashRegisterClosure: 1 },
     });
+    //PrepaidMOCKData;
 
-    /*   const data = {
-      ...response,
-      
-      lines: updateLines,
-    }; */
+    const updateLines = response.data.prepagoResponse.map(
+      (item: PrepaidLineModel) => {
+        return {
+          ...item,
+          id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
+        };
+      }
+    );
 
     const data: PrepaidModel = {
-      employeeId: 0,
+      employeeId: clousingId,
+      id: clousingId,
+      total: {
+        totalPOS: response.data.totalPos ?? 0,
+        totalPhysical: response.data.totalPhysical ?? 0,
+        difference: response.data.totalDifference ?? 0,
+      },
+      lines: updateLines,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error al obtener los valores generales:", error);
+    return {
+      employeeId: clousingId,
       id: clousingId,
       total: {
         totalPOS: 0,
@@ -408,17 +422,7 @@ export const getPrepaidClousing = async (
         difference: 0,
       },
       lines: [],
-    };
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        //acomdar
-        resolve(data);
-      }, 1000);
-    });
-  } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
-    return {} as PrepaidModel;
+    } as PrepaidModel;
   }
 };
 
@@ -429,17 +433,22 @@ export const getCouponCatalog = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = couponCatalogMocky;
+    const response = await api.get(GET_COUPONS, {
+      params: { consumer: 1 },
+    });
+    //couponCatalogMocky;
 
     // const data = {
     //     ...response,
     // }
+    const transformedData = response.data.map((item: CouponCatalogModel) => ({
+      ...item,
+      // Generate new UUID for null IDs, otherwise keep existing ID
+      folioCustom: item.folio.replace(/_/g, ""),
+      validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
+    }));
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000);
-    });
+    return transformedData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as CouponCatalogModel[];
@@ -628,11 +637,10 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
     //TODO: Devolver para consulta a back
     console.log(body);
     console.log(isConfirm);
-    
-    
+
     const response = await api.post(
-      "/crc/cash-register-closure/api/closure/save?isPreguardado=" +isConfirm,
-      body,
+      "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
+      body
     );
     //TODO: Devolver para consulta a back
     return response.data;

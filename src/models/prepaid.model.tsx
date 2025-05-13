@@ -26,7 +26,7 @@ export interface PrepaidModel {
 }
 
 export interface PrepaidLineModel {
-  id: number | string;
+  /*   id: number | string;
   client: string;
   quantity: number;
   supplementsQuantity: number;
@@ -34,13 +34,30 @@ export interface PrepaidLineModel {
   totalPOS: number;
   physical: number;
   difference: number;
-  isEdit?: boolean;
+  isEdit?: boolean; */
+  id: number | string;
+  client: string | null;
+  quantity: number;
+  supplementsQuantity: number;
+  unitPrice: number;
+  totalPOS: number;
+  physical: number;
+  difference: number;
+  edit: boolean;
+  coupons?: CouponCatalogModel[];
 }
 
 export interface CouponCatalogModel {
-  lineId: number;
+  id: number;
+  barCode: string;
   folio: string;
-  quantity: number;
-  unitPrice: number;
+  folioCustom: string;
+  amount: number;
+  validityDate: string;
+  validityDateCustom: string;
+  consumeCenterId: number;
+  consumeCenter: string;
+  client: string;
+  clientId: null | number;
   isUsed: boolean;
 }
