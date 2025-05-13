@@ -252,7 +252,7 @@ function TDCDetails({
                 loading={detailsLoading || false}
               />
             </Flex>
-            {detailsLocal?.bank?.toLowerCase().includes("a") && (
+            {detailsLocal?.bank?.toLowerCase().includes("adyen") && (
            
               <Flex mt={4} width="100%">
                 <Button
