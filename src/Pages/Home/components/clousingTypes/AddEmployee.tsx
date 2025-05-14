@@ -84,7 +84,6 @@ function AddEmployee({
       const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
       const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
       const ticketsList: TicketModel[] = await getTicketsList(subsidiaryId);
-      console.log("Tickets List", ticketsList);
 
       setEmployees(employeeList);
 
