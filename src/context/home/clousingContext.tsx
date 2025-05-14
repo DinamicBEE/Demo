@@ -99,7 +99,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
             totalPhysical: accumulated.totalPhysical,
             difference: accumulated.difference,
           };
-          console.log("accumulated", data);
 
           setHeader(data);
           setPagination(dataCache.current[pageKey].pagination);

@@ -246,7 +246,7 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-    console.log(response.data);
+
     const lines = response.data.generalClientResponseList.map((line: any) => {
       // Desestructurar el objeto para separar amountMx del resto de propiedades
       const { amountMx, coupons, ...restOfLine } = line;
@@ -265,7 +265,7 @@ export const getCustomerClousing = async (
       };
     });
 
-    console.log(lines);
+
 
     const data: CustomerModel = {
       id: clousingId,
@@ -316,7 +316,7 @@ export const getSpecialCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-    console.log(response.data);
+
 
     const lines = response.data.specialClientResponses.map(
       (line: any, index: number) => ({
@@ -455,7 +455,6 @@ export const getCouponCatalog = async (
         startOfDay(new Date())
       ),
     }));
-console.log(transformedData);
 
 
     return transformedData;
@@ -645,8 +644,6 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-    console.log(body);
-    console.log(isConfirm);
 
     const response = await api.post(
       "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,

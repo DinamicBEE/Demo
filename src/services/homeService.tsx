@@ -28,7 +28,6 @@ export const getGeneralInfo = async (
     //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
     //2025-04-02
     // 2025-05-05T06:00:00.000Z
-console.log();
 
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");

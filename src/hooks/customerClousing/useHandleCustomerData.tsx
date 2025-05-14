@@ -20,7 +20,6 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
     const newCurrencyId = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]?.value || "";
     const newCurrency = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.label || "";
     const newExchangeRage = currencies?.filter((currency: CurrencyModel) => currency.value === selectValue)[0]?.exchangeRate || 0;
-    console.log(typeof newExchangeRage)
 
     if (!customerData) return;
 

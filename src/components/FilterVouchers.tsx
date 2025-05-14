@@ -65,8 +65,7 @@ function FilterVoucher({
     const voucherSelect = vouchers.find(
       (voucher) => voucher.idCustom === selectedValue && voucher.amount === Number(selectedAmount)
     );
-    console.log("voucherSelect", voucherSelect);
-    
+
     if (voucherSelect && itemId === undefined) {
       onSelect(voucherSelect);
     } else if (voucherSelect && itemId != undefined) {

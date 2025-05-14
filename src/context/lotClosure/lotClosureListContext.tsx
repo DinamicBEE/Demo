@@ -73,10 +73,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setError("");
       setUpdateBankLoading(true);
       try {
-        console.log("localBank", localBank);
-        console.log("localLotClosure", localLotClosure);
-        console.log("lotId", lotId);
-
         const body = {
           cashRegisterClosureId: localLotClosure.cashRegisterClosureId,
           batchClosureId: localLotClosure.id,
