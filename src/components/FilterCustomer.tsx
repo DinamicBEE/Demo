@@ -28,17 +28,13 @@ function FilterCustomer({
   const searchRef = useRef<string>("");
 
   useEffect(() => {
-    console.log("customers", customers.map((customer) => customer));
-
-    
     const employeeCollection = createListCollection({
       items: customers.map((customer) => ({
         label: `${customer.label}`,
         value: customer.value,
       })),
     });
-    console.log("employeeCollection", employeeCollection);
-    
+
     setFilteredCustomer(employeeCollection);
   }, [customers]);
 
@@ -69,8 +65,6 @@ function FilterCustomer({
   }
 
   function handleSelect(event: ValueChangeDetails<any>) {
-    console.log("event", event);
-    
     const selectedId = Number(event.value[0]);
 
     const customerSelect = customers.find(

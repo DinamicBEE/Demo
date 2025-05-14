@@ -16,13 +16,10 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   const updateHeaderState = (newHeader: any) => {
     setHeader(newHeader);
     headerRef.current = newHeader;
-
-    console.log("headerRef", headerRef.current);
   };
 
   const getHeader = (clousingData: ClousingLinesModel) => {
     setLoading(true);
-console.log(clousingData);
 
     if (headerRef.current[clousingData.id]) {
       setLoading(false);
@@ -30,9 +27,7 @@ console.log(clousingData);
     }
 
     try {
-console.log("data", clousingData);
       const data = createObjectHeader(clousingData);
-      console.log("data", data);
 
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 

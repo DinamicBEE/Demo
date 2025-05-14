@@ -103,20 +103,34 @@ function PrepaidClousing({ data }: any) {
       total: newTotal,
       lines: updatePrepaid,
     };
-    console.log("prepaidDataaaaa", prepaidData);
-
     setPrepaid(prepaidData);
 
     setPrepaidData(data.id, prepaidData);
-    setVisibleItems(updatePrepaid.slice(startRange, endRange));
 
     updateTotal(newTotalFisico, data.id, CLOUSING_KEY.PREPAID);
 
     setFooterData(newTotal, data.id, CLOUSING_KEY.PREPAID);
+    setVisibleItems(updatePrepaid.slice(startRange, endRange));
   }
 
-  function handleCoupon(coupon: string) {
+  function debounce<T extends (...args: any[]) => void>(
+    fn: T,
+    delay: number
+  ): (...args: Parameters<T>) => void {
+    let timeoutId: NodeJS.Timeout;
 
+    return function (...args: Parameters<T>): void {
+      clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  }
+
+  const debouncedHandleCoupon = debounce(handleCoupon, 1000);
+
+  function handleCoupon(coupon: string) {
     if (coupon.length < 6) return;
 
     const couponModel = coupons.find((item) => item.folioCustom === coupon);
@@ -132,7 +146,7 @@ function PrepaidClousing({ data }: any) {
     );
 
     if (findClient === undefined) {
-      toastContoller("other");
+      toastContoller("client not found");
       return;
     }
 
@@ -147,59 +161,101 @@ function PrepaidClousing({ data }: any) {
     );
 
     if (couponExists) {
-      // You might want to add a specific toast message for duplicate coupons
-      toaster.create({
-        title: "Cupón duplicado",
-        description: "Este cupón ya ha sido agregado a este cliente",
-        type: "warning",
-        duration: 2500,
-      });
+      toastContoller("duplicate coupon");
       return;
+    }
+
+    // check if copun same same amount
+    if (findClient.coupons.length > 0) {
+      const firstCouponAmount = findClient.coupons[0].amount;
+      if (couponModel.amount !== firstCouponAmount) {
+        toastContoller("different amount");
+        return;
+      }
     }
 
     // If coupon doesn't exist, add it
     findClient.coupons.push(couponModel);
-console.log("findClient", findClient);
+
+    const newTotalFisico = findClient.coupons
+      .filter((coupon) => coupon.isExpired === false)
+      .reduce((acc: number, curr: CouponCatalogModel) => acc + curr.amount, 0);
+
+    const newDifference = findClient.totalPOS - newTotalFisico;
+
+    const hasCouponExpired = findClient.coupons.some(
+      (coupon) => coupon.isExpired
+    );
+
+    const quantity = findClient.coupons.filter(
+      (coupon) => coupon.isExpired === false
+    ).length;
+    console.log("quantity", couponModel.amount);
 
     // Create a new prepaid lines array with the updated client
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
-      item.id === findClient.id ? {
-        ...findClient,
-        quantity: findClient.coupons?.length ?? 0,
-        physical: findClient.coupons?.reduce(
-          (acc: number, curr: CouponCatalogModel) => acc + curr.amount,
-          0
-        ) ?? 0,
-      } : item
+      item.id === findClient.id
+        ? {
+            ...findClient,
+            quantity: quantity,
+            physical: newTotalFisico,
+            difference: newDifference,
+            edit: hasCouponExpired,
+            unitPrice: couponModel.amount,
+          }
+        : item
     );
-console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
 
-    toastContoller(couponModel);
+    if (couponModel.isExpired) {
+      toastContoller("coupon expired");
+    } else {
+      toastContoller(couponModel);
+    }
 
     // Update the data with the new prepaid lines
     updateData(updatePrepaid);
+    console.log(updatePrepaid);
   }
 
-  function handleInputTextData(
+function handleInputTextData(
     id: number | string,
     value: string,
     key?: string
   ) {
     value = value.replace(/[^\d.]/g, "");
-
+    
+    // Find the item that needs to be updated
+    const itemToUpdate = prepaid.lines.find(item => item.id === id);
+    if (!itemToUpdate) return;
+    
+    // Get the numeric value from the input
+    const numericValue = parseFloat(value) || 0;
+    
+    // Calculate the new physical value - adding existing physical value from coupons
+    // plus the value from supplements * unitPrice
+    const couponPhysicalValue = itemToUpdate.coupons
+      ?.filter(coupon => coupon.isExpired === false)
+      ?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
+    
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
       item.id === id
         ? {
             ...item,
-            [key!]: parseFloat(value),
-            physical:
-              key === "unitPrice"
-                ? item.supplementsQuantity * parseFloat(value)
-                : parseFloat(value) * item.unitPrice,
-            difference:
-              key === "unitPrice"
-                ? item.totalPOS - parseFloat(value) * item.supplementsQuantity
-                : item.totalPOS - item.unitPrice * parseFloat(value),
+            [key!]: numericValue,
+            supplementsQuantity: key === "supplementsQuantity" ? numericValue : item.supplementsQuantity,
+            unitPrice: key === "unitPrice" ? numericValue : item.unitPrice,
+            physical: couponPhysicalValue + (
+              key === "unitPrice" 
+                ? item.supplementsQuantity * numericValue
+                : numericValue * item.unitPrice
+            ),
+            difference: item.totalPOS - (
+              couponPhysicalValue + (
+                key === "unitPrice" 
+                  ? item.supplementsQuantity * numericValue
+                  : numericValue * item.unitPrice
+              )
+            ),
           }
         : item
     );
@@ -208,7 +264,13 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
   }
 
   function toastContoller(
-    couponModel: CouponCatalogModel | undefined | "other"
+    couponModel:
+      | CouponCatalogModel
+      | undefined
+      | "client not found"
+      | "coupon expired"
+      | "duplicate coupon"
+      | "different amount"
   ) {
     let title: string = "",
       description: string = "",
@@ -218,11 +280,31 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
       title = "Cupón invalido";
       description = "El cupón no se encuentra registrado en la base de datos";
       type = "error";
-    } else if (couponModel === "other") {
+    } else if (couponModel === "client not found") {
       title = "No hay clientes relacionado al cupón";
       description = "No hay clientes relacionado al cupón";
       type = "warning";
-    } else if (couponModel.isUsed) {
+    } else if (couponModel === "coupon expired") {
+      title = "Cupón vencido";
+      description =
+        "El cupón se encuentra vencido, ingrese manualmente los valores de Cantidad complementaria y Precio unitario";
+      type = "warning";
+    } else if (couponModel === "duplicate coupon") {
+      title = "Cupón duplicado";
+      description = "Este cupón ya ha sido agregado a este cliente";
+      type = "warning";
+    } else if (couponModel === "different amount") {
+      title = "Monto diferente";
+      description =
+        "El monto del cupón es diferente al monto de los cupones ya ingresados";
+      type = "warning";
+    } else if (couponModel) {
+      title = "Cupón válido";
+      description =
+        "El registro relacionado al cupón ingresado se ha actualizado de forma correcta";
+      type = "success";
+    }
+    /* else if (couponModel.isUsed) {
       title = "Cupón vencido";
       description =
         "El cupón se encuentra vencido, ingrese manualmente los valores de Cantidad complementaria y Precio unitario";
@@ -232,7 +314,7 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
       description =
         "El registro relacionado al cupón ingresado se ha actualizado de forma correcta";
       type = "success";
-    }
+    } */
 
     toaster.create({
       title: title,
@@ -251,7 +333,7 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
         <Skeleton loading={loading}>
           <Input
             placeholder="Código de Barras"
-            onChange={(e) => handleCoupon(e.target.value)}
+            onChange={(e) => debouncedHandleCoupon(e.target.value)}
             disabled={data?.closingConfirmation}
           />
         </Skeleton>
@@ -295,33 +377,44 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
                     onSelect={(customer: { value: number; label: string }) => {
                       const updatePrepaid = prepaid.lines.map(
                         (itemPrepaid: PrepaidLineModel) => {
-                          console.log("itemPrepaid", itemPrepaid);
-                          console.log("itemPrepaid.id", itemPrepaid.id);
-                          console.log("item.id", item.id);
-                          console.log("customer", customer);
-
                           return itemPrepaid.id === item.id
                             ? {
                                 ...itemPrepaid,
                                 client: customer.label,
                                 clientId: customer.value,
+                                unitPrice:
+                                  itemPrepaid.client !== customer.label
+                                    ? 0
+                                    : itemPrepaid.unitPrice,
+                                supplementsQuantity:
+                                  itemPrepaid.client !== customer.label
+                                    ? 0
+                                    : itemPrepaid.supplementsQuantity,
+                                physical:
+                                  itemPrepaid.client !== customer.label
+                                    ? 0
+                                    : itemPrepaid.physical,
+                                difference:
+                                  itemPrepaid.client !== customer.label
+                                    ? 0
+                                    : itemPrepaid.difference,
+                                quantity:
+                                  itemPrepaid.client !== customer.label
+                                    ? 0
+                                    : itemPrepaid.quantity,
+                                coupons:
+                                  itemPrepaid.client !== customer.label
+                                    ? []
+                                    : itemPrepaid.coupons,
+                                edit:
+                                  itemPrepaid.client !== customer.label
+                                    ? false
+                                    : itemPrepaid.edit,
                               }
                             : itemPrepaid;
                         }
                       );
-
-                      console.log("updatePrepaid", updatePrepaid);
-                   /*    setPrepaid({
-                        ...prepaid,
-                        lines: updatePrepaid,
-                      });
-                      setPrepaidData(data.id, {
-                        ...prepaid,
-                        lines: updatePrepaid,
-                      }); */
                       updateData(updatePrepaid);
-
-                      //handleInputTextData(customer.label, item.id, "client");
                     }}
                     disabled={false}
                   ></FilterCustomer>
@@ -352,14 +445,19 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
 
                 <Table.Cell textAlign="end">
                   <Text>
-                    {!item.edit && (
                       <FormatNumber
                         value={item.unitPrice}
                         style="currency"
                         currency="USD"
                       />
-                    )}
-                    {item.edit && (
+                    {/*      {!item.edit && (
+                      <FormatNumber
+                        value={item.unitPrice}
+                        style="currency"
+                        currency="USD"
+                      />
+                    )} */}
+                    {/*     {item.edit && (
                       <TableInput
                         value={item.unitPrice}
                         id={item.id}
@@ -367,7 +465,7 @@ console.log("updatewekfjnwkjefnwkjefPrepaid", updatePrepaid);
                         keyValue="unitPrice"
                         onChange={handleInputTextData}
                       />
-                    )}
+                    )} */}
                   </Text>
                 </Table.Cell>
 

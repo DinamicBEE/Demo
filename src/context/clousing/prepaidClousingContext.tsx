@@ -61,7 +61,7 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
         try {
             const data = await getCouponCatalog(clousingId);
-console.log('copunes', data);
+
 
             const updatePrepaid = {
                 coupons,

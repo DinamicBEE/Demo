@@ -59,5 +59,5 @@ export interface CouponCatalogModel {
   consumeCenter: string;
   client: string;
   clientId: null | number;
-  isUsed: boolean;
+  isExpired: boolean;
 }

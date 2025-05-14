@@ -127,7 +127,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         // Guardar esta página en caché
         dataCache.current[pageKey] = response;
 
-        console.log("response", dataCache);
+
         const accumulated = accumulatedHeader(queryKey);
         const data = {
           ...response.header,
@@ -141,8 +141,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
         // Usar solo los datos de la página actual
         const currentPageData = response.clousingLines;
-        console.log("currentPageData", currentPageData);
-
+      
         // Actualizar con los datos de la página actual
         setData(currentPageData);
         setOriginalData(currentPageData);

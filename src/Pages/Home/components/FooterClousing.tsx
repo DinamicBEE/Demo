@@ -139,8 +139,14 @@ function FooterClousing({
 
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
       lines.map((line) => ({
-        ...line,
         id: typeof line.id === "number" ? line.id : null,
+        client: line.client ?? "",
+        quantity: line.quantity,
+        supplementsQuantity: line.supplementsQuantity,
+        unitPrice: line.unitPrice,
+        totalPOS: line.totalPOS,
+        physical: line.physical,
+        difference: line.difference,
         isEdit: line.edit,
       }));
 
@@ -262,7 +268,7 @@ function FooterClousing({
 
         setEmployee({} as any);
         setIntercompany({} as any);
-       // delete headerRef.current[employee.id];
+        // delete headerRef.current[employee.id];
       }
       closeDialog();
     } else {

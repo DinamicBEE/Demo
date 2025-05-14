@@ -41,7 +41,7 @@ import {
 } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
-import { parse, format, isValid } from "date-fns";
+import { parse, format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
 /**
  * This function gets the totals
@@ -311,8 +311,6 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
-  console.log(clousingId);
-
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
@@ -440,13 +438,24 @@ export const getCouponCatalog = async (
 
     // const data = {
     //     ...response,
+
     // }
+    response.data[0].validityDate = "2025-09-28T00:00:00";
+    response.data[1].validityDate = "2025-05-14T00:00:00";
+    response.data[2].validityDate = "2025-05-13T00:00:00";
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
       folioCustom: item.folio.replace(/_/g, ""),
       validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
+       isExpired: isBefore(
+        // Compare only the date part by setting both dates to start of day
+        startOfDay(new Date(item.validityDate)), 
+        startOfDay(new Date())
+      ),
     }));
+console.log(transformedData);
+
 
     return transformedData;
   } catch (error) {
@@ -834,10 +843,13 @@ export const processFiles = async (
 
                     // Validar si ambos valores coinciden con los proporcionados
                     // Solo filtramos si los valores de storeName y location no están vacíos
-           
+
                     return (
-                      (!storeName || recordStore.toLowerCase() === storeName.toLowerCase()) &&
-                      (!location || recordLocation.toLowerCase() === location.toLowerCase())
+                      (!storeName ||
+                        recordStore.toLowerCase() ===
+                          storeName.toLowerCase()) &&
+                      (!location ||
+                        recordLocation.toLowerCase() === location.toLowerCase())
                     );
                   });
 
