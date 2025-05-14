@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
-import { Box, Field, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger,
-  PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import {
+  Box,
+  Field,
+  Flex,
+  FormatNumber,
+  Table,
+  Text,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
-  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import {
+  DialogRoot,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogFooter,
+} from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
@@ -37,7 +56,7 @@ function TDCDetails({
   const [loading, setLoading] = useState<boolean>(false);
   const { dataFilesProcess, setDataFilesProcess } = useTDCAdyenContext();
   const [isOpenDialogFiles, setIsOpenDialogFiles] = useState<boolean>(false);
-  const { updateLocalBanksAdyen, updateLocalBanksTotal } = useHandleTDCAdyen();
+  const { updateLocalBanksAdyen } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const [chequeValue, setChequeValue] = useState("");
@@ -92,7 +111,16 @@ function TDCDetails({
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
-    updateLocalBanksAdyen(dataFilesProcess, detailsLocal, setDetailsLocal);
+    updateLocalBanksAdyen(
+      dataFilesProcess,
+      detailsLocal,
+      setDetailsLocal,
+      setVisibleItems,
+      setLocalAmount,
+      setVouchersSelected,
+      startRange,
+      endRange
+    );
   }, [dataFilesProcess.consolidatedData]);
 
   const isCheckValid = (
@@ -130,15 +158,15 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      if (detailsLocal.bank !== "TPV ADYEN") {
-        updateLineClousing(detailsLocal);
-        onClose();
-        setIsOpenDialogSave(false);
-      } else if (detailsLocal.bank === "TPV ADYEN") {
+      /*    if (detailsLocal.bank !== "TPV ADYEN") { */
+      updateLineClousing(detailsLocal);
+      onClose();
+      setIsOpenDialogSave(false);
+      /* } */ /* else if (detailsLocal.bank === "TPV ADYEN") {
         const detailsValidated: BankLineModel = await validateDetails(
           clousingId,
           lineId,
-          // selectedVouchers,
+          selectedVouchers,
           detailsLocal.vouchers.filter((item) => item.status),
           detailsLocal
         );
@@ -147,14 +175,14 @@ function TDCDetails({
         updateLineClousing(detailsValidated);
         onClose();
         setIsOpenDialogSave(false);
-      }
+      } */
       setLoading(false);
     }
   }
 
   const onSelect = (item: Voucher) => {
     const updatedDetails = detailsLocal?.vouchers.map((voucher) =>
-      voucher.id === item.id && voucher.amount === item.amount
+      voucher.idCustom === item.idCustom && voucher.amount === item.amount
         ? {
             ...voucher,
             status: true, // Convert boolean to string
@@ -187,7 +215,6 @@ function TDCDetails({
     setVouchersSelected(
       updatedDetailsLocal.vouchers.filter((item) => item.status).length
     );
-    
   };
 
   return (
@@ -197,6 +224,7 @@ function TDCDetails({
         closeOnEscape={false}
         closeOnInteractOutside={false}
         scrollBehavior="inside"
+        size={"lg"}
         onOpenChange={() => {
           onClose(), setDataFilesProcess({} as ProcessResult);
         }}
@@ -207,21 +235,40 @@ function TDCDetails({
           </DialogHeader>
 
           <DialogBody>
-            {detailsLocal?.bank === "TPV ADYEN" && (
-              <Button
-                colorPalette="meraPrimary"
-                marginBottom={4}
-                size={"xs"}
-                width={"50% !important"}
-                onClick={() => setIsOpenDialogFiles(true)}
-              >
-                Subir archivos
-              </Button>
+            <Flex gap={4}>
+              <CurrencyInput
+                value={detailsLocal?.pos}
+                name={"POS"}
+                loading={detailsLoading || false}
+              />
+              <CurrencyInput
+                value={localAmount}
+                name={"Físico"}
+                loading={detailsLoading || false}
+              />
+              <CurrencyInput
+                value={(detailsLocal?.pos ?? 0) - localAmount}
+                name={"Diferencia"}
+                loading={detailsLoading || false}
+              />
+            </Flex>
+            {detailsLocal?.bank?.toLowerCase().includes("adyen") && (
+           
+              <Flex mt={4} width="100%">
+                <Button
+                  colorPalette="meraPrimary"
+                  size={"xs"}
+                  width={"50% !important"}
+                  onClick={() => setIsOpenDialogFiles(true)}
+                >
+                  Subir archivos
+                </Button>
+              </Flex>
             )}
+            {/*  {detailsLocal?.bank != "ADYEN" && ( */}
 
-            {detailsLocal?.bank != "TPV ADYEN" && (
-              <Flex mb={4} width="100%">
-                {/*  <InputAddon>Cheque</InputAddon>
+            <Flex mb={4} mt={4} width="100%">
+              {/*  <InputAddon>Cheque</InputAddon>
                 <Skeleton loading={loading}>
                   <Input
                     placeholder="No. Cheque"
@@ -229,23 +276,23 @@ function TDCDetails({
                   />
                 </Skeleton> */}
 
-                <FilterVoucher
-                  label={true}
-                  disabled={closingConfirmation}
-                  onSelect={onSelect}
-                  vouchers={
-                    detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
-                  }
-                  voucherSelect={chequeValue}
-                />
-              </Flex>
-            )}
+              <FilterVoucher
+                label={true}
+                disabled={closingConfirmation}
+                onSelect={onSelect}
+                vouchers={
+                  detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
+                }
+                voucherSelect={chequeValue}
+              />
+            </Flex>
+            {/*    )} */}
 
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
-                    {detailsLocal?.bank === "TPV ADYEN" && (
+                    {/*   {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         <Checkbox
                           top="1"
@@ -278,7 +325,7 @@ function TDCDetails({
                           }}
                         />
                       </Table.ColumnHeader>
-                    )}
+                    )} */}
                     <Table.ColumnHeader textAlign="center">
                       Fecha de cierre
                     </Table.ColumnHeader>
@@ -288,24 +335,24 @@ function TDCDetails({
                     <Table.ColumnHeader textAlign="end">
                       Importe
                     </Table.ColumnHeader>
-                    {detailsLocal?.bank === "TPV ADYEN" && (
+                    {/*    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
                       </Table.ColumnHeader>
-                    )}
+                    )} */}
                   </Table.Row>
                 </Table.Header>
 
                 <Table.Body>
                   {visibleItems?.map((item: Voucher) => (
                     <Table.Row
-                      key={`${item.id}-${item.check}-${item.amount}`}
-                      backgroundColor={isCheckValid(
+                      key={`${item.idCustom}-${item.check}-${item.amount}`}
+                      /*   backgroundColor={isCheckValid(
                         item.successAdyen,
                         item.difference
-                      )}
+                      )} */
                     >
-                      {detailsLocal?.bank === "TPV ADYEN" && (
+                      {/*   {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell>
                           <Checkbox
                             top="1"
@@ -340,7 +387,7 @@ function TDCDetails({
                             }}
                           />
                         </Table.Cell>
-                      )}
+                      )} */}
                       <Table.Cell textAlign="center">
                         <Text>{item.dateDisplay}</Text>
                       </Table.Cell>
@@ -358,14 +405,14 @@ function TDCDetails({
                           />
                         </Text>
                       </Table.Cell>
-                      {detailsLocal?.bank === "TPV ADYEN" && (
+                      {/*      {detailsLocal?.bank === "TPV ADYEN" && (
                         <Table.Cell textAlign="center">
                           <Text>{item.difference?.date}</Text>
                           <Text>{item.difference?.check}</Text>
                           <Text>{item.difference?.amount}</Text>
                           <Text>{item.difference?.general}</Text>
                         </Table.Cell>
-                      )}
+                      )} */}
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -399,20 +446,20 @@ function TDCDetails({
 
           <DialogFooter>
             <Flex gap={4}>
-              <CurrencyInput
+              {/*    <CurrencyInput
                 value={localAmount}
                 name={"Total"}
                 loading={detailsLoading || false}
-              />
+              /> */}
 
               <Button
                 colorPalette="meraPrimary"
                 //   onClick={() => saveDetails()}
                 onClick={() => setIsOpenDialogSave(true)}
                 disabled={
-                  closingConfirmation ||
+                  closingConfirmation /* ||
                   (detailsLocal?.bank === "TPV ADYEN" &&
-                    !(dataFilesProcess && dataFilesProcess.consolidatedData))
+                    !(dataFilesProcess && dataFilesProcess.consolidatedData)) */
                 }
               >
                 Guardar

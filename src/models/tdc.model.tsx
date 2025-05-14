@@ -79,6 +79,7 @@ export interface TDCModel {
 
 export interface Voucher {
   id: number;
+  idCustom: number;
   voucherId:null | number;
   date: string;
   check: string;
@@ -86,13 +87,13 @@ export interface Voucher {
   status: boolean;
   message?: string;
   dateDisplay?: string;
-  difference?: {
+ /*  difference?: {
     date: string | null;
     check: string | null;
     amount: string | null;
     general: string | null;
   };
-  successAdyen?: boolean;
+  successAdyen?: boolean; */
 }
 
 /* export interface BankDetails {

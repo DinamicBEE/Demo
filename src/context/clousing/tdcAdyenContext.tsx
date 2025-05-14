@@ -25,7 +25,6 @@ export function TDCAdyenClousingProvider({
   const [dataFilesProcess, setDataFilesProcess] = useState<ProcessResult>(
     {} as ProcessResult
   );
-  const { getStoresData, getSubsidiariesData } = useList();
 
   const fetchProcessFiles = useCallback(
     async (Files: File[], store: string, location: string) => {

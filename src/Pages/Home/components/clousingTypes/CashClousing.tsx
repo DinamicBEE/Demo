@@ -65,8 +65,9 @@ function CashClousing({ data, idCurrency }: any) {
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
-  const handleSaveFromDialog = (currencyId: string, total: number, updatedDenominations: any) => {
-    handleInputChange(currencyId, total.toString(), updatedDenominations);
+  const handleSaveFromDialog = (currencyId: string, total: number, totalMXN: number, updatedDenominations: any) => {
+
+    handleInputChange(currencyId, totalMXN.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
@@ -119,7 +120,7 @@ function CashClousing({ data, idCurrency }: any) {
                   Tipo de cambio
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Moneda original
+                  Moneda Original
                 </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -133,7 +134,7 @@ function CashClousing({ data, idCurrency }: any) {
                   <Table.Cell textAlign="end">
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS}
+                        value={item.totalPOS / item.exchangeRate}
                         style="currency"
                         currency="USD"
                       />
@@ -181,16 +182,16 @@ function CashClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                    
+
                     <Text>
                       <FormatNumber
-                       value={item.totalPOS/item.exchangeRate}
+                        value={item.totalPOS}
                         //value={item.originalCurrency}
                         style="currency"
                         currency="USD"
                       />
                     </Text>
-                   {/*  <FormatNumber
+                    {/*  <FormatNumber
                        value={item.totalPOS/item.exchangeRate}
                         value={item.originalCurrency}
                         style="currency"
@@ -220,7 +221,7 @@ function CashClousing({ data, idCurrency }: any) {
 
       {isDialogOpen && selectedCurrencyId !== null && (
         <Box position="fixed" top="50%" left="50%" zIndex="1"
-        transform="translate(-50%, -50%)" width="100%" height="100%">
+          transform="translate(-50%, -50%)" width="100%" height="100%">
           <CashClousingDetails
             isOpen={isDialogOpen}
             onClose={closeDialog}
