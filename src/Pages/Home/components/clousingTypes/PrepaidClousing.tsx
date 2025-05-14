@@ -165,7 +165,7 @@ function PrepaidClousing({ data }: any) {
       return;
     }
 
-    // check if copun same same amount
+    // check if coupon has same amount
     if (findClient.coupons.length > 0) {
       const firstCouponAmount = findClient.coupons[0].amount;
       if (couponModel.amount !== firstCouponAmount) {
@@ -177,9 +177,17 @@ function PrepaidClousing({ data }: any) {
     // If coupon doesn't exist, add it
     findClient.coupons.push(couponModel);
 
-    const newTotalFisico = findClient.coupons
+    // Calculate coupon physical value (from non-expired coupons)
+    const couponPhysicalValue = findClient.coupons
       .filter((coupon) => coupon.isExpired === false)
       .reduce((acc: number, curr: CouponCatalogModel) => acc + curr.amount, 0);
+
+    // Calculate supplement physical value
+    const supplementPhysicalValue =
+      findClient.supplementsQuantity * findClient.unitPrice || 0;
+
+    // Calculate total physical value (coupons + supplements)
+    const newTotalFisico = couponPhysicalValue + supplementPhysicalValue;
 
     const newDifference = findClient.totalPOS - newTotalFisico;
 
@@ -190,7 +198,6 @@ function PrepaidClousing({ data }: any) {
     const quantity = findClient.coupons.filter(
       (coupon) => coupon.isExpired === false
     ).length;
-    console.log("quantity", couponModel.amount);
 
     // Create a new prepaid lines array with the updated client
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
@@ -217,45 +224,48 @@ function PrepaidClousing({ data }: any) {
     console.log(updatePrepaid);
   }
 
-function handleInputTextData(
+  function handleInputTextData(
     id: number | string,
     value: string,
     key?: string
   ) {
     value = value.replace(/[^\d.]/g, "");
-    
+
     // Find the item that needs to be updated
-    const itemToUpdate = prepaid.lines.find(item => item.id === id);
+    const itemToUpdate = prepaid.lines.find((item) => item.id === id);
     if (!itemToUpdate) return;
-    
+
     // Get the numeric value from the input
     const numericValue = parseFloat(value) || 0;
-    
+
     // Calculate the new physical value - adding existing physical value from coupons
     // plus the value from supplements * unitPrice
-    const couponPhysicalValue = itemToUpdate.coupons
-      ?.filter(coupon => coupon.isExpired === false)
-      ?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
-    
+    const couponPhysicalValue =
+      itemToUpdate.coupons
+        ?.filter((coupon) => coupon.isExpired === false)
+        ?.reduce((acc, curr) => acc + curr.amount, 0) || 0;
+
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
       item.id === id
         ? {
             ...item,
             [key!]: numericValue,
-            supplementsQuantity: key === "supplementsQuantity" ? numericValue : item.supplementsQuantity,
+            supplementsQuantity:
+              key === "supplementsQuantity"
+                ? numericValue
+                : item.supplementsQuantity,
             unitPrice: key === "unitPrice" ? numericValue : item.unitPrice,
-            physical: couponPhysicalValue + (
-              key === "unitPrice" 
+            physical:
+              couponPhysicalValue +
+              (key === "unitPrice"
                 ? item.supplementsQuantity * numericValue
-                : numericValue * item.unitPrice
-            ),
-            difference: item.totalPOS - (
-              couponPhysicalValue + (
-                key === "unitPrice" 
+                : numericValue * item.unitPrice),
+            difference:
+              item.totalPOS -
+              (couponPhysicalValue +
+                (key === "unitPrice"
                   ? item.supplementsQuantity * numericValue
-                  : numericValue * item.unitPrice
-              )
-            ),
+                  : numericValue * item.unitPrice)),
           }
         : item
     );
@@ -445,11 +455,11 @@ function handleInputTextData(
 
                 <Table.Cell textAlign="end">
                   <Text>
-                      <FormatNumber
-                        value={item.unitPrice}
-                        style="currency"
-                        currency="USD"
-                      />
+                    <FormatNumber
+                      value={item.unitPrice}
+                      style="currency"
+                      currency="USD"
+                    />
                     {/*      {!item.edit && (
                       <FormatNumber
                         value={item.unitPrice}

@@ -443,6 +443,7 @@ export const getCouponCatalog = async (
     response.data[0].validityDate = "2025-09-28T00:00:00";
     response.data[1].validityDate = "2025-05-14T00:00:00";
     response.data[2].validityDate = "2025-05-13T00:00:00";
+    response.data[3].amount = 50;
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
