@@ -4,7 +4,7 @@ import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
 import { SelectLabel, SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem, } from "@components/ui/select"
 import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
-function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, disabled }: EmployeeFilterProps) {//
+function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, disabled, employeeToEdit }: EmployeeFilterProps) {//
 
   const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
   const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
@@ -24,6 +24,16 @@ function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, di
     setFilteredEmpleados(employeeCollection)
 
   }, [employees])
+
+
+  useEffect(() => {
+    if (employeeToEdit != null && employeeToEdit != undefined) {
+      handleSelect(employeeToEdit?.id!.toString() || '');
+      setSearchQuery(employeeToEdit.name || '');
+    } else {
+      setSearchQuery("Selecciona empleado");
+    }
+  }, [employeeToEdit])
 
   function handleSearch(event: string) {
 
@@ -53,10 +63,19 @@ function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, di
     setFilteredEmpleados(employeeCollection);
   }
 
-  function handleSelect(event: ValueChangeDetails<any>) {
-    const selectedId = Number(event.value[0]);
+  
 
+  function handleSelect(event: ValueChangeDetails<any> | number) {
+    const selectedId = Object.hasOwn(event, "value") ? Number(event.value[0]) : Number(event);
+    // const selectedId = Number(event.value[0]);
+    
     const employeeSelect = employees.find((employee) => employee.id === selectedId);
+
+    if (employeeToEdit != null && employeeToEdit != undefined) {
+      setSearchQuery(employeeSelect?.name!);
+    } 
+    // else { setSearchQuery("") }
+    
 
     if (employeeSelect && itemId === undefined) {
       onSelect(employeeSelect);
