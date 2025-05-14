@@ -6,6 +6,8 @@ import Loading from "./Loading";
 
 function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuth();
+  // console.log("ProtectedRoute", { isAuthenticated, isLoading, user });
+
   if (isLoading) return <Loading />;
 
   if (!isAuthenticated || !user) return <Navigate to="/" replace />;
