@@ -108,10 +108,10 @@ function CashClousing({ data, idCurrency }: any) {
                   Moneda
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Total POS por Moneda
+                  Total POS
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Total físico por Moneda
+                  Total físico
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
                   Diferencia
@@ -120,7 +120,7 @@ function CashClousing({ data, idCurrency }: any) {
                   Tipo de cambio
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Total en Peso MXN
+                  Moneda Original
                 </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
