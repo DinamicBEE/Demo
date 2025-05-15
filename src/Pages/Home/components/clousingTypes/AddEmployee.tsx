@@ -85,6 +85,7 @@ function AddEmployee({
       const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
       const ticketsList: TicketModel[] = await getTicketsList(subsidiaryId);
 
+
       setEmployees(employeeList);
 
       const reasonCollection = createListCollection({
@@ -111,15 +112,34 @@ function AddEmployee({
         console.log("Employee a editar", data);
         
         setIsEdited(true);
+
+        const employeeToEdit = employeeList.find(
+          (emp) => emp.name === data.employeeName
+        );
+
         setSelectEmployee({
-          id: data.employeeId || 0,
+          id: employeeToEdit?.id || 0,
           name: data.employeeName,
           employeeNumber: data.employeeNumber,
         });
         setAmount(data.amount);
-        setReason([data.reasonId?.toString() || ""]);
-        if (data.ticketId) {
-          setTicket([data.ticketId.toString()]);
+        const reasonToSelect = reasonsList.find(
+          (reasonItem) => reasonItem.reasonName === data.reason
+        );
+        if (reasonToSelect) {
+          setReason([reasonToSelect.id.toString()]);
+        } else {
+          setReason([]);
+        }
+        if (data.ticketNumber) {
+          const ticketToSelect = ticketsList.find(
+            (ticketItem) => ticketItem.ticketNumber === data.ticketNumber
+          );
+          if (ticketToSelect) {
+            setTicket([ticketToSelect.id.toString()]);
+          } else {
+            setTicket([]);
+          }
         } else {
           setTicket([]);
         }
@@ -198,6 +218,7 @@ function AddEmployee({
     setAmount(0);
     setReason([]);
     setTicket([]);
+    setIsEdited(false);
     setSelectEmployee(undefined);
     setLoading(false);
   }
@@ -213,7 +234,7 @@ function AddEmployee({
       <DialogContent>
         <DialogHeader>
           {isEdited ? (
-            <DialogTitle>Edición o eliminación de empleado</DialogTitle>
+            <DialogTitle>Edición de empleado</DialogTitle>
           ) : (
             <DialogTitle>Agregar empleado</DialogTitle>
           )}
@@ -245,7 +266,7 @@ function AddEmployee({
 
             <SelectRoot
               collection={reasons}
-              value={ isEdited && data?.reasonId ? [data.reasonId.toString()] : reason}
+              value={reason}
               onValueChange={(e) => {
                 setReason(e.value);
                 setTicket([]);
@@ -254,7 +275,7 @@ function AddEmployee({
               <SelectLabel>Motivo</SelectLabel>
               <SelectTrigger>
                 <SelectValueText
-                  placeholder={isEdited ? data?.reason : "Motivo"}
+                  placeholder={isEdited && data?.reason ? data.reason : "Motivo"}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -278,11 +299,7 @@ function AddEmployee({
               </Group> */
               <SelectRoot
                 collection={tickets}
-                value={
-                  isEdited && data?.ticketId
-                    ? [data.ticketId.toString()]
-                    : ticket
-                }
+                value={ticket}
                 onValueChange={(e) => setTicket(e.value)}
               >
                 <SelectLabel>Ticket</SelectLabel>
@@ -314,8 +331,9 @@ function AddEmployee({
           )}
         </DialogBody>
 
-        <DialogFooter display={"flex"} justifyContent={"space-between"}>
-          {data != null && (
+        <DialogFooter display={"flex"} justifyContent={"space-between"} >
+          <Box>
+          {/* {data != null && (
             <Button
               colorPalette="meraError"
               loading={loading}
@@ -323,7 +341,8 @@ function AddEmployee({
             >
               Eliminar
             </Button>
-          )}
+          )}*/}
+          </Box> 
           <Button
             colorPalette="meraPrimary"
             loading={loading}

@@ -129,7 +129,7 @@ export const getCashClousing = async (
         totalPhysical: newTotalFisico,
         difference: newTotalPOS - newTotalFisico,
       },
-      tips: 0,
+      // tips: dummy.,
     };
 
     const responseData: ResponseModel = {
