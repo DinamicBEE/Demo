@@ -54,6 +54,13 @@ export interface TicketModel {
     id: number;
     ticketNumber: string;
     date: string;
+    paymentTypeResponse: TicketPaymentMethod[];
+}
+
+export interface TicketPaymentMethod {
+  idPaymentMethod: number;
+  paymentMethod: string;
+  amount: number;
 }
 
 export interface Employee {
