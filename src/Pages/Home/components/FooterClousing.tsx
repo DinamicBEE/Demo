@@ -194,9 +194,13 @@ function FooterClousing({
         lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
-        total: (employee as Record<number, EmployeeModel>)[clousingId].total,
+        total: (employee as Record<number, EmployeeModel>)[clousingId]?.total ?? {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
         lines: mapEmployeeLines(
-          (employee as Record<number, EmployeeModel>)[clousingId].lines ?? []
+          (employee as Record<number, EmployeeModel>)[clousingId]?.lines ?? []
         ),
       },
       prepaid: {
