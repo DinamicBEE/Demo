@@ -393,6 +393,7 @@ export const getPrepaidClousing = async (
         return {
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
+          coupons: item.coupons ? item.coupons : [],
         };
       }
     );

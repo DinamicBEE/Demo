@@ -32,6 +32,7 @@ import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
 import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
+import DialogCoupons from "./DialogCoupons";
 
 const pageSize = 10;
 
@@ -48,6 +49,9 @@ function PrepaidClousing({ data }: any) {
 
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<PrepaidLineModel[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [couponsList, setCouponsList] = useState<CouponCatalogModel[]>([]);
+  const [client, setClient] = useState<string>("");
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -334,6 +338,17 @@ function PrepaidClousing({ data }: any) {
     });
   }
 
+  const openDialog = (
+    coupons: CouponCatalogModel[] | undefined,
+    client: string
+  ) => {
+    setIsOpen(true);
+    setClient(client);
+    if (coupons) {
+      setCouponsList(coupons.filter((item) => item.isExpired === false));
+    }
+  };
+
   return (
     <Box>
       <Toaster />
@@ -431,9 +446,26 @@ function PrepaidClousing({ data }: any) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  <Text>
-                    <FormatNumber value={item.quantity} />
-                  </Text>
+                  {item.coupons.filter((coupon) => coupon.isExpired === false)
+                    .length > 0 && (
+                    <Text
+                      as="span"
+                      cursor="pointer"
+                      textDecoration="underline"
+                      color="blue.500"
+                      onClick={() =>
+                        openDialog(item.coupons, item.client ?? "")
+                      }
+                    >
+                      <FormatNumber value={item.quantity} />
+                    </Text>
+                  )}
+                  {item.coupons.filter((coupon) => coupon.isExpired === false)
+                    .length === 0 && (
+                    <Text>
+                      <FormatNumber value={item.quantity} />
+                    </Text>
+                  )}
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
@@ -525,6 +557,14 @@ function PrepaidClousing({ data }: any) {
           <PaginationNextTrigger />
         </HStack>
       </PaginationRoot>
+      <DialogCoupons
+        coupons={couponsList}
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+        client={client}
+      ></DialogCoupons>
 
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

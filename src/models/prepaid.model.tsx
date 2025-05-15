@@ -44,7 +44,7 @@ export interface PrepaidLineModel {
   physical: number;
   difference: number;
   edit: boolean;
-  coupons?: CouponCatalogModel[];
+  coupons: CouponCatalogModel[];
 }
 
 export interface CouponCatalogModel {
@@ -60,4 +60,11 @@ export interface CouponCatalogModel {
   client: string;
   clientId: null | number;
   isExpired: boolean;
+}
+
+export interface DialogCouponsProps {
+  isOpen: boolean;
+  onClose: () => void;
+  coupons: CouponCatalogModel[];
+  client: string;
 }
