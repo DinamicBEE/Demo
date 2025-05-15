@@ -7,7 +7,7 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 import { CashLines, CashModel } from "@models/cash.model";
 
-export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: number) => {
+export const useHandleCashData = (cashData: CashModel, setData: any, clousingId: number) => {
 
   const cashRef = useRef(cashData);
 
@@ -15,71 +15,57 @@ export const useHandleCashData = (cashData:CashModel, setData:any, clousingId: n
   const { setFooterData } = useFooter();
   const { setCashData } = useCashClousing();
 
-function handleInputChange(
-  itemId: number | string,
-  value: string,
-  updatedDenominations?: CashLines["denominations"]
-) {
-  
+  function handleInputChange(itemId: number | string, value: string, updatedDenominations?: CashLines["denominations"]) {
 
-  value = value.replace(/[^\d.]/g, "");
+    value = value.replace(/[^\d.]/g, "");
 
-  //console.log("handleInputChange", value, itemId, updatedDenominations);
-  
-  const updatedData = cashData.currencies.map((item: CashLines) =>
-    item.id == itemId
-      ? {
-          ...item,
-          totalFisico: parseFloat(value),
-          difference: item.totalPOS - parseFloat(value),
-          denominations: updatedDenominations ?? item.denominations,
-        }
-      : item
-  );
+    const updatedData = cashData.currencies.map((item: CashLines) =>
 
-  //console.log("updatedData", updatedData);
-  
+      item.id == itemId ? {
+        ...item,
+        totalFisico: parseFloat(value),
+        difference: item.totalPOS - parseFloat(value),
+        denominations: updatedDenominations ?? item.denominations,
+      } : item
+    );
 
-  const newTotalPhysical = updatedData.reduce(
-    (acc: number, curr: { totalFisico: number }) => acc + curr.totalFisico,
-    0
-  );
+    const newTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number, exchangeRate: number }) => acc + (curr.totalFisico * curr.exchangeRate ), 0);
 
-  const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
+    const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
 
-  const newTotal: TotalModel = {
-    totalPOS: cashData.total?.totalPOS || 0,
-    totalPhysical: newTotalPhysical,
-    difference: newDifference,
-  };
+    const newTotal: TotalModel = {
+      totalPOS: cashData.total?.totalPOS || 0,
+      totalPhysical: newTotalPhysical,
+      difference: newDifference,
+    };
 
-  const updateCashdata = {
-    ...cashData,
-    currencies: updatedData,
-    total: newTotal,
-  };
-
-  setData(updateCashdata);
-  cashRef.current = updateCashdata;
-
-  updateTotal(newTotalPhysical, clousingId, CLOUSING_KEY.CASH);
-  setFooterData(newTotal, clousingId, CLOUSING_KEY.CASH);
-  setCashData(cashRef.current, clousingId);
-}
-
-  function handleChangeTips(value: string) {
-    
     const updateCashdata = {
       ...cashData,
-      tips: parseFloat(value),
-    }
+      currencies: updatedData,
+      total: newTotal,
+    };
 
     setData(updateCashdata);
-    cashRef.current = updateCashdata
+   
+    cashRef.current = updateCashdata;
 
+    updateTotal(newTotalPhysical, clousingId, CLOUSING_KEY.CASH);
+    setFooterData(newTotal, clousingId, CLOUSING_KEY.CASH);
+    setCashData(cashRef.current, clousingId);
   }
 
-  function showToast(alertModel:AlertClousing, error: string | null) {
+  function handleChangeTips(value: string) {
+
+    const updateCashdata = { ...cashData, tips: parseFloat(value), }
+
+    setData(updateCashdata);
+
+    cashRef.current = updateCashdata
+
+    setCashData(cashRef.current, clousingId);
+  }
+
+  function showToast(alertModel: AlertClousing, error: string | null) {
     toaster.create({
       title: alertModel.title,
       type: alertModel.type,
@@ -87,6 +73,6 @@ function handleInputChange(
       duration: 5000,
     })
   }
-  
+
   return { handleInputChange, handleChangeTips };
 };

@@ -15,7 +15,9 @@ export interface EmployeeContextType {
     getReasonsList: ( subsidiary: number, cdc: number ) => Promise<ReasonsModel[]>;
     getTicketsList: ( cdc: number ) => Promise<TicketModel[]>;
     setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
-    setEmployee :  React.Dispatch<React.SetStateAction<EmployeeContext>>
+    setEmployee :  React.Dispatch<React.SetStateAction<EmployeeContext>>,
+    updateEmployee: (updatedEmployee: EmployeeLine, clousingId: number) => void;
+    deleteEmployee: (employeeId: string|number, clousingId: number) => void;
 }
 
 export interface EmployeeContext {
@@ -23,7 +25,7 @@ export interface EmployeeContext {
 }
 
 export interface EmployeeModel {
-    id: number;
+    id: number | string;
     employeeId?: number;
     total: TotalModel;
     lines: EmployeeLine[]
@@ -52,6 +54,13 @@ export interface TicketModel {
     id: number;
     ticketNumber: string;
     date: string;
+    paymentTypeResponse: TicketPaymentMethod[];
+}
+
+export interface TicketPaymentMethod {
+  idPaymentMethod: number;
+  paymentMethod: string;
+  amount: number;
 }
 
 export interface Employee {
@@ -74,6 +83,7 @@ export interface EmployeeFilterProps {
     employeeSelect?: string;
     onSelect: (empleado: Employee, itemId?: number | string ) => void;
     disabled: boolean;
+    employeeToEdit: {id: number | string | undefined, name: string | undefined} | null;
 }
 
 export interface CustomerFilter{
@@ -92,6 +102,7 @@ export interface AddEmployeeProp {
     clousingId: number;
     subsidiaryId: number;
     cdc: number;
+    data: EmployeeLine | null;
     isOpen:boolean; 
     onClose: () => void; 
 }

@@ -47,6 +47,7 @@ function AddEmployee({
   cdc,
   isOpen,
   onClose,
+  data,
 }: AddEmployeeProp) {
   const [selectEmployee, setSelectEmployee] = useState<Employee>();
   const [reasonsList, setReasonsList] = useState<ReasonsModel[]>([]);
@@ -55,6 +56,8 @@ function AddEmployee({
   const [amount, setAmount] = useState<number>(0);
   const [reason, setReason] = useState<string[]>([]);
   const [ticket, setTicket] = useState<string[]>([]);
+
+  const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
@@ -66,18 +69,22 @@ function AddEmployee({
     createListCollection({ items: [] })
   );
 
-  const { getEmployeeList, getReasonsList, setNewEmployee, getTicketsList } =
-    useEmployeeContext();
+  const {
+    getEmployeeList,
+    getReasonsList,
+    setNewEmployee,
+    getTicketsList,
+    updateEmployee,
+    deleteEmployee,
+  } = useEmployeeContext();
 
   useEffect(() => {
     async function fetchData() {
       setCatalogLoading(true);
       const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
-      const reasonsList: ReasonsModel[] = await getReasonsList(
-        subsidiaryId,
-        cdc
-      );
-      const ticketsList: TicketModel[] = await getTicketsList(subsidiaryId);
+      const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
+      
+      const ticketsList: TicketModel[] = await getTicketsList(clousingId);
       console.log("Tickets List", ticketsList);
 
       setEmployees(employeeList);
@@ -101,10 +108,54 @@ function AddEmployee({
       setTickets(ticketCollection);
       setTicketsList(ticketsList);
       setCatalogLoading(false);
+
+      if (isOpen && data) {
+        console.log("Employee a editar", data);
+        
+        setIsEdited(true);
+
+        const employeeToEdit = employeeList.find(
+          (emp) => emp.name === data.employeeName
+        );
+
+        setSelectEmployee({
+          id: employeeToEdit?.id || 0,
+          name: data.employeeName,
+          employeeNumber: data.employeeNumber,
+        });
+        setAmount(data.amount);
+        const reasonToSelect = reasonsList.find(
+          (reasonItem) => reasonItem.reasonName === data.reason
+        );
+        if (reasonToSelect) {
+          setReason([reasonToSelect.id.toString()]);
+        } else {
+          setReason([]);
+        }
+        if (data.ticketNumber) {
+          const ticketToSelect = ticketsList.find(
+            (ticketItem) => ticketItem.ticketNumber === data.ticketNumber
+          );
+          if (ticketToSelect) {
+            setTicket([ticketToSelect.id.toString()]);
+          } else {
+            setTicket([]);
+          }
+        } else {
+          setTicket([]);
+        }
+      } else if (isOpen && !data) {
+        setAmount(0);
+        setReason([]);
+        setTicket([]);
+        setSelectEmployee(undefined);
+        setIsEdited(false);
+      }
     }
 
     fetchData();
-  }, []);
+  }, [getEmployeeList, getReasonsList, getTicketsList, subsidiaryId, cdc, isOpen, data]);
+
 
   async function handleData() {
     setLoading(true);
@@ -115,34 +166,32 @@ function AddEmployee({
       return;
     }
 
-    console.log(reason);
-    // const newEmployee: NewEmployeeModel = {
-    //   employeeId: selectEmployee.id,
-    //   amount: amount,
-    //   reason: Number(reason[0]),
-    //   ticket: ticket,
-    // };
+    const selectedReason = reasonsList.find(
+      (item) => item.id === Number(reason[0])
+    );
+    const selectedTicket = ticketsList.find(
+      (item) => item.id === Number(ticket[0])
+    );
 
     const newEmployee: EmployeeLine = {
-      id: "employee-" + uuidv4(),
+      id: isEdited ? data!.id : "employee-" + uuidv4(),
       //employeeId: selectEmployee.id,
       employeeNumber: selectEmployee.employeeNumber,
       employeeName: selectEmployee.name,
       employeeId: selectEmployee.id,
       amount: amount,
-      reason:
-        reasonsList.find((item) => item.id === Number(reason[0]))?.reasonName ||
-        "",
-      reasonId:
-        reasonsList.find((item) => item.id === Number(reason[0]))?.id ||
-        undefined,
-      ticketId:
-        ticketsList.find((item) => item.id === Number(ticket[0]))?.id ||
-        undefined,
-      ticketNumber:
-        ticketsList.find((item) => item.id === Number(ticket[0]))
-          ?.ticketNumber || undefined,
+      reason: selectedReason?.reasonName || "",
+      reasonId: selectedReason?.id || undefined,
+      ticketId: selectedTicket?.id || undefined,
+      ticketNumber: selectedTicket?.ticketNumber || undefined,
     };
+    if (isEdited) {
+      updateEmployee(newEmployee, clousingId);
+      console.log("Updated Employee", newEmployee);
+    } else {
+      setNewEmployee(newEmployee, clousingId);
+      console.log("New Employee", newEmployee);
+    }
 
     // console.log(newEmployee);
 
@@ -150,16 +199,29 @@ function AddEmployee({
 
     // if(response.success){
 
-    setNewEmployee(newEmployee, clousingId);
     setLoading(false);
     onClose();
     setAmount(0);
     setReason([]);
     setTicket([]);
+    setSelectEmployee(undefined);
+    setIsEdited(false);
     // } else {
     //   alert(response.message);
     //   setLoading(false);
     // }
+  }
+
+  async function handleDelete(employeeId: string | number, clousingId: number) {
+    setLoading(true);
+    deleteEmployee(employeeId, clousingId);
+    onClose();
+    setAmount(0);
+    setReason([]);
+    setTicket([]);
+    setIsEdited(false);
+    setSelectEmployee(undefined);
+    setLoading(false);
   }
 
   return (
@@ -172,7 +234,11 @@ function AddEmployee({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Agregar</DialogTitle>
+          {isEdited ? (
+            <DialogTitle>Edición de empleado</DialogTitle>
+          ) : (
+            <DialogTitle>Agregar empleado</DialogTitle>
+          )}
         </DialogHeader>
 
         <DialogBody>
@@ -182,6 +248,11 @@ function AddEmployee({
               label={true}
               onSelect={setSelectEmployee}
               disabled={false}
+              employeeToEdit={
+                isEdited
+                  ? { id: selectEmployee?.id, name: selectEmployee?.name }
+                  : null
+              }
             />
 
             <Group attached>
@@ -197,13 +268,17 @@ function AddEmployee({
             <SelectRoot
               collection={reasons}
               value={reason}
-              onValueChange={(e) => setReason(e.value)}
+              onValueChange={(e) => {
+                setReason(e.value);
+                setTicket([]);
+              }}
             >
               <SelectLabel>Motivo</SelectLabel>
               <SelectTrigger>
-                <SelectValueText placeholder="Motivo" />
+                <SelectValueText
+                  placeholder={isEdited && data?.reason ? data.reason : "Motivo"}
+                />
               </SelectTrigger>
-
               <SelectContent>
                 {reasons.items.map((movie) => (
                   <SelectItem item={movie} key={movie.value}>
@@ -230,7 +305,13 @@ function AddEmployee({
               >
                 <SelectLabel>Ticket</SelectLabel>
                 <SelectTrigger>
-                  <SelectValueText placeholder="Ticket" />
+                  <SelectValueText
+                    placeholder={
+                      isEdited && data?.ticketId != undefined
+                        ? data?.ticketNumber
+                        : "Ticket"
+                    }
+                  />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -251,7 +332,18 @@ function AddEmployee({
           )}
         </DialogBody>
 
-        <DialogFooter>
+        <DialogFooter display={"flex"} justifyContent={"space-between"} >
+          <Box>
+          {/* {data != null && (
+            <Button
+              colorPalette="meraError"
+              loading={loading}
+              onClick={() => handleDelete(data?.id!, clousingId)}
+            >
+              Eliminar
+            </Button>
+          )}*/}
+          </Box> 
           <Button
             colorPalette="meraPrimary"
             loading={loading}

@@ -161,6 +161,68 @@ export function EmployeeClousingProvider({
     [employee]
   );
 
+  const updateEmployee = useCallback((updatedEmployee: EmployeeLine, clousinId: number ) => {
+    const currentEmployee = employee[clousinId];
+    
+    const updatedLines = currentEmployee.lines.map((line) => {
+      if (line.id == updatedEmployee.id) {
+        return { ...line, ...updatedEmployee };
+      }
+      return line;
+    });
+    
+
+    const newTotalPhysical = updatedLines?.reduce(
+      (acc: number, curr: EmployeeLine) => acc + curr.amount,
+      0
+    );
+
+    const newTotal: TotalModel = {
+      totalPOS: currentEmployee.total?.totalPOS || 0,
+      totalPhysical: newTotalPhysical || 0,
+      difference: newTotalPhysical || 0,
+    };
+
+    const updatedData: EmployeeContext = {
+      [clousinId]: {
+        ...currentEmployee,
+        lines: updatedLines,
+        total: newTotal,
+      },
+    };
+
+    setEmployee(updatedData);
+    console.log("employee", employee[clousinId]);
+    
+  }, [employee] );
+
+  const deleteEmployee = useCallback((employeeId: string|number, clousingId: number) => {
+    const currentEmployee = employee[clousingId];
+    
+    const updatedLines = currentEmployee.lines.filter((line) => line.id !== employeeId);
+    
+    const newTotalPhysical = updatedLines?.reduce(
+      (acc: number, curr: EmployeeLine) => acc + curr.amount,
+      0
+    );
+
+    const newTotal: TotalModel = {
+      totalPOS: currentEmployee.total?.totalPOS || 0,
+      totalPhysical: newTotalPhysical || 0,
+      difference: newTotalPhysical || 0,
+    };
+
+    const updatedData: EmployeeContext = {
+      [clousingId]: {
+        ...currentEmployee,
+        lines: updatedLines,
+        total: newTotal,
+      },
+    };
+
+    setEmployee(updatedData);
+  }, [employee]);
+
   const value = useMemo(
     () => ({
       employee,
@@ -172,6 +234,8 @@ export function EmployeeClousingProvider({
       getTicketsList,
       setNewEmployee,
       setEmployee,
+      updateEmployee,
+      deleteEmployee
     }),
     [
       employee,
@@ -183,6 +247,8 @@ export function EmployeeClousingProvider({
       getTicketsList,
       setNewEmployee,
       setEmployee,
+      updateEmployee,
+      deleteEmployee
     ]
   );
 

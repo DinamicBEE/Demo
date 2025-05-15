@@ -46,7 +46,7 @@ function FooterClousing({
   const { getTDCData, tdcRef } = useTDCContext();
   const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
-  const { getEmployeetData, setEmployee } = useEmployeeContext();
+  const { getEmployeetData, setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
   const { setDataClousing } = useClousing();
@@ -68,7 +68,7 @@ function FooterClousing({
     const tdc = await getTDCData(clousingId, idCurrency);
     const customer = await getCustomerData(clousingId);
     const specialCustomer = await getSpecialCustData(clousingId, idCurrency);
-    const employee = await getEmployeetData(clousingId);
+    // const employee = await getEmployeetData(clousingId);
     const prepaid = await getPrepaidData(clousingId);
     const intercompany = await getIntercompanyData(clousingId);
 
@@ -192,10 +192,9 @@ function FooterClousing({
         lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
-        total: employee.total,
-        lines: mapEmployeeLines(
-          employee.lines.filter((line) => typeof line.id === "string")
-        ),
+        total: employee[clousingId].total || 0,
+        lines: 
+          employee[clousingId].lines || []
       },
       prepaid: {
         total: prepaid.total,
