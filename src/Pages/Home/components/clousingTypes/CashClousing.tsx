@@ -38,12 +38,15 @@ function CashClousing({ data, idCurrency }: any) {
       if (cashData.total) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       }
+
       setCashData(cashData);
+
       if (cashData.total) {
         updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
       }
 
       const items = cashData?.currencies?.slice(startRange, endRange);
+
       setVisibleItems(items);
     }
 
@@ -66,14 +69,18 @@ function CashClousing({ data, idCurrency }: any) {
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
   const handleSaveFromDialog = (currencyId: string, total: number, totalMXN: number, updatedDenominations: any) => {
+    
 
-    handleInputChange(currencyId, totalMXN.toString(), updatedDenominations);
+    handleInputChange(currencyId, total.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
       const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
       return { ...prev, currencies: updatedCurrencies };
     });
+
+    console.log('cash se actualizado:', cashData)
+
   };
 
   return (

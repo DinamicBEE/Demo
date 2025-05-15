@@ -20,20 +20,16 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
     value = value.replace(/[^\d.]/g, "");
 
     const updatedData = cashData.currencies.map((item: CashLines) =>
-      item.id == itemId
-        ? {
-          ...item,
-          totalFisico: parseFloat(value),
-          difference: item.totalPOS - parseFloat(value),
-          denominations: updatedDenominations ?? item.denominations,
-        }
-        : item
+
+      item.id == itemId ? {
+        ...item,
+        totalFisico: parseFloat(value),
+        difference: item.totalPOS - parseFloat(value),
+        denominations: updatedDenominations ?? item.denominations,
+      } : item
     );
 
-    const newTotalPhysical = updatedData.reduce(
-      (acc: number, curr: { totalFisico: number }) => acc + curr.totalFisico,
-      0
-    );
+    const newTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number, exchangeRate: number }) => acc + (curr.totalFisico * curr.exchangeRate ), 0);
 
     const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
 
@@ -50,6 +46,7 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
     };
 
     setData(updateCashdata);
+   
     cashRef.current = updateCashdata;
 
     updateTotal(newTotalPhysical, clousingId, CLOUSING_KEY.CASH);
@@ -62,7 +59,7 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
     const updateCashdata = { ...cashData, tips: parseFloat(value), }
 
     setData(updateCashdata);
-    
+
     cashRef.current = updateCashdata
 
     setCashData(cashRef.current, clousingId);
