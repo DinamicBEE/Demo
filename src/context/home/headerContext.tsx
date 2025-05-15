@@ -84,7 +84,7 @@ console.log("data", clousingData);
             totalPOS: lastCashTotal,
           },
         },
-        difference: lastTotalPOS - newTotalClousing,
+        difference: newTotalClousing - lastTotalPOS,
         totalClousing: newTotalClousing,
       },
     };
