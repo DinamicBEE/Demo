@@ -79,7 +79,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
             totalPOS: lastCashTotal,
           },
         },
-        difference: lastTotalPOS - newTotalClousing,
+        difference: newTotalClousing - lastTotalPOS,
         totalClousing: newTotalClousing,
       },
     };

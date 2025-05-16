@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Table, Text, FormatNumber, ListCollection,
-  createListCollection, HStack } from "@chakra-ui/react";
+  createListCollection, HStack, Button } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger,
   PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { SelectRoot, SelectTrigger, SelectValueText,
@@ -12,17 +12,18 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { Employee } from "@models/employee.model";
 import { TableInput } from "@components/NumericInput";
-import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
+//import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterEmployee from "@components/FilterEmployee";
 import { it } from "node:test";
+import AddIntercompany from "./AddIntercompany";
 
 const pageSize = 10;
 
-function IntercompanyClousing({data}: IntercompanyClousingProps) {
-  const [intercompany, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
+function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingProps) {
+  const [intercompanyLocal, setIntercompany] = useState<IntercompanyModel>({} as IntercompanyModel);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [subsidiariesByRow, setSubsidiariesByRow] = useState<{
@@ -30,6 +31,7 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   }>({});
 
   const {
+    intercompany,
     getIntercompanyData,
     setIntercompanyData,
     getEmployeesList,
@@ -38,7 +40,8 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
   const [page, setPage] = useState(1);
-  const [visibleItems, setVisibleItems] = useState<IntercompanyLine[]>([])
+  const [visibleItems, setVisibleItems] = useState<IntercompanyLine[]>([]);
+  const [dialog, setDialog] = useState<boolean>(false);
 
   const startRange = (page - 1) * pageSize
   const endRange = startRange + pageSize
@@ -82,11 +85,11 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
     }
 
     fetchData();
-  }, []);
+  }, [intercompany]);
 
   useEffect(() => {
     setPage(page);
-    const items = intercompany?.lines?.slice(startRange, endRange);
+    const items = intercompanyLocal?.lines?.slice(startRange, endRange);
     setVisibleItems(items);
   }, [page])
 
@@ -99,16 +102,16 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
       0
     );
 
-    const newDifference = intercompany.total.totalPOS - newTotalFisico;
+    const newDifference = intercompanyLocal.total.totalPOS - newTotalFisico;
 
     const newTotal: TotalModel = {
-      totalPOS: intercompany.total.totalPOS,
+      totalPOS: intercompanyLocal.total.totalPOS,
       totalPhysical: newTotalFisico,
       difference: newDifference,
     };
 
     const intercompanyData: IntercompanyModel = {
-      ...intercompany,
+      ...intercompanyLocal,
       lines: updateLine,
     };
 
@@ -124,7 +127,7 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   ) {
     if (!itemId) return;
 
-    const updateLine: IntercompanyLine[] = intercompany?.lines.map(
+    const updateLine: IntercompanyLine[] = intercompanyLocal?.lines.map(
       (item: IntercompanyLine) =>
         item.id === itemId
           ? {
@@ -157,7 +160,7 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   function handleAmount(itemId: number | string, value: string) {
     value = value.replace(/[^\d.]/g, "");
 
-    const updateLine: IntercompanyLine[] = intercompany?.lines.map(
+    const updateLine: IntercompanyLine[] = intercompanyLocal?.lines.map(
       (item: IntercompanyLine) =>
         item.id === itemId
           ? {
@@ -171,7 +174,8 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
   }
 
   function handleSubsidiary(
-    event: ValueChangeDetails<any>,
+    //event: ValueChangeDetails<any>,
+    event: any,//ValueChangeDetails<any>,
     itemId: number | string
   ) {
     if (!subsidiariesByRow[itemId] || !subsidiariesByRow[itemId].items) {
@@ -196,7 +200,7 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
     const subSelect = Number(event.value[0]);
     const subName = selectedSubsidiary.label;
 
-    const updateLine: IntercompanyLine[] = intercompany?.lines.map(
+    const updateLine: IntercompanyLine[] = intercompanyLocal?.lines.map(
       (item: IntercompanyLine) =>
         item.id === itemId
           ? {
@@ -207,12 +211,24 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
           : item
     );
 
-    setIntercompany({ ...intercompany, lines: updateLine });
+    setIntercompany({ ...intercompanyLocal, lines: updateLine });
     updateIntercompany(updateLine);
+  }
+
+  const openDiaolog = () => {
+    if (data?.closingConfirmation) return;
+    setDialog(true);
+  }
+
+  const closeDiaolog = () => {
+    setDialog(false);
   }
 
   return (
     <Box>
+
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()} disabled={data?.closingConfirmation}>Agregar</Button>
+
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
           <Table.Header>
@@ -299,13 +315,15 @@ function IntercompanyClousing({data}: IntercompanyClousingProps) {
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>
-      <PaginationRoot count={intercompany?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
+      <PaginationRoot count={intercompanyLocal?.lines?.length??0} pageSize={pageSize} page={page} onPageChange={(e) => setPage(e.page)}>
         <HStack>
           <PaginationPrevTrigger />
           <PaginationItems />
           <PaginationNextTrigger />
         </HStack>
       </PaginationRoot>
+
+      <AddIntercompany clousingId={data?.id ?? 0} isOpen={dialog} onClose={closeDiaolog}/>
 
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

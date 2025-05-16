@@ -117,6 +117,40 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 
 	}, [subsidiariesList]);
 
+	const setNewIntercompanyRegister = useCallback(
+		(newRegister: IntercompanyLine, clousingId: number) => {
+			const currentRegister = intercompany[clousingId];
+
+      		const updateLines = [...currentRegister.lines, newRegister];
+
+			const newTotalPhysical = updateLines?.reduce(
+				(acc: number, curr: IntercompanyLine ) => acc + curr.amount,
+				0
+			);
+	
+			const newDifference = (newTotalPhysical || 0);
+	
+			const newTotal: TotalModel = {
+				totalPOS: currentRegister.total?.totalPOS || 0,
+				totalPhysical: newTotalPhysical || 0,
+				difference: newDifference,
+			};
+
+			const updateData: IntercompanyContext = {
+				...intercompany,
+				[clousingId]: {
+					...currentRegister,
+					lines: updateLines,
+					total: newTotal
+				}
+			}
+
+			setIntercompany(updateData)
+
+		}, 
+		[intercompany]
+	);
+	
 	const value = useMemo(
 		() => ({
 			intercompany,
@@ -125,9 +159,10 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 			setIntercompanyData,
 			getEmployeesList,
 			getSubsidiaries,
+			setNewIntercompanyRegister,
 			setIntercompany
 		}),
-		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries, setIntercompany]
+		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries, setNewIntercompanyRegister, setIntercompany]
 	);
 
 	return (

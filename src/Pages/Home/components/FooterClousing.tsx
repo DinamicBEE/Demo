@@ -20,7 +20,7 @@ import { ClousingSave } from "@models/saveClousing.model";
 import { CustomerLines } from "@models/customer.model";
 import { IntercompanyLine } from "@models/intercompany.model";
 import { PrepaidLineModel } from "@models/prepaid.model";
-import { EmployeeLine } from "@models/employee.model";
+import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
@@ -51,6 +51,8 @@ function FooterClousing({
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
   const { setDataClousing } = useClousing();
   const { header, headerRef } = useHeaders();
+  // Type assertion to avoid TS error if you know employee is an object with numeric keys
+  console.log((employee as Record<number, EmployeeModel>)[clousingId]);
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -198,9 +200,14 @@ function FooterClousing({
         lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
-        total: employee[clousingId].total || 0,
-        lines: 
-          employee[clousingId].lines || []
+        total: (employee as Record<number, EmployeeModel>)[clousingId]?.total ?? {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+        lines: mapEmployeeLines(
+          (employee as Record<number, EmployeeModel>)[clousingId]?.lines ?? []
+        ),
       },
       prepaid: {
         total: prepaid.total,
@@ -258,12 +265,12 @@ function FooterClousing({
       });
 
       if (isConfirm === true) {
-        delete cashRef.current[employee.id];
-        delete customerRef.current[employee.id];
-        delete specialCustRef.current[employee.id];
-        delete prepaidRef.current[employee.id];
-        delete tdcRef.current[employee.id];
-        delete headerRef.current[employee.id];
+        delete cashRef.current[clousingId];
+        delete customerRef.current[clousingId];
+        delete specialCustRef.current[clousingId];
+        delete prepaidRef.current[clousingId];
+        delete tdcRef.current[clousingId];
+        delete headerRef.current[clousingId];
 
         setEmployee({} as any);
         setIntercompany({} as any);

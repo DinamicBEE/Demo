@@ -15,6 +15,7 @@ export interface IntercompanyContextType {
     setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
     getEmployeesList: () => Promise<Employee[]>;
     getSubsidiaries: (idEmployee: string) => Promise<SubsidiaryModal[]>;
+    setNewIntercompanyRegister: (newIntercompany: IntercompanyLine, clousingId: number) => void;
     setIntercompany: React.Dispatch<React.SetStateAction<IntercompanyContext>>;
 }
 
@@ -39,4 +40,12 @@ export interface IntercompanyLine {
     ticket: string;
     physicalAmount: number;
     notes?: string;
+}
+
+export interface AddIntercompanyProp {
+    clousingId: number;
+    //subsidiaryId: number;
+    //cdc: number;
+    isOpen:boolean; 
+    onClose: () => void; 
 }
