@@ -155,7 +155,7 @@ export const getTicketListClousing = async (
 ): Promise<TicketModel[]> => {
   try {
     if (cdc === null) throw new Error("Error al obtener la lista de  tickets");
-
+    
     const response = await api.get(TICKETS, {
       params: { crcId: cdc },
     });

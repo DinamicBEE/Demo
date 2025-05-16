@@ -14,6 +14,7 @@ const pageSize = 10;
 function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>({} as EmployeeModel);
   const [dialog, setDialog] = useState<boolean>(false);
+  const [ editEmployee, setEditEmployee ] = useState<EmployeeLine | null>(null);
 
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
@@ -27,13 +28,14 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   useEffect(() => {
     async function fetchData() {
       if (!data) return;
-
+      console.log("");
+      
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)
-      updateTotal(-(employeeData.total.totalPhysical), data.id, CLOUSING_KEY.EMPLOYEE);
+      updateTotal(employeeData.total.totalPhysical, data.id, CLOUSING_KEY.EMPLOYEE);
       
       const items = employeeData?.lines?.slice(startRange, endRange);
       setVisibleItems(items);
@@ -49,7 +51,8 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     setVisibleItems(items);
   }, [page])
 
-  const openDiaolog = () => {
+  const openDiaolog = (isEdited: boolean, employee: EmployeeLine) => {
+    isEdited === true ? setEditEmployee(employee) : setEditEmployee(null);
     if (data?.closingConfirmation) return;
     setDialog(true);
   }
@@ -62,7 +65,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     <Box>
       {/* <Toaster /> */}
 
-      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()} disabled={data?.closingConfirmation}>Agregar</Button>
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog(false, {} as EmployeeLine)} disabled={data?.closingConfirmation}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
@@ -79,7 +82,13 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
             {visibleItems?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text> {item.employeeName}</Text>
+                  <Text
+                  cursor="pointer"
+                  textDecoration="underline"
+                  color="blue.500"
+                  onClick={() => openDiaolog(true, item)}
+                  >
+                    {item.employeeName}</Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
@@ -116,7 +125,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
         </HStack>
       </PaginationRoot>
 
-      <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} />
+      <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} data={editEmployee}/>
 
       {employeeLoading && (
         <Box position="fixed" top="50%" left="50%" zIndex="1">

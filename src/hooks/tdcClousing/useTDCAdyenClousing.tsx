@@ -1,6 +1,7 @@
 import { ProcessResult } from "@models/adyen.model";
 import { Bank, LotClosure } from "@models/lotClosure.model";
-import { BankLineModel } from "@models/tdc.model";
+import { BankLineModel, Voucher } from "@models/tdc.model";
+import { toast } from "../../utils/index";
 import React from "react";
 
 export const useHandleTDCAdyen = () => {
@@ -9,18 +10,17 @@ export const useHandleTDCAdyen = () => {
     detailsLocal: BankLineModel,
     setDetailsLocal: React.Dispatch<
       React.SetStateAction<BankLineModel | undefined>
-    >
+    >,
+    setVisibleItems: React.Dispatch<React.SetStateAction<Voucher[]>>,
+    setLocalAmount: React.Dispatch<React.SetStateAction<number>>,
+    setVouchersSelected: React.Dispatch<React.SetStateAction<number>>,
+    startRange: number,
+    endRange: number
   ) => {
     // Validación temprana
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
-
-    // Verificación de error general
-    if (detailsLocal.vouchers.length !== dataFilesProcess.consolidatedData.length) {
-      console.error("La cantidad de detalles locales no coincide con la cantidad de datos consolidados.");
-    }
-console.log("detailsLocal", dataFilesProcess.consolidatedData);
 
     // Crear conjuntos únicos para comparación eficiente
     const checkDate = new Set<string>(
@@ -33,66 +33,54 @@ console.log("detailsLocal", dataFilesProcess.consolidatedData);
       dataFilesProcess.consolidatedData.map((item) => Number(item.amount))
     );
 
-    // Actualizar detalles y encontrar diferencias
-    const updatedDetails = detailsLocal.vouchers.map((detail) => {
-      console.log("detail", detail);
-      
-      const dateMatch = checkDate.has(detail.date);
+    // Separar los vouchers en dos grupos: los que están en false y los que están en true
+    const vouchersToUpdate = detailsLocal.vouchers.filter(
+      (detail) => detail.status === false
+    );
+    const vouchersAlreadyTrue = detailsLocal.vouchers.filter(
+      (detail) => detail.status === true
+    );
+
+    // Actualizar solo los vouchers que necesitan actualización
+    const updatedVouchers = vouchersToUpdate.map((detail) => {
+      const dateMatch = checkDate.has(detail.dateDisplay ?? "");
       const checkMatch = checkCheck.has(Number(detail.check));
       const amountMatch = checkAmount.has(Number(detail.amount));
-      const isGeneralError = !dateMatch && !checkMatch && !amountMatch;
+      const allMatches = dateMatch && checkMatch && amountMatch;
 
       return {
         ...detail,
-        successAdyen: dateMatch && checkMatch && amountMatch,
-        difference: {
-          date: isGeneralError ? null : !dateMatch ? "Fecha no coincide" : null,
-          check: isGeneralError ? null : !checkMatch ? "Cheque no coincide" : null,
-          amount: isGeneralError ? null : !amountMatch ? "Monto no coincide" : null,
-          general: isGeneralError ? "Este dato no viene en los datos consolidados" : null,
-        },
+        status: allMatches ? true : detail.status,
       };
     });
 
-    // Verificar cambios
-    const hasChanges = updatedDetails.some(
-      (detail, index) => detail.successAdyen !== detailsLocal.vouchers[index].successAdyen
+    // Combinar los vouchers actualizados con los que ya tenían status true
+    const allVouchers = [...vouchersAlreadyTrue, ...updatedVouchers];
+
+    // Actualizar el estado con todos los vouchers
+    setDetailsLocal((prev) => ({
+      ...prev!,
+      vouchers: allVouchers,
+    }));
+    setVisibleItems(
+      allVouchers.filter((item) => item.status).slice(startRange, endRange)
     );
-
-    // Actualizar si hay cambios
-    if (hasChanges) {
-      setDetailsLocal((prev) => ({
-        ...prev!,
-        details: updatedDetails,
-      }));
-
-      // Llamar a updateLocalBanksTotal después de actualizar los detalles
-      updateLocalBanksTotal({ ...detailsLocal, vouchers: updatedDetails }, setDetailsLocal);
-    }
+    setLocalAmount(
+      Number(
+        allVouchers
+          .filter((item) => item.status)
+          .reduce((acc, curr) => acc + curr.amount, 0)
+          .toFixed(2)
+      )
+    );
+    setVouchersSelected(allVouchers.filter((item) => item.status).length);
+    toast(
+      `Se agregaron ${updatedVouchers.filter((item) => item.status).length} vouchers`,
+      updatedVouchers.filter((item) => item.status).length === 0
+        ? "warning"
+        : "success"
+    );
   };
 
-  const updateLocalBanksTotal = (
-    detailsLocal: BankLineModel,
-    setDetailsLocal: React.Dispatch<React.SetStateAction<BankLineModel | undefined>>
-  ) => {
-    if (detailsLocal.vouchers) {
-      const total = detailsLocal.vouchers
-        .filter(detail => detail.successAdyen) // Filtrar solo los detalles con successAdyen en true
-        .reduce(
-          (acc, detail) => {
-            return {
-              amount: acc.amount + Number(detail.amount),
-            };
-          },
-          { amount: 0 } // Inicializar el acumulador con amount en 0
-        );
-
-      setDetailsLocal((prev) => ({
-        ...prev!,
-        total: total.amount,
-      }));
-    }
-  };
-
-  return { updateLocalBanksAdyen, updateLocalBanksTotal };
+  return { updateLocalBanksAdyen };
 };

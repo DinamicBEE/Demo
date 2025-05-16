@@ -113,27 +113,13 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
           <Table.Root size="sm" variant="outline">
             <Table.Header>
               <Table.Row>
-                <Table.ColumnHeader textAlign="center">
-                  Clientes
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Cupones
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Moneda
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Valor PAX
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Monto
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Tasa de cambio
-                </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Monto MXN
-                </Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Clientes</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">PAX</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Moneda</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Valor PAX</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Tasa de cambio</Table.ColumnHeader>
+                <Table.ColumnHeader textAlign="center">Monto MXN</Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
             <Table.Body>

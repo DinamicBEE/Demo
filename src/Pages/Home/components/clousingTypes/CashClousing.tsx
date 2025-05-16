@@ -38,12 +38,15 @@ function CashClousing({ data, idCurrency }: any) {
       if (cashData.total) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       }
+
       setCashData(cashData);
+
       if (cashData.total) {
         updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
       }
 
       const items = cashData?.currencies?.slice(startRange, endRange);
+
       setVisibleItems(items);
     }
 
@@ -65,14 +68,17 @@ function CashClousing({ data, idCurrency }: any) {
 
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
-  const handleSaveFromDialog = (currencyId: string, total: number, updatedDenominations: any) => {
-    handleInputChange(currencyId, total.toString(), updatedDenominations);
+  const handleSaveFromDialog = (currencyId: string, total: number, totalMXN: number, updatedDenominations: any) => {
+    
+    handleInputChange(currencyId, totalMXN.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
-      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
+      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: totalMXN, denominations: updatedDenominations } : currency);
       return { ...prev, currencies: updatedCurrencies };
     });
+
+    console.log('cash se actualizado:', cashData)
   };
 
   return (
@@ -107,7 +113,7 @@ function CashClousing({ data, idCurrency }: any) {
                   Moneda
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Total por Moneda
+                  Total POS
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
                   Total físico
@@ -119,7 +125,7 @@ function CashClousing({ data, idCurrency }: any) {
                   Tipo de cambio
                 </Table.ColumnHeader>
                 <Table.ColumnHeader textAlign="center">
-                  Total en Peso MXN
+                  Moneda Original
                 </Table.ColumnHeader>
               </Table.Row>
             </Table.Header>
@@ -133,7 +139,7 @@ function CashClousing({ data, idCurrency }: any) {
                   <Table.Cell textAlign="end">
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS/item.exchangeRate}
+                        value={item.totalPOS}
                         style="currency"
                         currency="USD"
                       />
@@ -181,21 +187,14 @@ function CashClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                    
+
                     <Text>
                       <FormatNumber
-                       value={item.totalPOS}
-                        //value={item.originalCurrency}
+                        value={item.totalPOS/(item.exchangeRate)}
                         style="currency"
                         currency="USD"
                       />
                     </Text>
-                   {/*  <FormatNumber
-                       value={item.totalPOS/item.exchangeRate}
-                        value={item.originalCurrency}
-                        style="currency"
-                        currency="USD"
-                      /> */}
                   </Table.Cell>
 
                 </Table.Row>
@@ -220,7 +219,7 @@ function CashClousing({ data, idCurrency }: any) {
 
       {isDialogOpen && selectedCurrencyId !== null && (
         <Box position="fixed" top="50%" left="50%" zIndex="1"
-        transform="translate(-50%, -50%)" width="100%" height="100%">
+          transform="translate(-50%, -50%)" width="100%" height="100%">
           <CashClousingDetails
             isOpen={isDialogOpen}
             onClose={closeDialog}

@@ -10,6 +10,7 @@ import {
   Input,
   Table,
 } from "@chakra-ui/react";
+import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
@@ -20,23 +21,17 @@ interface CashClousingDetailsProps {
   onSave: (
     currencyId: string,
     total: number,
+    totalMXN: number,
     updatedDenominations: any[]
   ) => void;
   currencyId: string;
   data?: any;
 }
 
-export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
-  isOpen,
-  onClose,
-  onSave,
-  currencyId,
-  data,
-}) => {
+export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, data }) => {
+
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
-
-  console.log(cashClousingSelect)
 
   useEffect(() => {
     if (cashClousingSelect?.denominations) {
@@ -45,19 +40,29 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
   }, [cashClousingSelect]);
 
   const handleChangeAmount = (index: number, value: string) => {
-    const numericValue = parseInt(value) || 0;
+    const numericValue = parseFloat(value) || 0;
+
     const updated = [...denominations];
     updated[index] = { ...updated[index], amount: numericValue };
     setDenominations(updated);
   };
 
-  const total = denominations.reduce(
-    (sum, item) => sum + item.denomination * item.amount,
-    0
-  );
+  const total = denominations.reduce((sum, item) => {
+    if (item.denomination === "Cambio") {
+      return sum + (parseFloat(item.amount) || 0);
+    }
+
+    const denom = parseFloat(item.denomination);
+    const amount = parseFloat(item.amount) || 0;
+
+    return sum + (denom * amount);
+  }, 0);
+
+
+  const totalMXN = (total * cashClousingSelect.exchangeRate)
 
   const handleSave = () => {
-    onSave(currencyId, total, denominations);
+    onSave(currencyId, total, totalMXN, denominations);
     onClose();
   };
 
@@ -74,7 +79,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
       <DialogContent>
         <DialogHeader>
           Lista de Denominaciones.{" "}
-          <b>Total POS: ${cashClousingSelect.originalCurrency/cashClousingSelect.exchangeRate}</b>
+          <b>Total POS: ${(cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)}</b>
         </DialogHeader>
         <DialogBody>
           <Table.ScrollArea>
@@ -93,35 +98,44 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {denominations.map((item: any, index: number) => (
-                  <Table.Row key={item.idDenomination ?? index}>
-                    <Table.Cell textAlign="center">
-                      ${item.denomination}
-                    </Table.Cell>
-                    <Table.Cell textAlign="center">
-                      <Input
-                        type="number"
-                        value={item.amount}
-                        onChange={(e) =>
-                          handleChangeAmount(index, e.target.value)
-                        }
-                        textAlign="center"
-                        disabled={data?.closingConfirmation ?? false}
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="center">
-                      <FormatNumber
-                        value={item.denomination * item.amount}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                  </Table.Row>
-                ))}
+                {
+                  denominations.map((item: any, index: number) => (
+                    <Table.Row key={item.idDenomination ?? index}>
+
+                      <Table.Cell textAlign="center">
+                        {item.denomination === 'Cambio' ? item.denomination : `$${item.denomination}`}
+                      </Table.Cell>
+
+                      <Table.Cell textAlign="center">
+
+                        <CurrencyInputNumber
+                          loading={false}
+                          value={item.amount}
+                          currency={false}
+                          onChange={(value) => handleChangeAmount(index, String(value ?? 0))} // convierte a string si es necesario
+                          allowDecimals={item.denomination === 'Cambio' ? true : false}
+                          disabled={data?.closingConfirmation ?? false}
+                        />
+
+                      </Table.Cell>
+
+                      <Table.Cell textAlign="center">
+                        <FormatNumber
+                          value={item.denomination === 'Cambio' ? item.amount : item.denomination * item.amount}
+                          style="currency"
+                          currency="USD"
+                        />
+                      </Table.Cell>
+
+                    </Table.Row>
+                  ))}
+
                 <Table.Row bg="bg.subtle">
+
                   <Table.Cell colSpan={2} textAlign="right" fontWeight="bold">
                     Total:
                   </Table.Cell>
+
                   <Table.Cell textAlign="center" fontWeight="bold">
                     <FormatNumber
                       value={total}
@@ -130,6 +144,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({
                     />
                   </Table.Cell>
                 </Table.Row>
+
               </Table.Body>
             </Table.Root>
           </Table.ScrollArea>

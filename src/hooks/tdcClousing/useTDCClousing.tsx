@@ -49,26 +49,20 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
       (item: Voucher) => item.status
     ).length;
 
-    const successCountAdyen = detailsValidated.vouchers.filter(
+ /*    const successCountAdyen = detailsValidated.vouchers.filter(
       (item: Voucher) => item.successAdyen
-    );
+    ); */
 
-    const newPhysicalAdyen = successCountAdyen
+   /*  const newPhysicalAdyen = successCountAdyen
       .map((item: Voucher) => item.amount)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+      .reduce((acc: number, curr: number) => acc + curr, 0); */
 
     const updateLines = tdcData?.lines?.map((item: BankLineModel) =>
       lineId === item.id
         ? {
             ...item,
-            voucherAmountDisplay:
-              detailsValidated.bank === "ADYEN"
-                ? successCountAdyen.length
-                : successCount,
-            physical:
-              detailsValidated.bank === "ADYEN"
-                ? newPhysicalAdyen
-                : newPhysical,
+            voucherAmountDisplay: successCount,
+            physical: newPhysical,
             vouchers: detailsValidated.vouchers,
           }
         : item
