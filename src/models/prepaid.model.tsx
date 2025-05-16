@@ -45,6 +45,7 @@ export interface PrepaidLineModel {
   difference: number;
   edit: boolean;
   coupons: CouponCatalogModel[];
+  ticketId: number;
 }
 
 export interface CouponCatalogModel {

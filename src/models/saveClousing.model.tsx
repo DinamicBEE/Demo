@@ -1,3 +1,5 @@
+import { CouponCatalogModel } from "./prepaid.model";
+
 // Interfaces base para tipos comunes
 interface Total {
   totalPOS: number;
@@ -108,14 +110,16 @@ interface Employee {
 }
 
 interface PrepaidLine extends LineBase {
-  client: string;
+  client: string | null;
   quantity: number;
   supplementsQuantity: number;
   unitPrice: number;
   totalPOS: number;
   physical: number;
   difference: number;
-  isEdit: boolean;
+  edit: boolean;
+  coupons: Omit<CouponCatalogModel, "validityDateCustom" | "folioCustom">[];
+  ticketId: number;
 }
 
 interface Prepaid {

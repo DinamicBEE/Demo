@@ -141,8 +141,21 @@ function FooterClousing({
 
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
       lines.map((line) => ({
+        ...line,
         id: typeof line.id === "number" ? line.id : null,
-        client: line.client ?? "",
+        coupons: line.coupons.map((coupon) => ({
+          id: coupon.id,
+          barCode: coupon.barCode,
+          folio: coupon.folio,
+          amount: coupon.amount,
+          validityDate: coupon.validityDate,
+          consumeCenterId: coupon.consumeCenterId,
+          consumeCenter: coupon.consumeCenter,
+          client: coupon.client,
+          clientId: coupon.clientId,
+          isExpired: coupon.isExpired,
+        })),
+        /* client: line.client ?? "",
         quantity: line.quantity,
         supplementsQuantity: line.supplementsQuantity,
         unitPrice: line.unitPrice,
@@ -150,6 +163,8 @@ function FooterClousing({
         physical: line.physical,
         difference: line.difference,
         isEdit: line.edit,
+        coupons: line.coupons, */
+
       }));
 
     const mapTdcLines = (lines: BankLineModel[]) => {
@@ -222,7 +237,7 @@ function FooterClousing({
     console.log(body);
 
     //const response: any = await sendCashClousing(body, isConfirm);
-    const response: any = await sendCashClousing(body, isConfirm);
+    const response: any = "aaa"//await sendCashClousing(body, isConfirm);
 
     if (response === "response") {
       //TODO: DEvolver para el back
