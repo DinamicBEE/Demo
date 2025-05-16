@@ -48,6 +48,7 @@ interface TDCLine extends LineBase {
     check: string;
     amount: number;
     status: boolean;
+    uniqueIdVoucher: number;
   }[];
 }
 
