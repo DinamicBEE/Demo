@@ -70,17 +70,15 @@ function CashClousing({ data, idCurrency }: any) {
 
   const handleSaveFromDialog = (currencyId: string, total: number, totalMXN: number, updatedDenominations: any) => {
     
-
-    handleInputChange(currencyId, total.toString(), updatedDenominations);
+    handleInputChange(currencyId, totalMXN.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
-      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: total, denominations: updatedDenominations } : currency);
+      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? { ...currency, totalFisico: totalMXN, denominations: updatedDenominations } : currency);
       return { ...prev, currencies: updatedCurrencies };
     });
 
     console.log('cash se actualizado:', cashData)
-
   };
 
   return (
@@ -141,7 +139,7 @@ function CashClousing({ data, idCurrency }: any) {
                   <Table.Cell textAlign="end">
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS / item.exchangeRate}
+                        value={item.totalPOS}
                         style="currency"
                         currency="USD"
                       />
@@ -192,18 +190,11 @@ function CashClousing({ data, idCurrency }: any) {
 
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS}
-                        //value={item.originalCurrency}
+                        value={item.totalPOS/(item.exchangeRate)}
                         style="currency"
                         currency="USD"
                       />
                     </Text>
-                    {/*  <FormatNumber
-                       value={item.totalPOS/item.exchangeRate}
-                        value={item.originalCurrency}
-                        style="currency"
-                        currency="USD"
-                      /> */}
                   </Table.Cell>
 
                 </Table.Row>
