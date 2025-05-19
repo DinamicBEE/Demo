@@ -192,8 +192,7 @@ export function EmployeeClousingProvider({
     };
 
     setEmployee(updatedData);
-    console.log("employee", employee[clousinId]);
-    
+   
   }, [employee] );
 
   const deleteEmployee = useCallback((employeeId: string|number, clousingId: number) => {

@@ -52,7 +52,6 @@ function FooterClousing({
   const { setDataClousing } = useClousing();
   const { header, headerRef } = useHeaders();
   // Type assertion to avoid TS error if you know employee is an object with numeric keys
-  console.log((employee as Record<number, EmployeeModel>)[clousingId]);
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -301,7 +300,6 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
-    console.log(header[clousingId]?.difference);
 
     const cash = await getCashData(clousingId, idCurrency);
 
