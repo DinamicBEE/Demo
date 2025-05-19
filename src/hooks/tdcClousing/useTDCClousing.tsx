@@ -42,7 +42,7 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
       .filter((item: Voucher) => item.status)
       .reduce((acc: number, curr: Voucher) => {
         // Redondeo en cada paso de la acumulación
-        return Number((acc + curr.amount).toFixed(2));
+        return Number((acc + curr.amountConversion).toFixed(2));
       }, 0);
 
     const successCount = detailsValidated.vouchers.filter(

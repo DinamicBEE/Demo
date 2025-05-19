@@ -87,7 +87,7 @@ function TDCDetails({
       setLocalAmount(
         bankDetails.vouchers
           .filter((item) => item.status)
-          .reduce((acc, curr) => acc + curr.amount, 0)
+          .reduce((acc, curr) => acc + curr.amountConversion, 0)
       );
       setVouchersSelected(
         bankDetails.vouchers.filter((item) => item.status).length
@@ -208,7 +208,7 @@ function TDCDetails({
       Number(
         updatedDetailsLocal.vouchers
           .filter((item) => item.status)
-          .reduce((acc, curr) => acc + curr.amount, 0)
+          .reduce((acc, curr) => acc + curr.amountConversion, 0)
           .toFixed(2)
       )
     );
@@ -253,7 +253,6 @@ function TDCDetails({
               />
             </Flex>
             {detailsLocal?.bank?.toLowerCase().includes("adyen") && (
-           
               <Flex mt={4} width="100%">
                 <Button
                   colorPalette="meraPrimary"
@@ -333,8 +332,12 @@ function TDCDetails({
                       No. Cheque
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="end">
-                      Importe
+                      Importe original
                     </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="end">
+                      Importe convertido
+                    </Table.ColumnHeader>
+
                     {/*    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
@@ -400,6 +403,15 @@ function TDCDetails({
                         <Text>
                           <FormatNumber
                             value={item.amount}
+                            style="currency"
+                            currency="USD"
+                          />
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell textAlign="end">
+                        <Text>
+                          <FormatNumber
+                            value={item.amountConversion}
                             style="currency"
                             currency="USD"
                           />

@@ -41,6 +41,16 @@ import { v4 as uuidv4 } from "uuid";
 import { sendNewEmployeeRegister } from "@services/clousingService";
 import { ResponseModel } from "@models/common.clousing.model";
 
+//TODO: MOVER AL MODELO, cambiar los métodos según sea necesario. Nota para el futuro dev que lo vea: de seguro va a pasar
+const reasonPaymentMethods: Record<string, { methods: string[]; showTickets: boolean }> = {
+  "CONSUMO EMPLEADO": { methods: ["CxcEmpleados"], showTickets: true },
+  "CUPÓN EXTRAVIADO": { methods: ["CxcEspecial", "CxcGeneral", "PREPAGO"], showTickets: true },
+  "VOUCHER EXTRAVIADO": { methods: ["TDC"], showTickets: true },
+  "DIFERENCIA EN EFECTIVO": { methods: [], showTickets: false },
+  "DIFERENCIA EN INVENTARIO": { methods: ["CxcEmpleados"], showTickets: true },
+  "MALA ELABORACIÓN DEL PRODUCTO": { methods: [], showTickets: false }
+};
+
 function AddEmployee({
   clousingId,
   subsidiaryId,
@@ -52,6 +62,8 @@ function AddEmployee({
   const [selectEmployee, setSelectEmployee] = useState<Employee>();
   const [reasonsList, setReasonsList] = useState<ReasonsModel[]>([]);
   const [ticketsList, setTicketsList] = useState<TicketModel[]>([]);
+  const [showTicketSelector, setShowTicketSelector] = useState(false);
+
 
   const [amount, setAmount] = useState<number>(0);
   const [reason, setReason] = useState<string[]>([]);
@@ -127,8 +139,9 @@ function AddEmployee({
           (reasonItem) => reasonItem.reasonName === data.reason
         );
         if (reasonToSelect) {
-          setReason([reasonToSelect.id.toString()]);
+          handleReasonChange(reasonToSelect.id.toString());
         } else {
+          setShowTicketSelector(false);
           setReason([]);
         }
         if (data.ticketNumber) {
@@ -136,7 +149,7 @@ function AddEmployee({
             (ticketItem) => ticketItem.ticketNumber === data.ticketNumber
           );
           if (ticketToSelect) {
-            setTicket([ticketToSelect.id.toString()]);
+            setTicket([ticketToSelect.id.toString() || '']);
           } else {
             setTicket([]);
           }
@@ -149,11 +162,46 @@ function AddEmployee({
         setTicket([]);
         setSelectEmployee(undefined);
         setIsEdited(false);
+        setShowTicketSelector(false);
       }
     }
 
     fetchData();
   }, [getEmployeeList, getReasonsList, getTicketsList, subsidiaryId, cdc, isOpen, data]);
+
+// Para el cambio de ticket, debe servir aunque se cmabien los tipos de pagos
+  const handleReasonChange = (selectedReasonId: string) => {
+    setReason([selectedReasonId]);
+    setTicket([]);
+    
+    const selectedReason = reasonsList.find(item => item.id === Number(selectedReasonId));
+    if (!selectedReason) {
+      setShowTicketSelector(false);
+      return;
+    }
+
+    const reasonConfig = reasonPaymentMethods[selectedReason.reasonName] || { methods: [], showTickets: false };
+    setShowTicketSelector(reasonConfig.showTickets);
+
+    if (!reasonConfig.showTickets) return;
+
+    const allowedPaymentMethods = reasonConfig.methods;
+    
+    const filteredTickets = ticketsList.filter(ticket => {
+      return ticket.paymentTypeResponse?.some(payment => 
+        payment?.paymentMethod && allowedPaymentMethods.includes(payment.paymentMethod)
+      ) ?? false;
+    });
+
+    const ticketCollection = createListCollection({
+      items: filteredTickets.map((ticket) => ({
+        label: ticket.ticketNumber,
+        value: ticket.id,
+      })),
+    });
+
+    setTickets(ticketCollection);
+  };
 
 
   async function handleData() {
@@ -267,10 +315,7 @@ function AddEmployee({
             <SelectRoot
               collection={reasons}
               value={reason}
-              onValueChange={(e) => {
-                setReason(e.value);
-                setTicket([]);
-              }}
+              onValueChange={(e) => handleReasonChange(e.value[0])}
             >
               <SelectLabel>Motivo</SelectLabel>
               <SelectTrigger>
@@ -287,16 +332,7 @@ function AddEmployee({
               </SelectContent>
             </SelectRoot>
 
-            {reasonsList.find((item) => item.id === Number(reason[0]))
-              ?.useCase === "A" && (
-              /*  <Group attached>
-                <InputAddon>Ticket</InputAddon>
-                <Input
-                  placeholder="Ingrese el ticket"
-                  value={ticket}
-                  onChange={(e) => setTicket(e.target.value)}
-                />
-              </Group> */
+            {showTicketSelector && (
               <SelectRoot
                 collection={tickets}
                 value={ticket}
@@ -306,13 +342,12 @@ function AddEmployee({
                 <SelectTrigger>
                   <SelectValueText
                     placeholder={
-                      isEdited && data?.ticketId != undefined
-                        ? data?.ticketNumber
-                        : "Ticket"
+                      ticket.length > 0 
+                      ? ticketsList.find(t => t.id === Number(ticket[0]))?.ticketNumber 
+                      : "Ticket"
                     }
                   />
                 </SelectTrigger>
-
                 <SelectContent>
                   {tickets.items.map((ticket) => (
                     <SelectItem item={ticket} key={ticket.value}>

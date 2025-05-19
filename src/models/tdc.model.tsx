@@ -11,16 +11,16 @@ export interface TDCContextType {
   detailsError: string;
   getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
-/*   getDetails: (
+  /*   getDetails: (
     clousingId: number,
     lineId: number | null | string,
   ) => Promise<Voucher>; */
   setDetails: (
     details: BankLineModel,
     clousingId: number,
-    lineId: number | string,
+    lineId: number | string
   ) => void;
-  tdcRef: React.MutableRefObject<TDCContext>
+  tdcRef: React.MutableRefObject<TDCContext>;
 }
 
 export interface TDCAdyenContextType {
@@ -29,7 +29,7 @@ export interface TDCAdyenContextType {
   fetchProcessFiles: (
     Files: File[],
     store: string,
-    location: string,
+    location: string
   ) => Promise<ProcessResult | undefined>;
 }
 
@@ -80,14 +80,16 @@ export interface TDCModel {
 export interface Voucher {
   id: number;
   idCustom: number;
-  voucherId:null | number;
+  voucherId: null | number;
+  uniqueIdVoucher: number;
+  amountConversion: number;
   date: string;
   check: string;
   amount: number;
   status: boolean;
   message?: string;
   dateDisplay?: string;
- /*  difference?: {
+  /*  difference?: {
     date: string | null;
     check: string | null;
     amount: string | null;
@@ -131,11 +133,11 @@ export interface DialogConfirmTDCProps {
   vouchersSelected: number;
 }
 
-export interface VoucherFilter{
+export interface VoucherFilter {
   vouchers: Voucher[];
   label: boolean;
   itemId?: number | string;
   voucherSelect?: string;
-  onSelect: (voucher: any, itemId?: number | string ) => void;
+  onSelect: (voucher: any, itemId?: number | string) => void;
   disabled: boolean;
 }
