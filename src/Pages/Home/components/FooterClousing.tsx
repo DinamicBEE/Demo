@@ -158,6 +158,8 @@ function FooterClousing({
           amount: voucher.amount,
           status: voucher.status, // Convert string to boolean
           voucherId: voucher.voucherId,
+          amountConversion: voucher.amountConversion,
+          uniqueIdVoucher: voucher.uniqueIdVoucher,
         })),
       }));
     };

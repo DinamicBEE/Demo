@@ -24,7 +24,7 @@ function FilterVoucher({
       items: vouchers.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amountConversion} - Fecha: ${voucher.dateDisplay}`,
+        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);
@@ -50,7 +50,7 @@ function FilterVoucher({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amountConversion} - Fecha: ${voucher.dateDisplay}`,
+        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);

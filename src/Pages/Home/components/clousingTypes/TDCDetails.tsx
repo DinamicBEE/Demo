@@ -87,7 +87,7 @@ function TDCDetails({
       setLocalAmount(
         bankDetails.vouchers
           .filter((item) => item.status)
-          .reduce((acc, curr) => acc + curr.amount, 0)
+          .reduce((acc, curr) => acc + curr.amountConversion, 0)
       );
       setVouchersSelected(
         bankDetails.vouchers.filter((item) => item.status).length
@@ -208,7 +208,7 @@ function TDCDetails({
       Number(
         updatedDetailsLocal.vouchers
           .filter((item) => item.status)
-          .reduce((acc, curr) => acc + curr.amount, 0)
+          .reduce((acc, curr) => acc + curr.amountConversion, 0)
           .toFixed(2)
       )
     );
@@ -399,7 +399,7 @@ function TDCDetails({
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
-                            value={item.amount}
+                            value={item.amountConversion}
                             style="currency"
                             currency="USD"
                           />
