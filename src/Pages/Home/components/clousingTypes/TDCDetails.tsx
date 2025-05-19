@@ -253,7 +253,6 @@ function TDCDetails({
               />
             </Flex>
             {detailsLocal?.bank?.toLowerCase().includes("adyen") && (
-           
               <Flex mt={4} width="100%">
                 <Button
                   colorPalette="meraPrimary"
@@ -333,8 +332,12 @@ function TDCDetails({
                       No. Cheque
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="end">
-                      Importe
+                      Importe original
                     </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="end">
+                      Importe convertido
+                    </Table.ColumnHeader>
+
                     {/*    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
                         Diferencias
@@ -396,6 +399,15 @@ function TDCDetails({
                         <Text>{item.check}</Text>
                       </Table.Cell>
 
+                      <Table.Cell textAlign="end">
+                        <Text>
+                          <FormatNumber
+                            value={item.amount}
+                            style="currency"
+                            currency="USD"
+                          />
+                        </Text>
+                      </Table.Cell>
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
