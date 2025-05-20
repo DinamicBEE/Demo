@@ -143,8 +143,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                 <Table.Cell textAlign="end">
                   <Text>
                     <FormatNumber
-                      value={item.couponPrice}
-                      //value={item.bill}
+                      //value={item.couponPrice}
+                      value={item.bill}
                       style="currency"
                       currency="USD"
                     />
@@ -152,10 +152,13 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
-                  <FormatNumber
+                  <Input
+                    textAlign="center"
                     value={item.couponPrice}
-                    style="currency"
-                    currency="USD"
+                    onChange={(e) =>
+                        handleInputTextData(e.target.value, item.id, "couponPrice")
+                      }
+                    disabled={data?.closingConfirmation}
                   />
                 </Table.Cell>
 

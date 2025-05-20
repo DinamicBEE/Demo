@@ -316,7 +316,7 @@ export const getSpecialCustomerClousing = async (
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-    console.log(response.data);
+    console.log("special customers", response.data);
 
     const lines = response.data.specialClientResponses.map(
       (line: any, index: number) => ({
@@ -325,7 +325,7 @@ export const getSpecialCustomerClousing = async (
 
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
-        exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
+        // exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
       })
     );
 
