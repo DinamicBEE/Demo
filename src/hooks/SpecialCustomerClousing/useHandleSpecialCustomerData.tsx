@@ -15,7 +15,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
     const { setSpecialCustData } = useSpecialCustContext();
 
     function handleInputTextData(value: string, id: number | string, key: string) {
-      console.log("handleInputTextData", value, id, key);
+      //console.log("handleInputTextData", value, id, key);
       
       const updatedCurrencies = specialCustomerData.lines.map((item: SpecialCustomerLines) =>
         item.id === id
