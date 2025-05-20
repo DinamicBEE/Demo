@@ -190,7 +190,7 @@ function CashClousing({ data, idCurrency }: any) {
 
                     <Text>
                       <FormatNumber
-                        value={item.totalPOS/(item.exchangeRate)}
+                        value={item.originalCurrency}
                         style="currency"
                         currency="USD"
                       />
