@@ -27,6 +27,8 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
 
   useEffect(() => {
     async function fetchData() {
+      console.log("");
+      
       if (!data) return;      
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
