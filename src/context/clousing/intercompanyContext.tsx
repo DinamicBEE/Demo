@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { ReactNode, createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
 import { IntercompanyContext, IntercompanyContextType, IntercompanyLine, IntercompanyModel } from '@models/intercompany.model';
 import { getIntercompanyClousing } from '@services/clousingService';
 import { TotalModel } from '@models/common.clousing.model';
@@ -15,6 +15,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 	const [error, setError] = useState<string>("");
 	const [employeeList, setEmployeeList] = useState<Employee[]>();
 	const [subsidiariesList, setSubsidiariesList] = useState<SubsidiaryModal[]>()
+	const intercompanyRef = useRef<IntercompanyContext>(intercompany);
 
 	const getIntercompanyData = useCallback(async (clousingId: number) => {
 
@@ -32,6 +33,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 
 			};
 
+			intercompanyRef.current = updateIntercompany;
 			setIntercompany(updateIntercompany);
 
 			return data;
@@ -73,6 +75,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 			}
 		}
 
+		intercompanyRef.current = updateData;
 		setIntercompany(updateData);
 
 	}, [intercompany]);
@@ -145,6 +148,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 				}
 			}
 
+			intercompanyRef.current = updateData;
 			setIntercompany(updateData)
 
 		}, 
@@ -160,9 +164,10 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 			getEmployeesList,
 			getSubsidiaries,
 			setNewIntercompanyRegister,
-			setIntercompany
+			setIntercompany,
+			intercompanyRef
 		}),
-		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries, setNewIntercompanyRegister, setIntercompany]
+		[intercompany, error, getIntercompanyData, setIntercompanyData, getEmployeesList, getSubsidiaries, setNewIntercompanyRegister, setIntercompany, intercompanyRef]
 	);
 
 	return (

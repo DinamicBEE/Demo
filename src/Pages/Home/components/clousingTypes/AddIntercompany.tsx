@@ -5,12 +5,14 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
 import { SelectRoot, SelectTrigger, SelectValueText,
   SelectContent, SelectItem, SelectLabel } from "@components/ui/select";
 import { createListCollection, Group, Input, InputAddon, 
-  ListCollection, Stack } from "@chakra-ui/react";
+  ListCollection, Stack, Box } from "@chakra-ui/react";
 import { Button } from "@components/ui/button";
 import FilterEmployee from "@components/FilterEmployee";
 import { AddIntercompanyProp, IntercompanyLine } from "@models/intercompany.model";
-import { Employee } from "@models/employee.model";
+import { Employee, TicketModel } from "@models/employee.model";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
+import { useEmployeeContext } from "@context/clousing/employeeClousing";
+import Loading from "@components/Loading";
 
 
 function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
@@ -24,16 +26,19 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
   );
 
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [subsidiary, setSubsidiary] = useState<string[]>([]);
   const [amount, setAmount] = useState<number>(0);
   const [ticket, setTicket] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
 
-    const {
-        getEmployeesList,
-        getSubsidiaries,
-        setNewIntercompanyRegister
-      } = useIntercompanyContext();
+  const {
+      getEmployeesList,
+      getSubsidiaries,
+      setNewIntercompanyRegister
+    } = useIntercompanyContext();
+
+  const { getTicketsList } = useEmployeeContext();
 
   useEffect(() => {
     async function getEmployees() {
@@ -45,7 +50,31 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       } = {};
       
       setSubsidiariesByRow(initialSubsidiariesByRow);
+
+      const ticketsList: TicketModel[] = await getTicketsList(clousingId);
+      console.log("Tickets List", ticketsList);
+
+      // ! Cambiar PROPINA POR INTERCOMPANY!!!!!!
+      const ticketIntercompany: TicketModel[] = ticketsList.filter(ticket => 
+      ticket.paymentTypeResponse.some(payment => 
+        payment.paymentMethod == "PROPINA" 
+      )
+      );
+
+      const ticketCollection = createListCollection({
+        items: ticketIntercompany.map((ticket) => ({
+          label: ticket.ticketNumber,
+          value: ticket.id,
+          amount: ticket.paymentTypeResponse.reduce((acc, payment) => {
+            if (payment.paymentMethod === "PROPINA") {
+              return acc + payment.amount;
+            }
+            return acc;
+          }, 0),
+        })),
+      });
       
+      setTickets(ticketCollection);
       setEmployees(employeeList);
       setCatalogLoading(false);
     }
@@ -76,9 +105,6 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
     getSubsidiariesByRow();
   }, [selectEmployee]);
 
-  function handleSubsidiary (event: any) {
-    console.log("Subsidiary selected:", event);
-  }
 
   async function handleData() {
 
@@ -95,9 +121,9 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       id: "intercompany-" + uuidv4(),
       employeeId: selectEmployee?.id ,
       employeeName: selectEmployee?.name,
-      subsidiaryId: 0,
-      subsidiaryName: "",
-      amount: amount,
+      subsidiaryId: parseInt(subsidiary[0]),
+      subsidiaryName: subsidiariesByRow[selectEmployee.id.toString()]?.items.find(item => item.value == subsidiary[0])?.label,
+      amount: tickets.items.find(item => item.value == ticket[0]).amount,
       ticket: ticket[0],
       physicalAmount: amount,
     }
@@ -107,7 +133,9 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
     setLoading(false);
     onClose();
 
-    //TODO: limpiar los campos
+    setTicket([]);
+    setSubsidiary([]);
+    setAmount(0);
   }
 
   return (
@@ -131,11 +159,12 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
               label={true}
               onSelect={setSelectEmployee}
               disabled={false}
+              employeeToEdit={null}
             />
 
             <SelectRoot
               collection={subsidiariesByRow[selectEmployee?.id?.toString() ?? ""]}
-              onValueChange={(event) => handleSubsidiary(event)}
+              onValueChange={(event) => setSubsidiary(event.value)}
             >
               <SelectTrigger>
                 <SelectValueText
@@ -181,6 +210,12 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
             </Group>
 
           </Stack>
+
+          {catalogLoading && (
+            <Box position="fixed" top="50%" left="50%">
+              <Loading />
+            </Box>
+          )}
           
         </DialogBody>
         
