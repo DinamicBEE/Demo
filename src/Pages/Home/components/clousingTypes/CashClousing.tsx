@@ -78,7 +78,7 @@ function CashClousing({ data, idCurrency }: any) {
       return { ...prev, currencies: updatedCurrencies };
     });
 
-    console.log('cash se actualizado:', cashData)
+  
   };
 
   return (

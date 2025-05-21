@@ -52,7 +52,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       setSubsidiariesByRow(initialSubsidiariesByRow);
 
       const ticketsList: TicketModel[] = await getTicketsList(clousingId);
-      console.log("Tickets List", ticketsList);
+     
 
       // ! Cambiar PROPINA POR INTERCOMPANY!!!!!!
       const ticketIntercompany: TicketModel[] = ticketsList.filter(ticket => 
@@ -116,7 +116,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       return;
     }
 
-    console.log("Data to save:", selectEmployee, amount, ticket);
+    
     const newIntercompany: IntercompanyLine = {
       id: "intercompany-" + uuidv4(),
       employeeId: selectEmployee?.id ,

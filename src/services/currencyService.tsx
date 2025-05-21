@@ -6,7 +6,7 @@ import { CurrenciesDataModel, ExchangeRateData } from "@models/currencyManagemen
  * @returns {Promise<ExchangeRateData>}
  */
 export const getCurrencyData = async (date: Date, currency: number): Promise<ExchangeRateData> => {
-     console.log(date, currency);
+     
     try {
         //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
         const response = dataDummy;
@@ -34,7 +34,7 @@ export const getCurrencyData = async (date: Date, currency: number): Promise<Exc
  * @returns {Promise<CurrenciesDataModel[]>}
  */
 export const getCurrenciesExchangeRate = async (body: any): Promise<CurrenciesDataModel[]> => {
-    console.log(body);
+    
    try {
        //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
        const response = curriesDummy;
@@ -61,7 +61,7 @@ export const getCurrenciesExchangeRate = async (body: any): Promise<CurrenciesDa
  * @returns {Promise<any>}
  */
 export const newRegister = async (body: any): Promise<any> => {
-    console.log(body);
+    
    try {
        //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
        const newBoddy = {

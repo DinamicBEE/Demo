@@ -38,7 +38,6 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         try {
 
             const data: TDCModel = await getTDCClousing(clousingId, idCurrency);
-console.log('data', data);
 
             const updateTDC: TDCContext = {
                 ...tdcRef.current,

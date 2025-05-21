@@ -55,7 +55,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
         reset();
         onClose();
 
-        console.log(error)
+       
         toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
       }
     }

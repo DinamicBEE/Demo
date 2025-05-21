@@ -86,7 +86,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
             (acc: number, curr: { ammountMXN: number; }) => Number(acc) + Number(curr.ammountMXN),
             0
         );
-        console.log(typeof newTotalFisico)
+        
         const newDifference =
           specialCustomerData.total.totalPOS - newTotalFisico;
 
@@ -101,7 +101,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
           total: newTotal
         }
 
-        console.log(typeof newTotalFisico)
+    
         updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);
 
         setFooterData(newTotal, clousingId, CLOUSING_KEY.SPECIALCUSTOMER);

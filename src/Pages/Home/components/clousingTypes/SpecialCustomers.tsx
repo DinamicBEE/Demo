@@ -52,7 +52,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      console.log("subsidiary", subsidiary);
+      
       
       const specialCustomer: SpecialCustomerModel = await getSpecialCustData(
         data?.id,

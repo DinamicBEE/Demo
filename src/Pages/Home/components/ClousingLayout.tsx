@@ -72,7 +72,7 @@ function ClousingLayout({
   const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { headerRef } = useHeaders();
 
-  console.log("employee", cashRef);
+  
 
   return (
     <>
@@ -338,8 +338,7 @@ function ClousingLayout({
         closeOnExit={() => {
           onClose();
           if (employee && employee.id) {
-            console.log(cashRef.current);
-            console.log(employee.id);
+           
             
             delete cashRef.current[employee.id];
             delete customerRef.current[employee.id];
