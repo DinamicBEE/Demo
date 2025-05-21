@@ -17,7 +17,7 @@ export const TICKETS = '/crc/cash-register-closure/crcproc/employees/ticketList'
 export const INTERCOMPANY = '/crc/cash-register-closure/api/intercompany/get';
 export const GET_CLOUSINGS = '/crc/cash-register-closure/api/registerclosure/search';
 //Cierrre de Lote
-export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByCC';
+export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByDates';
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';
 export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBatchClosure';
 
