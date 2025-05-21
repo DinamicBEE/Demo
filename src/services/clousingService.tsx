@@ -75,11 +75,9 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @param {number} clousingId
  * @returns {Promise<CashModel>}
  */
-export const getCashClousing = async (
-  clousingId: number,
-  idCurrency: number
-): Promise<ResponseModel> => {
+export const getCashClousing = async ( clousingId: number,  idCurrency: number): Promise<ResponseModel> => {
   try {
+    
     // Instead of using the actual API endpoint
     const response = await api.get(CASH, {
       params: {
@@ -88,17 +86,18 @@ export const getCashClousing = async (
       },
     });
 
-    if (response.data.lines.length === 0) {
-      return {
-        ...response.data,
-        id: clousingId,
-        total: {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      };
-    }
+    // if (response.data.lines.length === 0) {
+    //   console.log('aqui entra')
+    //   return {
+    //     ...response.data,
+    //     id: clousingId,
+    //     total: {
+    //       totalPOS: 0,
+    //       totalPhysical: 0,
+    //       difference: 0,
+    //     },
+    //   };
+    // }
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
@@ -112,12 +111,9 @@ export const getCashClousing = async (
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines
-      .map((currency: CashLines) => currency.totalPOS)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newTotalFisico = dummy.currencies
-      .map((currency: CashLines) => currency.totalFisico)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalPOS = dummy.lines.map((currency: CashLines) => currency.totalPOS).reduce((acc: number, curr: number) => acc + curr, 0);
+
+    const newTotalFisico = dummy.currencies.map((currency: CashLines) => currency.totalFisico).reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       //...response.data,
@@ -136,12 +132,16 @@ export const getCashClousing = async (
     };
 
     return responseData;
+
   } catch (error) {
+
     console.error("Error al obtener los valores generales:", error);
+
     const responseData: ResponseModel = {
       success: false,
       data: {} as CashModel,
     };
+
     return responseData;
   }
 };
@@ -628,10 +628,10 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
     //TODO: Devolver para consulta a back
     console.log(body);
     console.log(isConfirm);
-    
-    
+
+
     const response = await api.post(
-      "/crc/cash-register-closure/api/closure/save?isPreguardado=" +isConfirm,
+      "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
       body,
     );
     //TODO: Devolver para consulta a back
@@ -813,20 +813,20 @@ export const processFiles = async (
                     // Filtrar por storeName y location si están presentes
                     const recordStore = String(
                       record["Centro de consumo"] ||
-                        record["StoreName"] ||
-                        record["store"] ||
-                        ""
+                      record["StoreName"] ||
+                      record["store"] ||
+                      ""
                     ).trim();
                     const recordLocation = String(
                       record["Subsidiaria"] ||
-                        record["StoreLocation"] ||
-                        record["location"] ||
-                        ""
+                      record["StoreLocation"] ||
+                      record["location"] ||
+                      ""
                     ).trim();
 
                     // Validar si ambos valores coinciden con los proporcionados
                     // Solo filtramos si los valores de storeName y location no están vacíos
-           
+
                     return (
                       (!storeName || recordStore.toLowerCase() === storeName.toLowerCase()) &&
                       (!location || recordLocation.toLowerCase() === location.toLowerCase())

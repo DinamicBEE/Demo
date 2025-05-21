@@ -33,15 +33,16 @@ function CashClousing({ data, idCurrency }: any) {
 
   useEffect(() => {
     async function fetchData() {
+      
       const cashData = await getCashData(data.id, idCurrency);
 
-      if (cashData.total) {
+      if (cashData.total != undefined) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       }
 
       setCashData(cashData);
 
-      if (cashData.total) {
+      if (cashData.total != undefined) {
         updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
       }
 
