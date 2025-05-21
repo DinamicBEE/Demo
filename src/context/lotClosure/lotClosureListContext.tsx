@@ -18,6 +18,7 @@ import {
   Bank,
 } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
+import { format } from "date-fns";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -34,6 +35,10 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [updateBankLoading, setUpdateBankLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const bankCache = useRef<{ [key: number]: Bank[] }>({});
+  const [dateRangeLocal, setDateRange] = useState<[Date | null, Date | null]>([
+    null,
+    null,
+  ]);
 
   const fetchLotClosureData = useCallback(
     async (
@@ -42,7 +47,28 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       companyId: number,
       isRefresh?: boolean
     ) => {
-      if (lostClosureCache.current[locationId] && !isRefresh) {
+      setDateRange(dateRange);
+      const [startDate, endDate] = dateRange;
+
+      // Función helper para formatear fechas y manejar valores nulos
+      const formatDateOrDefault = (date: Date | null): string =>
+        format(date || new Date(), "yyyy-MM-dd");
+
+      // Formatear fechas del nuevo rango
+      const formattedStartDate = formatDateOrDefault(startDate);
+      const formattedEndDate = formatDateOrDefault(endDate);
+      const dateRangeString = `${formattedStartDate} - ${formattedEndDate}`;
+
+      // Formatear fechas del rango en caché
+      const cachedStartDate = formatDateOrDefault(dateRangeLocal[0]);
+      const cachedEndDate = formatDateOrDefault(dateRangeLocal[1]);
+      const dateRangeCache = `${cachedStartDate} - ${cachedEndDate}`;
+      
+      if (
+        lostClosureCache.current[locationId] &&
+        !isRefresh &&
+        dateRangeCache === dateRangeString
+      ) {
         setLotsClosure(lostClosureCache.current[locationId]);
         return;
       }
@@ -73,7 +99,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setError("");
       setUpdateBankLoading(true);
       try {
-        
         const body = {
           cashRegisterClosureId: localLotClosure.cashRegisterClosureId,
           batchClosureId: localLotClosure.id,
@@ -117,8 +142,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           lostClosureCache.current[localLotClosure.consumerCenterId] =
             updatedLots;
         }
-
-
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
         throw error;
