@@ -105,7 +105,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 }
 
 function createObjectHeader(dataRow: ClousingLinesModel) {
-  console.log(dataRow);
+
   
   const headerData: HeaderData = {
     cdc: "No seleccionada",

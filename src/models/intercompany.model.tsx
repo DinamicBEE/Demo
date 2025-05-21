@@ -17,6 +17,7 @@ export interface IntercompanyContextType {
     getSubsidiaries: (idEmployee: string) => Promise<SubsidiaryModal[]>;
     setNewIntercompanyRegister: (newIntercompany: IntercompanyLine, clousingId: number) => void;
     setIntercompany: React.Dispatch<React.SetStateAction<IntercompanyContext>>;
+    intercompanyRef: React.MutableRefObject<IntercompanyContext>;
 }
 
 export interface IntercompanyContext {

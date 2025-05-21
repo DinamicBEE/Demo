@@ -33,13 +33,13 @@ function AddExchangeRate({isOpen, onClose, curriesProps}: AddExchangeRateProps) 
   },[curriesProps])
 
   function handleChange(date: Date | null) {
-    console.log(date);
+    
     setStartDate(date);
   };
 
   function selectCurrency(value: any) {
     const selectValue = value[0];
-    console.log(selectValue);
+    
     const newCurrency = currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0];
 
     setCurrency(newCurrency);

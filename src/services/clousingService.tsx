@@ -77,11 +77,9 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @param {number} clousingId
  * @returns {Promise<CashModel>}
  */
-export const getCashClousing = async (
-  clousingId: number,
-  idCurrency: number
-): Promise<ResponseModel> => {
+export const getCashClousing = async ( clousingId: number,  idCurrency: number): Promise<ResponseModel> => {
   try {
+    
     // Instead of using the actual API endpoint
     const response = await api.get(CASH, {
       params: {
@@ -90,17 +88,18 @@ export const getCashClousing = async (
       },
     });
 
-    if (response.data.lines.length === 0) {
-      return {
-        ...response.data,
-        id: clousingId,
-        total: {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      };
-    }
+    // if (response.data.lines.length === 0) {
+    //   console.log('aqui entra')
+    //   return {
+    //     ...response.data,
+    //     id: clousingId,
+    //     total: {
+    //       totalPOS: 0,
+    //       totalPhysical: 0,
+    //       difference: 0,
+    //     },
+    //   };
+    // }
 
     // Create a copy of CashData to avoid mutating the original mock data
     const cashDataCopy = {
@@ -114,12 +113,9 @@ export const getCashClousing = async (
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines
-      .map((currency: CashLines) => currency.totalPOS)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newTotalFisico = dummy.currencies
-      .map((currency: CashLines) => currency.totalFisico)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalPOS = dummy.lines.map((currency: CashLines) => currency.totalPOS).reduce((acc: number, curr: number) => acc + curr, 0);
+
+    const newTotalFisico = dummy.currencies.map((currency: CashLines) => currency.totalFisico).reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       //...response.data,
@@ -138,12 +134,16 @@ export const getCashClousing = async (
     };
 
     return responseData;
+
   } catch (error) {
+
     console.error("Error al obtener los valores generales:", error);
+
     const responseData: ResponseModel = {
       success: false,
       data: {} as CashModel,
     };
+
     return responseData;
   }
 };
@@ -265,8 +265,7 @@ export const getCustomerClousing = async (
       };
     });
 
-
-
+   
     const data: CustomerModel = {
       id: clousingId,
       total: {
@@ -311,12 +310,14 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
+  
+
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-
+  
 
     const lines = response.data.specialClientResponses.map(
       (line: any, index: number) => ({
@@ -325,7 +326,7 @@ export const getSpecialCustomerClousing = async (
 
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
-        exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
+        // exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
       })
     );
 
@@ -540,7 +541,7 @@ export const sendNewEmployeeRegister = async (
   clousingId: number,
   newEmployee: NewEmployeeModel
 ): Promise<ResponseModel> => {
-  console.log(clousingId, newEmployee);
+
 
   const mock: EmployeeLine = {
     id: Math.floor(Math.random() * (500 - 11)) + 11,
@@ -829,15 +830,15 @@ export const processFiles = async (
                     // Filtrar por storeName y location si están presentes
                     const recordStore = String(
                       record["Centro de consumo"] ||
-                        record["StoreName"] ||
-                        record["store"] ||
-                        ""
+                      record["StoreName"] ||
+                      record["store"] ||
+                      ""
                     ).trim();
                     const recordLocation = String(
                       record["Subsidiaria"] ||
-                        record["StoreLocation"] ||
-                        record["location"] ||
-                        ""
+                      record["StoreLocation"] ||
+                      record["location"] ||
+                      ""
                     ).trim();
 
                     // Validar si ambos valores coinciden con los proporcionados

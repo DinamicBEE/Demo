@@ -30,6 +30,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       if (!data) return;
       
       
+      if (!data) return;      
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
 
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);

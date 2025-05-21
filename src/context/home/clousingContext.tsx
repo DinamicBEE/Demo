@@ -126,7 +126,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         // Guardar esta página en caché
         dataCache.current[pageKey] = response;
 
-
         const accumulated = accumulatedHeader(queryKey);
         const data = {
           ...response.header,

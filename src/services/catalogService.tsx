@@ -91,6 +91,8 @@ export const getCustomers = async () => {
         label: customer.client,
       };
     });
+    
+    
     return transformedData;
   } catch (error) {
     return [];

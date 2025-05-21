@@ -46,7 +46,7 @@ function DialogFiles({ isOpen, onClose, subsidiary, location }: DialogFilesProps
 
   const handleFileUpload = async (files: File[]) => {
     setLoading(true);
-    console.log(subsidiary, location);
+   
     
     const data = await fetchProcessFiles(files, subsidiary.name, location.name);
 

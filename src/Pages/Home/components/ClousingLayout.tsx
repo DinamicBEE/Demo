@@ -13,7 +13,7 @@ import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { Tabs, Box, useTabs } from "@chakra-ui/react";
+import { Tabs, Box, useTabs, Flex, Text } from "@chakra-ui/react";
 import { IoCashOutline, IoCardOutline } from "react-icons/io5";
 import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
@@ -66,11 +66,14 @@ function ClousingLayout({
   const { cashRef } = useCashClousing();
   const { customerRef } = useCustomerContext();
   const { specialCustRef } = useSpecialCustContext();
-  const { setEmployee } = useEmployeeContext();
+  const { setEmployee, employeeRef } = useEmployeeContext();
   const { prepaidRef } = usePrepaidContext();
   const { tdcRef } = useTDCContext();
-  const { setIntercompany } = useIntercompanyContext();
+  const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { headerRef } = useHeaders();
+
+  
+
   return (
     <>
       <DialogRoot
@@ -109,32 +112,118 @@ function ClousingLayout({
             >
               <Tabs.List>
                 <Tabs.Trigger value={CLOUSING_KEY.CASH}>
-                  <IoCashOutline />
-                  Efectivo
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <IoCashOutline />
+                      Efectivo              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && cashRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + cashRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.TDC}>
-                  <IoCardOutline />
-                  TDC
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <IoCardOutline />
+                      TDC              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && tdcRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + tdcRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.CUSTOMER}>
-                  <BsPersonLinesFill />
-                  Clientes
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <BsPersonLinesFill />
+                      Clientes              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && customerRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + customerRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.SPECIALCUSTOMER}>
-                  <RiUserStarFill />
-                  Clientes especiales
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <RiUserStarFill />
+                      Clientes especiales              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && specialCustRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + specialCustRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.PREPAID}>
-                  <RiCoupon3Line />
-                  Prepago
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <RiCoupon3Line />
+                      Prepago              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && prepaidRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + prepaidRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.EMPLOYEE}>
-                  <BsPersonVcard />
-                  Empleados
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <BsPersonVcard />
+                      Empleados              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && employeeRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + employeeRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
+                  
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
-                  <LiaUsersSolid />
-                  Intercompañias
+                  <Flex direction="column">
+                    <Flex gap="4" align="center">
+                      <LiaUsersSolid />
+                      Intercompañias              
+                    </Flex>
+
+                    <Text color="fg.muted">
+                      {employee?.id !== undefined && intercompanyRef.current[employee.id]?.total?.totalPOS !== undefined
+                        ? "$ " + intercompanyRef.current[employee.id].total?.totalPOS
+                        : "$ " + 0}
+
+                    </Text>
+                    
+                  </Flex>
+
                 </Tabs.Trigger>
               </Tabs.List>
 
@@ -249,8 +338,7 @@ function ClousingLayout({
         closeOnExit={() => {
           onClose();
           if (employee && employee.id) {
-            console.log(cashRef.current);
-            console.log(employee.id);
+           
             
             delete cashRef.current[employee.id];
             delete customerRef.current[employee.id];

@@ -1,14 +1,21 @@
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   Box,
   Button,
   FormatNumber,
   Grid,
+  HStack,
   Skeleton,
   Table,
   Tag,
   Text,
 } from "@chakra-ui/react";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@components/ui/pagination";
 import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
@@ -17,6 +24,7 @@ import { LotClosure } from "@models/lotClosure.model";
 import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
 
+const pageSize = 10;
 function TableOfLotClosure({
   company,
   location,
@@ -26,6 +34,16 @@ function TableOfLotClosure({
   const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedLot, setSelectedLot] = useState<LotClosure>({} as LotClosure);
+  const [page, setPage] = useState(1);
+  const [visibleItems, setVisibleItems] = useState<LotClosure[]>([]);
+  const startRange = (page - 1) * pageSize;
+  const endRange = startRange + pageSize;
+
+  useEffect(() => {
+    setPage(page);
+    const items = lotsClosure.slice(startRange, endRange);
+    setVisibleItems(items);
+  }, [page, lotsClosure]);
 
   function statusColor(status: STATUS) {
     return getStatusColor(status);
@@ -47,7 +65,7 @@ function TableOfLotClosure({
         data: lotsClosure.map((item) => ({
           location: item.consumerCenter,
           company: item.subsidiary,
-        //  lotNumber: item.lotNumber,
+          //  lotNumber: item.lotNumber,
           status: item.status,
           totalPOS: item.totalPos,
           totalLot: item.totalLote,
@@ -68,7 +86,6 @@ function TableOfLotClosure({
     setSelectedLot({} as LotClosure);
     setIsDialogOpen(false);
   };
-
 
   return (
     <>
@@ -115,7 +132,7 @@ function TableOfLotClosure({
                     <Table.ColumnHeader textAlign="center">
                       Empresa
                     </Table.ColumnHeader>
-               {/*      <Table.ColumnHeader textAlign="center">
+                    {/*      <Table.ColumnHeader textAlign="center">
                       Numero de lote
                     </Table.ColumnHeader> */}
                     <Table.ColumnHeader textAlign="center">
@@ -171,9 +188,9 @@ function TableOfLotClosure({
                       </Table.Cell>
                     </Table.Row>
                   )}
-                  {lotsClosure.length > 0 &&
+                  {visibleItems.length > 0 &&
                     !loading &&
-                    lotsClosure.map((item) => (
+                    visibleItems.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
                           <Text>{item.consumerCenter}</Text>
@@ -189,7 +206,7 @@ function TableOfLotClosure({
                             {item.subsidiary}
                           </Text>
                         </Table.Cell>
-                      {/*   <Table.Cell textAlign="center">
+                        {/*   <Table.Cell textAlign="center">
                           <Text>{item.lotNumber}</Text>
                         </Table.Cell> */}
                         <Table.Cell textAlign="center">
@@ -218,12 +235,12 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                             /*  value={
+                              /*  value={
                                 item.status === STATUS.OPEN
                                   ? 0
                                   : item.totalPOS - item.totalLot
                               } */
-                             value={item.difference}
+                              value={item.difference}
                               style="currency"
                               currency="USD"
                             />
@@ -237,6 +254,18 @@ function TableOfLotClosure({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
+            <PaginationRoot
+              count={lotsClosure.length}
+              pageSize={pageSize}
+              page={page}
+              onPageChange={(e) => setPage(e.page)}
+            >
+              <HStack>
+                <PaginationPrevTrigger />
+                <PaginationItems />
+                <PaginationNextTrigger />
+              </HStack>
+            </PaginationRoot>
           </Box>
         </Box>
       )}

@@ -10,74 +10,71 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
     const [cashClousing, setCashClousing] = useState<CashContext>({});
     const [cashLoading, setCashLoading] = useState(false);
     const [error, setError] = useState("");
-    const cashRef = useRef<CashContext>(cashClousing);    
+    const cashRef = useRef<CashContext>(cashClousing);
 
     const [cashClousingSelect, setCashClousingSelect] = useState<any>({});
-    
+
     const updateCashData = (newCashData: CashContext) => {
         setCashClousing(newCashData);
         cashRef.current = newCashData
     }
 
     const getCashData = useCallback(async (clousingId: number, idCurrency: number) => {
+
         setCashLoading(true);
 
-        if(cashRef.current[clousingId]) {
+        if (cashRef.current[clousingId]) {
             setCashLoading(false);
             return cashRef.current[clousingId];
         }
-    
+
         try {
+
             const response = await getCashClousing(clousingId, idCurrency);
 
-            if (!response.success) {
-                setCashLoading(false);
-                return {} as CashModel;
-            }
+            // if (!response.success) {
+            //     setCashLoading(false);
+            //     return {} as CashModel;
+            // }
 
-            const updateCash: CashContext = {
-                ...cashRef.current,
-                [clousingId]: response.data
-            }
+            const updateCash: CashContext = { ...cashRef.current, [clousingId]: response.data };
+
             updateCashData(updateCash)
 
             return response.data as CashModel;
 
         } catch (error) {
-            
+
             setError(error instanceof Error ? error.message : String(error));
             return {} as CashModel;
-            
+
         } finally {
             setCashLoading(false);
         }
-    },[cashClousing])
+    }, [cashClousing])
 
     const setCashData = useCallback((cashLine: CashModel, clousingId: number) => {// employeeId: number,
 
-        const updateCash = {
-            ...cashRef.current,
-            [clousingId]: cashLine
-        }
+        const updateCash = { ...cashRef.current, [clousingId]: cashLine }
 
         updateCashData(updateCash)
 
     }, []);
-    
+
     const value = useMemo(
         () => ({
-        cashClousing,
-        cashLoading,
-        error,
-        getCashData,
-        setCashData,
-        cashRef,
-        cashClousingSelect,
-        setCashClousingSelect,
+            cashClousing,
+            cashLoading,
+            error,
+            getCashData,
+            setCashData,
+            cashRef,
+            cashClousingSelect,
+            setCashClousingSelect,
         }),
         [cashClousing, cashLoading, error, getCashData, setCashData, cashRef, cashClousingSelect, setCashClousingSelect]
     );
-    
+
     return (
         <cashClousingContext.Provider value={value}>
             {children}

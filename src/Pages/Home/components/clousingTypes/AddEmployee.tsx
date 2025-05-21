@@ -121,7 +121,7 @@ function AddEmployee({
       setCatalogLoading(false);
 
       if (isOpen && data) {
-        console.log("Employee a editar", data);
+        //console.log("Employee a editar", data);
         
         setIsEdited(true);
 
@@ -234,10 +234,10 @@ function AddEmployee({
     };
     if (isEdited) {
       updateEmployee(newEmployee, clousingId);
-      console.log("Updated Employee", newEmployee);
+      //console.log("Updated Employee", newEmployee);
     } else {
       setNewEmployee(newEmployee, clousingId);
-      console.log("New Employee", newEmployee);
+      //console.log("New Employee", newEmployee);
     }
 
     // console.log(newEmployee);

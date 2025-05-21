@@ -45,7 +45,7 @@ function CurrencyManagement() {
       async function fetchData() {
 
         const dataAPI = await getCurrenciesExchangeRate("body");
-        console.log(dataAPI);
+     
         setDataBase(dataAPI);
         setData(dataAPI);
         const items = dataAPI?.slice(startRange, endRange)
@@ -96,7 +96,7 @@ function CurrencyManagement() {
       const [startDate, endDate] = range;
       setStartDate(startDate);
       setEndDate(endDate);
-      console.log(range);
+   
     };
 
     const handleDataVisible = (page: number) => {

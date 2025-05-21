@@ -55,7 +55,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         reset();
         onClose();
 
-        console.log(data);
+       
         toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
       },
     }

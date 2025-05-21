@@ -259,6 +259,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                     itemId={item.id}
                     onSelect={handleEmployeeData}
                     disabled={data?.closingConfirmation ?? false}
+                    employeeToEdit={null}
                   />
                 </Table.Cell>
 

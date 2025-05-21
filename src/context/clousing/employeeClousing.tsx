@@ -37,6 +37,7 @@ export function EmployeeClousingProvider({
   const [employeeList, setEmployeeList] = useState<Employee[]>();
   const [employeeLoading, setEmployeeLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const employeeRef = useRef<EmployeeContext>(employee);
 
   const getEmployeetData = useCallback(
     async (clousingId: number) => {
@@ -55,6 +56,7 @@ export function EmployeeClousingProvider({
           [clousingId]: data,
         };
 
+        employeeRef.current = updateEmployee;
         setEmployee(updateEmployee);
 
         return data;
@@ -156,6 +158,7 @@ export function EmployeeClousingProvider({
         },
       };
 
+      employeeRef.current = updateData;
       setEmployee(updateData);
     },
     [employee]
@@ -191,6 +194,7 @@ export function EmployeeClousingProvider({
       },
     };
 
+    employeeRef.current = updatedData;
     setEmployee(updatedData);
    
   }, [employee] );
@@ -219,6 +223,7 @@ export function EmployeeClousingProvider({
       },
     };
 
+    employeeRef.current = updatedData;
     setEmployee(updatedData);
   }, [employee]);
 
@@ -234,7 +239,8 @@ export function EmployeeClousingProvider({
       setNewEmployee,
       setEmployee,
       updateEmployee,
-      deleteEmployee
+      deleteEmployee,
+      employeeRef
     }),
     [
       employee,
@@ -247,7 +253,8 @@ export function EmployeeClousingProvider({
       setNewEmployee,
       setEmployee,
       updateEmployee,
-      deleteEmployee
+      deleteEmployee,
+      employeeRef
     ]
   );
 
