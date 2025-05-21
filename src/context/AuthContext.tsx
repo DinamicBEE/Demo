@@ -9,6 +9,7 @@ import {
 import Cookies from "js-cookie";
 import { AuthContextType, Tokens, IUser } from "@models/auth.model";
 import { getUserRol, loginUser } from "@services/authService";
+import { loadData } from "../indexedDB/localDB";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = () => useContext(AuthContext);
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...prev,
         user: { first_name: username, role: userRole },
       }));
+      await loadData.userData.put({ key: "userRole", value: userRole });
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -83,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const logOut = useCallback(() => {
+  const logOut = useCallback(async () => {
     setState((prev) => ({
       ...prev,
       isAuthenticated: false,
@@ -94,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("username");
+    await loadData.userData.delete("userRole");
   }, []);
 
   useEffect(() => {
