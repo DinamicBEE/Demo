@@ -196,7 +196,8 @@ function FooterClousing({
         lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
-        total: (employee as Record<number, EmployeeModel>)[clousingId]?.total ?? {
+        total: (employee as Record<number, EmployeeModel>)[clousingId]
+          ?.total ?? {
           totalPOS: 0,
           totalPhysical: 0,
           difference: 0,
@@ -231,19 +232,37 @@ function FooterClousing({
           ? STATUS.WITH_DIFFERENCE
           : STATUS.Close;
 
+      const mxm =
+        body.cash.lines.find((line) => line.currency === "MXN")?.totalFisico ??
+        0;
+      let newMxm = 0;
+      if (mxm > 0) {
+        newMxm =
+          body.cash.electronicTips === 0 ? mxm : mxm - body.cash.electronicTips;
+      }
+
+      const newTotalphysical = 
+        (cash.total?.totalPhysical ?? 0) +
+        (tdc.total?.totalPhysical ?? 0) +
+        (customer.total?.totalPhysical ?? 0) +
+        (specialCustomer.total?.totalPhysical ?? 0) +
+        ((employee && "total" in employee ? employee.total?.totalPhysical : 0) ?? 0) +
+        (prepaid.total?.totalPhysical ?? 0) +
+        (intercompany.total?.totalPhysical ?? 0);
+
       setDataClousing({
         id: body.id,
         date: header[body.id].totalClousing,
-        difference: header[body.id].difference,
-        totalClousing: header[body.id].totalClousing,
+        difference: (header[body.id]?.totalPOS ?? 0) - newTotalphysical,
+        totalClousing: newTotalphysical,
         customer: body.customer.total.totalPhysical,
         specialCustomer: body.specialCustomer.total.totalPhysical,
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
-        mxm:
-          body.cash.lines.find((line) => line.currency === "MXN")
-            ?.totalFisico ?? 0,
+        mxm: newMxm,
+        /* body.cash.lines.find((line) => line.currency === "MXN")
+            ?.totalFisico ?? 0, */
         usd:
           body.cash.lines.find((line) => line.currency === "USD")
             ?.totalFisico ?? 0,
