@@ -10,6 +10,7 @@ import {
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
+import { format } from "date-fns";
 
 export const getLotsClosure = async (
   dateRange: [Date | null, Date | null],
@@ -17,8 +18,20 @@ export const getLotsClosure = async (
   companyId: number
 ): Promise<LotClosure[]> => {
   try {
+    const startDateFormat = format(
+      dateRange[0] ? dateRange[0] : new Date(),
+      "yyyy-MM-dd"
+    );
+    const endDateFormat = format(
+      dateRange[1] ? dateRange[1] : new Date(),
+      "yyyy-MM-dd"
+    );
     const response = await api.get(GET_BATCH, {
-      params: { consId: locationId },
+      params: {
+        consId: locationId,
+        startDate: startDateFormat,
+        endDate: endDateFormat,
+      },
     });
     const transformedData = response.data.map((lot: any) => ({
       ...lot,

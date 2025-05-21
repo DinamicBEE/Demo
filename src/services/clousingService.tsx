@@ -263,8 +263,7 @@ export const getCustomerClousing = async (
       };
     });
 
-    console.log(lines);
-
+   
     const data: CustomerModel = {
       id: clousingId,
       total: {
@@ -309,14 +308,14 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
-  console.log(clousingId);
+  
 
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
 
-    console.log("special customers", response.data);
+  
 
     const lines = response.data.specialClientResponses.map(
       (line: any, index: number) => ({
@@ -521,7 +520,7 @@ export const sendNewEmployeeRegister = async (
   clousingId: number,
   newEmployee: NewEmployeeModel
 ): Promise<ResponseModel> => {
-  console.log(clousingId, newEmployee);
+
 
   const mock: EmployeeLine = {
     id: Math.floor(Math.random() * (500 - 11)) + 11,
@@ -626,10 +625,9 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-    console.log(body);
-    console.log(isConfirm);
-
-
+  
+    
+    
     const response = await api.post(
       "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
       body,

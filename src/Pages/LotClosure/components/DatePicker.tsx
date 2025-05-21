@@ -22,6 +22,7 @@ const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
     onChange={onChange}
     focusRingColor={"green.400"}
     placeholder="Selecciona un rango de fechas"
+    autoComplete="off"
   />
 );
 customDateInput.displayName = "DateInput";

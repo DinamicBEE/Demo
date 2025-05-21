@@ -98,8 +98,7 @@ function PrepaidClousing({data}: any) {
       return
 
     }
-    console.log(prepaid.lines);
-    console.log(couponModel);
+   
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
       item.id === couponModel?.lineId
         ? !couponModel.isUsed

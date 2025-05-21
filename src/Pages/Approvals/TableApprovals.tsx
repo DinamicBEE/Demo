@@ -54,7 +54,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
       },
       onError: (error) => {
 
-        console.log(error)
+       
         toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
 
         setConfirmData(null);

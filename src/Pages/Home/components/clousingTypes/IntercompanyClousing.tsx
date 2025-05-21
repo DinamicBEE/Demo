@@ -183,7 +183,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
       return;
     }
 
-    console.log("subsidiariesByRow", event);
+   
 
     const selectedSubsidiary = subsidiariesByRow[itemId].items.find(
       (item) => item.value === event.value[0]

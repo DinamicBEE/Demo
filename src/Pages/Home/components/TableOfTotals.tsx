@@ -163,7 +163,7 @@ function TableOfTotals({
 
   const openDialog = (item: any) => {
     
-    console.log('estatus de caja',item.status)
+  
 
     if (item.status.toLowerCase() === "Abierto".toLowerCase() || item.status.toLowerCase() === "open".toLowerCase()) {
       item.closingConfirmation = false;

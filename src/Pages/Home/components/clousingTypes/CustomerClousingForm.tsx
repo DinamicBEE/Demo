@@ -65,7 +65,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
         currency: data.currency,
         pax: data.pax,
       };
-      console.log("transformedData", transformedData);
+      
       reset();
       onClose();
       addCustomerRecord(transformedData, currencies);

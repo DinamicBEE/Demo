@@ -245,7 +245,7 @@ function ReportViewer() {
     });    
     // console.log("rows total", newArr);
     setUseRows(newArr);
-    console.log(useRows);
+   
     setReport({ headers: headers, rows: newArr });
     respaldar(newArr);
     // resetRows();
