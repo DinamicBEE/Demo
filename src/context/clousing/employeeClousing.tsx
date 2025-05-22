@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { getEmployees, getReasonClousing, getTicketListClousing } from "@services/catalogService";
+import { getEmployees, getReasonClousing, getTicketListClousing, employeeDelete } from "@services/catalogService";
 import {
   Employee,
   EmployeeContext,
@@ -225,6 +225,9 @@ export function EmployeeClousingProvider({
     };
 
     employeeRef.current = updatedData;
+    if (typeof employeeId == "number") {
+      employeeDelete(employeeId);
+    }
     setEmployee(updatedData);
   }, [employee]);
 
