@@ -166,6 +166,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
               collection={subsidiariesByRow[selectEmployee?.id?.toString() ?? ""]}
               onValueChange={(event) => setSubsidiary(event.value)}
             >
+              <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
                 <SelectValueText
                   placeholder={"Selecciona Subsidiaria"}
@@ -203,6 +204,8 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
               <InputAddon>Monto</InputAddon>
               <Input
                 type="number"
+                min="0" 
+                step="0.01"
                 placeholder="Ingrese el monto"
                 value={amount}
                 onChange={(e) => setAmount(parseFloat(e.target.value))}
