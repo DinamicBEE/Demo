@@ -13,10 +13,13 @@ interface UseApiResult<T, A extends unknown[]> {
   error: Error | null;
   isLoading: boolean;
   refetch: (...args: A) => Promise<void>;
+  setData: React.Dispatch<React.SetStateAction<T | undefined>>; // ✅ definición
 }
 
-export function useApi<T, A extends unknown[] = []>(   apiCall: (...args: A) => Promise<T>, options: UseApiOptions<T> = {}): UseApiResult<T, A> {
-  
+export function useApi<T, A extends unknown[] = []>(
+  apiCall: (...args: A) => Promise<T>,
+  options: UseApiOptions<T> = {}
+): UseApiResult<T, A> {
   const { onSuccess, onError, initialData, dependencies = [], autoFetch = true } = options;
   const [data, setData] = useState<T | undefined>(initialData);
   const [error, setError] = useState<Error | null>(null);
@@ -43,9 +46,7 @@ export function useApi<T, A extends unknown[] = []>(   apiCall: (...args: A) => 
   }, [apiCall, onSuccess, onError]);
 
   useEffect(() => {
-    
-    if (autoFetch)  fetchData(...(lastArgs.current ?? ([] as unknown as A)));
-
+    if (autoFetch) fetchData(...(lastArgs.current ?? ([] as unknown as A)));
   }, [...dependencies, autoFetch]);
 
   return {
@@ -53,5 +54,6 @@ export function useApi<T, A extends unknown[] = []>(   apiCall: (...args: A) => 
     error,
     isLoading,
     refetch: fetchData,
+    setData,
   };
 }
