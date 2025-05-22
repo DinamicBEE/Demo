@@ -14,9 +14,10 @@ import { useApi } from "@hooks/useApi";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 
+  const [hasCancelled, setHasCancelled] = useState(false);
+  const [reasonsListFilter, setReasonsListFilter] = useState([]);
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
-  const [hasCancelled, setHasCancelled] = useState(false);
   const { triggerRefresh } = useApprovalsList();
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
@@ -75,11 +76,28 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     fetchClousingList(idConsumerCenter);
   }
 
+  const handleGetReasonList = (data: React.ChangeEvent<HTMLSelectElement>) => {
+
+    const noValid = [undefined, null, ''];
+
+    if (noValid.includes(data.target.value)) {
+      setReasonsListFilter([]);
+      return
+    }
+
+    const clousingId: number = Number(data.target.value);
+    const closing: any = closingList.find((item: any) => item.id == clousingId);
+    const typeClousing: string = closing.date.toUpperCase().includes('Corte de caja'.toUpperCase()) ? 'CASH_CLOSURE' : 'LOTE';
+    const filteredReasons: any = reasonsList.items.filter((item: any) => item.type === typeClousing);
+
+    setReasonsListFilter(filteredReasons);
+  }
+
   const handleCancel = () => {
     reset();
     setHasCancelled(true);
-    setClosingList(undefined); // o []
-    setConsumerCenters(undefined); // o []
+    setClosingList(undefined);
+    setConsumerCenters(undefined);
   }
 
   return (
@@ -126,7 +144,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                 </Field>
 
                 {/* Lista de Centros de Consumo  */}
-                
+
                 <Field label="Centros de Consumo">
                   <NativeSelectRoot size="md">
                     <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
@@ -149,7 +167,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                       {/* Listado de cierres de lotes y cajas */}
                       <Field label="Lista de cierre de cajas / cierre de lotes*">
                         <NativeSelectRoot size="md">
-                          <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}>
+                          <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}
+                            onChange={(event) => handleGetReasonList(event)}>
                             {
                               closingList != undefined &&
                               closingList.map((item: any) => (<option key={item.id} value={item.id}>{item.date}</option>))
@@ -165,8 +184,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                         <NativeSelectRoot size="md">
                           <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
                             {
-                              reasonsList != undefined &&
-                              reasonsList.items.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
+                              reasonsListFilter.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
                             }
                           </NativeSelectField>
                         </NativeSelectRoot>
