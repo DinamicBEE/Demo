@@ -312,7 +312,7 @@ function FooterClousing({
 
     const cash = await getCashData(clousingId, idCurrency);
 
-  /*   const isUSD = cash.currencies.some((line) => line.currency === "USD");
+    const isUSD = cash.currencies.some((line) => line.currency === "USD");
 
     if (isUSD && isConfirm === false) {
       const totalPos = cash.currencies.find(
@@ -328,7 +328,7 @@ function FooterClousing({
       setOpenDialogDifference(difference);
       setUSDmenssage(difference);
       if (difference === true) return;
-    } */
+    }
 
     if (
       header[clousingId]?.difference &&
