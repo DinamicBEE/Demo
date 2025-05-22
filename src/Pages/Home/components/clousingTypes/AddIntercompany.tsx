@@ -53,11 +53,9 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
 
       const ticketsList: TicketModel[] = await getTicketsList(clousingId);
      
-
-      // ! Cambiar PROPINA POR INTERCOMPANY!!!!!!
       const ticketIntercompany: TicketModel[] = ticketsList.filter(ticket => 
       ticket.paymentTypeResponse.some(payment => 
-        payment.paymentMethod == "PROPINA" 
+        payment.paymentMethod == "INTERCOMPANY" 
       )
       );
 
@@ -66,7 +64,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
           label: ticket.ticketNumber,
           value: ticket.id,
           amount: ticket.paymentTypeResponse.reduce((acc, payment) => {
-            if (payment.paymentMethod === "PROPINA") {
+            if (payment.paymentMethod === "INTERCOMPANY") {
               return acc + payment.amount;
             }
             return acc;
@@ -166,6 +164,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
               collection={subsidiariesByRow[selectEmployee?.id?.toString() ?? ""]}
               onValueChange={(event) => setSubsidiary(event.value)}
             >
+              <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
                 <SelectValueText
                   placeholder={"Selecciona Subsidiaria"}
@@ -203,6 +202,8 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
               <InputAddon>Monto</InputAddon>
               <Input
                 type="number"
+                min="0" 
+                step="0.01"
                 placeholder="Ingrese el monto"
                 value={amount}
                 onChange={(e) => setAmount(parseFloat(e.target.value))}

@@ -76,7 +76,10 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
         });
       });
 
-      setSubsidiariesByRow(initialSubsidiariesByRow);
+      if(setSubsidiariesByRow.length === 0) {
+        setSubsidiariesByRow(initialSubsidiariesByRow);
+      }
+
       setLoading(false);
       updateTotal(intercompanyData.total.totalPhysical, data.id, CLOUSING_KEY.INTERCOMPANY);
     
@@ -142,22 +145,17 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
 
     const subsidiaries = await getSubsidiaries(employee.id.toString());
 
-    // Actualizar las subsidiarias solo para la fila actual
-    const updatedSubsidiariesByRow = {
-      ...subsidiariesByRow,
+    setSubsidiariesByRow(prev => ({
+      ...prev,
       [itemId]: createListCollection({
-        items: subsidiaries.map((item) => ({
-          value: item.id,
-          label: item.name,
+        items: subsidiaries.map(sub => ({
+          value: sub.id,
+          label: sub.name,
         })),
       }),
-    };
-    //console.log("subsidiariesByRow", updatedSubsidiariesByRow);
+    }));
 
-    setSubsidiariesByRow(updatedSubsidiariesByRow);
     updateIntercompany(updateLine);
-    // console.log("updateLine", subsidiariesByRow);
-    // console.log("employee", visibleItems)
   }
 
   function handleAmount(itemId: number | string, value: string) {

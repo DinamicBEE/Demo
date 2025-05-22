@@ -3,6 +3,7 @@ import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import {
   CURRENCY,
+  EMPLOYEEDELETE,
   EMPLOYEELIST,
   LOCATIONS,
   REASONLIST,
@@ -168,6 +169,22 @@ export const getTicketListClousing = async (
     return [] as unknown as TicketModel[];
   }
 };
+
+export const employeeDelete = async (employeeDelId: number): Promise<boolean> => {
+  try {
+    if (employeeDelId === null) throw new Error("Error al eliminar el empleado");
+    const response = await api.delete(EMPLOYEEDELETE, {
+      params: {id: employeeDelId},
+    });
+    console.log(response.data);
+    return true;
+    
+  } catch(e) {
+    console.error("Error al eliminar el empleado del preguardado", e);
+    return false;
+  }
+}
+
 
 // const sub = [
 //   {

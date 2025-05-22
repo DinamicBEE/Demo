@@ -12,6 +12,7 @@ export const CASH = 'crc/cash-register-closure/api/crc-cash/cash'
 export const TDC = '/crc/cash-register-closure/api/crc-card/card'
 export const EMPLOYEE_INSERT = '/crc/cash-register-closure/crcproc/employees/cxcEmployeeList';
 export const EMPLOYEELIST = 'crc/cash-register-closure/crcproc/employees/employeeListbySub';
+export const EMPLOYEEDELETE = 'crc/cash-register-closure/crcproc/employees/employeeDel';
 export const REASONLIST = 'crc/cash-register-closure/crcproc/employees/reasonList';
 export const TICKETS = '/crc/cash-register-closure/crcproc/employees/ticketList'
 export const INTERCOMPANY = '/crc/cash-register-closure/api/intercompany/get';
