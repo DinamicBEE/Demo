@@ -152,9 +152,12 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
         })),
       }),
     };
+    //console.log("subsidiariesByRow", updatedSubsidiariesByRow);
 
     setSubsidiariesByRow(updatedSubsidiariesByRow);
     updateIntercompany(updateLine);
+    // console.log("updateLine", subsidiariesByRow);
+    // console.log("employee", visibleItems)
   }
 
   function handleAmount(itemId: number | string, value: string) {
