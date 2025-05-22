@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NativeSelectField, NativeSelectRoot, Separator, Stack, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
@@ -16,17 +16,16 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
+  const [hasCancelled, setHasCancelled] = useState(false);
   const { triggerRefresh } = useApprovalsList();
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
-  //hook encardado de traer las subsidiarias
-  const { data: consumerCentersList, refetch: fetchConsumerCenters } = useApi((id: number) => getStores(id), {
+  const { data: consumerCentersList, refetch: fetchConsumerCenters, setData: setConsumerCenters } = useApi((id: number) => getStores(id), {
     autoFetch: false,
   });
 
-  //hook para obtener el listado de cajas por centro de consumo
-  const { data: closingList, refetch: fetchClousingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
+  const { data: closingList, refetch: fetchClousingList, setData: setClosingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
     autoFetch: false
   });
 
@@ -45,17 +44,14 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
           onClose();
           reset();
           triggerRefresh();
-          
+
           toaster.create({ title: `Se guardaron los datos correctamente`, type: 'success' });
         }
 
       },
       onError: (data) => {
-
         reset();
         onClose();
-
-       
         toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
       },
     }
@@ -79,6 +75,13 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     fetchClousingList(idConsumerCenter);
   }
 
+  const handleCancel = () => {
+    reset();
+    setHasCancelled(true);
+    setClosingList(undefined); // o []
+    setConsumerCenters(undefined); // o []
+  }
+
   return (
     <>
       <Toaster />
@@ -92,7 +95,10 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         loading={isLoading}
       />
 
-      <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()}
+      <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => {
+        setHasCancelled(false);
+        onClose();
+      }}
         closeOnEscape={false} closeOnInteractOutside={false}>
 
         <DialogContent>
@@ -120,6 +126,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                 </Field>
 
                 {/* Lista de Centros de Consumo  */}
+                
                 <Field label="Centros de Consumo">
                   <NativeSelectRoot size="md">
                     <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
@@ -133,9 +140,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                   </NativeSelectRoot>
                 </Field>
 
-
                 {
-                  closingList && closingList.length != 0 &&
+                  closingList && closingList.length !== 0 && !hasCancelled &&
                   (
                     <>
                       <Separator />
@@ -182,13 +188,18 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
             <DialogFooter>
 
               <DialogActionTrigger asChild>
-                <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
+                <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
               </DialogActionTrigger>
 
-              <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
-                Guardar
-              </Button>
+              {
+                closingList && closingList.length !== 0 && !hasCancelled && (
 
+                  <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
+                    Guardar
+                  </Button>
+
+                )
+              }
             </DialogFooter>
 
           </form>
