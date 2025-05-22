@@ -85,7 +85,6 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
     
       const items = intercompanyData?.lines?.slice(startRange, endRange);
       setVisibleItems(items);
-      console.log("subsidiariesByRow", initialSubsidiariesByRow);
     }
 
     fetchData();
@@ -145,19 +144,6 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
     );
 
     const subsidiaries = await getSubsidiaries(employee.id.toString());
-    console.log("subsidiaries", subsidiaries);
-    console.log("itemId", itemId);
-
-    // Actualizar las subsidiarias solo para la fila actual
-    // const updatedSubsidiariesByRow = {
-    //   ...subsidiariesByRow,
-    //   [itemId]: createListCollection({
-    //     items: subsidiaries.map((item) => ({
-    //       value: item.id,
-    //       label: item.name,
-    //     })),
-    //   }),
-    // };
 
     setSubsidiariesByRow(prev => ({
       ...prev,
@@ -168,17 +154,9 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
         })),
       }),
     }));
-    //console.log("subsidiariesByRow", updatedSubsidiariesByRow);
 
-    //setSubsidiariesByRow(updatedSubsidiariesByRow);
     updateIntercompany(updateLine);
-    console.log("updateLine", subsidiariesByRow);
-    console.log("employee", visibleItems)
   }
-
-  useEffect(() => {
-    console.log("subsidiariesByRow actualizado:", subsidiariesByRow);
-  }, [subsidiariesByRow]);
 
   function handleAmount(itemId: number | string, value: string) {
     value = value.replace(/[^\d.]/g, "");

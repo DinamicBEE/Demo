@@ -53,11 +53,9 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
 
       const ticketsList: TicketModel[] = await getTicketsList(clousingId);
      
-
-      // ! Cambiar PROPINA POR INTERCOMPANY!!!!!!
       const ticketIntercompany: TicketModel[] = ticketsList.filter(ticket => 
       ticket.paymentTypeResponse.some(payment => 
-        payment.paymentMethod == "PROPINA" 
+        payment.paymentMethod == "INTERCOMPANY" 
       )
       );
 
@@ -66,7 +64,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
           label: ticket.ticketNumber,
           value: ticket.id,
           amount: ticket.paymentTypeResponse.reduce((acc, payment) => {
-            if (payment.paymentMethod === "PROPINA") {
+            if (payment.paymentMethod === "INTERCOMPANY") {
               return acc + payment.amount;
             }
             return acc;
