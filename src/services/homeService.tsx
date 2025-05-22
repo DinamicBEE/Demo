@@ -140,7 +140,7 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
       item.employe,
       item.totalPOS,
       item.totalPhysical,
-      item.difference,
+      Number(item.difference).toFixed(2),
       item.status,
       item.mxm,
       item.mxm,
