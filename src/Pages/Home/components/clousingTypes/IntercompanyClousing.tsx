@@ -152,6 +152,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
         })),
       }),
     };
+    console.log("subsidiariesByRow", updatedSubsidiariesByRow);
 
     setSubsidiariesByRow(updatedSubsidiariesByRow);
     updateIntercompany(updateLine);
