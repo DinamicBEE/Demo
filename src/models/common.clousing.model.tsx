@@ -44,6 +44,8 @@ export interface ClousingLinesModel {
   closingConfirmation: boolean;
   adyenTotal?: number;
   creationDate: string;
+  closingStartDate: string;
+  closingEndtDate: string;
 }
 
 export interface ClousingContextType {

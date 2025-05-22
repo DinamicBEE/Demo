@@ -90,6 +90,8 @@ export const getGeneralInfo = async (
           iva: 150,
           closingConfirmation: false,
           creationDate: format(line.creationDate, "dd/MM/yyyy"),
+          closingStartDate: format(line.closingStartDate, "dd/MM/yyyy"),
+          closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
         })
       ),
     };

@@ -156,6 +156,8 @@ function TableOfTotals({
       iva: 0,
       service: 0,
       creationDate: "",
+      closingStartDate: "",
+      closingEndtDate: "",
     });
 
     exportCSV(dataWithTotals, header);
@@ -306,6 +308,9 @@ function TableOfTotals({
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">
+                      Fecha 
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
                       Vendedor
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
@@ -361,6 +366,9 @@ function TableOfTotals({
                 <Table.Body>
                   {data.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
+                      <Table.Cell textAlign="center">
+                        <Text>{item.closingStartDate}</Text>
+                      </Table.Cell>
                       <Table.Cell textAlign="center">
                         <Text
                           as="span"
@@ -533,6 +541,9 @@ function TableOfTotals({
                     </Table.Row>
                   ))}
                   <Table.Row bg="gray.100" fontWeight="bold">
+                    <Table.Cell textAlign="center">
+                      
+                    </Table.Cell>
                     <Table.Cell textAlign="center">Totales</Table.Cell>
                     <Table.Cell textAlign="end">
                       <FormatNumber
