@@ -200,9 +200,22 @@ export function EmployeeClousingProvider({
     
   }, [employee] );
 
-  const deleteEmployee = useCallback((employeeId: string|number, clousingId: number) => {
+  const deleteEmployee = useCallback(async (employeeId: string|number, clousingId: number): Promise<boolean> => {
     const currentEmployee = employee[clousingId];
+    if (!currentEmployee) {
+      console.error(`Empleado no encontrado en el corte ${clousingId}`);
+      return false;
+    }
     
+    if (typeof employeeId == "number") {
+      const response = await employeeDelete(employeeId);
+      if (!response) {
+        return false;
+      }
+    }
+
+    
+
     const updatedLines = currentEmployee.lines.filter((line) => line.id !== employeeId);
     
     const newTotalPhysical = updatedLines?.reduce(
@@ -225,10 +238,8 @@ export function EmployeeClousingProvider({
     };
 
     employeeRef.current = updatedData;
-    if (typeof employeeId == "number") {
-      employeeDelete(employeeId);
-    }
     setEmployee(updatedData);
+    return true;
   }, [employee]);
 
   const value = useMemo(

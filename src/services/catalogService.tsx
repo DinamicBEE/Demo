@@ -170,17 +170,18 @@ export const getTicketListClousing = async (
   }
 };
 
-export const employeeDelete = async (employeeDelId: number): Promise<any> => {
+export const employeeDelete = async (employeeDelId: number): Promise<boolean> => {
   try {
     if (employeeDelId === null) throw new Error("Error al eliminar el empleado");
     const response = await api.delete(EMPLOYEEDELETE, {
       params: {id: employeeDelId},
     });
     console.log(response.data);
+    return true;
     
   } catch(e) {
     console.error("Error al eliminar el empleado del preguardado", e);
-    return e;
+    return false;
   }
 }
 

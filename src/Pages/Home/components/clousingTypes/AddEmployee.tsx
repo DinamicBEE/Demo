@@ -267,7 +267,13 @@ function AddEmployee({
 
   async function handleDelete(employeeId: string | number, clousingId: number) {
     setLoading(true);
-    deleteEmployee(employeeId, clousingId);
+    //Ignorar error de abajo, sí jala bien :'u
+    const deletionSuccessful: boolean = await deleteEmployee(employeeId, clousingId);
+    setLoading(false);
+    if (deletionSuccessful === false) {
+      alert("Error al eliminar el empleado. Por favor, inténtalo de nuevo.");
+      return;
+    }
     onClose();
     setAmount(0);
     setReason([]);
