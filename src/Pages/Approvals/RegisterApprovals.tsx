@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NativeSelectField, NativeSelectRoot, Separator, Stack, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
@@ -14,19 +14,19 @@ import { useApi } from "@hooks/useApi";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 
+  const [hasCancelled, setHasCancelled] = useState(false);
+  const [reasonsListFilter, setReasonsListFilter] = useState([]);
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
   const { triggerRefresh } = useApprovalsList();
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
 
-  //hook encardado de traer las subsidiarias
-  const { data: consumerCentersList, refetch: fetchConsumerCenters } = useApi((id: number) => getStores(id), {
+  const { data: consumerCentersList, refetch: fetchConsumerCenters, setData: setConsumerCenters } = useApi((id: number) => getStores(id), {
     autoFetch: false,
   });
 
-  //hook para obtener el listado de cajas por centro de consumo
-  const { data: closingList, refetch: fetchClousingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
+  const { data: closingList, refetch: fetchClousingList, setData: setClosingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
     autoFetch: false
   });
 
@@ -45,17 +45,14 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
           onClose();
           reset();
           triggerRefresh();
-          
+
           toaster.create({ title: `Se guardaron los datos correctamente`, type: 'success' });
         }
 
       },
       onError: (data) => {
-
         reset();
         onClose();
-
-       
         toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
       },
     }
@@ -79,6 +76,30 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     fetchClousingList(idConsumerCenter);
   }
 
+  const handleGetReasonList = (data: React.ChangeEvent<HTMLSelectElement>) => {
+
+    const noValid = [undefined, null, ''];
+
+    if (noValid.includes(data.target.value)) {
+      setReasonsListFilter([]);
+      return
+    }
+
+    const clousingId: number = Number(data.target.value);
+    const closing: any = closingList.find((item: any) => item.id == clousingId);
+    const typeClousing: string = closing.date.toUpperCase().includes('Corte de caja'.toUpperCase()) ? 'CASH_CLOSURE' : 'LOTE';
+    const filteredReasons: any = reasonsList.items.filter((item: any) => item.type === typeClousing);
+
+    setReasonsListFilter(filteredReasons);
+  }
+
+  const handleCancel = () => {
+    reset();
+    setHasCancelled(true);
+    setClosingList(undefined);
+    setConsumerCenters(undefined);
+  }
+
   return (
     <>
       <Toaster />
@@ -92,7 +113,10 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         loading={isLoading}
       />
 
-      <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => onClose()}
+      <DialogRoot scrollBehavior="inside" size="lg" open={isOpen} onOpenChange={() => {
+        setHasCancelled(false);
+        onClose();
+      }}
         closeOnEscape={false} closeOnInteractOutside={false}>
 
         <DialogContent>
@@ -120,6 +144,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                 </Field>
 
                 {/* Lista de Centros de Consumo  */}
+
                 <Field label="Centros de Consumo">
                   <NativeSelectRoot size="md">
                     <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
@@ -133,9 +158,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                   </NativeSelectRoot>
                 </Field>
 
-
                 {
-                  closingList && closingList.length != 0 &&
+                  closingList && closingList.length !== 0 && !hasCancelled &&
                   (
                     <>
                       <Separator />
@@ -143,7 +167,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                       {/* Listado de cierres de lotes y cajas */}
                       <Field label="Lista de cierre de cajas / cierre de lotes*">
                         <NativeSelectRoot size="md">
-                          <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}>
+                          <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}
+                            onChange={(event) => handleGetReasonList(event)}>
                             {
                               closingList != undefined &&
                               closingList.map((item: any) => (<option key={item.id} value={item.id}>{item.date}</option>))
@@ -159,8 +184,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                         <NativeSelectRoot size="md">
                           <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
                             {
-                              reasonsList != undefined &&
-                              reasonsList.items.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
+                              reasonsListFilter.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
                             }
                           </NativeSelectField>
                         </NativeSelectRoot>
@@ -182,13 +206,18 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
             <DialogFooter>
 
               <DialogActionTrigger asChild>
-                <Button colorPalette="meraError" onClick={() => reset()} disabled={isLoading}>Cancelar</Button>
+                <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
               </DialogActionTrigger>
 
-              <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
-                Guardar
-              </Button>
+              {
+                closingList && closingList.length !== 0 && !hasCancelled && (
 
+                  <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
+                    Guardar
+                  </Button>
+
+                )
+              }
             </DialogFooter>
 
           </form>
