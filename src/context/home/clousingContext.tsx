@@ -148,7 +148,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         setData(currentPageData);
         setOriginalData(currentPageData);
         setTdcHeader(response.clousingLines[0]?.tdc || []);
-        console.log(tdcHeader);
+
         
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
