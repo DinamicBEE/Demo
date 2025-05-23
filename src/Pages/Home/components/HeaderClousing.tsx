@@ -41,7 +41,7 @@ function HeaderClousing({
         <Group>
           <InputAddon>CDC</InputAddon>
           <Skeleton loading={false}>
-            <Input value={subsidiary || ""} placeholder="CDC" readOnly />
+            <Input value={location || ""} placeholder="CDC" readOnly />
           </Skeleton>
         </Group>
 
