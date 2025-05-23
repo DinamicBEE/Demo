@@ -20,11 +20,11 @@ export const getLotsClosure = async (
   try {
     const startDateFormat = format(
       dateRange[0] ? dateRange[0] : new Date(),
-      "yyyy-MM-dd"
+      "dd-MM-yyyy"
     );
     const endDateFormat = format(
       dateRange[1] ? dateRange[1] : new Date(),
-      "yyyy-MM-dd"
+      "dd-MM-yyyy"
     );
     const response = await api.get(GET_BATCH, {
       params: {

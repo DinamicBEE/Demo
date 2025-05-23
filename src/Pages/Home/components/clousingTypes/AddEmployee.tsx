@@ -207,11 +207,15 @@ function AddEmployee({
   async function handleData() {
     setLoading(true);
 
-    if (!selectEmployee || !amount || !reason) {
+    if (!selectEmployee || amount === 0 || !reason[0]) {
       alert("Por favor, complete todos los campos obligatorios.");
       setLoading(false);
       return;
-    }
+    } else if (showTicketSelector  && !ticket[0]) {
+      alert("Por favor, agregue un ticket.");
+      setLoading(false);
+      return;
+    } 
 
     const selectedReason = reasonsList.find(
       (item) => item.id === Number(reason[0])
@@ -251,6 +255,7 @@ function AddEmployee({
     setAmount(0);
     setReason([]);
     setTicket([]);
+    setShowTicketSelector(false);
     setSelectEmployee(undefined);
     setIsEdited(false);
     // } else {
@@ -261,12 +266,19 @@ function AddEmployee({
 
   async function handleDelete(employeeId: string | number, clousingId: number) {
     setLoading(true);
-    deleteEmployee(employeeId, clousingId);
+    //Ignorar error de abajo, sí jala bien :'u
+    const deletionSuccessful: boolean = await deleteEmployee(employeeId, clousingId);
+    setLoading(false);
+    if (deletionSuccessful === false) {
+      alert("Error al eliminar el empleado. Por favor, inténtalo de nuevo.");
+      return;
+    }
     onClose();
     setAmount(0);
     setReason([]);
     setTicket([]);
     setIsEdited(false);
+    setShowTicketSelector(false);
     setSelectEmployee(undefined);
     setLoading(false);
   }
@@ -368,7 +380,7 @@ function AddEmployee({
 
         <DialogFooter display={"flex"} justifyContent={"space-between"} >
           <Box>
-          {/* {data != null && (
+           {data != null && (
             <Button
               colorPalette="meraError"
               loading={loading}
@@ -376,7 +388,7 @@ function AddEmployee({
             >
               Eliminar
             </Button>
-          )}*/}
+          )}
           </Box> 
           <Button
             colorPalette="meraPrimary"

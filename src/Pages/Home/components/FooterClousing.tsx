@@ -49,7 +49,7 @@ function FooterClousing({
   const { getEmployeetData, setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
-  const { setDataClousing } = useClousing();
+  const { setDataClousing, tdcHeader } = useClousing();
   const { header, headerRef } = useHeaders();
   // Type assertion to avoid TS error if you know employee is an object with numeric keys
 
@@ -142,18 +142,20 @@ function FooterClousing({
       lines.map((line) => ({
         ...line,
         id: typeof line.id === "number" ? line.id : null,
-        coupons: line.coupons.map((coupon) => ({
-          id: coupon.id,
-          barCode: coupon.barCode,
-          folio: coupon.folio,
-          amount: coupon.amount,
-          validityDate: coupon.validityDate,
-          consumeCenterId: coupon.consumeCenterId,
-          consumeCenter: coupon.consumeCenter,
-          client: coupon.client,
-          clientId: coupon.clientId,
-          isExpired: coupon.isExpired,
-        })),
+        coupons: line.coupons
+          .filter((coupon) => coupon.isExpired === false)
+          .map((coupon) => ({
+            id: coupon.id,
+            barCode: coupon.barCode,
+            folio: coupon.folio,
+            amount: coupon.amount,
+            validityDate: coupon.validityDate,
+            consumeCenterId: coupon.consumeCenterId,
+            consumeCenter: coupon.consumeCenter,
+            client: coupon.client,
+            clientId: coupon.clientId,
+            isExpired: coupon.isExpired,
+          })),
         /* client: line.client ?? "",
         quantity: line.quantity,
         supplementsQuantity: line.supplementsQuantity,
@@ -163,7 +165,6 @@ function FooterClousing({
         difference: line.difference,
         isEdit: line.edit,
         coupons: line.coupons, */
-
       }));
 
     const mapTdcLines = (lines: BankLineModel[]) => {
@@ -216,7 +217,8 @@ function FooterClousing({
         lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
       },
       employee: {
-        total: (employee as Record<number, EmployeeModel>)[clousingId]?.total ?? {
+        total: (employee as Record<number, EmployeeModel>)[clousingId]
+          ?.total ?? {
           totalPOS: 0,
           totalPhysical: 0,
           difference: 0,
@@ -238,7 +240,9 @@ function FooterClousing({
     //console.log(body);
 
     //const response: any = await sendCashClousing(body, isConfirm);
-    const response: any = "aaa"//await sendCashClousing(body, isConfirm);
+    const response: any = await sendCashClousing(body, isConfirm);
+
+    console.log(body);
 
     if (response === "response") {
       //TODO: DEvolver para el back
@@ -251,19 +255,39 @@ function FooterClousing({
           ? STATUS.WITH_DIFFERENCE
           : STATUS.Close;
 
+      const mxm =
+        body.cash.lines.find((line) => line.currency === "MXN")?.totalFisico ??
+        0;
+      let newMxm = 0;
+      if (mxm > 0) {
+        newMxm =
+          body.cash.electronicTips === 0 ? mxm : mxm - body.cash.electronicTips;
+      }
+
+      const newTotalphysical =
+        (cash.total?.totalPhysical ?? 0) +
+        (tdc.total?.totalPhysical ?? 0) +
+        (customer.total?.totalPhysical ?? 0) +
+        (specialCustomer.total?.totalPhysical ?? 0) +
+        ((employee && "total" in employee
+          ? employee.total?.totalPhysical
+          : 0) ?? 0) +
+        (prepaid.total?.totalPhysical ?? 0) +
+        (intercompany.total?.totalPhysical ?? 0);
+
       setDataClousing({
         id: body.id,
         date: header[body.id].totalClousing,
-        difference: header[body.id].difference,
-        totalClousing: header[body.id].totalClousing,
+        difference: (header[body.id]?.totalPOS ?? 0) - newTotalphysical,
+        totalClousing: newTotalphysical,
         customer: body.customer.total.totalPhysical,
         specialCustomer: body.specialCustomer.total.totalPhysical,
         employee: body.specialCustomer.total.totalPhysical,
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
-        mxm:
-          body.cash.lines.find((line) => line.currency === "MXN")
-            ?.totalFisico ?? 0,
+        mxm: newMxm,
+        /* body.cash.lines.find((line) => line.currency === "MXN")
+            ?.totalFisico ?? 0, */
         usd:
           body.cash.lines.find((line) => line.currency === "USD")
             ?.totalFisico ?? 0,
@@ -278,6 +302,13 @@ function FooterClousing({
             ?.totalFisico ?? 0,
         status: isConfirm === true ? STATUS.Open : statuss,
         closingConfirmation: !isConfirm,
+        //tips: body.cash.electronicTips,
+        tdc: tdcHeader.map((item) => ({
+          nameBank: item.nameBank,
+          total:
+            body.tdc.lines.find((line) => line.bank === item.nameBank)
+              ?.physical ?? 0,
+        })),
       });
 
       if (isConfirm === true) {
@@ -300,7 +331,6 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
-
     const cash = await getCashData(clousingId, idCurrency);
 
     const isUSD = cash.currencies.some((line) => line.currency === "USD");

@@ -27,6 +27,7 @@ import { CurrencyInput } from "@components/NumericInput";
 import {
   ClousingLinesModel,
   TableOfTotalsProps,
+  TDC,
 } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import "../Home.css";
@@ -44,12 +45,21 @@ function TableOfTotals({
   page,
   setPage,
 }: TableOfTotalsProps) {
-  const { data, loading, error, header, getInfo, setDataRow, pagination } =
-    useClousing();
+  const {
+    data,
+    loading,
+    error,
+    header,
+    getInfo,
+    setDataRow,
+    pagination,
+    tdcHeader,
+  } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
+  const [tdc, setTdc] = useState<TDC[]>([]);
   /* const [page, setPage] = useState(1); */
   const [totals, setTotals] = useState({
     totalPOS: 0,
@@ -66,23 +76,12 @@ function TableOfTotals({
     prepaid: 0,
     employees: 0,
     intercompany: 0,
-    adyenTotal: 0,
+    tips: 0,
+    tdc: [] as TDC[],
   });
-  // const [visibleItems, setVisibleItems] = useState<ClousingLinesModel[]>([])
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
-
-  /*   useEffect(() => {
-    const items = data.slice(startRange, endRange);
-    setVisibleItems(items);
-  }, [data]) */
-
-  /*   useEffect(() => {
-    setPage(page);
-    const items = data.slice(startRange, endRange);
-    setVisibleItems(items);
-  }, [page]) */
 
   useEffect(() => {
     if (data.length > 0) {
@@ -102,7 +101,21 @@ function TableOfTotals({
           acc.prepaid += curr.prepaid || 0;
           acc.employees += curr.employees || 0;
           acc.intercompany += curr.intercompany || 0;
-          acc.adyenTotal += curr.adyenTotal || 0;
+          acc.tips += curr.tips || 0;
+          curr.tdc.forEach((tdcItem: TDC) => {
+            const existingTdc = acc.tdc.find(
+              (item) => item.nameBank === tdcItem.nameBank
+            );
+            if (existingTdc) {
+              existingTdc.total += tdcItem.total || 0;
+            } else {
+              acc.tdc.push({
+                nameBank: tdcItem.nameBank,
+                total: tdcItem.total || 0,
+              });
+            }
+          });
+          // acc.adyenTotal += curr.adyenTotal || 0;
           return acc;
         },
         {
@@ -120,7 +133,8 @@ function TableOfTotals({
           prepaid: 0,
           employees: 0,
           intercompany: 0,
-          adyenTotal: 0,
+          tips: 0,
+          tdc: [] as TDC[],
         }
       );
       setTotals(newTotals);
@@ -149,23 +163,29 @@ function TableOfTotals({
       prepaid: Number(totals.prepaid.toFixed(2)),
       employees: Number(totals.employees.toFixed(2)),
       intercompany: Number(totals.intercompany.toFixed(2)),
-      adyenTotal: Number(totals.adyenTotal.toFixed(2)),
       status: "",
       closingConfirmation: true,
       discount: 0,
       iva: 0,
       service: 0,
+      tips: Number(totals.tips.toFixed(2)),
+      tdc: totals.tdc.map((tdcItem) => ({
+        nameBank: tdcItem.nameBank,
+        total: Number(tdcItem.total.toFixed(2)),
+      })),
       creationDate: "",
+      closingStartDate: "",
+      closingEndtDate: "",
     });
 
-    exportCSV(dataWithTotals, header);
+    exportCSV(dataWithTotals, header, tdcHeader);
   }
 
   const openDialog = (item: any) => {
-    
-  
-
-    if (item.status.toLowerCase() === "Abierto".toLowerCase() || item.status.toLowerCase() === "open".toLowerCase()) {
+    if (
+      item.status.toLowerCase() === "Abierto".toLowerCase() ||
+      item.status.toLowerCase() === "open".toLowerCase()
+    ) {
       item.closingConfirmation = false;
     } else {
       item.closingConfirmation = true;
@@ -306,6 +326,9 @@ function TableOfTotals({
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">
+                      Fecha
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
                       Vendedor
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
@@ -353,14 +376,26 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Intercompañia
                     </Table.ColumnHeader>
+                    {tdcHeader.length > 0 &&
+                      tdcHeader.map((item: TDC) => (
+                        <Table.ColumnHeader
+                          key={item.nameBank}
+                          textAlign="center"
+                        >
+                          {item.nameBank.toUpperCase()}
+                        </Table.ColumnHeader>
+                      ))}
                     <Table.ColumnHeader textAlign="center">
-                      Adyen
+                      Propinas electrónica
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
                   {data.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
+                      <Table.Cell textAlign="center">
+                        <Text>{item.closingStartDate}</Text>
+                      </Table.Cell>
                       <Table.Cell textAlign="center">
                         <Text
                           as="span"
@@ -520,11 +555,29 @@ function TableOfTotals({
                           />
                         </Text>
                       </Table.Cell>
+                      {tdcHeader.length > 0 &&
+                        item.tdc.length > 0 &&
+                        tdcHeader.map((tdcItem) => {
+                          const tdcValue = item.tdc.find(
+                            (tdc) => tdc.nameBank === tdcItem.nameBank
+                          );
+                          return (
+                            <Table.Cell key={tdcItem.nameBank} textAlign="end">
+                              <Text>
+                                <FormatNumber
+                                  value={tdcValue ? tdcValue.total : 0}
+                                  style="currency"
+                                  currency="USD"
+                                />
+                              </Text>
+                            </Table.Cell>
+                          );
+                        })}
 
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
-                            value={item.adyenTotal || 0}
+                            value={item.tips || 0}
                             style="currency"
                             currency="USD"
                           />
@@ -533,6 +586,7 @@ function TableOfTotals({
                     </Table.Row>
                   ))}
                   <Table.Row bg="gray.100" fontWeight="bold">
+                    <Table.Cell textAlign="center"></Table.Cell>
                     <Table.Cell textAlign="center">Totales</Table.Cell>
                     <Table.Cell textAlign="end">
                       <FormatNumber
@@ -633,9 +687,25 @@ function TableOfTotals({
                         currency="USD"
                       />
                     </Table.Cell>
+                    {tdcHeader.length > 0 &&
+                      tdcHeader.map((tdcItem) => {
+                        const tdcValue = totals.tdc.find(
+                          (tdc) => tdc.nameBank === tdcItem.nameBank
+                        );
+                        return (
+                          <Table.Cell key={tdcItem.nameBank} textAlign="end">
+                            <FormatNumber
+                              value={tdcValue ? tdcValue.total : 0}
+                              style="currency"
+                              currency="USD"
+                            />
+                          </Table.Cell>
+                        );
+                      })}
+
                     <Table.Cell textAlign="end">
                       <FormatNumber
-                        value={totals.adyenTotal}
+                        value={totals.tips}
                         style="currency"
                         currency="USD"
                       />

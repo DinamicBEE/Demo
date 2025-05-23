@@ -1,10 +1,10 @@
 // import axios from "axios";
 // import { API_HOME } from "./settings";
 import api from "../api/index";
-import { ClousingModel } from "@models/common.clousing.model";
+import { ClousingModel, TDC } from "@models/common.clousing.model";
 import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
-import {format} from "date-fns";
+import { format } from "date-fns";
 //const BASE_URL = "https://run.mocky.io/v3";
 
 /**
@@ -48,7 +48,7 @@ export const getGeneralInfo = async (
       (acc: number, line: any) => acc + line.totalPhysical,
       0
     );
-    
+
     const transformedData = {
       pagination: {
         totaRegistros: response.data.totaRegistro,
@@ -60,39 +60,39 @@ export const getGeneralInfo = async (
         date: endDateFormat,
         time: format(new Date(), "HH:mm"),
         //Sacar timepo en vivo
-        totalPOS:totalPOS,
+        totalPOS: totalPOS,
         totalPhysical: totalPhysical,
-        difference:
-          totalPOS - totalPhysical,
+        difference: totalPOS - totalPhysical,
       },
-      clousingLines: response.data.registerClosure.map(
-        (line: any) => ({
-          id: line.crcId,
-          employe: line.employe,
-          totalPOS: line.totalPOS,
-          totalPhysical: line.totalPhysical,
-          difference: line.totalPOS - line.totalPhysical,
-          status: getStatus(line.status),
-          extra: line.exta,
-          mxm: line.generalTotal || 0,
-          usd: line.usd,
-          eur: line.eur,
-          lib: line.lib,
-          can: line.can,
-          customer: line.customer,
-          specialCustomer: line.specialCustomer,
-          prepaid: line.prepaid,
-          employees: line.employees,
-          intercompany: line.intercompany,
-          service: 0,
-          discount: 0,
-          iva: 150,
-          closingConfirmation: false,
-          creationDate: format(line.creationDate, "dd/MM/yyyy"),
-        })
-      ),
+      clousingLines: response.data.registerClosure.map((line: any) => ({
+        ...line,
+        id: line.crcId,
+        employe: line.employe,
+        totalPOS: line.totalPOS,
+        totalPhysical: line.totalPhysical,
+        difference: line.totalPOS - line.totalPhysical,
+        status: getStatus(line.status),
+        extra: line.exta,
+        mxm: line.generalTotal || 0,
+        usd: line.usd,
+        eur: line.eur,
+        lib: line.lib,
+        can: line.can,
+        customer: line.customer,
+        specialCustomer: line.specialCustomer,
+        prepaid: line.prepaid,
+        employees: line.employees,
+        intercompany: line.intercompany,
+        service: 0,
+        discount: 0,
+        iva: 150,
+        closingConfirmation: false,
+        creationDate: format(line.creationDate, "dd/MM/yyyy"),
+        closingStartDate: format(line.closingStartDate, "dd/MM/yyyy"),
+        closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
+      })),
     };
-    
+
     return transformedData as ClousingModel;
   } catch (error) {
     return {
@@ -110,11 +110,11 @@ export const getGeneralInfo = async (
         totaRegistros: 0,
         totalPagina: 0,
       },
-    }
+    };
   }
 };
 
-export function exportCSV(data: any, header: any) {
+export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
   const csvString = [
     [
       "Vendedor",
@@ -133,12 +133,14 @@ export function exportCSV(data: any, header: any) {
       "Prepago",
       "CXC Empleados",
       "Intercompañia",
+      tdcHeader.map((item) => item.nameBank).join(","),
+      "Propina electrónica",
     ],
     ...data.map((item: any) => [
       item.employe,
       item.totalPOS,
       item.totalPhysical,
-      item.difference,
+      Number(item.difference).toFixed(2),
       item.status,
       item.mxm,
       item.mxm,
@@ -151,6 +153,14 @@ export function exportCSV(data: any, header: any) {
       item.prepaid,
       item.employees,
       item.intercompany,
+
+      ...tdcHeader.map((tdc) => {
+        const tdcItem = item.tdc.find(
+          (itemTDC: any) => itemTDC.nameBank === tdc.nameBank
+        );
+        return tdcItem ? tdcItem.total : 0;
+      }),
+      item.tips,
     ]),
   ]
     .map((row) => row.join(","))

@@ -14,6 +14,7 @@ import {
   ClousingLinesModel,
   ClousingModel,
   HeaderClousingModel,
+  TDC,
 } from "@models/common.clousing.model";
 
 const clousingContext = createContext<ClousingContextType>(
@@ -45,6 +46,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   const dataCache = useRef<{ [key: string]: ClousingModel }>({});
   const queryKey = useRef<string>("");
   const setQueryKey = useRef<string>("");
+  const [tdcHeader, setTdcHeader] = useState<TDC[]>([]);
 
   const accumulatedHeader = (queryKey: string) => {
     const accumulatedHeaders = {
@@ -109,6 +111,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           // Actualizar con los datos de la página actual
           setData(currentPageData);
           setOriginalData(currentPageData);
+          setTdcHeader(dataCache.current[pageKey].clousingLines[0]?.tdc || []);
           return;
         }
 
@@ -143,6 +146,9 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         // Actualizar con los datos de la página actual
         setData(currentPageData);
         setOriginalData(currentPageData);
+        setTdcHeader(response.clousingLines[0]?.tdc || []);
+
+        
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -159,7 +165,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       if (isAdyen) {
         // Filtrar solo elementos con adyenTotal definido
         const dataAdyen = originalData.filter((item) => {
-          return item.adyenTotal !== undefined;
+          return item.tdc !== undefined;
         });
         setData(dataAdyen);
       } else {
@@ -191,6 +197,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
                 eur: dataClousing.eur,
                 lib: dataClousing.lib,
                 can: dataClousing.can,
+                tdc: dataClousing.tdc,
               }
             : item
         )
@@ -211,6 +218,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       dataRow,
       setDataRow,
       filterDataAdyen,
+      tdcHeader,
     }),
     [
       header,
@@ -224,6 +232,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       setDataRow,
       filterDataAdyen,
       pagination,
+      tdcHeader,
     ]
   );
 
