@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, createListCollection, ListCollection, Portal, Select, Span, Stack } from "@chakra-ui/react";
-import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
+import {
+  Box,
+  createListCollection,
+  ListCollection,
+  Portal,
+  Select,
+  Span,
+  Stack,
+} from "@chakra-ui/react";
 import { VoucherFilter } from "@models/tdc.model";
 
 function FilterVoucher({
@@ -18,6 +25,7 @@ function FilterVoucher({
     createListCollection({ items: [] })
   );
   const searchRef = useRef<string>("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const voucherCollection = createListCollection({
@@ -30,7 +38,17 @@ function FilterVoucher({
     setFilteredVouchers(voucherCollection);
   }, [vouchers]);
 
-  function handleSearch(event: string) {
+  function handleSearch(event: string) {    
+    if (event.toLowerCase() === "enter" && searchRef.current.length >= 4) {
+      if (filteredVouchers.items.length > 0) {
+        const firstVoucher = filteredVouchers.items[0];
+        const selectEvent = {
+          value: [firstVoucher.value],
+        };
+        handleSelect(selectEvent);
+      }
+      return;
+    }
     let query: string = "";
     if (event.toLowerCase() === "backspace") {
       query = searchRef.current.slice(0, -1);
@@ -56,14 +74,15 @@ function FilterVoucher({
     setFilteredVouchers(voucherCollection);
   }
 
-  function handleSelect(event: ValueChangeDetails<any>) {
+  function handleSelect(event: any) {
     const selectedId = Number(event.value[0]);
     const selectedValue = event.value[0].split(" - ")[0];
     const selectedAmount = event.value[0].split(" - ")[1];
-    
-    
+
     const voucherSelect = vouchers.find(
-      (voucher) => voucher.idCustom === selectedValue && voucher.amount === Number(selectedAmount)
+      (voucher) =>
+        voucher.idCustom === selectedValue &&
+        voucher.amount === Number(selectedAmount)
     );
 
     if (voucherSelect && itemId === undefined) {
@@ -74,6 +93,7 @@ function FilterVoucher({
     setSearchQuery("");
     searchRef.current = "";
     handleSearch("");
+    setIsOpen(false);
   }
 
   return (
@@ -106,12 +126,16 @@ function FilterVoucher({
         size="sm"
         width={"100%"}
         value={[]}
+        open={isOpen}
+        onOpenChange={(details) => setIsOpen(details.open)}
       >
         <Select.HiddenSelect />
         <Select.Label>Selecciona ticket</Select.Label>
         <Select.Control>
           <Select.Trigger>
-            <Select.ValueText placeholder={searchQuery || "Selecciona ticket"} />
+            <Select.ValueText
+              placeholder={searchQuery || "Selecciona ticket"}
+            />
           </Select.Trigger>
           <Select.IndicatorGroup>
             <Select.Indicator />
@@ -121,7 +145,10 @@ function FilterVoucher({
           <Select.Positioner>
             <Select.Content>
               {filteredVouchers.items.map((voucher) => (
-                <Select.Item item={voucher} key={voucher.value + voucher.description}>
+                <Select.Item
+                  item={voucher}
+                  key={voucher.value + voucher.description}
+                >
                   <Stack gap="0">
                     <Select.ItemText>{voucher.label}</Select.ItemText>
                     <Span color="fg.muted" textStyle="xs">

@@ -119,7 +119,7 @@ function LoteClosureDialog({
               mb={4}
               w="100%"
             >
-              <GridItem colSpan={{ base: 1, md: 4 }}>
+              <GridItem colSpan={{ base: 1, md: 5 }}>
                 <Flex direction="column" gapY={8}>
                   <Flex gap={2} direction={{ base: "column", md: "row" }}>
                     <CurrencyInput
@@ -268,7 +268,7 @@ function LoteClosureDialog({
                   )}
                 </Flex>
               </GridItem>
-              <GridItem>
+           {/*    <GridItem>
                 <Flex direction="column" gap={2}>
                   <Text fontWeight="extrabold" textStyle="lg">
                     Número de lotes
@@ -298,7 +298,7 @@ function LoteClosureDialog({
                     </Table.Root>
                   </Table.ScrollArea>
                 </Flex>
-              </GridItem>
+              </GridItem> */}
             </Grid>
           </DialogBody>
           <DialogFooter>

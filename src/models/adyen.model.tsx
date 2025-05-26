@@ -3,7 +3,7 @@ export const FIELD_MAPPING: Record<string, string> = {
   Account: "Subsidiaria",
   "Merchant Reference": "check",
   "Creation Date": "date",
-  Value: "amount",
+  "Gross Credit (GC)": "amount",
   Currency: "currency",
   "Payment Method": "paymentMethod",
   Status: "status",
@@ -26,15 +26,16 @@ export interface ProcessResult {
 }
 
 export const EXPECTED_COLUMNS = [
-  "Store",
+  //"Store",
   "PSP Reference",
   "Merchant Reference",
-  "Account",
+  //"Account",
   "Creation Date",
-  "TimeZone",
-  "Value",
-  "Currency",
-  "Payment Method",
-  "Status",
-  "Risk Score",
+  //"TimeZone",
+  //"Value",
+  "Gross Currency",
+  "Gross Credit (GC)",
+  //"Payment Method",
+  //"Status",
+  //"Risk Score",
 ] as const;
