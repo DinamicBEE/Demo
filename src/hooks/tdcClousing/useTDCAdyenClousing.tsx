@@ -21,6 +21,7 @@ export const useHandleTDCAdyen = () => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
+console.log("dataFilesProcess", dataFilesProcess);
 
     // Crear conjuntos únicos para comparación eficiente
     const checkDate = new Set<string>(
@@ -43,10 +44,13 @@ export const useHandleTDCAdyen = () => {
 
     // Actualizar solo los vouchers que necesitan actualización
     const updatedVouchers = vouchersToUpdate.map((detail) => {
+      console.log("detail", detail);
+      
       const dateMatch = checkDate.has(detail.dateDisplay ?? "");
       const checkMatch = checkCheck.has(Number(detail.check));
       const amountMatch = checkAmount.has(Number(detail.amount));
       const allMatches = dateMatch && checkMatch && amountMatch;
+console.log(dateMatch, checkMatch, amountMatch, allMatches);
 
       return {
         ...detail,
