@@ -57,6 +57,11 @@ function FooterClousing({
   useEffect(() => {
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
+
+      if (clousingType === "employee") {        
+        data.difference = 0;
+      }
+      
       setFooter(data);
     }
 
