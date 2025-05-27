@@ -226,7 +226,7 @@ function FooterClousing({
     //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
     
-    console.log(body);
+    // console.log(body);
     
     if (response === "response") {
       //TODO: DEvolver para el back
