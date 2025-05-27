@@ -57,6 +57,11 @@ function FooterClousing({
   useEffect(() => {
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
+
+      if (clousingType === "employee") {        
+        data.difference = 0;
+      }
+      
       setFooter(data);
     }
 
@@ -221,7 +226,7 @@ function FooterClousing({
     //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
     
-    console.log(body);
+    // console.log(body);
     
     if (response === "response") {
       //TODO: DEvolver para el back

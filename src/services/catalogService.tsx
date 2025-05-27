@@ -176,7 +176,7 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
     const response = await api.delete(EMPLOYEEDELETE, {
       params: {id: employeeDelId},
     });
-    console.log(response.data);
+    // console.log(response.data);
     return true;
     
   } catch(e) {

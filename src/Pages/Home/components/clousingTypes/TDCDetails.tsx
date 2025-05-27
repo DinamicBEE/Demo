@@ -37,6 +37,10 @@ import { useHandleTDCAdyen } from "@hooks/tdcClousing/useTDCAdyenClousing";
 import { ProcessResult } from "@models/adyen.model";
 import DialogConfirmTDC from "./DialogConfirmTDC";
 import FilterVoucher from "@components/FilterVouchers";
+import { TiDelete } from "react-icons/ti";
+import { Tooltip } from "@components/ui/tooltip"
+
+
 
 const pageSize = 10;
 
@@ -217,6 +221,44 @@ function TDCDetails({
     );
   };
 
+  const onDelete = (itemId: string | number) => {
+  if (closingConfirmation) return;
+
+  const updatedVouchers = detailsLocal?.vouchers.map((voucher) =>
+    voucher.idCustom === itemId
+      ? { ...voucher, status: false }
+      : voucher
+  );
+
+  if (updatedVouchers === undefined || detailsLocal === undefined) return;
+
+  const updatedDetailsLocal: BankLineModel = {
+    ...detailsLocal,
+    vouchers: updatedVouchers as Voucher[],
+  };
+
+  setDetailsLocal(updatedDetailsLocal);
+
+  setVisibleItems(
+    updatedDetailsLocal.vouchers
+      .filter((item) => item.status)
+      .slice(startRange, endRange)
+  );
+
+  setLocalAmount(
+    Number(
+      updatedDetailsLocal.vouchers
+        .filter((item) => item.status)
+        .reduce((acc, curr) => acc + curr.amountConversion, 0)
+        .toFixed(2)
+    )
+  );
+
+  setVouchersSelected(
+    updatedDetailsLocal.vouchers.filter((item) => item.status).length
+  );
+};
+
   return (
     <>
       <DialogRoot
@@ -337,6 +379,9 @@ function TDCDetails({
                     <Table.ColumnHeader textAlign="end">
                       Importe convertido
                     </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      
+                    </Table.ColumnHeader>
 
                     {/*    {detailsLocal?.bank === "TPV ADYEN" && (
                       <Table.ColumnHeader textAlign="center">
@@ -391,6 +436,7 @@ function TDCDetails({
                           />
                         </Table.Cell>
                       )} */}
+                      
                       <Table.Cell textAlign="center">
                         <Text>{item.dateDisplay}</Text>
                       </Table.Cell>
@@ -415,6 +461,18 @@ function TDCDetails({
                             style="currency"
                             currency="USD"
                           />
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell textAlign="center">
+                        <Text color="red.500" cursor="pointer" textStyle="lg" onClick={() => onDelete(item.idCustom)}>
+                          
+                          <Tooltip
+                            content={`Eliminar cheque ${item.check}`}
+                            positioning={{ placement: "right-end" }}
+                          >
+                            <TiDelete />
+                            
+                          </Tooltip>
                         </Text>
                       </Table.Cell>
                       {/*      {detailsLocal?.bank === "TPV ADYEN" && (
