@@ -75,9 +75,11 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
  * @param {number} clousingId
  * @returns {Promise<CashModel>}
  */
-export const getCashClousing = async ( clousingId: number,  idCurrency: number): Promise<ResponseModel> => {
+export const getCashClousing = async (
+  clousingId: number,
+  idCurrency: number
+): Promise<ResponseModel> => {
   try {
-    
     // Instead of using the actual API endpoint
     const response = await api.get(CASH, {
       params: {
@@ -111,9 +113,13 @@ export const getCashClousing = async ( clousingId: number,  idCurrency: number):
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines.map((currency: CashLines) => currency.totalPOS).reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalPOS = dummy.lines
+      .map((currency: CashLines) => currency.totalPOS)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
 
-    const newTotalFisico = dummy.currencies.map((currency: CashLines) => currency.totalFisico).reduce((acc: number, curr: number) => acc + curr, 0);
+    const newTotalFisico = dummy.currencies
+      .map((currency: CashLines) => currency.totalFisico)
+      .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       //...response.data,
@@ -132,9 +138,7 @@ export const getCashClousing = async ( clousingId: number,  idCurrency: number):
     };
 
     return responseData;
-
   } catch (error) {
-
     console.error("Error al obtener los valores generales:", error);
 
     const responseData: ResponseModel = {
@@ -263,7 +267,6 @@ export const getCustomerClousing = async (
       };
     });
 
-   
     const data: CustomerModel = {
       id: clousingId,
       total: {
@@ -308,14 +311,10 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
-  
-
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
-
-  
 
     const lines = response.data.specialClientResponses.map(
       (line: any, index: number) => ({
@@ -521,8 +520,6 @@ export const sendNewEmployeeRegister = async (
   clousingId: number,
   newEmployee: NewEmployeeModel
 ): Promise<ResponseModel> => {
-
-
   const mock: EmployeeLine = {
     id: Math.floor(Math.random() * (500 - 11)) + 11,
     employeeName: "mocky user" + newEmployee.employeeId,
@@ -626,12 +623,10 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-  
-    
-    
+
     const response = await api.post(
       "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
-      body,
+      body
     );
     //TODO: Devolver para consulta a back
     return response.data;
@@ -666,7 +661,10 @@ export const processFiles = async (
     // Función para validar encabezados
     const validateHeaders = (headers: string[], fileName: string): void => {
       const missingColumns = EXPECTED_COLUMNS.filter(
-        (column) => !headers.includes(column)
+        (column) =>
+          !headers
+            .map((h) => h.trim().toLowerCase())
+            .includes(column.trim().toLowerCase())
       );
 
       if (missingColumns.length > 0) {
@@ -731,7 +729,8 @@ export const processFiles = async (
         if (row[csvColumn] !== undefined) {
           // Procesamiento específico para Merchant Reference
           if (
-            csvColumn === "Merchant Reference" &&
+            csvColumn.toLowerCase().trim() ===
+              "Merchant Reference".toLowerCase() &&
             typeof row[csvColumn] === "string"
           ) {
             const merchantRef = row[csvColumn] as string;
@@ -740,26 +739,55 @@ export const processFiles = async (
               parts.length >= 2 ? parts[1] : merchantRef;
           }
           // Procesamiento específico para Account
-          else if (
+          /*  else if (
             csvColumn === "Account" &&
             typeof row[csvColumn] === "string"
           ) {
             const account = row[csvColumn] as string;
             transformedRow[targetField] = account.split("_")[0];
-          } else if (
-            csvColumn === "Creation Date" &&
+          }  */
+          else if (
+            csvColumn.toLowerCase().trim() === "Creation Date".toLowerCase() &&
             typeof row[csvColumn] === "string"
           ) {
             const dateSplit = (row[csvColumn] as string).split(" ");
             const dateShort = dateSplit[0];
+            // Definir los formatos posibles de fecha
 
-            // Parsear indicando el formato de entrada (dd/MM/yy)
-            const fechaParseada = parse(dateShort, "dd/MM/yy", new Date());
+            const possibleFormats = [
+              "dd/MM/yyyy", // formato europeo
+              "MM/dd/yyyy", // formato americano
+              "yyyy/MM/dd", // formato ISO
+              "dd-MM-yyyy", // con guiones
+              "MM-dd-yyyy", // con guiones formato americano
+              "yyyy-MM-dd", // formato ISO con guiones
+              "dd/MM/yy",
+              // con puntos
+            ];
 
-            // Luego la formateas con el formato deseado (dd/MM/yyyy)
-            const fechaFormateada = format(fechaParseada, "dd/MM/yyyy");
+            // Intentar parsear la fecha con cada formato hasta encontrar uno válido
+            let fechaParseada = null;
+            let fechaFormateada = "";
 
-            // Verificar si la fecha es válida
+            /* for (const formatPattern of possibleFormats) {
+              fechaParseada = parse(dateShort, formatPattern, "dd/MM/yy");
+              if (isValid(fechaParseada)) {
+                // Si el formato funciona, salir del bucle
+                fechaFormateada = format(fechaParseada, "dd/MM/yyyy");
+                break;
+              }
+            } */
+
+            // Si ninguno de los formatos funciona, intentar con Date()
+            if (!isValid(fechaParseada)) {
+              const fallbackDate = new Date(dateShort);
+              if (isValid(fallbackDate)) {
+                fechaFormateada = format(fallbackDate, "dd/MM/yyyy");
+              } else {
+                fechaFormateada = dateShort; // mantener el formato original como fallback
+              }
+            }
+
             transformedRow[targetField] = fechaFormateada;
           }
           // Transferencia directa para otros campos
@@ -807,30 +835,33 @@ export const processFiles = async (
                   results.data as Record<string, unknown>[]
                 )
                   .map(transformRow)
-                  .filter(Boolean) // Filtrar valores nulos o undefined
-                  .filter((record) => {
+                  .filter(Boolean); // Filtrar valores nulos o undefined
+                /*   .filter((record) => {
                     // Filtrar por storeName y location si están presentes
                     const recordStore = String(
                       record["Centro de consumo"] ||
-                      record["StoreName"] ||
-                      record["store"] ||
-                      ""
+                        record["StoreName"] ||
+                        record["store"] ||
+                        ""
                     ).trim();
                     const recordLocation = String(
                       record["Subsidiaria"] ||
-                      record["StoreLocation"] ||
-                      record["location"] ||
-                      ""
+                        record["StoreLocation"] ||
+                        record["location"] ||
+                        ""
                     ).trim();
 
                     // Validar si ambos valores coinciden con los proporcionados
                     // Solo filtramos si los valores de storeName y location no están vacíos
 
                     return (
-                      (!storeName || recordStore.toLowerCase() === storeName.toLowerCase()) &&
-                      (!location || recordLocation.toLowerCase() === location.toLowerCase())
+                      (!storeName ||
+                        recordStore.toLowerCase() ===
+                          storeName.toLowerCase()) &&
+                      (!location ||
+                        recordLocation.toLowerCase() === location.toLowerCase())
                     );
-                  });
+                  }); */
 
                 resolve({ data: transformedData, fileName: file.name });
               } catch (error) {
@@ -862,9 +893,11 @@ export const processFiles = async (
     // Eliminar duplicados usando Map para mejor rendimiento
     const uniqueMap = new Map<string, Record<string, unknown>>();
 
+console.log(allData);
+
     allData.forEach((record) => {
-      const pspReference = record["PSP Reference"]
-        ? String(record["PSP Reference"])
+      const pspReference = record["Psp Reference"]
+        ? String(record["Psp Reference"])
         : "";
       // Solo guardar si la clave no existe o está vacía
       if (pspReference && !uniqueMap.has(pspReference)) {

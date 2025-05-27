@@ -42,17 +42,25 @@ export interface ClousingLinesModel {
   discount: number;
   iva: number;
   closingConfirmation: boolean;
-  adyenTotal?: number;
   creationDate: string;
   closingStartDate: string;
   closingEndtDate: string;
+  tdc: TDC[];
+  tips: number;
 }
+
+export interface TDC {
+  nameBank: string;
+  total: number;
+}
+
 
 export interface ClousingContextType {
   header: HeaderClousingModel;
   data: ClousingLinesModel[];
   loading: boolean;
   error: string;
+  tdcHeader: TDC[];
   getInfo: (
     subsidiary: number,
     store: number,

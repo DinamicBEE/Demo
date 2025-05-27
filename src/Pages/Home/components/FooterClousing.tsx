@@ -49,7 +49,7 @@ function FooterClousing({
   const { getEmployeetData, setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef } = usePrepaidContext();
-  const { setDataClousing } = useClousing();
+  const { setDataClousing,tdcHeader } = useClousing();
   const { header, headerRef } = useHeaders();
   // Type assertion to avoid TS error if you know employee is an object with numeric keys
   //console.log((employee as Record<number, EmployeeModel>)[clousingId]);
@@ -221,7 +221,7 @@ function FooterClousing({
     //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
     
-    console.log("");
+    console.log(body);
     
     if (response === "response") {
       //TODO: DEvolver para el back
@@ -279,6 +279,13 @@ function FooterClousing({
             ?.totalFisico ?? 0,
         status: isConfirm === true ? STATUS.Open : statuss,
         closingConfirmation: !isConfirm,
+        //tips: body.cash.electronicTips,
+        tdc: tdcHeader.map((item) => ({
+          nameBank: item.nameBank,
+          total: body.tdc.lines.find(
+            (line) => line.bank === item.nameBank
+          )?.physical ?? 0,
+        })),
       });
 
       if (isConfirm === true) {
