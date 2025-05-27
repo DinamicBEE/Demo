@@ -120,8 +120,9 @@ interface PrepaidLine extends LineBase {
   physical: number;
   difference: number;
   edit: boolean;
-  coupons: Omit<CouponCatalogModel, "validityDateCustom" | "folioCustom">[];
+  coupons: Omit<CouponCatalogModel, "validityDateCustom" | "folioCustom" | "clientCustom">[];
   ticketId: number;
+
 }
 
 interface Prepaid {

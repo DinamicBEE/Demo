@@ -377,14 +377,14 @@ export const getSpecialCustomerClousing = async (
  * @returns {Promise<PrepaidModel>}
  */
 export const getPrepaidClousing = async (
-  clousingId: number
+  clousingId: number, dateClousing: string
 ): Promise<PrepaidModel> => {
   // console.log(clousingId)
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_PREPAID, {
-      params: { idCashRegisterClosure: 1 },
+      params: { idCashRegisterClosure: clousingId },
     });
     //PrepaidMOCKData;
 
@@ -393,7 +393,22 @@ export const getPrepaidClousing = async (
         return {
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
-          coupons: item.coupons ? item.coupons : [],
+          coupons: item.coupons
+            ? item.coupons.map((coupon: CouponCatalogModel) => ({
+                ...coupon,
+                // Generate new UUID for null IDs, otherwise keep existing ID
+                folioCustom: coupon.folio.split("_")[1],// Eliminar números al inicio
+                validityDateCustom: format(
+                  new Date(coupon.validityDate),
+                  "dd/MM/yyyy"
+                ),
+                isExpired: isBefore(
+                  // Compare only the date part by setting both dates to start of day
+                  startOfDay(new Date(coupon.validityDate)),
+                  startOfDay(new Date(dateClousing))
+                ),
+              }))
+            : [],
         };
       }
     );
@@ -426,14 +441,15 @@ export const getPrepaidClousing = async (
 };
 
 export const getCouponCatalog = async (
-  clousingId: number
+  clousingId: number,
+  dateClousing: string
 ): Promise<CouponCatalogModel[]> => {
   // console.log(clousingId)
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_COUPONS, {
-      params: { consumer: 1 },
+      params: { consumer: clousingId },
     });
     //couponCatalogMocky;
 
@@ -441,22 +457,25 @@ export const getCouponCatalog = async (
     //     ...response,
 
     // }
-    response.data[0].validityDate = "2025-09-28T00:00:00";
+    /*     response.data[0].validityDate = "2025-09-28T00:00:00";
     response.data[1].validityDate = "2025-05-14T00:00:00";
     response.data[2].validityDate = "2025-05-13T00:00:00";
-    response.data[3].amount = 50;
+    response.data[3].amount = 50; */
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
-      folioCustom: item.folio.replace(/_/g, ""),
+      folioCustom: item.folio.split("_")[1],
+      clientCustom: item.client
+        .replace(/^\d+\s+/, "") // Remove leading numbers and spaces
+        .toLowerCase() // Convert all to lowercase
+        .replace(/^(.)/, (match) => match.toUpperCase()), // Eliminar números al inicio
       validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
-       isExpired: isBefore(
+      isExpired: isBefore(
         // Compare only the date part by setting both dates to start of day
-        startOfDay(new Date(item.validityDate)), 
-        startOfDay(new Date())
+        startOfDay(new Date(item.validityDate)),
+        startOfDay(new Date(dateClousing))
       ),
     }));
-
 
     return transformedData;
   } catch (error) {
@@ -913,7 +932,7 @@ export const processFiles = async (
     // Eliminar duplicados usando Map para mejor rendimiento
     const uniqueMap = new Map<string, Record<string, unknown>>();
 
-console.log(allData);
+    console.log(allData);
 
     allData.forEach((record) => {
       const pspReference = record["Psp Reference"]

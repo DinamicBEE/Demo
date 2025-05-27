@@ -4,9 +4,16 @@ export interface PrepaidContextType {
   prepaid: PrepaidModel | {};
   prepaidLoading: boolean;
   error: string;
-  getPrepaidData: (clousingId: number) => Promise<PrepaidModel>;
-  getCouponData: (clousingId: number) => Promise<CouponCatalogModel[]>;
+  getPrepaidData: (
+    clousingId: number,
+    dateClousing: string
+  ) => Promise<PrepaidModel>;
+  getCouponData: (
+    clousingId: number,
+    dateClousing: string
+  ) => Promise<CouponCatalogModel[]>;
   setPrepaidData: (clousingId: number, prepaid: PrepaidModel) => void;
+  setCoupons: React.Dispatch<React.SetStateAction<CouponContext>>;
   prepaidRef: React.MutableRefObject<PrepaidContext>;
 }
 
@@ -59,6 +66,7 @@ export interface CouponCatalogModel {
   consumeCenterId: number;
   consumeCenter: string;
   client: string;
+  clientCustom: string;
   clientId: null | number;
   isExpired: boolean;
 }

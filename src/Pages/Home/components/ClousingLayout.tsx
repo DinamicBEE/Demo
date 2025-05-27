@@ -67,12 +67,10 @@ function ClousingLayout({
   const { customerRef } = useCustomerContext();
   const { specialCustRef } = useSpecialCustContext();
   const { setEmployee, employeeRef } = useEmployeeContext();
-  const { prepaidRef } = usePrepaidContext();
+  const { prepaidRef,setCoupons } = usePrepaidContext();
   const { tdcRef } = useTDCContext();
   const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { headerRef } = useHeaders();
-
-  
 
   return (
     <>
@@ -115,115 +113,116 @@ function ClousingLayout({
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <IoCashOutline />
-                      Efectivo              
+                      Efectivo
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && cashRef.current[employee.id]?.total?.totalPOS !== undefined
+                      {employee?.id !== undefined &&
+                      cashRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
                         ? "$ " + cashRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.TDC}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <IoCardOutline />
-                      TDC              
+                      TDC
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && tdcRef.current[employee.id]?.total?.totalPOS !== undefined
+                      {employee?.id !== undefined &&
+                      tdcRef.current[employee.id]?.total?.totalPOS !== undefined
                         ? "$ " + tdcRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.CUSTOMER}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <BsPersonLinesFill />
-                      Clientes              
+                      Clientes
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && customerRef.current[employee.id]?.total?.totalPOS !== undefined
-                        ? "$ " + customerRef.current[employee.id].total?.totalPOS
+                      {employee?.id !== undefined &&
+                      customerRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
+                        ? "$ " +
+                          customerRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.SPECIALCUSTOMER}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <RiUserStarFill />
-                      Clientes especiales              
+                      Clientes especiales
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && specialCustRef.current[employee.id]?.total?.totalPOS !== undefined
-                        ? "$ " + specialCustRef.current[employee.id].total?.totalPOS
+                      {employee?.id !== undefined &&
+                      specialCustRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
+                        ? "$ " +
+                          specialCustRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.PREPAID}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <RiCoupon3Line />
-                      Prepago              
+                      Prepago
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && prepaidRef.current[employee.id]?.total?.totalPOS !== undefined
+                      {employee?.id !== undefined &&
+                      prepaidRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
                         ? "$ " + prepaidRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.EMPLOYEE}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <BsPersonVcard />
-                      Empleados              
+                      Empleados
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && employeeRef.current[employee.id]?.total?.totalPOS !== undefined
-                        ? "$ " + employeeRef.current[employee.id].total?.totalPOS
+                      {employee?.id !== undefined &&
+                      employeeRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
+                        ? "$ " +
+                          employeeRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
-                  
                 </Tabs.Trigger>
                 <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <LiaUsersSolid />
-                      Intercompañias              
+                      Intercompañias
                     </Flex>
 
                     <Text color="fg.muted">
-                      {employee?.id !== undefined && intercompanyRef.current[employee.id]?.total?.totalPOS !== undefined
-                        ? "$ " + intercompanyRef.current[employee.id].total?.totalPOS
+                      {employee?.id !== undefined &&
+                      intercompanyRef.current[employee.id]?.total?.totalPOS !==
+                        undefined
+                        ? "$ " +
+                          intercompanyRef.current[employee.id].total?.totalPOS
                         : "$ " + 0}
-
                     </Text>
-                    
                   </Flex>
-
                 </Tabs.Trigger>
               </Tabs.List>
 
@@ -280,7 +279,11 @@ function ClousingLayout({
                   <Suspense
                     fallback={<div>Cargando Clientes Especiales...</div>}
                   >
-                    <PrepaidClousing data={employee} />
+                    <PrepaidClousing
+                      data={employee}
+                      subsidiaryId={subsidiary.id}
+                      cdc={location.id}
+                    />
                   </Suspense>
                 )}
               </Tabs.Content>
@@ -323,6 +326,7 @@ function ClousingLayout({
               closeDialog={() => onClose()}
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
+              dateClousing={employee?.closingStartDate ?? ""}
             />
           </DialogFooter>
 
@@ -338,15 +342,13 @@ function ClousingLayout({
         closeOnExit={() => {
           onClose();
           if (employee && employee.id) {
-           
-            
             delete cashRef.current[employee.id];
             delete customerRef.current[employee.id];
             delete specialCustRef.current[employee.id];
             delete prepaidRef.current[employee.id];
             delete tdcRef.current[employee.id];
             delete headerRef.current[employee.id];
-
+            setCoupons({} as any);
             setEmployee({} as any);
             setIntercompany({} as any);
             //delete headerRef.current[employee.id];

@@ -32,6 +32,7 @@ function FooterClousing({
   closeDialog,
   closingConfirmation,
   idCurrency,
+  dateClousing,
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -48,7 +49,7 @@ function FooterClousing({
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
   const { getEmployeetData, setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
-  const { getPrepaidData, prepaidRef } = usePrepaidContext();
+  const { getPrepaidData, prepaidRef, setCoupons } = usePrepaidContext();
   const { setDataClousing, tdcHeader } = useClousing();
   const { header, headerRef } = useHeaders();
   // Type assertion to avoid TS error if you know employee is an object with numeric keys
@@ -70,7 +71,7 @@ function FooterClousing({
     const customer = await getCustomerData(clousingId);
     const specialCustomer = await getSpecialCustData(clousingId, idCurrency);
     // const employee = await getEmployeetData(clousingId);
-    const prepaid = await getPrepaidData(clousingId);
+    const prepaid = await getPrepaidData(clousingId, dateClousing);
     const intercompany = await getIntercompanyData(clousingId);
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
@@ -141,7 +142,7 @@ function FooterClousing({
     const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
       lines.map((line) => ({
         ...line,
-        id: typeof line.id === "number" ? line.id : null,
+        id: typeof line.id === "number" && line.id !== 0 ? line.id : null,
         coupons: line.coupons
           .filter((coupon) => coupon.isExpired === false)
           .map((coupon) => ({
@@ -318,7 +319,7 @@ function FooterClousing({
         delete prepaidRef.current[clousingId];
         delete tdcRef.current[clousingId];
         delete headerRef.current[clousingId];
-
+        setCoupons({} as any);
         setEmployee({} as any);
         setIntercompany({} as any);
         // delete headerRef.current[employee.id];
@@ -351,11 +352,34 @@ function FooterClousing({
       if (difference === true) return;
     }
 
-    if (
-      header[clousingId]?.difference &&
-      Number(header[clousingId]?.difference.toFixed(2)) !== 0 &&
-      isConfirm === false
-    ) {
+    let hasDifference = false;
+
+    if (header[clousingId]?.difference !== undefined) {
+      // Obtenemos datos de prepago
+      const prepaid = await getPrepaidData(clousingId, dateClousing);
+
+      // Calculamos la diferencia total sin incluir la diferencia de prepago
+      // Independientemente de si son valores positivos o negativos
+      const prepaidDifference = prepaid.total?.difference || 0;
+
+      // Calculamos la diferencia total excluyendo la diferencia de prepago
+      const totalDifferenceWithoutPrepaid =
+        Math.abs(header[clousingId].difference) - Math.abs(prepaidDifference);
+
+      console.log("Header Difference:", header[clousingId].difference);
+      console.log("Prepaid Difference:", prepaidDifference);
+      console.log(
+        "Total Difference Without Prepaid:",
+        totalDifferenceWithoutPrepaid
+      );
+
+      // Consideramos que hay diferencia si el valor absoluto es distinto de cero
+      // Usamos un pequeño umbral (0.01) para evitar problemas de redondeo
+      hasDifference =
+        Math.abs(Number(totalDifferenceWithoutPrepaid.toFixed(2))) > 0.01;
+    }
+
+    if (hasDifference && isConfirm === false) {
       setOpenDialogDifference(true);
       return;
     }

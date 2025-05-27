@@ -36,7 +36,7 @@ import DialogCoupons from "./DialogCoupons";
 
 const pageSize = 10;
 
-function PrepaidClousing({ data }: any) {
+function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   const [prepaid, setPrepaid] = useState<PrepaidModel>({} as PrepaidModel);
   const [coupons, setCoupons] = useState<CouponCatalogModel[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,6 +52,7 @@ function PrepaidClousing({ data }: any) {
   const [isOpen, setIsOpen] = useState(false);
   const [couponsList, setCouponsList] = useState<CouponCatalogModel[]>([]);
   const [client, setClient] = useState<string>("");
+  const [loadingAdded, setLoadingAdded] = useState<boolean>(false);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -59,24 +60,36 @@ function PrepaidClousing({ data }: any) {
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const prepaid: PrepaidModel = await getPrepaidData(data?.id);
-      const couponsList: CouponCatalogModel[] = await getCouponData(data?.id);
-      const customersApi = await getCustomers();
-      setPrepaid(prepaid);
-      setCoupons(couponsList);
-      customersApi.push({
-        value: 9000000,
-        label: "8 AEROVIAS DE MEXICO S.A DE C.V",
-      });
-      setCustomers(customersApi);
-      if (prepaid?.total)
-        setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
 
+      const prepaid: PrepaidModel = await getPrepaidData(
+        data?.id,
+        data?.closingStartDate
+      );
+      if (prepaid.lines.length > 0) {
+        const couponsList: CouponCatalogModel[] = await getCouponData(
+          cdc,
+          data?.closingStartDate
+        );
+        const customersApi = await getCustomers();
+        console.log(prepaid);
+
+        setPrepaid(prepaid);
+        setCoupons(couponsList);
+        /*    if (couponsList.length > 0) {
+          const uniqueClients = getUniqueClients(couponsList);
+          customersApi.push(...uniqueClients);
+        } */
+
+        setCustomers(customersApi);
+        if (prepaid?.total)
+          setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
+
+        updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
+
+        const items = prepaid?.lines?.slice(startRange, endRange);
+        setVisibleItems(items);
+      }
       setLoading(false);
-      updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
-
-      const items = prepaid?.lines?.slice(startRange, endRange);
-      setVisibleItems(items);
     }
 
     fetchData();
@@ -87,6 +100,21 @@ function PrepaidClousing({ data }: any) {
     const items = prepaid?.lines?.slice(startRange, endRange);
     setVisibleItems(items);
   }, [page]);
+
+  const getUniqueClients = (lines: CouponCatalogModel[]) => {
+    const uniqueClients = new Set<string>();
+    lines.forEach((line) => {
+      if (line.clientCustom) {
+        uniqueClients.add(line.clientCustom);
+      }
+    });
+
+    let idCounter = 9000;
+    return Array.from(uniqueClients).map((client) => ({
+      value: idCounter++, // Start from 9000 and increment for each client
+      label: client,
+    }));
+  };
 
   function updateData(updatePrepaid: PrepaidLineModel[]) {
     const newTotalFisico = updatePrepaid.reduce(
@@ -132,10 +160,11 @@ function PrepaidClousing({ data }: any) {
     };
   }
 
-  const debouncedHandleCoupon = debounce(handleCoupon, 1000);
+  const debouncedHandleCoupon = debounce(handleCoupon, 0);
 
   function handleCoupon(coupon: string) {
-    if (coupon.length < 6) return;
+    if (coupon.length < 1) return;
+    setLoadingAdded(true);
 
     const couponModel = coupons.find((item) => item.folioCustom === coupon);
 
@@ -146,7 +175,7 @@ function PrepaidClousing({ data }: any) {
 
     const findClient = prepaid.lines.find(
       (item: PrepaidLineModel) =>
-        item.client?.toLowerCase() === couponModel.client.toLowerCase()
+        item.client?.toLowerCase() === couponModel.clientCustom.toLowerCase()
     );
 
     if (findClient === undefined) {
@@ -225,6 +254,7 @@ function PrepaidClousing({ data }: any) {
 
     // Update the data with the new prepaid lines
     updateData(updatePrepaid);
+    setLoadingAdded(false);
     console.log(updatePrepaid);
   }
 
@@ -336,6 +366,7 @@ function PrepaidClousing({ data }: any) {
       type: type,
       duration: 2500,
     });
+    setLoadingAdded(false);
   }
 
   const openDialog = (
@@ -355,10 +386,16 @@ function PrepaidClousing({ data }: any) {
 
       <Group attached mb={4}>
         <InputAddon>Código de Barras</InputAddon>
-        <Skeleton loading={loading}>
+        <Skeleton loading={loadingAdded}>
           <Input
             placeholder="Código de Barras"
-            onChange={(e) => debouncedHandleCoupon(e.target.value)}
+            //onChange={(e) => debouncedHandleCoupon(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                debouncedHandleCoupon(e.currentTarget.value);
+                e.currentTarget.value = "";
+              }
+            }}
             disabled={data?.closingConfirmation}
           />
         </Skeleton>
