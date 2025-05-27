@@ -27,7 +27,6 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
 
   useEffect(() => {
     async function fetchData() {
-      console.log("");
       
       if (!data) return;      
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);
@@ -82,13 +81,16 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
             {visibleItems?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text
-                  cursor="pointer"
-                  textDecoration="underline"
-                  color="blue.500"
-                  onClick={() => openDiaolog(true, item)}
-                  >
-                    {item.employeeName}</Text>
+                  { data?.closingConfirmation 
+                    ? <Text
+                      > {item.employeeName} </Text>
+                    : <Text
+                        cursor="pointer"
+                        textDecoration="underline"
+                        color="blue.500"
+                        onClick={() => openDiaolog(true, item)}
+                      > {item.employeeName} </Text>
+                  }
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">

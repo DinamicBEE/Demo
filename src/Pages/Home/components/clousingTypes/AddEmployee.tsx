@@ -169,6 +169,13 @@ function AddEmployee({
     fetchData();
   }, [getEmployeeList, getReasonsList, getTicketsList, subsidiaryId, cdc, isOpen, data]);
 
+  useEffect(() => {
+    if (isNaN(amount) || amount < 0) {
+      setAmount(0);
+    }
+  }, [amount])
+  
+
 // Para el cambio de ticket, debe servir aunque se cmabien los tipos de pagos
   const handleReasonChange = (selectedReasonId: string) => {
     setReason([selectedReasonId]);
@@ -207,7 +214,7 @@ function AddEmployee({
   async function handleData() {
     setLoading(true);
 
-    if (!selectEmployee || amount === 0 || !reason[0]) {
+    if (!selectEmployee || amount === 0 || !reason[0] || isNaN(amount)) {
       alert("Por favor, complete todos los campos obligatorios.");
       setLoading(false);
       return;
@@ -319,6 +326,7 @@ function AddEmployee({
               <Input
                 type="number"
                 placeholder="Ingrese el monto"
+                min={0}
                 value={amount}
                 onChange={(e) => setAmount(parseFloat(e.target.value))}
               />

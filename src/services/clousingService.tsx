@@ -325,6 +325,7 @@ export const getSpecialCustomerClousing = async (
 
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
+        couponPrice: 0
         // exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
       })
     );

@@ -49,6 +49,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
 
     value = value.replace(/[^\d.]/g, "");
 
+    if (!value || isNaN(parseFloat(value))) return
+
     if (!customerData) return;
 
     const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
@@ -74,6 +76,8 @@ export const useHandleCustomer = (customerData: CustomerModel, setCustomer: any,
   function handleAmountPAX(id: number | string, value: string) {
 
     value = value.replace(/[^\d.]/g, "");
+
+    if (!value || isNaN(parseFloat(value))) return
 
     if (!customerData) return;
 

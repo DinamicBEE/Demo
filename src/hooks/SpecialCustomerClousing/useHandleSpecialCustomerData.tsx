@@ -46,6 +46,8 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
       let newValue = 0;
       let newValueUSD = 0;
 
+      if (!value || isNaN(parseFloat(value))) return
+
       if (key === "ammount") {
         newValue = parseFloat(value);
         newValueUSD = 0;

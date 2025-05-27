@@ -157,7 +157,8 @@ export function EmployeeClousingProvider({
           total: newTotal,
         },
       };
-
+      // console.log("updateData", updateData);
+      
       employeeRef.current = updateData;
       setEmployee(updateData);
     },
