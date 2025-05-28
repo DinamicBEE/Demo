@@ -325,7 +325,7 @@ export const getSpecialCustomerClousing = async (
 
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
-        couponPrice: 0
+        couponPrice: 0,
         // exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
       })
     );
@@ -378,7 +378,8 @@ export const getSpecialCustomerClousing = async (
  * @returns {Promise<PrepaidModel>}
  */
 export const getPrepaidClousing = async (
-  clousingId: number, dateClousing: string
+  clousingId: number,
+  dateClousing: string
 ): Promise<PrepaidModel> => {
   // console.log(clousingId)
 
@@ -394,11 +395,12 @@ export const getPrepaidClousing = async (
         return {
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
+          edit: item.supplementsQuantity > 0 ? true : false,
           coupons: item.coupons
             ? item.coupons.map((coupon: CouponCatalogModel) => ({
                 ...coupon,
                 // Generate new UUID for null IDs, otherwise keep existing ID
-                folioCustom: coupon.folio.split("_")[1],// Eliminar números al inicio
+                folioCustom: coupon.folio.split("_")[1], // Eliminar números al inicio
                 validityDateCustom: format(
                   new Date(coupon.validityDate),
                   "dd/MM/yyyy"
@@ -462,6 +464,9 @@ export const getCouponCatalog = async (
     response.data[1].validityDate = "2025-05-14T00:00:00";
     response.data[2].validityDate = "2025-05-13T00:00:00";
     response.data[3].amount = 50; */
+    if (response.data.length >= 0) {
+      response.data[0].validityDate = "2025-01-01T00:00:00";
+    }
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
