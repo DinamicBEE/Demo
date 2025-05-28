@@ -118,9 +118,9 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      cashRef.current[employee.id]?.total?.totalPOS !==
+                      cashRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
-                        ? "$ " + cashRef.current[employee.id].total?.totalPOS
+                        ? "$ " + cashRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -134,8 +134,8 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      tdcRef.current[employee.id]?.total?.totalPOS !== undefined
-                        ? "$ " + tdcRef.current[employee.id].total?.totalPOS
+                      tdcRef.current[employee.id]?.total?.totalPhysical !== undefined
+                        ? "$ " + tdcRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -149,10 +149,10 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      customerRef.current[employee.id]?.total?.totalPOS !==
+                      customerRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          customerRef.current[employee.id].total?.totalPOS
+                          customerRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -166,10 +166,10 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      specialCustRef.current[employee.id]?.total?.totalPOS !==
+                      specialCustRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          specialCustRef.current[employee.id].total?.totalPOS
+                          specialCustRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -183,9 +183,9 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      prepaidRef.current[employee.id]?.total?.totalPOS !==
+                      prepaidRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
-                        ? "$ " + prepaidRef.current[employee.id].total?.totalPOS
+                        ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -199,10 +199,10 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      employeeRef.current[employee.id]?.total?.totalPOS !==
+                      employeeRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          employeeRef.current[employee.id].total?.totalPOS
+                          employeeRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -216,10 +216,10 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
-                      intercompanyRef.current[employee.id]?.total?.totalPOS !==
+                      intercompanyRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          intercompanyRef.current[employee.id].total?.totalPOS
+                          intercompanyRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
                     </Text>
                   </Flex>
