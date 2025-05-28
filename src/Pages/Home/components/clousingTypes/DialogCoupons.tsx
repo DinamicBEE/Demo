@@ -103,7 +103,7 @@ function DialogCoupons({
           </Table.ScrollArea>
           <PaginationRoot
             count={
-              coupons.length > 0 ? Math.ceil(coupons.length / pageSize) : 1
+              coupons.length
             }
             pageSize={pageSize}
             page={page}

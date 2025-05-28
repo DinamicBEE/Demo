@@ -3,7 +3,11 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Button } from "@components/ui/button";
 import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
-import type { FooterClousing, TotalModel } from "@models/common.clousing.model";
+import type {
+  AlertClousing,
+  FooterClousing,
+  TotalModel,
+} from "@models/common.clousing.model";
 import { sendCashClousing } from "@services/clousingService";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
@@ -25,6 +29,7 @@ import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
 import { BankLineModel, Voucher } from "@models/tdc.model";
+import { toaster } from "@components/ui/toaster";
 
 function FooterClousing({
   clousingType,
@@ -58,10 +63,10 @@ function FooterClousing({
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
 
-      if (clousingType === "employee") {        
+      if (clousingType === "employee") {
         data.difference = 0;
       }
-      
+
       setFooter(data);
     }
 
@@ -247,21 +252,22 @@ function FooterClousing({
 
     //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
-    
+
     // console.log(body);
-    
+
     if (response === "response") {
       //TODO: DEvolver para el back
       // if (response === "response") {
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
-       const statusNew = 
-        isConfirm === true 
-          ? STATUS.Open 
-          : (body.prepaid.lines.length > 0 && prepaid.total?.difference !== 0) 
+      const statusNew =
+        isConfirm === true
+          ? STATUS.Open
+          : body.prepaid.lines.length > 0 && prepaid.total?.difference !== 0
             ? STATUS.Close
-            : (header[body.id] && Number(header[body.id].difference?.toFixed(2)) !== 0)
+            : header[body.id] &&
+                Number(header[body.id].difference?.toFixed(2)) !== 0
               ? STATUS.WITH_DIFFERENCE
               : STATUS.Close;
 
@@ -310,8 +316,7 @@ function FooterClousing({
         can:
           body.cash.lines.find((line) => line.currency === "CAD")
             ?.totalFisico ?? 0,
-        status: isConfirm === true 
-         ? STATUS.Open : statusNew,
+        status: isConfirm === true ? STATUS.Open : statusNew,
         closingConfirmation: !isConfirm,
         //tips: body.cash.electronicTips,
         tdc: tdcHeader.map((item) => ({
@@ -341,6 +346,15 @@ function FooterClousing({
     setButtonLoading(false);
   }
 
+  function showToast(alertModel: AlertClousing) {
+    toaster.create({
+      title: alertModel.title,
+      type: alertModel.type,
+      description: alertModel.description,
+      duration: 3000,
+    });
+  }
+
   const handleDialogConfirm = async (isConfirm: boolean) => {
     const cash = await getCashData(clousingId, idCurrency);
 
@@ -363,10 +377,23 @@ function FooterClousing({
     }
 
     let hasDifference = false;
+    const prepaid = await getPrepaidData(clousingId, dateClousing);
+    const ref = prepaidRef.current[clousingId];
+    const clientNull = ref?.lines.some(
+      (line) => line.client === null || line.client === ""
+    );
+
+    if (clientNull) {
+      showToast({
+        title: "Error",
+        description: "Falta agregar clientes a prepago",
+        type: "error",
+      });
+      return;
+    }
 
     if (header[clousingId]?.difference !== undefined) {
       // Obtenemos datos de prepago
-      const prepaid = await getPrepaidData(clousingId, dateClousing);
 
       // Calculamos la diferencia total sin incluir la diferencia de prepago
       // Independientemente de si son valores positivos o negativos
