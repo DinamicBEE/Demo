@@ -55,7 +55,8 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     if (data?.closingConfirmation) return;
     setDialog(true);
   }
-
+  console.log("");
+  
   const closeDiaolog = () => {
     setDialog(false);
   }
