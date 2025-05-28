@@ -62,10 +62,14 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   }, 0);
 
 
-  const totalMXN = (total * cashClousingSelect.exchangeRate)
+  const totalMXNRaw = (total * cashClousingSelect.exchangeRate);
+  const totalMXN = Math.ceil(totalMXNRaw);
+  const totalMXNFormatted = totalMXN.toFixed(2);
+
+  console.log(totalMXNFormatted);
 
   const handleSave = () => {
-    onSave(currencyId, total, totalMXN, denominations);
+    onSave(currencyId, total, Number(totalMXNFormatted), denominations);
     onClose();
   };
 
