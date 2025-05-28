@@ -240,7 +240,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
             quantity: quantity,
             physical: newTotalFisico,
             difference: newDifference,
-            edit: hasCouponExpired,
+            edit: hasCouponExpired || findClient.supplementsQuantity > 0,
             unitPrice: couponModel.amount,
           }
         : item
