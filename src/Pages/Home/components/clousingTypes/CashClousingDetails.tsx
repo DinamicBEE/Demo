@@ -6,11 +6,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogRoot,
+  DialogTitle,
+  Flex,
   FormatNumber,
   Input,
   Table,
 } from "@chakra-ui/react";
-import { CurrencyInputNumber } from "@components/NumericInput";
+import { CurrencyInput, CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
@@ -34,6 +36,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   const [denominations, setDenominations] = useState<any[]>([]);
 
   useEffect(() => {
+    console.log("CashClousingDetails data:", cashClousingSelect);
     if (cashClousingSelect?.denominations) {
       setDenominations([...cashClousingSelect.denominations]);
     }
@@ -78,11 +81,28 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
       <DialogBackdrop />
       <DialogContent>
         <DialogHeader>
-          Lista de Denominaciones.{" "}
-          <b>Total POS: ${(cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)}</b>
+           <DialogTitle>Lista de Denominaciones</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <Table.ScrollArea>
+          <Flex gap={4}  mb={4}>
+            <CurrencyInput
+              value={parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2))}
+              name={"POS"}
+              loading={false}
+            />
+            <CurrencyInput
+              value={total}
+              name={"Físico"}
+              loading={false}
+            />
+            <CurrencyInput
+              value={parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)) - total}
+              name={"Diferencia"}
+              loading={false}
+            />
+          </Flex>
+
+          <Table.ScrollArea borderWidth="1px" rounded="md">
             <Table.Root size="sm" variant="outline">
               <Table.Header>
                 <Table.Row bg="bg.subtle">
