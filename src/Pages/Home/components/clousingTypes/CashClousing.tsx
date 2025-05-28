@@ -33,7 +33,7 @@ function CashClousing({ data, idCurrency }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      
+
       const cashData = await getCashData(data.id, idCurrency);
 
       if (cashData.total != undefined) {
@@ -70,14 +70,14 @@ function CashClousing({ data, idCurrency }: any) {
   const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
   const handleSaveFromDialog = (currencyId: string, total: number, totalMXN: number, updatedDenominations: any) => {
-    
+
     handleInputChange(currencyId, totalMXN.toString(), updatedDenominations);
 
     // Actualiza también las denominaciones si lo necesitas:
     setCashData((prev: any) => {
-      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ? 
+      const updatedCurrencies = prev.currencies.map((currency: any) => currency.id == currencyId ?
         { ...currency, totalFisico: totalMXN, denominations: updatedDenominations } : currency);
-        
+
       return { ...prev, currencies: updatedCurrencies };
     });
 
@@ -160,7 +160,7 @@ function CashClousing({ data, idCurrency }: any) {
                           disabled={true}
                         />
 
-                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)}>
+                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={Number(item.totalFisico) < 0 ? true : false}>
                           <CiSquarePlus />
                         </Button>
                       </>
