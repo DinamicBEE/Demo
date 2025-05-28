@@ -39,7 +39,7 @@ function FilterVoucher({
   }, [vouchers]);
 
   function handleSearch(event: string) {    
-    if (event.toLowerCase() === "enter" && searchRef.current.length >= 4) {
+    if (event.toLowerCase() === "enter" && searchRef.current.length >= 1) {
       if (filteredVouchers.items.length > 0) {
         const firstVoucher = filteredVouchers.items[0];
         const selectEvent = {

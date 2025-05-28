@@ -256,10 +256,14 @@ function FooterClousing({
       //console.log("Corte de caja enviado correctamente");
       //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
       //se guardan los datos del corte para poder actualiza la tabla principal
-      const statuss =
-        header[body.id] && Number(header[body.id].difference?.toFixed(2)) !== 0
-          ? STATUS.WITH_DIFFERENCE
-          : STATUS.Close;
+       const statusNew = 
+        isConfirm === true 
+          ? STATUS.Open 
+          : (body.prepaid.lines.length > 0 && prepaid.total?.difference !== 0) 
+            ? STATUS.Close
+            : (header[body.id] && Number(header[body.id].difference?.toFixed(2)) !== 0)
+              ? STATUS.WITH_DIFFERENCE
+              : STATUS.Close;
 
       const mxm =
         body.cash.lines.find((line) => line.currency === "MXN")?.totalFisico ??
@@ -306,7 +310,8 @@ function FooterClousing({
         can:
           body.cash.lines.find((line) => line.currency === "CAD")
             ?.totalFisico ?? 0,
-        status: isConfirm === true ? STATUS.Open : statuss,
+        status: isConfirm === true 
+         ? STATUS.Open : statusNew,
         closingConfirmation: !isConfirm,
         //tips: body.cash.electronicTips,
         tdc: tdcHeader.map((item) => ({

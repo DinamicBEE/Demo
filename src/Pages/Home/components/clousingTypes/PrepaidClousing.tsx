@@ -81,6 +81,8 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         } */
 
         setCustomers(customersApi);
+        console.log(prepaid.total);
+        
         if (prepaid?.total)
           setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
 
@@ -433,6 +435,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <FilterCustomer
+                  disabled={data?.closingConfirmation}
                     customers={customers}
                     customerSelect={item.client ?? ""}
                     label={false}
@@ -478,7 +481,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                       );
                       updateData(updatePrepaid);
                     }}
-                    disabled={false}
+                    
                   ></FilterCustomer>
                 </Table.Cell>
 
