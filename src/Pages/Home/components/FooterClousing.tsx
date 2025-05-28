@@ -383,10 +383,24 @@ function FooterClousing({
       (line) => line.client === null || line.client === ""
     );
 
-    if (clientNull) {
+    if (clientNull && prepaid.lines.length > 0) {
       showToast({
         title: "Error",
         description: "Falta agregar clientes a prepago",
+        type: "error",
+      });
+      return;
+    }
+
+    const allHaveCoupons = prepaid.lines.every(
+      (line) => line.coupons.length > 0
+    );
+
+    if (!allHaveCoupons && isConfirm === false && prepaid.lines.length > 0) {
+      showToast({
+        title: "Error",
+        description:
+          "Todos los clientes de prepago deben tener al menos un cupón",
         type: "error",
       });
       return;
@@ -402,13 +416,6 @@ function FooterClousing({
       // Calculamos la diferencia total excluyendo la diferencia de prepago
       const totalDifferenceWithoutPrepaid =
         Math.abs(header[clousingId].difference) - Math.abs(prepaidDifference);
-
-      console.log("Header Difference:", header[clousingId].difference);
-      console.log("Prepaid Difference:", prepaidDifference);
-      console.log(
-        "Total Difference Without Prepaid:",
-        totalDifferenceWithoutPrepaid
-      );
 
       // Consideramos que hay diferencia si el valor absoluto es distinto de cero
       // Usamos un pequeño umbral (0.01) para evitar problemas de redondeo
