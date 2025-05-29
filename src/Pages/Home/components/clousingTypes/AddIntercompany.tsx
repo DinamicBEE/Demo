@@ -108,8 +108,8 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
 
     setLoading(true);
 
-     if (!selectEmployee || !amount || !ticket) {
-      alert("Por favor, complete todos los campos obligatorios.");
+     if (!selectEmployee || amount === 0 || !ticket[0] || isNaN(amount)) {
+      alert("Por favor, complete todos los campos faltantes.");
       setLoading(false);
       return;
     }
