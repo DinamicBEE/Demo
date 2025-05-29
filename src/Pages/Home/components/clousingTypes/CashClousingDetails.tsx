@@ -1,17 +1,6 @@
-import {
-  DialogActionTrigger,
-  DialogBackdrop,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogTitle,
-  Flex,
-  FormatNumber,
-  Input,
-  Table,
-} from "@chakra-ui/react";
+import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent,
+  DialogFooter, DialogHeader, DialogRoot, DialogTitle, Flex,
+  FormatNumber, Table } from "@chakra-ui/react";
 import { CurrencyInput, CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
@@ -36,7 +25,6 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   const [denominations, setDenominations] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("CashClousingDetails data:", cashClousingSelect);
     if (cashClousingSelect?.denominations) {
       setDenominations([...cashClousingSelect.denominations]);
     }
@@ -65,8 +53,6 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   const totalMXNRaw = (total * cashClousingSelect.exchangeRate);
   const totalMXN = Math.ceil(totalMXNRaw);
   const totalMXNFormatted = totalMXN.toFixed(2);
-
-  console.log(totalMXNFormatted);
 
   const handleSave = () => {
     onSave(currencyId, total, Number(totalMXNFormatted), denominations);

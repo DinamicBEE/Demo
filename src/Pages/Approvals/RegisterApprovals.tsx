@@ -121,13 +121,13 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
         <DialogContent>
 
-          <form onSubmit={handleSubmit(onSubmitForm)}>
 
-            <DialogHeader>
-              <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
-            </DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
+          </DialogHeader>
 
-            <DialogBody pb="4">
+          <DialogBody pb="4">
+            <form onSubmit={handleSubmit(onSubmitForm)}>
 
               <Stack gap="4">
 
@@ -200,27 +200,27 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                 }
 
               </Stack>
+            </form>
 
-            </DialogBody>
+          </DialogBody>
 
-            <DialogFooter>
+          <DialogFooter>
 
-              <DialogActionTrigger asChild>
-                <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
-              </DialogActionTrigger>
+            <DialogActionTrigger asChild>
+              <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
+            </DialogActionTrigger>
 
-              {
-                closingList && closingList.length !== 0 && !hasCancelled && (
+            {
+              closingList && closingList.length !== 0 && !hasCancelled && (
 
-                  <Button type="submit" colorPalette="meraPrimary" loading={isLoading} disabled={isLoading}>
-                    Guardar
-                  </Button>
+                <Button colorPalette="meraPrimary" loading={isLoading} disabled={isLoading} onClick={handleSubmit(onSubmitForm)}>
+                  Guardar
+                </Button>
 
-                )
-              }
-            </DialogFooter>
+              )
+            }
+          </DialogFooter>
 
-          </form>
 
         </DialogContent>
 
