@@ -4,6 +4,8 @@ export const getStatusColor = (status: STATUS) => {
   switch (status) {
     case STATUS.Close:
       return "meraInfo";
+    case STATUS.RECLOSED:
+      return "meraInfo";
     case STATUS.REOPENED:
       return "meraWarning";
     case STATUS.WITH_DIFFERENCE:

@@ -132,6 +132,7 @@ export interface FooterClousing {
   closingConfirmation: boolean;
   idCurrency: number;
   dateClousing: string;
+  propStatus: string;
   // data?: TotalModel | undefined;
   // loading?: boolean;
   // onChange?: () => Promise<boolean>;

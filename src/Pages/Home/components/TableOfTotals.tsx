@@ -184,7 +184,8 @@ function TableOfTotals({
   const openDialog = (item: any) => {
     if (
       item.status.toLowerCase() === "Abierto".toLowerCase() ||
-      item.status.toLowerCase() === "open".toLowerCase()
+      item.status.toLowerCase() === "open".toLowerCase() ||
+      item.status.toLowerCase() === "Reabierto".toLowerCase()
     ) {
       item.closingConfirmation = false;
     } else {

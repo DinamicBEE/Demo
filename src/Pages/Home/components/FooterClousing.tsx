@@ -38,6 +38,7 @@ function FooterClousing({
   closingConfirmation,
   idCurrency,
   dateClousing,
+  propStatus
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -268,8 +269,10 @@ function FooterClousing({
             ? STATUS.Close
             : header[body.id] &&
                 Number(header[body.id].difference?.toFixed(2)) !== 0
-              ? STATUS.WITH_DIFFERENCE
-              : STATUS.Close;
+              ? STATUS.WITH_DIFFERENCE  // Still mark as "with difference" regardless of previous status
+              : propStatus === STATUS.REOPENED 
+                ? STATUS.RECLOSED  // Preserve reopened/reclosed status only if there's no difference
+                : STATUS.Close;
 
       const mxm =
         body.cash.lines.find((line) => line.currency === "MXN")?.totalFisico ??
@@ -316,7 +319,7 @@ function FooterClousing({
         can:
           body.cash.lines.find((line) => line.currency === "CAD")
             ?.totalFisico ?? 0,
-        status: isConfirm === true ? STATUS.Open : statusNew,
+        status: isConfirm === true ? propStatus : statusNew,
         closingConfirmation: !isConfirm,
         //tips: body.cash.electronicTips,
         tdc: tdcHeader.map((item) => ({

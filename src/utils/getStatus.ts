@@ -10,6 +10,8 @@ export const getStatus = (status: string) => {
       return STATUS.WITH_DIFFERENCE;
     case "Open":
       return STATUS.Open;
+    case "Re-cerrado":
+      return STATUS.RECLOSED;
     default:
       return STATUS.Open;
   }

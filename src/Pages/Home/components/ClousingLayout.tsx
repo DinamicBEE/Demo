@@ -327,6 +327,7 @@ function ClousingLayout({
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
               dateClousing={employee?.closingStartDate ?? ""}
+              propStatus={employee?.status ?? ""}
             />
           </DialogFooter>
 
