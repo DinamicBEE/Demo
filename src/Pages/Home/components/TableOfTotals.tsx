@@ -341,7 +341,7 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Diferencia
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+                    <Table.ColumnHeader textAlign="center" minW="110px">
                       Estatus
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
