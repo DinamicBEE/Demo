@@ -215,7 +215,7 @@ function AddEmployee({
     setLoading(true);
 
     if (!selectEmployee || amount === 0 || !reason[0] || isNaN(amount)) {
-      alert("Por favor, complete todos los campos obligatorios.");
+      alert("Por favor, complete todos los campos faltantes.");
       setLoading(false);
       return;
     } else if (showTicketSelector  && !ticket[0]) {
