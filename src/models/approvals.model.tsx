@@ -2,6 +2,7 @@ import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 export interface Approval {
   idRequest: number;
+  employee: string,
   idCashBatch?: number;
   date: string;
   state: string;
