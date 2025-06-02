@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Box, Grid, Group, Input, InputAddon, Button } from "@chakra-ui/react";
-import { Skeleton } from "@components/ui/skeleton";
+import { Box, Grid, Group, Input, InputAddon, Button, Skeleton } from "@chakra-ui/react";
 import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
 import { HeaderData } from "@models/common.clousing.model";

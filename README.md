@@ -94,3 +94,19 @@ mera-frontend/
 Este proyecto está licenciado bajo la [Licencia que uses]. Consulta el archivo `LICENSE` para más detalles.
 
 ## Despliegle
+
+## Recomendaciones de Rendimiento y Buenas Prácticas
+
+- **Carga por demanda (Code Splitting):** Utiliza `React.lazy` y `Suspense` para cargar componentes o páginas bajo demanda y reducir el tamaño inicial del bundle.
+- **Memoización de componentes:** Usa `React.memo`, `useMemo` y `useCallback` para evitar renders innecesarios en componentes que reciben muchas props o funciones.
+- **Optimización de dependencias:** Revisa y elimina dependencias no utilizadas. Mantén las versiones actualizadas para aprovechar mejoras de rendimiento y seguridad.
+- **Evita renders innecesarios:** Asegúrate de que los contextos y estados globales no provoquen renders en componentes que no lo requieren.
+- **Virtualización de listas:** Para tablas o listas grandes, utiliza librerías como `react-window` o `react-virtualized` para renderizar solo los elementos visibles.
+- **Optimización de imágenes y recursos:** Usa imágenes optimizadas y formatos modernos (WebP). Aprovecha el cacheo de recursos estáticos.
+- **Minimiza llamadas a APIs:** Implementa cache local (por ejemplo, con SWR, React Query o IndexedDB) para evitar llamadas repetidas.
+- **Uso eficiente de efectos (`useEffect`):** Revisa dependencias de los efectos para evitar ejecuciones innecesarias.
+- **Evita lógica pesada en el render:** Mueve cálculos costosos fuera del render, usando memoización o efectos.
+- **Auditoría de Lighthouse:** Ejecuta auditorías con Lighthouse para identificar cuellos de botella en performance y accesibilidad.
+- **Monitorización:** Considera integrar herramientas de monitoreo de errores y rendimiento como Sentry o LogRocket.
+
+Estas recomendaciones te ayudarán a mantener el proyecto escalable, rápido y fácil de mantener.

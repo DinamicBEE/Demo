@@ -19,7 +19,7 @@ import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
 import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing";
-import { lazy, useState, Suspense, useEffect, useContext } from "react";
+import { lazy, useState, Suspense, useEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { ClousingLayoutProps } from "@models/common.clousing.model";
@@ -31,13 +31,12 @@ const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
 const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(
   () => import("./clousingTypes/CustomersClousing")
-); //const SpecialCustomersClousing = lazy(() => import("./clousingTypes/specialCustomers"));
+); 
 const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
 const EmployeesClousing = lazy(
   () => import("./clousingTypes/EmployeesClousing")
 );
 import { useHeaders } from "@context/home/headerContext";
-import { CashContext } from "@models/cash.model";
 
 function ClousingLayout({
   isOpen,
@@ -45,7 +44,6 @@ function ClousingLayout({
   employee,
   location,
   subsidiary,
-  isEdit,
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
 
@@ -97,9 +95,6 @@ function ClousingLayout({
 
           <DialogBody>
             <Tabs.RootProvider
-              /* onValueChange={(e: any) => {
-              setValue(e.value as CLOUSING_KEY);
-            }} */
               variant="outline"
               defaultValue={value}
               unmountOnExit
@@ -337,8 +332,6 @@ function ClousingLayout({
       <ExitDialog
         closeDialog={() => {
           setOpenDialogExit(false);
-
-          //onClose();
         }}
         closeOnExit={() => {
           onClose();
@@ -352,10 +345,8 @@ function ClousingLayout({
             setCoupons({} as any);
             setEmployee({} as any);
             setIntercompany({} as any);
-            //delete headerRef.current[employee.id];
           }
 
-          // headerRef.current = {};
         }}
         isOpen={openDialogExit}
       ></ExitDialog>

@@ -19,33 +19,31 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@components/ui/select";
-import { Checkbox } from "@components/ui/checkbox";
 import { Alert } from "@components/ui/alert";
 import { useList } from "@context/home/listsContext";
 import { useClousing } from "@context/home/clousingContext";
 import TableOfTotals from "./components/TableOfTotals";
 import "./Home.css";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
-import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
 
 function Home() {
-  const [subsidiary, setSubsidiary] = useState<ListCollection>(
-    createListCollection({ items: [] })
+  const [subsidiary, setSubsidiary] = useState<ListCollection<{ value: number; label: string; idCurrency?: number }>>(
+    createListCollection<{ value: number; label: string; idCurrency?: number }>({ items: [] })
   );
   const [SubSelect, setSubSelect] = useState<SubsidiaryModal>(
     {} as SubsidiaryModal
   );
   const [stores, setStores] = useState<StoreModel[]>([]);
-  const [storeBySub, setStoreBySub] = useState<ListCollection>(
-    createListCollection({ items: [] })
+  const [storeBySub, setStoreBySub] = useState<ListCollection<{ value: number; label: string }>>(
+    createListCollection<{ value: number; label: string }>({ items: [] })
   );
   const [isAdyen, setIsAdyen] = useState<boolean>(false);
   const [location, setLocation] = useState<location>({} as location);
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
   const [showTable, setShowTable] = useState<boolean>(false);
-  const { getInfo, filterDataAdyen, data } = useClousing();
+  const { getInfo } = useClousing();
   const { getStoresData, error, getSubsidiariesData } = useList();
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
@@ -61,7 +59,7 @@ function Home() {
 
       const subsidiariesData = await getSubsidiariesData();
 
-      const subList = createListCollection({
+      const subList = createListCollection<{ value: number; label: string; idCurrency?: number }>({
         items: subsidiariesData.map((item) => ({
           value: item.id,
           label: item.name,
@@ -71,17 +69,13 @@ function Home() {
 
       setSubsidiary(subList);
 
-      // const storeData = await getStoresData()
-
-      // setStores(storeData);
-
       setCatalogLoading(false);
     }
 
     fetchData();
   }, []);
 
-  async function filterStore(event: ValueChangeDetails<any>) {
+  async function filterStore(event: any) {
     const itemSelected = {
       ...event.items[0],
       id: event.items[0].value,
@@ -165,28 +159,28 @@ function Home() {
             w="100%"
             alignItems="end"
           >
-            {subsidiary.items.length > 0 && (
-              <SelectRoot
-                collection={subsidiary}
-                onValueChange={(event) => filterStore(event)}
-              >
-                <SelectLabel fontFamily="heading">
-                  Selecciona Subsidiaria
-                </SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText placeholder="Selecciona Subsidiaria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {subsidiary.items.map((item) => (
-                    <SelectItem item={item} key={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            )}
 
-            {SubSelect.id != 0 && SubSelect.id != null && (
+            <SelectRoot
+              collection={subsidiary}
+              onValueChange={(event) => filterStore(event)}
+            >
+              <SelectLabel fontFamily="heading">
+                Selecciona Subsidiaria
+              </SelectLabel>
+              <SelectTrigger>
+                <SelectValueText placeholder="Selecciona Subsidiaria" />
+              </SelectTrigger>
+              <SelectContent>
+                {subsidiary.items.length > 0 && subsidiary.items.map((item) => (
+                  <SelectItem item={item} key={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+
+
+            {/* {SubSelect.id != 0 && SubSelect.id != null && ( */}
               <SelectRoot
                 collection={storeBySub}
                 onValueChange={(event) => {
@@ -203,14 +197,14 @@ function Home() {
                   <SelectValueText placeholder="Selecciona Centro de consumo" />
                 </SelectTrigger>
                 <SelectContent>
-                  {storeBySub.items.map((item) => (
+                  {(SubSelect.id != 0 && SubSelect.id != null) && storeBySub.items.map((item) => (
                     <SelectItem item={item} key={item.value}>
                       {item.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </SelectRoot>
-            )}
+            {/* )} */}
 
             {location.id != 0 && (
               <Field.Root>

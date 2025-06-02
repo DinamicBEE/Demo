@@ -24,7 +24,7 @@ export function useApi<T, A extends unknown[] = []>(
   const [data, setData] = useState<T | undefined>(initialData);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(autoFetch);
-  const lastArgs = useRef<A>();
+  const lastArgs = useRef<A | undefined>(undefined);
 
   const fetchData = useCallback(async (...args: A) => {
     try {

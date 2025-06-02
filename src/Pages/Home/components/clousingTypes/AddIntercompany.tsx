@@ -21,8 +21,8 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
   const [subsidiariesByRow, setSubsidiariesByRow] = useState<{
       [key: number | string]: ListCollection;
     }>({});
-  const [tickets, setTickets] = useState<ListCollection>(
-    createListCollection({ items: [] })
+  const [tickets, setTickets] = useState<ListCollection<{ label: string; value: string | number; amount?: number }>>(
+    createListCollection<{ label: string; value: string | number; amount?: number }>({ items: [] })
   );
 
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -59,10 +59,10 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       )
       );
 
-      const ticketCollection = createListCollection({
+      const ticketCollection = createListCollection<{ label: string; value: string | number; amount?: number }>({
         items: ticketIntercompany.map((ticket) => ({
           label: ticket.ticketNumber,
-          value: ticket.id,
+          value: ticket.id.toString(),
           amount: ticket.paymentTypeResponse.reduce((acc, payment) => {
             if (payment.paymentMethod === "INTERCOMPANY") {
               return acc + payment.amount;
@@ -121,7 +121,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       employeeName: selectEmployee?.name,
       subsidiaryId: parseInt(subsidiary[0]),
       subsidiaryName: subsidiariesByRow[selectEmployee.id.toString()]?.items.find(item => item.value == subsidiary[0])?.label,
-      amount: tickets.items.find(item => item.value == ticket[0]).amount,
+      amount: tickets.items.find(item => item.value == ticket[0])?.amount ?? 0,
       ticket: ticket[0],
       physicalAmount: amount,
     }
