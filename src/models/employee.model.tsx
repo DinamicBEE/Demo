@@ -107,3 +107,15 @@ export interface AddEmployeeProp {
     isOpen:boolean; 
     onClose: () => void; 
 }
+
+// En caso de requerirse, agregar o cambiar
+// los métodos de pago respecto a la DB... que posiblemente pase
+// y ya
+export const reasonPaymentMethods: Record<string, { methods: string[]; showTickets: boolean }> = {
+  "CONSUMO EMPLEADO": { methods: ["CxcEmpleados"], showTickets: true },
+  "CUPÓN EXTRAVIADO": { methods: ["CxcEspecial", "CxcGeneral", "PREPAGO"], showTickets: true },
+  "VOUCHER EXTRAVIADO": { methods: ["TDC"], showTickets: true },
+  "DIFERENCIA EN EFECTIVO": { methods: [], showTickets: false },
+  "DIFERENCIA EN INVENTARIO": { methods: ["CxcEmpleados"], showTickets: true },
+  "MALA ELABORACIÓN DEL PRODUCTO": { methods: [], showTickets: false }
+};

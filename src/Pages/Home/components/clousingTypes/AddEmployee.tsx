@@ -31,25 +31,13 @@ import {
   AddEmployeeProp,
   Employee,
   EmployeeLine,
-  NewEmployeeModel,
   ReasonsModel,
   TicketModel,
+  reasonPaymentMethods
 } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
-import { sendNewEmployeeRegister } from "@services/clousingService";
-import { ResponseModel } from "@models/common.clousing.model";
-
-//TODO: MOVER AL MODELO, cambiar los métodos según sea necesario. Nota para el futuro dev que lo vea: de seguro va a pasar
-const reasonPaymentMethods: Record<string, { methods: string[]; showTickets: boolean }> = {
-  "CONSUMO EMPLEADO": { methods: ["CxcEmpleados"], showTickets: true },
-  "CUPÓN EXTRAVIADO": { methods: ["CxcEspecial", "CxcGeneral", "PREPAGO"], showTickets: true },
-  "VOUCHER EXTRAVIADO": { methods: ["TDC"], showTickets: true },
-  "DIFERENCIA EN EFECTIVO": { methods: [], showTickets: false },
-  "DIFERENCIA EN INVENTARIO": { methods: ["CxcEmpleados"], showTickets: true },
-  "MALA ELABORACIÓN DEL PRODUCTO": { methods: [], showTickets: false }
-};
 
 function AddEmployee({
   clousingId,
@@ -121,7 +109,6 @@ function AddEmployee({
       setCatalogLoading(false);
 
       if (isOpen && data) {
-        //console.log("Employee a editar", data);
         
         setIsEdited(true);
 
@@ -175,8 +162,6 @@ function AddEmployee({
     }
   }, [amount])
   
-
-// Para el cambio de ticket, debe servir aunque se cmabien los tipos de pagos
   const handleReasonChange = (selectedReasonId: string) => {
     setReason([selectedReasonId]);
     setTicket([]);
@@ -233,7 +218,6 @@ function AddEmployee({
 
     const newEmployee: EmployeeLine = {
       id: isEdited ? data!.id : "employee-" + uuidv4(),
-      //employeeId: selectEmployee.id,
       employeeNumber: selectEmployee.employeeNumber,
       employeeName: selectEmployee.name,
       employeeId: selectEmployee.id,
@@ -245,17 +229,9 @@ function AddEmployee({
     };
     if (isEdited) {
       updateEmployee(newEmployee, clousingId);
-      //console.log("Updated Employee", newEmployee);
     } else {
       setNewEmployee(newEmployee, clousingId);
-      //console.log("New Employee", newEmployee);
     }
-
-    // console.log(newEmployee);
-
-    // const response: ResponseModel = await sendNewEmployeeRegister(clousingId, newEmployee);
-
-    // if(response.success){
 
     setLoading(false);
     onClose();
@@ -265,10 +241,7 @@ function AddEmployee({
     setShowTicketSelector(false);
     setSelectEmployee(undefined);
     setIsEdited(false);
-    // } else {
-    //   alert(response.message);
-    //   setLoading(false);
-    // }
+
   }
 
   async function handleDelete(employeeId: string | number, clousingId: number) {

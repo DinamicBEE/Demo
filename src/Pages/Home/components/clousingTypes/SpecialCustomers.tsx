@@ -251,7 +251,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                     <TableInput
                       value={item.ammount}
                       id={item.id}
-                      currency={false}
+                      currency={true}
                       keyValue={"ammount"}
                       onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation}
@@ -264,7 +264,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                     <TableInput
                       value={item.ammountUSD}
                       id={item.id}
-                      currency={false}
+                      currency={true}
                       keyValue={"ammountUSD"}
                       onChange={handleUpdateAmountMXN}
                       disabled={data?.closingConfirmation}

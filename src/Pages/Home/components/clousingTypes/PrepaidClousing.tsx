@@ -31,7 +31,7 @@ import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
 import FilterCustomer from "@components/FilterCustomer";
-import { getCustomers } from "@services/catalogService";
+import { getCustomers, getCustomersPrepaid } from "@services/catalogService";
 import DialogCoupons from "./DialogCoupons";
 
 const pageSize = 10;
@@ -70,7 +70,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
           cdc,
           data?.closingStartDate
         );
-        const customersApi = await getCustomers();
+        const customersApi = await getCustomersPrepaid();
         setPrepaid(prepaid);
         setCoupons(couponsList);
         /*    if (couponsList.length > 0) {
@@ -84,7 +84,17 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         if (prepaid?.total)
           setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
 
-        updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
+        if (prepaid.total.difference < 0) {
+          updateTotal(prepaid.total.totalPOS, data.id, CLOUSING_KEY.PREPAID);
+        } else {
+          updateTotal(
+            prepaid.total.totalPhysical,
+            data.id,
+            CLOUSING_KEY.PREPAID
+          );
+        }
+
+        //updateTotal(prepaid.total.totalPhysical, data.id, CLOUSING_KEY.PREPAID);
 
         const items = prepaid?.lines?.slice(startRange, endRange);
         setVisibleItems(items);
@@ -139,7 +149,11 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     setPrepaidData(data.id, prepaidData);
 
-    updateTotal(newTotalFisico, data.id, CLOUSING_KEY.PREPAID);
+    if (newDifference >= 0) {
+      updateTotal(newTotalFisico, data.id, CLOUSING_KEY.PREPAID);
+    } else {
+      updateTotal(prepaid.total.totalPOS, data.id, CLOUSING_KEY.PREPAID);
+    }
 
     setFooterData(newTotal, data.id, CLOUSING_KEY.PREPAID);
     setVisibleItems(updatePrepaid.slice(startRange, endRange));

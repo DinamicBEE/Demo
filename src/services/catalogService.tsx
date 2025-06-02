@@ -100,6 +100,26 @@ export const getCustomers = async () => {
   }
 };
 
+export const getCustomersPrepaid = async () => {
+  try {
+    const reponse = await api.get(
+      "/crc/cash-register-closure/api/clients/clientPrepago",
+      { params: { clientType: "Prepago" } }
+    );
+    const transformedData = reponse.data.map((customer: any) => {
+      return {
+        value: customer.id,
+        label: customer.client,
+      };
+    });
+    
+    
+    return transformedData;
+  } catch (error) {
+    return [];
+  }
+}
+
 /**
  * This function gets the list of active employees.
  * @returns {Promise<employee[]>}

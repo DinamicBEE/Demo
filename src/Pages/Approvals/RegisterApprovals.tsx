@@ -121,28 +121,38 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
         <DialogContent>
 
+<<<<<<< HEAD
 
           <DialogHeader>
             <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
           </DialogHeader>
 
           <DialogBody pb="4">
+=======
+          <DialogHeader>
+            <DialogTitle>Registro Solicitud de Ajuste de Caja / Lote Cerrado</DialogTitle>
+          </DialogHeader>
+
+          <DialogBody pb="4">
+
+>>>>>>> 3d5d97f489b460316ccc99a6ae8dde18b0410f94
             <form onSubmit={handleSubmit(onSubmitForm)}>
 
-              <Stack gap="4">
+              {/* Listado de Subsidiarias. */}
+              <Field label="Subsidiarias">
+                <NativeSelectRoot size="md">
+                  <NativeSelectField placeholder="Seleccione una opcion" onChange={(event) => handleGetConsumerCenter(event)}>
+                    {
+                      subsidiariesList &&
+                      subsidiariesList.map((item: any) => (<option key={item.id} value={item.id}>{item.name}</option>))
+                    }
+                  </NativeSelectField>
+                </NativeSelectRoot>
+              </Field>
 
-                {/* Listado de Subsidiarias. */}
-                <Field label="Subsidiarias">
-                  <NativeSelectRoot size="md">
-                    <NativeSelectField placeholder="Seleccione una opcion" onChange={(event) => handleGetConsumerCenter(event)}>
-                      {
-                        subsidiariesList &&
-                        subsidiariesList.map((item: any) => (<option key={item.id} value={item.id}>{item.name}</option>))
-                      }
-                    </NativeSelectField>
-                  </NativeSelectRoot>
-                </Field>
+              {/* Lista de Centros de Consumo  */}
 
+<<<<<<< HEAD
                 {/* Lista de Centros de Consumo  */}
 
                 <Field label="Centros de Consumo">
@@ -221,6 +231,78 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
             }
           </DialogFooter>
 
+=======
+              <Field label="Centros de Consumo">
+                <NativeSelectRoot size="md">
+                  <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
+                    {
+                      consumerCentersList &&
+                      consumerCentersList.map((item: any) => (
+                        <option key={item.id} value={item.id}>{item.name}</option>
+                      ))
+                    }
+                  </NativeSelectField>
+                </NativeSelectRoot>
+              </Field>
+
+              {
+                closingList && closingList.length !== 0 && !hasCancelled &&
+                (
+                  <>
+                    <Separator />
+
+                    {/* Listado de cierres de lotes y cajas */}
+                    <Field label="Lista de cierre de cajas / cierre de lotes*">
+                      <NativeSelectRoot size="md">
+                        <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}
+                          onChange={(event) => handleGetReasonList(event)}>
+                          {
+                            closingList != undefined &&
+                            closingList.map((item: any) => (<option key={item.id} value={item.id}>{item.date}</option>))
+                          }
+                        </NativeSelectField>
+                      </NativeSelectRoot>
+
+                      {errors.id && <Text color="red" textStyle='xs'>{errors.id?.message}</Text>}
+                    </Field>
+
+                    {/* Listado motivos */}
+                    <Field label="Motivo*">
+                      <NativeSelectRoot size="md">
+                        <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
+                          {
+                            reasonsListFilter.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
+                          }
+                        </NativeSelectField>
+                      </NativeSelectRoot>
+                      {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
+                    </Field>
+
+                    <Field label="Comentario*">
+                      <Textarea variant="outline" {...register('comment', { required: 'Este campo es requerido' })} />
+                      {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
+                    </Field>
+                  </>
+                )
+              }
+            </form>
+          </DialogBody>
+
+          <DialogFooter>
+
+            <DialogActionTrigger asChild>
+              <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
+            </DialogActionTrigger>
+
+            {
+              closingList && closingList.length !== 0 && !hasCancelled && (
+                <Button  colorPalette="meraPrimary" loading={isLoading} disabled={isLoading} onClick={handleSubmit(onSubmitForm)}>
+                  Guardar
+                </Button>
+              )
+            }
+          </DialogFooter>
+>>>>>>> 3d5d97f489b460316ccc99a6ae8dde18b0410f94
 
         </DialogContent>
 

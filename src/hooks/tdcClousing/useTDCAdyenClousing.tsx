@@ -3,6 +3,7 @@ import { Bank, LotClosure } from "@models/lotClosure.model";
 import { BankLineModel, Voucher } from "@models/tdc.model";
 import { toast } from "../../utils/index";
 import React from "react";
+import { format } from "date-fns";
 
 export const useHandleTDCAdyen = () => {
   const updateLocalBanksAdyen = (
@@ -21,7 +22,7 @@ export const useHandleTDCAdyen = () => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
-console.log("dataFilesProcess", dataFilesProcess);
+    console.log("dataFilesProcess", dataFilesProcess);
 
     // Crear conjuntos únicos para comparación eficiente
     const checkDate = new Set<string>(
@@ -45,12 +46,16 @@ console.log("dataFilesProcess", dataFilesProcess);
     // Actualizar solo los vouchers que necesitan actualización
     const updatedVouchers = vouchersToUpdate.map((detail) => {
       console.log("detail", detail);
-      
-      const dateMatch = checkDate.has(detail.dateDisplay ?? "");
+      console.log(dataFilesProcess.consolidatedData);
+      console.log(format(new Date(detail.date), "dd/MM/yy"));
+
+      const dateMatch = checkDate.has(
+        format(new Date(detail.date), "dd/MM/yy") ?? ""
+      );
       const checkMatch = checkCheck.has(Number(detail.check));
       const amountMatch = checkAmount.has(Number(detail.amount));
       const allMatches = dateMatch && checkMatch && amountMatch;
-console.log(dateMatch, checkMatch, amountMatch, allMatches);
+      console.log(dateMatch, checkMatch, amountMatch, allMatches);
 
       return {
         ...detail,

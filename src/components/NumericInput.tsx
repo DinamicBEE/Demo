@@ -11,7 +11,7 @@ function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
                     customInput={Input}
                     thousandSeparator=","
                     decimalSeparator="."
-                    prefix="$"
+                    prefix="$ "
                     textAlign="end"
                     decimalScale={2}
                     fixedDecimalScale
@@ -33,7 +33,7 @@ function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInput
                     customInput={Input}
                     thousandSeparator=","
                     decimalSeparator="."
-                    prefix="$"
+                    prefix="$ "
                     textAlign="end"
                     decimalScale={2}
                     fixedDecimalScale
@@ -58,7 +58,7 @@ function TableInput({ value, id, currency, keyValue, onChange, disabled }: Table
             customInput={Input}
             thousandSeparator=","
             decimalSeparator="."
-            prefix={currency ? "$" : ""}
+            prefix={currency ? "$ " : ""}
             textAlign="end"
             decimalScale={currency ? 2 : 0} fixedDecimalScale
             value={value || 0}
