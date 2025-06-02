@@ -28,7 +28,7 @@ import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
-import { BankLineModel, Voucher } from "@models/tdc.model";
+import { BankLineModel } from "@models/tdc.model";
 import { toaster } from "@components/ui/toaster";
 
 function FooterClousing({
@@ -53,7 +53,7 @@ function FooterClousing({
   const { getTDCData, tdcRef } = useTDCContext();
   const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
-  const { getEmployeetData, setEmployee, employee } = useEmployeeContext();
+  const { setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef, setCoupons } = usePrepaidContext();
   const { setDataClousing, tdcHeader } = useClousing();
@@ -168,15 +168,6 @@ function FooterClousing({
             clientId: coupon.clientId,
             isExpired: coupon.isExpired,
           })),
-        /* client: line.client ?? "",
-        quantity: line.quantity,
-        supplementsQuantity: line.supplementsQuantity,
-        unitPrice: line.unitPrice,
-        totalPOS: line.totalPOS,
-        physical: line.physical,
-        difference: line.difference,
-        isEdit: line.edit,
-        coupons: line.coupons, */
       }));
 
     const mapTdcLines = (lines: BankLineModel[]) => {
@@ -249,19 +240,11 @@ function FooterClousing({
         lines: mapTdcLines(tdc.lines),
       },
     };
-    //console.log(body);
 
-    //const response: any = await sendCashClousing(body, isConfirm);
     const response: any = await sendCashClousing(body, isConfirm);
 
-    // console.log(body);
-
     if (response === "response") {
-      //TODO: DEvolver para el back
-      // if (response === "response") {
-      //console.log("Corte de caja enviado correctamente");
-      //showToast(ALERTCLOUSING_MODEL.SUCCESS, null);
-      //se guardan los datos del corte para poder actualiza la tabla principal
+
       const statusNew =
         isConfirm === true
           ? STATUS.Open

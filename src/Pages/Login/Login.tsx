@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { HStack, Box, VStack, Heading, Stack, Image, Input, Text } from "@chakra-ui/react";
 import { Field } from "@components/ui/field";
 import { PasswordInput } from "@components/ui/password-input";
-import { Alert } from "@components/ui/alert";
 import { Button } from "@components/ui/button";
 import { useAuth } from "@context/AuthContext";
 import image from "../../assets/meraClean.png";
@@ -33,8 +32,6 @@ function Login() {
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"
           xmlnsXlink="http://www.w3.org/1999/xlink"
-          //xmlns:svgjs="http://svgjs.dev/svgjs"
-          // viewBox={"0 0 100 100"}
           width="100%"
           height="100%"
         >
@@ -151,8 +148,8 @@ function Login() {
                       errorText={errors.password?.message}
                     >
                       <PasswordInput
-                      
-                        //placeholder="••••••"
+                        className="login-input"
+                        placeholder="••••••"
                         {...register("password", {
                           required: "La contraseña es obligatoria",
                           minLength: {

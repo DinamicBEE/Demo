@@ -1,5 +1,4 @@
-import { Group, HStack, Input, InputAddon, Stack } from "@chakra-ui/react";
-import { Skeleton } from "@components/ui/skeleton";
+import { Group, HStack, Input, InputAddon, Skeleton } from "@chakra-ui/react";
 import { CurrencyInputProps, TableInputProps } from "@models/common.model";
 import { NumericFormat } from 'react-number-format';
 

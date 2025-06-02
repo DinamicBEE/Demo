@@ -59,8 +59,7 @@ function TableOfTotals({
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
-  const [tdc, setTdc] = useState<TDC[]>([]);
-  /* const [page, setPage] = useState(1); */
+
   const [totals, setTotals] = useState({
     totalPOS: 0,
     totalPhysical: 0,
@@ -81,7 +80,6 @@ function TableOfTotals({
   });
 
   const startRange = (page - 1) * pageSize;
-  const endRange = startRange + pageSize;
 
   useEffect(() => {
     if (data.length > 0) {

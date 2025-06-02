@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Headers, Row } from "../../models/report.model";
-import { Table, Button, Input, Box, Text, FormatNumber, Heading, Spinner } from "@chakra-ui/react";
+import { Table, Button, Input, Box, Text, FormatNumber, Heading, Spinner, Skeleton } from "@chakra-ui/react";
 import { ActionBarContent, ActionBarRoot, ActionBarSelectionTrigger, ActionBarSeparator } from "@components/ui/action-bar";
 import { RiCheckFill } from "react-icons/ri";
 import { Checkbox } from "@components/ui/checkbox";
-import { CheckedChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/checkbox/namespace";
+//import { CheckedChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/checkbox/namespace";
 import { useUser } from "../../context/UserContext";
 import "./ReportViewer.css";
 import "../Home/Home.css";
@@ -12,7 +12,7 @@ import { InputGroup } from "@components/ui/input-group";
 import { useReportContext } from "@context/reports/reportsContext";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { fetchInitialData } from "@services/reportService";
-import { Skeleton } from "@components/ui/skeleton";
+//import { Skeleton } from "@components/ui/skeleton";
 import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
 import { getCurrentDate } from './ReportComponents/getCurrentDate';
 import Cookies from "js-cookie";
@@ -183,7 +183,7 @@ function ReportViewer() {
     }
   }
 
-  const handleCheckAll = (changes: CheckedChangeDetails) => {
+  const handleCheckAll = (changes: any) => {
     setSelection(
       changes.checked
         ? useRows.map((row) => row.id)
