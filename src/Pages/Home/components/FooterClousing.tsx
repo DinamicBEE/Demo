@@ -38,7 +38,7 @@ function FooterClousing({
   closingConfirmation,
   idCurrency,
   dateClousing,
-  propStatus
+  propStatus,
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -244,7 +244,6 @@ function FooterClousing({
     const response: any = await sendCashClousing(body, isConfirm);
 
     if (response === "response") {
-
       const statusNew =
         isConfirm === true
           ? STATUS.Open
@@ -252,9 +251,9 @@ function FooterClousing({
             ? STATUS.Close
             : header[body.id] &&
                 Number(header[body.id].difference?.toFixed(2)) !== 0
-              ? STATUS.WITH_DIFFERENCE  // Still mark as "with difference" regardless of previous status
-              : propStatus === STATUS.REOPENED 
-                ? STATUS.RECLOSED  // Preserve reopened/reclosed status only if there's no difference
+              ? STATUS.WITH_DIFFERENCE // Still mark as "with difference" regardless of previous status
+              : propStatus === STATUS.REOPENED
+                ? STATUS.RECLOSED // Preserve reopened/reclosed status only if there's no difference
                 : STATUS.Close;
 
       const mxm =
@@ -392,7 +391,7 @@ function FooterClousing({
       return;
     }
 
-    if (header[clousingId]?.difference !== undefined) {
+    /*  if (header[clousingId]?.difference !== undefined) {
       // Obtenemos datos de prepago
 
       // Calculamos la diferencia total sin incluir la diferencia de prepago
@@ -407,12 +406,19 @@ function FooterClousing({
       // Usamos un pequeño umbral (0.01) para evitar problemas de redondeo
       hasDifference =
         Math.abs(Number(totalDifferenceWithoutPrepaid.toFixed(2))) > 0.01;
-    }
+    } */
 
-    if (hasDifference && isConfirm === false) {
+    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
+      console.log("error");
+
       setOpenDialogDifference(true);
       return;
     }
+
+  /*   if (hasDifference && isConfirm === false) {
+      setOpenDialogDifference(true);
+      return;
+    } */
 
     setButtonLoading(true);
     setIsConfirm(isConfirm);
