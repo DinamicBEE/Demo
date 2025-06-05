@@ -389,7 +389,7 @@ function FooterClousing({
       return;
     }
 
-    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
+    if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
       console.log("error");
 
       setOpenDialogDifference(true);
