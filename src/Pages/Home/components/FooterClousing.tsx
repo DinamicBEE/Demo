@@ -58,7 +58,6 @@ function FooterClousing({
   const { getPrepaidData, prepaidRef, setCoupons } = usePrepaidContext();
   const { setDataClousing, tdcHeader } = useClousing();
   const { header, headerRef } = useHeaders();
-  // Type assertion to avoid TS error if you know employee is an object with numeric keys
 
   useEffect(() => {
     async function fetchFooterData() {
@@ -361,7 +360,6 @@ function FooterClousing({
       if (difference === true) return;
     }
 
-    let hasDifference = false;
     const prepaid = await getPrepaidData(clousingId, dateClousing);
     const ref = prepaidRef.current[clousingId];
     const clientNull = ref?.lines.some(
@@ -391,34 +389,12 @@ function FooterClousing({
       return;
     }
 
-    /*  if (header[clousingId]?.difference !== undefined) {
-      // Obtenemos datos de prepago
-
-      // Calculamos la diferencia total sin incluir la diferencia de prepago
-      // Independientemente de si son valores positivos o negativos
-      const prepaidDifference = prepaid.total?.difference || 0;
-
-      // Calculamos la diferencia total excluyendo la diferencia de prepago
-      const totalDifferenceWithoutPrepaid =
-        Math.abs(header[clousingId].difference) - Math.abs(prepaidDifference);
-
-      // Consideramos que hay diferencia si el valor absoluto es distinto de cero
-      // Usamos un pequeño umbral (0.01) para evitar problemas de redondeo
-      hasDifference =
-        Math.abs(Number(totalDifferenceWithoutPrepaid.toFixed(2))) > 0.01;
-    } */
-
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0) {
       console.log("error");
 
       setOpenDialogDifference(true);
       return;
     }
-
-  /*   if (hasDifference && isConfirm === false) {
-      setOpenDialogDifference(true);
-      return;
-    } */
 
     setButtonLoading(true);
     setIsConfirm(isConfirm);

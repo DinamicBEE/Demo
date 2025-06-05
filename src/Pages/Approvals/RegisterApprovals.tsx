@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NativeSelectField, NativeSelectRoot, Separator, Stack, Text, Textarea, useDisclosure } from "@chakra-ui/react";
+import { NativeSelectField, NativeSelectRoot, Separator, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { Field } from "@components/ui/field";
