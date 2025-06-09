@@ -1,5 +1,3 @@
-// import axios from 'axios';
-// import { API_CATALOG } from "./settings"
 import { v4 as uuidv4 } from "uuid";
 import {
   EXPECTED_COLUMNS,
@@ -16,7 +14,6 @@ import {
   NewEmployeeModel,
 } from "@models/employee.model";
 import {
-  IntercompanyLine,
   IntercompanyModel,
 } from "@models/intercompany.model";
 import {
@@ -26,22 +23,18 @@ import {
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, Voucher, TDCModel } from "@models/tdc.model";
-import axios from "axios";
 import {
   CASH,
   TDC,
-  API_LOCAL,
   CLIENTS,
   EMPLOYEE_INSERT,
   INTERCOMPANY,
-  LOCATIONS,
   SP_CLIENTS,
   GET_COUPONS,
   GET_PREPAID,
 } from "./settings";
-import Cookies from "js-cookie";
 import api from "../api/index";
-import { parse, format, isValid, isBefore, startOfDay } from "date-fns";
+import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
 /**
  * This function gets the totals
@@ -90,26 +83,13 @@ export const getCashClousing = async (
       },
     });
 
-    // if (response.data.lines.length === 0) {
-    //   console.log('aqui entra')
-    //   return {
-    //     ...response.data,
-    //     id: clousingId,
-    //     total: {
-    //       totalPOS: 0,
-    //       totalPhysical: 0,
-    //       difference: 0,
-    //     },
-    //   };
-    // }
-
-    // Create a copy of CashData to avoid mutating the original mock data
+    console.log("Response from getCashClousing:", response.data);
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
-        // Generate new UUID for null IDs, otherwise keep existing ID
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
+        totalFisico: currency.totalPOS < 0 ? currency.totalPOS : currency.totalFisico,
       })),
     };
 
@@ -124,7 +104,6 @@ export const getCashClousing = async (
       .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
-      //...response.data,
       ...dummy,
       total: {
         totalPOS: newTotalPOS,
@@ -1000,225 +979,3 @@ export const HeaderDataMocky = {
     intercompany: { totalPOS: 500, totalPhysical: 500, difference: 0 },
   },
 };
-
-export const TDCDetailsMOCKData = [
-  {
-    id: 1,
-    bankName: "BBVA bancomer",
-    total: 0,
-    details: [
-      { id: 101, date: "22/05/2024 11:16", check: "", amount: 386 },
-      { id: 102, date: "22/05/2024 11:12", check: "", amount: 491.05 },
-      { id: 103, date: "22/05/2024 11:02", check: "", amount: 323 },
-      { id: 104, date: "22/05/2024 09:37", check: "", amount: 405.6 },
-      { id: 105, date: "22/05/2024 09:26", check: "", amount: 104 },
-      { id: 106, date: "22/05/2024 08:57", check: "", amount: 273.9 },
-      { id: 107, date: "22/05/2024 08:54", check: "", amount: 203 },
-      { id: 108, date: "22/05/2024 08:45", check: "", amount: 228.65 },
-      { id: 109, date: "22/05/2024 07:36", check: "", amount: 95 },
-      { id: 110, date: "22/05/2024 06:43", check: "", amount: 273.9 },
-    ],
-  },
-  {
-    id: 2,
-    bankName: "HSBC",
-    total: 0,
-    details: [
-      { id: 101, date: "22/05/2024 11:16", check: "", amount: 386 },
-      { id: 102, date: "22/05/2024 11:12", check: "", amount: 491.05 },
-      { id: 103, date: "22/05/2024 11:02", check: "", amount: 323 },
-      { id: 104, date: "22/05/2024 09:37", check: "", amount: 405.6 },
-      { id: 105, date: "22/05/2024 09:26", check: "", amount: 104 },
-      { id: 106, date: "22/05/2024 08:57", check: "", amount: 273.9 },
-      { id: 107, date: "22/05/2024 08:54", check: "", amount: 203 },
-      { id: 108, date: "22/05/2024 08:45", check: "", amount: 228.65 },
-      { id: 109, date: "22/05/2024 07:36", check: "", amount: 95 },
-      { id: 110, date: "22/05/2024 06:43", check: "", amount: 273.9 },
-    ],
-  },
-  {
-    id: 3,
-    bankName: "BANREGIO",
-    total: 0,
-    details: [
-      { id: 101, date: "22/05/2024 11:16", check: "", amount: 386 },
-      { id: 102, date: "22/05/2024 11:12", check: "", amount: 491.05 },
-      { id: 103, date: "22/05/2024 11:02", check: "", amount: 323 },
-      { id: 104, date: "22/05/2024 09:37", check: "", amount: 405.6 },
-      { id: 105, date: "22/05/2024 09:26", check: "", amount: 104 },
-      { id: 106, date: "22/05/2024 08:57", check: "", amount: 273.9 },
-      { id: 107, date: "22/05/2024 08:54", check: "", amount: 203 },
-      { id: 108, date: "22/05/2024 08:45", check: "", amount: 228.65 },
-      { id: 109, date: "22/05/2024 07:36", check: "", amount: 95 },
-      { id: 110, date: "22/05/2024 06:43", check: "", amount: 273.9 },
-    ],
-  },
-  {
-    id: 4,
-    bankName: "ADYEN",
-    total: 0,
-    details: [
-      { id: 101, date: "28/05/24 21:30", check: "1", amount: 386 },
-      { id: 102, date: "22/05/24 11:12", check: "2", amount: 491.05 },
-      { id: 103, date: "22/05/2024 11:02", check: "4", amount: 323 },
-      { id: 104, date: "22/05/2024 09:37", check: "5", amount: 405.6 },
-      { id: 105, date: "22/05/2024 09:26", check: "6", amount: 104 },
-      { id: 106, date: "22/05/2024 08:57", check: "71", amount: 273.9 },
-      { id: 107, date: "22/05/2024 08:54", check: "8", amount: 203 },
-      { id: 108, date: "22/05/2024 08:45", check: "788", amount: 228.65 },
-      { id: 109, date: "22/05/2024 07:36", check: "9", amount: 95 },
-      { id: 110, date: "28/05/24 6:21", check: "7", amount: 273.9 },
-    ],
-  },
-];
-
-export const PrepaidMOCKData = {
-  id: 1,
-  employeeId: 150,
-  total: {
-    totalPOS: 2955.0,
-    totalPhysical: 2955.0,
-    difference: 0,
-  },
-  lines: [
-    {
-      id: 1,
-      client: "Thomas Moore",
-      quantity: 0,
-      supplementsQuantity: 0,
-      unitPrice: 0,
-      totalPOS: 750.0,
-      physical: 0,
-      difference: 0,
-    },
-    {
-      id: 2,
-      client: "SSIA",
-      quantity: 0,
-      supplementsQuantity: 0,
-      unitPrice: 0,
-      totalPOS: 525.0,
-      physical: 0,
-      difference: 0,
-    },
-    {
-      id: 3,
-      client: "SEASON TOURS",
-      quantity: 0,
-      supplementsQuantity: 0,
-      unitPrice: 0,
-      totalPOS: 376.68,
-      physical: 0,
-      difference: 0,
-    },
-    {
-      id: 4,
-      client: "SEEK AND GO",
-      quantity: 0,
-      supplementsQuantity: 0,
-      unitPrice: 0,
-      totalPOS: 700.77,
-      physical: 0,
-      difference: 0,
-    },
-    {
-      id: 5,
-      client: "AVENTOUR",
-      quantity: 0,
-      supplementsQuantity: 0,
-      unitPrice: 0,
-      totalPOS: 812.7,
-      physical: 0,
-      difference: 0,
-    },
-  ],
-};
-
-export const EmployeeData = {
-  id: 1,
-  employeeId: 150,
-  total: {
-    totalPOS: 2955.0,
-    totalPhysical: 2955.0,
-    difference: 0,
-  },
-  lines: [
-    {
-      id: null,
-      name: "Mario",
-      lastName: "Vásquez",
-      employeeCode: "3",
-      amount: 125.0,
-      reason: "Diferencia de efectivo",
-      ticket: "---",
-    },
-    {
-      id: null,
-      name: "Luis",
-      lastName: "Castillo",
-      employeeCode: "5",
-      amount: 150.0,
-      reason: "Consumo empelado",
-      ticket: "123",
-    },
-    {
-      id: null,
-      name: "Ramiro",
-      lastName: "Diaz",
-      employeeCode: "3",
-      amount: 300.0,
-      reason: "Mala elaboración del producto",
-      ticket: "---",
-    },
-  ],
-};
-
-const intercompanyData = {
-  id: 1,
-  employeeId: 150,
-  total: {
-    totalPOS: 2955.0,
-    totalPhysical: 2955.0,
-    difference: 0,
-  },
-  lines: [
-    {
-      id: null,
-      employeeId: 0,
-      employeeName: "",
-      subsidiaryId: 0,
-      subsidiaryname: "",
-      amount: 125.0,
-      ticket: "1",
-      physicalAmount: 0,
-    },
-    {
-      id: null,
-      employeeId: 0,
-      employeeName: "",
-      subsidiaryId: 0,
-      subsidiaryname: "",
-      amount: 150.0,
-      ticket: "2",
-      physicalAmount: 0,
-    },
-    {
-      id: null,
-      employeeId: 0,
-      employeeName: "",
-      subsidiaryId: 0,
-      subsidiaryname: "",
-      amount: 300.0,
-      ticket: "3",
-      physicalAmount: 0,
-    },
-  ],
-};
-
-const couponCatalogMocky = [
-  { lineId: 1, folio: "1235", quantity: 5, unitPrice: 150.0, isUsed: false },
-  { lineId: 2, folio: "9874", quantity: 3, unitPrice: 175.0, isUsed: true },
-  { lineId: 3, folio: "1478", quantity: 3, unitPrice: 125.56, isUsed: false },
-  { lineId: 4, folio: "3698", quantity: 2, unitPrice: 233.59, isUsed: true },
-  { lineId: 5, folio: "4561", quantity: 6, unitPrice: 135.45, isUsed: false },
-];

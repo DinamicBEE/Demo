@@ -1,6 +1,5 @@
 import { IRole, Tokens } from "@models/auth.model";
 import api from "../api/index";
-import { API_AUTH, MODE } from "./settings";
 import Cookies from "js-cookie";
 
 //const BASE_URL = "https://reqres.in/api";

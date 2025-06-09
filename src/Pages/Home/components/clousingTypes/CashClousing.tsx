@@ -35,7 +35,7 @@ function CashClousing({ data, idCurrency }: any) {
     async function fetchData() {
 
       const cashData = await getCashData(data.id, idCurrency);
-
+      
       if (cashData.total != undefined) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       }
@@ -160,7 +160,7 @@ function CashClousing({ data, idCurrency }: any) {
                           disabled={true}
                         />
 
-                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={Number(item.totalFisico) < 0 ? true : false}>
+                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={(Number(item.totalFisico) < 0 || Number(item.totalPOS) < 0 )? true : false}>
                           <CiSquarePlus />
                         </Button>
                       </>
