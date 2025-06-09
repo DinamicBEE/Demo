@@ -90,6 +90,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   const value = {
     header,
+    updateHeaderState,
     updateTotal,
     loading,
     error,

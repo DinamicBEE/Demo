@@ -85,6 +85,7 @@ export interface HeaderContextType {
   error: string;
   loading: boolean;
   getHeader: (clousingData: ClousingLinesModel) => HeaderData;
+  updateHeaderState: (newHeader: any) => void;
   updateTotal: (
     newtotal: number,
     clousingId: number,

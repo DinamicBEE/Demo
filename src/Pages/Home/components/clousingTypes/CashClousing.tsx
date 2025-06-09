@@ -33,7 +33,7 @@ function CashClousing({ data, idCurrency }: any) {
 
   useEffect(() => {
     async function fetchData() {
-
+      
       const cashData = await getCashData(data.id, idCurrency);
       
       if (cashData.total != undefined) {
@@ -102,6 +102,7 @@ function CashClousing({ data, idCurrency }: any) {
             value={cashData.tips}
             loading={cashLoading}
             onChange={handleChangeTips}
+            disabled={data?.status === "Cerrado" ? true : false}
           />
         </Grid>
 

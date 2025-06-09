@@ -186,7 +186,7 @@ function FooterClousing({
         })),
       }));
     };
-
+    // console.log("descuento informativo",header[clousingId].discountClousing);
     const body: ClousingSave = {
       id: clousingId,
       cash: {

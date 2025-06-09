@@ -68,7 +68,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         const couponsList: CouponCatalogModel[] = await getCouponData(
           cdc,
           data?.closingStartDate
-        );        
+        );
         const customersApi = await getCustomersPrepaid();
         setPrepaid(prepaid);
         setCoupons(couponsList);
@@ -78,7 +78,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         } */
 
         setCustomers(customersApi);
-        console.log(prepaid.total);
+        // console.log(prepaid.total);
 
         if (prepaid?.total)
           setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);

@@ -189,7 +189,7 @@ function TableOfTotals({
     } else {
       item.closingConfirmation = true;
     }
-
+        
     setSelectedEmployee(item);
     setIsDialogOpen(true);
     setIsEdit(true);

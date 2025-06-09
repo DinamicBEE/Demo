@@ -18,6 +18,7 @@ export interface CurrencyInputProps {
   name?: string;
   onChange?: (value: string) => void;
   currency?: boolean;
+  disabled?: boolean;
 }
 
 export interface TableInputProps {
