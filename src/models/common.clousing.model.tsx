@@ -49,6 +49,25 @@ export interface ClousingLinesModel {
   tips: number;
 }
 
+export interface TotalsModel {
+  totalPOS: number;
+  totalPhysical: number;
+  difference: number;
+  extra: number;
+  mxm: number;
+  usd: number;
+  eur: number;
+  lib: number;
+  can: number;
+  customer: number;
+  specialCustomer: number;
+  prepaid: number;
+  employees: number;
+  intercompany: number;
+  tips: number;
+  tdc: TDC[];
+}
+
 export interface TDC {
   nameBank: string;
   total: number;
