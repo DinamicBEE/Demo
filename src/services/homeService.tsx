@@ -1,5 +1,5 @@
 import api from "../api/index";
-import { ClousingModel, TDC } from "@models/common.clousing.model";
+import { ClousingLinesModel, ClousingModel, TDC, TotalsModel } from "@models/common.clousing.model";
 import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
@@ -174,4 +174,61 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): TotalsModel
+{
+  const totals = clousingLines.reduce(
+    (acc: TotalsModel, curr: TotalsModel) => {
+      acc.totalPOS += curr.totalPOS;
+      acc.totalPhysical += curr.totalPhysical;
+      acc.difference += curr.difference;
+      acc.extra += curr.extra;
+      acc.mxm += curr.mxm;
+      acc.usd += curr.usd;
+      acc.eur += curr.eur;
+      acc.lib += curr.lib;
+      acc.can += curr.can;
+      acc.customer += curr.customer;
+      acc.specialCustomer += curr.specialCustomer;
+      acc.prepaid += curr.prepaid;
+      acc.employees += curr.employees;
+      acc.intercompany += curr.intercompany;
+      acc.tips += curr.tips;
+      curr.tdc.forEach((tdcItem: TDC) => {
+        const existingTdc = acc.tdc.find(
+          (item) => item.nameBank === tdcItem.nameBank
+        );
+        if (existingTdc) {
+          existingTdc.total += tdcItem.total || 0;
+        } else {
+          acc.tdc.push({
+            nameBank: tdcItem.nameBank,
+            total: tdcItem.total || 0,
+          });
+        }
+      });
+      return acc;
+    },
+    {
+      totalPOS: 0,
+      totalPhysical: 0,
+      difference: 0,
+      extra: 0,
+      mxm: 0,
+      usd: 0,
+      eur: 0,
+      lib: 0,
+      can: 0,
+      customer: 0,
+      specialCustomer: 0,
+      prepaid: 0,
+      employees: 0,
+      intercompany: 0,
+      tips: 0,
+      tdc: [] as TDC[],
+    }
+  );
+
+  return totals;
 }

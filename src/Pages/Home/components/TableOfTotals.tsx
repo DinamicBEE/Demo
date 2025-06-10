@@ -20,7 +20,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@components/ui/pagination";
-import { exportCSV } from "@services/homeService";
+import { calculateClousingTotals, exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
@@ -28,6 +28,7 @@ import {
   ClousingLinesModel,
   TableOfTotalsProps,
   TDC,
+  TotalsModel,
 } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import "../Home.css";
@@ -60,82 +61,14 @@ function TableOfTotals({
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [totals, setTotals] = useState({
-    totalPOS: 0,
-    totalPhysical: 0,
-    difference: 0,
-    extra: 0,
-    mxm: 0,
-    usd: 0,
-    eur: 0,
-    lib: 0,
-    can: 0,
-    customer: 0,
-    specialCustomer: 0,
-    prepaid: 0,
-    employees: 0,
-    intercompany: 0,
-    tips: 0,
-    tdc: [] as TDC[],
-  });
+  const [totals, setTotals] = useState<TotalsModel>({} as TotalsModel);
 
   const startRange = (page - 1) * pageSize;
 
   useEffect(() => {
     if (data.length > 0) {
       console.log("Data received:", data);
-      const newTotals: any = data.reduce(
-        (acc, curr) => {
-          acc.totalPOS += curr.totalPOS || 0;
-          acc.totalPhysical += curr.totalPhysical || 0;
-          acc.difference += curr.difference || 0;
-          acc.extra += curr.extra || 0;
-          acc.mxm += curr.mxm || 0;
-          acc.usd += curr.usd || 0;
-          acc.eur += curr.eur || 0;
-          acc.lib += curr.lib || 0;
-          acc.can += curr.can || 0;
-          acc.customer += curr.customer || 0;
-          acc.specialCustomer += curr.specialCustomer || 0;
-          acc.prepaid += curr.prepaid || 0;
-          acc.employees += curr.employees || 0;
-          acc.intercompany += curr.intercompany || 0;
-          acc.tips += curr.tips || 0;
-          curr.tdc.forEach((tdcItem: TDC) => {
-            const existingTdc = acc.tdc.find(
-              (item) => item.nameBank === tdcItem.nameBank
-            );
-            if (existingTdc) {
-              existingTdc.total += tdcItem.total || 0;
-            } else {
-              acc.tdc.push({
-                nameBank: tdcItem.nameBank,
-                total: tdcItem.total || 0,
-              });
-            }
-          });
-          // acc.adyenTotal += curr.adyenTotal || 0;
-          return acc;
-        },
-        {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-          extra: 0,
-          mxm: 0,
-          usd: 0,
-          eur: 0,
-          lib: 0,
-          can: 0,
-          customer: 0,
-          specialCustomer: 0,
-          prepaid: 0,
-          employees: 0,
-          intercompany: 0,
-          tips: 0,
-          tdc: [] as TDC[],
-        }
-      );
+      const newTotals = calculateClousingTotals(data)
       setTotals(newTotals);
     }
   }, [data]);
@@ -688,6 +621,7 @@ function TableOfTotals({
                       />
                     </Table.Cell>
                     {tdcHeader.length > 0 &&
+                     totals.tdc != undefined &&
                       tdcHeader.map((tdcItem) => {
                         const tdcValue = totals.tdc.find(
                           (tdc) => tdc.nameBank === tdcItem.nameBank
