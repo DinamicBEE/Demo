@@ -83,6 +83,7 @@ function TableOfTotals({
 
   useEffect(() => {
     if (data.length > 0) {
+      console.log("Data received:", data);
       const newTotals: any = data.reduce(
         (acc, curr) => {
           acc.totalPOS += curr.totalPOS || 0;

@@ -1,15 +1,8 @@
 import { CurrencyModel } from "@models/common.clousing.model";
-import { StoreModel, SubsidiaryModal } from "@models/common.model";
+import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
-import {
-  CURRENCY,
-  EMPLOYEEDELETE,
-  EMPLOYEELIST,
-  LOCATIONS,
-  REASONLIST,
-  SUBSIDIARIES,
-  TICKETS,
-} from "./settings";
+import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, LOCATIONS,
+  REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 
@@ -204,3 +197,94 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
     return false;
   }
 }
+
+export const getCountries = async (): Promise<location[]> => {
+  try {
+    // const response = await api.get("/crc/cash-register-closure/api/countries");
+    // const countries = response.data.map((country: any) => ({
+    //   value: country.id,
+    //   label: country.name,
+    // }));
+    
+    return countries;
+  } catch (error) {
+    console.error("Error al obtener los países:", error);
+    return [];
+  }
+}
+
+export const getZones = async (): Promise<location[]> => {
+  try {
+    // const response = await api.get("/crc/cash-register-closure/api/zones");
+    // const zones = response.data.map((zone: any) => ({
+    //   value: zone.id,
+    //   label: zone.name,
+    // }));
+    
+    return zones;
+  } catch (error) {
+    console.error("Error al obtener las zonas:", error);
+    return [];
+  }
+}
+
+export const getStatus = async (): Promise<location[]> => {
+  try {
+    // const response = await api.get("/crc/cash-register-closure/api/status");
+    // const status = response.data.map((stat: any) => ({
+    //   value: stat.id,
+    //   label: stat.name,
+    // }));
+    
+    return status;
+  } catch (error) {
+    console.error("Error al obtener los estados:", error);
+    return [];
+  }
+}
+
+
+
+const countries = [
+  {
+    id: 1, name: "Estados Unidos"
+  },
+  {
+    id: 2, name: "Canadá"
+  },
+  {
+    id: 3, name: "México"
+  },
+  {
+    id: 4, name: "Brasil"
+  },
+  {
+    id: 5, name: "Argentina"
+  },
+  {
+    id: 6, name: "España"
+  }
+]
+
+const zones = [
+  {
+    id: 1, name: "ABT1"
+  },
+  {
+    id: 2, name: "ABT2"
+  },
+  {
+    id: 3, name: "ABT3"
+  },
+  {
+    id: 4, name: "Aeropuerto Bajio"
+  }
+]
+
+const status = [
+  { id: 1, name: "Cerrado" },
+  { id: 2, name: "Reabierto" },
+  { id: 3, name: "Con Diferencia" },
+  { id: 4, name: "Abierto" },
+  { id: 5, name: "Re-cerrado" }
+]
