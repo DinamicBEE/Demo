@@ -1,41 +1,19 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormatNumber,
-  Grid,
-  GridItem,
-  Group,
-  Input,
-  InputAddon,
-  Skeleton,
-  Table,
-  Tag,
-  Text,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { Box, Button, FormatNumber, Grid, GridItem, Group, Input,
+  InputAddon, Skeleton, Table, Tag, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
+  PaginationRoot } from "@components/ui/pagination";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
-import {
-  ClousingLinesModel,
-  TableOfTotalsProps,
-  TDC,
-} from "@models/common.clousing.model";
+import { ClousingLinesModel, TableOfTotalsProps,
+  TDC, TotalsModel} from "@models/common.clousing.model";
 import Loading from "@components/Loading";
-import "../Home.css";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../utils/getStatusColor";
 import ClousingLayout from "./ClousingLayout";
 
-const pageSize = 5;
 
 function TableOfTotals({
   subsidiary,
@@ -45,41 +23,15 @@ function TableOfTotals({
   page,
   setPage,
 }: TableOfTotalsProps) {
-  const {
-    data,
-    loading,
-    error,
-    header,
-    getInfo,
-    setDataRow,
-    pagination,
-    tdcHeader,
-  } = useClousing();
+  
+  const { data, loading, error, header, getInfo, setDataRow,
+    pagination, tdcHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [totals, setTotals] = useState({
-    totalPOS: 0,
-    totalPhysical: 0,
-    difference: 0,
-    extra: 0,
-    mxm: 0,
-    usd: 0,
-    eur: 0,
-    lib: 0,
-    can: 0,
-    customer: 0,
-    specialCustomer: 0,
-    prepaid: 0,
-    employees: 0,
-    intercompany: 0,
-    tips: 0,
-    tdc: [] as TDC[],
-  });
-
-  const startRange = (page - 1) * pageSize;
+  const [totals, setTotals] = useState({} as TotalsModel);
 
   useEffect(() => {
     if (data.length > 0) {
@@ -114,7 +66,6 @@ function TableOfTotals({
               });
             }
           });
-          // acc.adyenTotal += curr.adyenTotal || 0;
           return acc;
         },
         {
@@ -585,7 +536,7 @@ function TableOfTotals({
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                  <Table.Row bg="gray.100" fontWeight="bold">
+                  {/* <Table.Row bg="gray.100" fontWeight="bold">
                     <Table.Cell textAlign="center"></Table.Cell>
                     <Table.Cell textAlign="center">Totales</Table.Cell>
                     <Table.Cell textAlign="end">
@@ -710,7 +661,7 @@ function TableOfTotals({
                         currency="USD"
                       />
                     </Table.Cell>
-                  </Table.Row>
+                  </Table.Row> */}
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>

@@ -49,24 +49,8 @@ export interface ClousingLinesModel {
   tips: number;
 }
 
-export interface TotalsModel {
-  totalPOS: number;
-  totalPhysical: number;
-  difference: number;
-  extra: number;
-  mxm: number;
-  usd: number;
-  eur: number;
-  lib: number;
-  can: number;
-  customer: number;
-  specialCustomer: number;
-  prepaid: number;
-  employees: number;
-  intercompany: number;
-  tips: number;
-  tdc: TDC[];
-}
+export type TotalsModel = Omit<ClousingLinesModel, "id" | "employe" | "status" | "creationDate" 
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva">;
 
 export interface TDC {
   nameBank: string;
@@ -77,6 +61,7 @@ export interface TDC {
 export interface ClousingContextType {
   header: HeaderClousingModel;
   data: ClousingLinesModel[];
+  totals: TotalsModel;
   loading: boolean;
   error: string;
   tdcHeader: TDC[];

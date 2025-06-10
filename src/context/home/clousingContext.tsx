@@ -15,6 +15,7 @@ import {
   ClousingModel,
   HeaderClousingModel,
   TDC,
+  TotalsModel,
 } from "@models/common.clousing.model";
 
 const clousingContext = createContext<ClousingContextType>(
@@ -30,6 +31,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<ClousingLinesModel[]>(
     [] as ClousingLinesModel[]
   );
+  const [totals, setTotals] = useState<TotalsModel>({} as TotalsModel);
   const [originalData, setOriginalData] = useState<ClousingLinesModel[]>(
     [] as ClousingLinesModel[]
   );
@@ -44,8 +46,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     {} as ClousingLinesModel
   );
   const dataCache = useRef<{ [key: string]: ClousingModel }>({});
-  const queryKey = useRef<string>("");
-  const setQueryKey = useRef<string>("");
   const [tdcHeader, setTdcHeader] = useState<TDC[]>([]);
 
   const accumulatedHeader = (queryKey: string) => {
@@ -209,6 +209,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     () => ({
       header,
       data,
+      totals,
       pagination,
       loading,
       error,
@@ -223,6 +224,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     [
       header,
       data,
+      totals,
       loading,
       error,
       getInfo,
