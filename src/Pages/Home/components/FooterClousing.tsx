@@ -239,7 +239,6 @@ function FooterClousing({
         lines: mapTdcLines(tdc.lines),
       },
     };
-
     const response: any = await sendCashClousing(body, isConfirm);
 
     if (response === "response") {

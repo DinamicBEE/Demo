@@ -17,7 +17,6 @@ import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterEmployee from "@components/FilterEmployee";
-import { it } from "node:test";
 import AddIntercompany from "./AddIntercompany";
 
 const pageSize = 10;

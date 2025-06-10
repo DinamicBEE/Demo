@@ -82,7 +82,7 @@ function TableOfTotals({
   const startRange = (page - 1) * pageSize;
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data.length > 0) {      
       const newTotals: any = data.reduce(
         (acc, curr) => {
           acc.totalPOS += curr.totalPOS || 0;

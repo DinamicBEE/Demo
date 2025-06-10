@@ -83,7 +83,7 @@ export const getCashClousing = async (
       },
     });
 
-    console.log("Response from getCashClousing:", response.data);
+    // console.log("Response from getCashClousing:", response.data);
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
@@ -146,7 +146,7 @@ export const getTDCClousing = async (
   try {
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
-    });
+    });    
     const newResponse = {
       ...response.data,
       lines: response.data.lines.map((line: any) => ({
@@ -917,7 +917,7 @@ export const processFiles = async (
     // Eliminar duplicados usando Map para mejor rendimiento
     const uniqueMap = new Map<string, Record<string, unknown>>();
 
-    console.log(allData);
+    // console.log(allData);
 
     allData.forEach((record) => {
       const pspReference = record["Psp Reference"]

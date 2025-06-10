@@ -1,5 +1,5 @@
 import { createListCollection } from "@chakra-ui/react";
-import { Approval, AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
+import { AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
 
 export const approvalsServices = {

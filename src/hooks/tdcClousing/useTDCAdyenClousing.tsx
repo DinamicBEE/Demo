@@ -45,9 +45,9 @@ export const useHandleTDCAdyen = () => {
 
     // Actualizar solo los vouchers que necesitan actualización
     const updatedVouchers = vouchersToUpdate.map((detail) => {
-      console.log("detail", detail);
-      console.log(dataFilesProcess.consolidatedData);
-      console.log(format(new Date(detail.date), "dd/MM/yy"));
+      // console.log("detail", detail);
+      // console.log(dataFilesProcess.consolidatedData);
+      // console.log(format(new Date(detail.date), "dd/MM/yy"));
 
       const dateMatch = checkDate.has(
         format(new Date(detail.date), "dd/MM/yy") ?? ""
@@ -55,7 +55,7 @@ export const useHandleTDCAdyen = () => {
       const checkMatch = checkCheck.has(Number(detail.check));
       const amountMatch = checkAmount.has(Number(detail.amount));
       const allMatches = dateMatch && checkMatch && amountMatch;
-      console.log(dateMatch, checkMatch, amountMatch, allMatches);
+      // console.log(dateMatch, checkMatch, amountMatch, allMatches);
 
       return {
         ...detail,

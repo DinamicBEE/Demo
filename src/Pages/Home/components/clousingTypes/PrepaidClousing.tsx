@@ -268,7 +268,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     // Update the data with the new prepaid lines
     updateData(updatePrepaid);
     setLoadingAdded(false);
-    console.log(updatePrepaid);
+    // console.log(updatePrepaid);
   }
 
   function handleInputTextData(
