@@ -1,22 +1,8 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  ReactNode,
-  useEffect,
-  useRef,
-} from "react";
-import { getGeneralInfo } from "@services/homeService";
-import {
-  ClousingContextType,
-  ClousingLinesModel,
-  ClousingModel,
-  HeaderClousingModel,
-  TDC,
-  TotalsModel,
-} from "@models/common.clousing.model";
+import { createContext, useContext, useState, useMemo,
+  useCallback, ReactNode, useEffect, useRef } from "react";
+import { calculateClousingTotals, getGeneralInfo } from "@services/homeService";
+import { ClousingContextType, ClousingLinesModel, ClousingModel,
+  HeaderClousingModel, TDC, TotalsModel } from "@models/common.clousing.model";
 
 const clousingContext = createContext<ClousingContextType>(
   {} as ClousingContextType
@@ -26,15 +12,12 @@ export const useClousing = () => useContext(clousingContext);
 
 export function ClousingProvider({ children }: { children: ReactNode }) {
   const [header, setHeader] = useState<HeaderClousingModel>(
-    {} as HeaderClousingModel
-  );
+    {} as HeaderClousingModel);
   const [data, setData] = useState<ClousingLinesModel[]>(
-    [] as ClousingLinesModel[]
-  );
+    [] as ClousingLinesModel[]);
   const [totals, setTotals] = useState<TotalsModel>({} as TotalsModel);
   const [originalData, setOriginalData] = useState<ClousingLinesModel[]>(
-    [] as ClousingLinesModel[]
-  );
+    [] as ClousingLinesModel[]);
   const [pagination, setPagination] = useState({
     totaRegistros: 0,
     totalPagina: 0,
@@ -78,22 +61,15 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       isSearch: boolean = false
     ) => {
       try {
-        // Clave para identificar la consulta sin incluir página
         const queryKey = `${subsidiary}-${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
-        /*    queryKey.current = queryKey;
-        setQueryKey.current = queryKey;
- */
-        // Clave para esta página específica
+
         const pageKey = `${queryKey}-page-${page}`;
 
         if (isSearch) {
-          // Limpiar caché si es una búsqueda
           dataCache.current = {};
         }
 
-        // Verificar si esta página ya está en caché
         if (dataCache.current[pageKey] && !isSearch) {
-          // Actualizar header y pagination desde los datos de esta página
           const accumulated = accumulatedHeader(queryKey);
           const data = {
             ...dataCache.current[pageKey].header,
@@ -102,20 +78,21 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
             difference: accumulated.difference,
           };
 
+          const totals = calculateClousingTotals(
+            dataCache.current[pageKey].clousingLines
+          );
           setHeader(data);
           setPagination(dataCache.current[pageKey].pagination);
 
-          // Usar solo los datos de la página actual
           const currentPageData = dataCache.current[pageKey].clousingLines;
 
-          // Actualizar con los datos de la página actual
           setData(currentPageData);
+          setTotals(totals);
           setOriginalData(currentPageData);
           setTdcHeader(dataCache.current[pageKey].clousingLines[0]?.tdc || []);
           return;
         }
 
-        // Necesitamos obtener esta página
         setLoading(true);
 
         const response = await getGeneralInfo(
@@ -126,7 +103,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           endDate
         );
 
-        // Guardar esta página en caché
         dataCache.current[pageKey] = response;
 
         const accumulated = accumulatedHeader(queryKey);
@@ -136,15 +112,16 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           totalPhysical: accumulated.totalPhysical,
           difference: accumulated.difference,
         };
-        // Actualizar header y pagination
+
         setHeader(data);
         setPagination(response.pagination);
 
-        // Usar solo los datos de la página actual
         const currentPageData = response.clousingLines;
-      
-        // Actualizar con los datos de la página actual
+
+        const totals = calculateClousingTotals(currentPageData);
+
         setData(currentPageData);
+        setTotals(totals);
         setOriginalData(currentPageData);
         setTdcHeader(response.clousingLines[0]?.tdc || []);
 

@@ -6,23 +6,17 @@ import {
   ProcessResult,
 } from "@models/adyen.model";
 import { CashLines, CashModel } from "@models/cash.model";
-import { HeaderData, ResponseModel } from "@models/common.clousing.model";
+import { ResponseModel } from "@models/common.clousing.model";
 import { CustomerModel } from "@models/customer.model";
-import {
-  EmployeeLine,
-  EmployeeModel,
-  NewEmployeeModel,
-} from "@models/employee.model";
-import {
-  IntercompanyModel,
-} from "@models/intercompany.model";
+import { EmployeeModel } from "@models/employee.model";
+import { IntercompanyModel } from "@models/intercompany.model";
 import {
   CouponCatalogModel,
   PrepaidLineModel,
   PrepaidModel,
 } from "@models/prepaid.model";
 import { SpecialCustomerModel } from "@models/specialCustome.model";
-import { BankLineModel, Voucher, TDCModel } from "@models/tdc.model";
+import { TDCModel } from "@models/tdc.model";
 import {
   CASH,
   TDC,
@@ -36,33 +30,6 @@ import {
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
-/**
- * This function gets the totals
- * of the selected closure and the
- * totals by section of the box cut
- * @param {number} clousingId
- * @returns {Promise<HeaderData>}
- */
-export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
-  // console.log(clousingId)
-  try {
-    //const response = await axios.get(`${API_CATALOG}/e9c9e0f7-28a7-41e5-96a5-f5b65488b840`);
-    const response = HeaderDataMocky;
-    const data = {
-      ...response,
-    };
-    //return response.data
-    //return response
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    });
-  } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
-    return {} as HeaderData;
-  }
-};
 
 /**
  * This function gets the information
@@ -83,7 +50,6 @@ export const getCashClousing = async (
       },
     });
 
-    console.log("Response from getCashClousing:", response.data);
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
@@ -172,47 +138,6 @@ export const getTDCClousing = async (
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as TDCModel;
-  }
-};
-
-export const validateDetails = async (
-  clousingId: number,
-  lineId: number | string,
-  BankLineDetails: Voucher[],
-  details: BankLineModel
-): Promise<BankLineModel> => {
-  // console.log(clousingId, lineId);
-
-  try {
-    //const response = await axios.post(`${API_CATALOG}/${clousingId}/${lineId}`, details);
-    let data: BankLineModel;
-
-    if (details.bank === "TPV ADYEN") {
-      data = {
-        ...details,
-        vouchers: BankLineDetails,
-      };
-    } /* else {
-      data = {
-        ...details,
-        vouchers: BankLineDetails.map((detial) => {
-          return {
-            ...detial,
-            success,
-            message: success ? undefined : "cheque caducado",
-          };
-        }),
-      };
-    } */
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        return resolve(data);
-      }, 1000);
-    });
-  } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
-    return [] as unknown as BankLineModel;
   }
 };
 
@@ -528,52 +453,6 @@ export const getEmployeeClousing = async (
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as EmployeeModel;
-  }
-};
-
-/**
- * ! DEPRECATED
- * This function sends the log
- * information of closing a new
- * employee for the employees section
- * @param {number} clousingId
- * @param {number} newEmployee
- * @returns {Promise<ResponseModel>}
- */
-export const sendNewEmployeeRegister = async (
-  clousingId: number,
-  newEmployee: NewEmployeeModel
-): Promise<ResponseModel> => {
-  const mock: EmployeeLine = {
-    id: Math.floor(Math.random() * (500 - 11)) + 11,
-    employeeName: "mocky user" + newEmployee.employeeId,
-    employeeNumber: "mocky user" + newEmployee.employeeId,
-    amount: newEmployee.amount,
-    reason: "mocky reason" + newEmployee.reason,
-    ticketNumber: newEmployee.ticket,
-  };
-
-  const success = Math.random() < 0.5;
-
-  // ! cambiar el if else por try catch
-  if (success) {
-    //try
-    const response: ResponseModel = { success: true, data: mock };
-
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000);
-    });
-  } else {
-    //catch (error)
-    const response: ResponseModel = {
-      success: false,
-      error: "Codigo de error",
-      message: "Detalle del error => Error al registrar nueva linea: ",
-    };
-    //console.error('Error al registrar nueva linea:', error);
-    return response;
   }
 };
 
@@ -956,26 +835,4 @@ export const processFiles = async (
       error: String(error),
     };
   }
-};
-
-export const HeaderDataMocky = {
-  cdc: "No seleccionada",
-  location: "No seleccionado",
-  subsidiary: "No seleccionado",
-  date: "27/04/2025",
-  totalPOS: 3500,
-  totalClousing: 3500,
-  difference: 0,
-  service: 1000,
-  discountPOS: 1000,
-  discountClousing: 2000,
-  closures: {
-    cash: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    customer: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    specialCustomer: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    tdc: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    employee: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    prepaid: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-    intercompany: { totalPOS: 500, totalPhysical: 500, difference: 0 },
-  },
 };

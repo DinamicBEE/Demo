@@ -49,8 +49,8 @@ export interface ClousingLinesModel {
   tips: number;
 }
 
-export type TotalsModel = Omit<ClousingLinesModel, "id" | "employe" | "status" | "creationDate" 
-| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva">;
+export interface TotalsModel extends Omit<ClousingLinesModel, "id" | "employe" | "status" | "creationDate" 
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva"> {};
 
 export interface TDC {
   nameBank: string;
@@ -137,9 +137,6 @@ export interface FooterClousing {
   idCurrency: number;
   dateClousing: string;
   propStatus: string;
-  // data?: TotalModel | undefined;
-  // loading?: boolean;
-  // onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {

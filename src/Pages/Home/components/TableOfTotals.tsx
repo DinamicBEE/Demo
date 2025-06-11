@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box, Button, FormatNumber, Grid, GridItem, Group, Input,
   InputAddon, Skeleton, Table, Tag, Text, HStack } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
@@ -7,13 +7,12 @@ import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
-import { ClousingLinesModel, TableOfTotalsProps,
-  TDC, TotalsModel} from "@models/common.clousing.model";
+import { ClousingLinesModel, TableOfTotalsProps, TDC } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../utils/getStatusColor";
 import ClousingLayout from "./ClousingLayout";
-
+import TotalsRow from "./TotalsRow";
 
 function TableOfTotals({
   subsidiary,
@@ -24,109 +23,32 @@ function TableOfTotals({
   setPage,
 }: TableOfTotalsProps) {
   
-  const { data, loading, error, header, getInfo, setDataRow,
+  const { data, totals, loading, error, header, getInfo, setDataRow,
     pagination, tdcHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [totals, setTotals] = useState({} as TotalsModel);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      console.log("Data received:", data);
-      const newTotals: any = data.reduce(
-        (acc, curr) => {
-          acc.totalPOS += curr.totalPOS || 0;
-          acc.totalPhysical += curr.totalPhysical || 0;
-          acc.difference += curr.difference || 0;
-          acc.extra += curr.extra || 0;
-          acc.mxm += curr.mxm || 0;
-          acc.usd += curr.usd || 0;
-          acc.eur += curr.eur || 0;
-          acc.lib += curr.lib || 0;
-          acc.can += curr.can || 0;
-          acc.customer += curr.customer || 0;
-          acc.specialCustomer += curr.specialCustomer || 0;
-          acc.prepaid += curr.prepaid || 0;
-          acc.employees += curr.employees || 0;
-          acc.intercompany += curr.intercompany || 0;
-          acc.tips += curr.tips || 0;
-          curr.tdc.forEach((tdcItem: TDC) => {
-            const existingTdc = acc.tdc.find(
-              (item) => item.nameBank === tdcItem.nameBank
-            );
-            if (existingTdc) {
-              existingTdc.total += tdcItem.total || 0;
-            } else {
-              acc.tdc.push({
-                nameBank: tdcItem.nameBank,
-                total: tdcItem.total || 0,
-              });
-            }
-          });
-          return acc;
-        },
-        {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-          extra: 0,
-          mxm: 0,
-          usd: 0,
-          eur: 0,
-          lib: 0,
-          can: 0,
-          customer: 0,
-          specialCustomer: 0,
-          prepaid: 0,
-          employees: 0,
-          intercompany: 0,
-          tips: 0,
-          tdc: [] as TDC[],
-        }
-      );
-      setTotals(newTotals);
-    }
-  }, [data]);
-
   function handleExportCSV() {
-    // Create a copy of the data array
+
     const dataWithTotals = [...data];
 
-    // Add totals row as the last item
-    dataWithTotals.push({
-      id: 90000,
-      employe: "TOTALES",
-      totalPOS: Number(totals.totalPOS.toFixed(2)),
-      totalPhysical: Number(totals.totalPhysical.toFixed(2)),
-      difference: Number(totals.difference.toFixed(2)),
-      extra: Number(totals.extra.toFixed(2)),
-      mxm: Number(totals.mxm.toFixed(2)),
-      usd: Number(totals.usd.toFixed(2)),
-      eur: Number(totals.eur.toFixed(2)),
-      lib: Number(totals.lib.toFixed(2)),
-      can: Number(totals.can.toFixed(2)),
-      customer: Number(totals.customer.toFixed(2)),
-      specialCustomer: Number(totals.specialCustomer.toFixed(2)),
-      prepaid: Number(totals.prepaid.toFixed(2)),
-      employees: Number(totals.employees.toFixed(2)),
-      intercompany: Number(totals.intercompany.toFixed(2)),
-      status: "",
+    const newTotals ={
+        ...totals,
+       id: 90000,
+       employe: "TOTALES",
+       status: "",
       closingConfirmation: true,
       discount: 0,
       iva: 0,
       service: 0,
-      tips: Number(totals.tips.toFixed(2)),
-      tdc: totals.tdc.map((tdcItem) => ({
-        nameBank: tdcItem.nameBank,
-        total: Number(tdcItem.total.toFixed(2)),
-      })),
       creationDate: "",
       closingStartDate: "",
       closingEndtDate: "",
-    });
+    }
+
+    dataWithTotals.push(newTotals)
 
     exportCSV(dataWithTotals, header, tdcHeader);
   }
@@ -536,132 +458,7 @@ function TableOfTotals({
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                  {/* <Table.Row bg="gray.100" fontWeight="bold">
-                    <Table.Cell textAlign="center"></Table.Cell>
-                    <Table.Cell textAlign="center">Totales</Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.totalPOS}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.totalPhysical}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.difference}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell />
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.extra}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.mxm}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.usd}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.eur}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.lib}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.can}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.customer}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.specialCustomer}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.prepaid}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.employees}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.intercompany}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    {tdcHeader.length > 0 &&
-                      tdcHeader.map((tdcItem) => {
-                        const tdcValue = totals.tdc.find(
-                          (tdc) => tdc.nameBank === tdcItem.nameBank
-                        );
-                        return (
-                          <Table.Cell key={tdcItem.nameBank} textAlign="end">
-                            <FormatNumber
-                              value={tdcValue ? tdcValue.total : 0}
-                              style="currency"
-                              currency="USD"
-                            />
-                          </Table.Cell>
-                        );
-                      })}
-
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.tips}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                  </Table.Row> */}
+                  <TotalsRow></TotalsRow>
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
