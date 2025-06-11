@@ -190,8 +190,6 @@ export interface TableOfTotalsProps {
   store: location;
   startDate: Date;
   endDate: Date;
-  page: number;
-  setPage: (page: number) => void;
 }
 
 export interface ConfirmDialogProps {
@@ -222,4 +220,9 @@ export interface CustomerClousingFormProps {
   title?: string;
   idCurrency: number;
   idClousing: number;
+}
+
+export interface GeneralInfoProps {
+  subsidiary: SubsidiaryModal;
+  store: location; 
 }

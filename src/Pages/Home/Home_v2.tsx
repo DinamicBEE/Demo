@@ -30,45 +30,38 @@ function Home_v2() {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null ]);
     const [startDate, endDate] = dateRange;
 
+    const mapToSelectOptions = <T extends { id: number; name: string }>(
+      items: T[]
+    ): selectOption[] => items.map((item) => ({
+        value: item.id,
+        label: item.name,
+    }));
+
+    const fetchAndSetData = async <T extends { id: number; name: string }>(
+      fetchFn: () => Promise<T[]>,
+      setter: (data: ReturnType<typeof createListCollection<selectOption>>) => void
+    ) => {
+      const data = await fetchFn();
+      const options = createListCollection<selectOption>({
+        items: mapToSelectOptions(data),
+      });
+      setter(options);
+    };
+
     useEffect(() => {
         async function fetchData() {
-            const countriesData = await getCountries();
-            const countryList = createListCollection<selectOption>({
-                items: (await countriesData).map((item: any) => ({
-                    value: item.id,
-                    label: item.name,
-                })),
-            });
+            try {
 
-            const subsidiariesData = await getSubsidiariesData();
-            const subList = createListCollection<selectOption>({
-                items: subsidiariesData.map((item: any) => ({
-                    value: item.id,
-                    label: item.name,
-                })),
-            });
-
-            const zonesData = await getZones();
-            const zoneList = createListCollection<selectOption>({
-                items: zonesData.map((item: any) => ({
-                    value: item.id,
-                    label: item.name,
-                })),
-            });
-            
-            const statusData = await getStatus();
-            const status = createListCollection<selectOption>({
-                items: statusData.map((item: any) => ({
-                    value: item.id,
-                    label: item.name,
-                })),
-            });
-
-            setCountries(countryList);
-            setSubsidiaries(subList);
-            setZones(zoneList);
-            setStatus(status);
-
+                await Promise.all([
+                    fetchAndSetData(getCountries, setCountries),
+                    fetchAndSetData(getSubsidiariesData, setSubsidiaries),
+                    fetchAndSetData(getZones, setZones),
+                    fetchAndSetData(getStatus, setStatus),
+                ]);
+                
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         }
 
         fetchData();

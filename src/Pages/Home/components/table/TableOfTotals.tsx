@@ -1,26 +1,23 @@
 import { useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Group, Input,
-  InputAddon, Skeleton, Table, Tag, Text, HStack } from "@chakra-ui/react";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text, HStack } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
   PaginationRoot } from "@components/ui/pagination";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
-import { CurrencyInput } from "@components/NumericInput";
 import { ClousingLinesModel, TableOfTotalsProps, TDC } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
-import { getStatusColor } from "../../../utils/getStatusColor";
-import ClousingLayout from "./ClousingLayout";
+import { getStatusColor } from "../../../../utils/getStatusColor";
+import ClousingLayout from "../layout/ClousingLayout";
 import TotalsRow from "./TotalsRow";
+import GeneralInfo from "./GeneralInfo";
 
 function TableOfTotals({
   subsidiary,
   store,
   endDate,
   startDate,
-  page,
-  setPage,
 }: TableOfTotalsProps) {
   
   const { data, totals, loading, error, header, getInfo, setDataRow,
@@ -29,6 +26,8 @@ function TableOfTotals({
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
+
+  const [page, setPage] = useState<number>(1);
 
   function handleExportCSV() {
 
@@ -90,72 +89,8 @@ function TableOfTotals({
       )}
 
       <Box>
-        <Box mb={6}>
-          <Grid
-            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
-            gap={4}
-            mb={4}
-          >
-            <Group>
-              <InputAddon>Subsidiaria</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  placeholder="No seleccionada"
-                  value={subsidiary.name}
-                  readOnly
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Restaurante</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  placeholder="No seleccionada"
-                  value={store.name}
-                  readOnly
-                  id={store.id.toString()}
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Fecha</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  disabled
-                  placeholder="No seleccionada"
-                  defaultValue={header.date}
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Hora</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  disabled
-                  placeholder="No seleccionada"
-                  defaultValue={header.time}
-                />
-              </Skeleton>
-            </Group>
-            <CurrencyInput
-              name={"Total Ventas"}
-              value={header.totalPOS}
-              loading={loading}
-            />
-            <CurrencyInput
-              name={"Total Ventas Registradas"}
-              value={header.totalPhysical}
-              loading={loading}
-            />
-            <CurrencyInput
-              name={"Diferencia"}
-              value={header.difference}
-              loading={loading}
-            />
 
-            <Text></Text>
-          </Grid>
-        </Box>
+        <GeneralInfo subsidiary={subsidiary} store={store}></GeneralInfo>
 
         <Box>
           <Grid

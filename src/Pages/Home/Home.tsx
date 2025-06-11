@@ -6,7 +6,7 @@ import { SelectContent, SelectItem, SelectLabel, SelectRoot,
 import { Alert } from "@components/ui/alert";
 import { useList } from "@context/home/listsContext";
 import { useClousing } from "@context/home/clousingContext";
-import TableOfTotals from "./components/TableOfTotals";
+import TableOfTotals from "./components/table/TableOfTotals";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
@@ -32,7 +32,6 @@ function Home() {
     null,
   ]);
   const [startDate, endDate] = dateRange;
-  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
     async function fetchData() {
@@ -200,7 +199,6 @@ function Home() {
                 onClick={() => {
                   setShowTable(true);
                   getInfo(SubSelect.id, location.id, 0, startDate, endDate, true);
-                  setPage(1);
                 }}
               >
                 Buscar
@@ -216,8 +214,6 @@ function Home() {
           store={location}
           startDate={startDate ?? new Date()}
           endDate={endDate ?? new Date()}
-          page={page}
-          setPage={setPage}
         />
       )}
     </Box>
