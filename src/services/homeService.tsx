@@ -37,6 +37,8 @@ export const getGeneralInfo = async (
         size: 10,
       },
     });
+    console.log("response", response.data);
+    
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
       0
@@ -63,6 +65,7 @@ export const getGeneralInfo = async (
       },
       clousingLines: response.data.registerClosure.map((line: any) => ({
         ...line,
+        currencies: line.currencies,
         id: line.crcId,
         employe: line.employe,
         totalPOS: line.totalPOS,
@@ -70,11 +73,11 @@ export const getGeneralInfo = async (
         difference: line.totalPOS - line.totalPhysical,
         status: getStatus(line.status),
         extra: line.exta,
-        mxm: line.generalTotal || 0,
-        usd: line.usd,
-        eur: line.eur,
-        lib: line.lib,
-        can: line.can,
+        // mxm: line.generalTotal || 0,
+        // usd: line.usd,
+        // eur: line.eur,
+        // lib: line.lib,
+        // can: line.can,
         customer: line.customer,
         specialCustomer: line.specialCustomer,
         prepaid: line.prepaid,
@@ -87,8 +90,12 @@ export const getGeneralInfo = async (
         creationDate: format(line.creationDate, "dd/MM/yyyy"),
         closingStartDate: format(line.closingStartDate, "dd/MM/yyyy"),
         closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
+        tips: line.tips || 0
       })),
     };
+
+    console.log("transformedData", transformedData);
+    
 
     return transformedData as ClousingModel;
   } catch (error) {

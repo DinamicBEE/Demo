@@ -30,6 +30,7 @@ import ErrorDialog from "./ErrorDialog";
 import { STATUS } from "@models/status.model";
 import { BankLineModel } from "@models/tdc.model";
 import { toaster } from "@components/ui/toaster";
+import { CashLines } from "@models/cash.model";
 
 function FooterClousing({
   clousingType,
@@ -56,7 +57,7 @@ function FooterClousing({
   const { setEmployee, employee } = useEmployeeContext();
   const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
   const { getPrepaidData, prepaidRef, setCoupons } = usePrepaidContext();
-  const { setDataClousing, tdcHeader } = useClousing();
+  const { setDataClousing, tdcHeader, currHeader } = useClousing();
   const { header, headerRef } = useHeaders();
 
   useEffect(() => {
@@ -186,6 +187,13 @@ function FooterClousing({
         })),
       }));
     };
+    const mapCurrLines = (lines: CashLines[]) => {
+      return lines.map(({...curr}) => ({
+        id: curr.idCurrency,
+        symbol: curr.currency.toUpperCase(),
+        total: curr.totalFisico || 0
+      }))
+    }
     // console.log("descuento informativo",header[clousingId].discountClousing);
     const body: ClousingSave = {
       id: clousingId,
@@ -238,6 +246,7 @@ function FooterClousing({
         total: tdc.total,
         lines: mapTdcLines(tdc.lines),
       },
+      currencies:  mapCurrLines(cash.currencies ?? []),
     };
     const response: any = await sendCashClousing(body, isConfirm);
 
@@ -305,9 +314,13 @@ function FooterClousing({
         tdc: tdcHeader.map((item) => ({
           nameBank: item.nameBank,
           total:
-            body.tdc.lines.find((line) => line.bank === item.nameBank)
-              ?.physical ?? 0,
+            body.tdc.lines.find((line) => line.bank === item.nameBank)?.physical ?? 0,
         })),
+        currencies: currHeader.map((item) => ({
+          id: item.id,
+          symbol: item.symbol,
+          total: body.currencies.find((line) => line.symbol === item.symbol)?.total ?? 0
+        }))
       });
 
       if (isConfirm === true) {

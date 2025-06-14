@@ -13,6 +13,7 @@ import {
   ClousingContextType,
   ClousingLinesModel,
   ClousingModel,
+  Currency,
   HeaderClousingModel,
   TDC,
 } from "@models/common.clousing.model";
@@ -47,6 +48,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   const queryKey = useRef<string>("");
   const setQueryKey = useRef<string>("");
   const [tdcHeader, setTdcHeader] = useState<TDC[]>([]);
+  const [currHeader, setCurrHeader] = useState<Currency[]>([]);
 
   const accumulatedHeader = (queryKey: string) => {
     const accumulatedHeaders = {
@@ -112,6 +114,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           setData(currentPageData);
           setOriginalData(currentPageData);
           setTdcHeader(dataCache.current[pageKey].clousingLines[0]?.tdc || []);
+          setCurrHeader(dataCache.current[pageKey].clousingLines[0]?.currencies || []);
           return;
         }
 
@@ -147,7 +150,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         setData(currentPageData);
         setOriginalData(currentPageData);
         setTdcHeader(response.clousingLines[0]?.tdc || []);
-
+        setCurrHeader(response.clousingLines[0]?.currencies || []);
         
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
@@ -178,6 +181,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (dataClousing.id) {
+      console.log("dataClousing",dataClousing);
+      
       setData((prevData) =>
         prevData.map((item) =>
           item.id == dataClousing.id
@@ -192,12 +197,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
                 intercompany: dataClousing.intercompany,
                 prepaid: dataClousing.prepaid,
                 status: dataClousing.status,
-                mxm: dataClousing.mxm,
-                usd: dataClousing.usd,
-                eur: dataClousing.eur,
-                lib: dataClousing.lib,
-                can: dataClousing.can,
-                tdc: dataClousing.tdc,
+                currencies: dataClousing.currencies,
+                tdc: dataClousing.tdc
               }
             : item
         )
@@ -219,6 +220,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       setDataRow,
       filterDataAdyen,
       tdcHeader,
+      currHeader,
     }),
     [
       header,
@@ -233,6 +235,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       filterDataAdyen,
       pagination,
       tdcHeader,
+      currHeader,
     ]
   );
 

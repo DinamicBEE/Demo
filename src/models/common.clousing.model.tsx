@@ -25,22 +25,23 @@ export interface ClousingLinesModel {
   employe: string;
   totalPOS: number;
   totalPhysical: number;
+  currencies: Currency[];
   difference: number;
   status: string;
   extra: number;
-  mxm: number;
+  /* mxm: number;
   usd: number;
   eur: number;
   lib: number;
-  can: number;
+  can: number; */
   customer: number;
   specialCustomer: number;
   prepaid: number;
   employees: number;
   intercompany: number;
-  service: number;
-  discount: number;
-  iva: number;
+  service?: number;
+  discount?: number;
+  iva?: number;
   closingConfirmation: boolean;
   creationDate: string;
   closingStartDate: string;
@@ -49,8 +50,29 @@ export interface ClousingLinesModel {
   tips: number;
 }
 
+export type ClousingLinesTotals =
+  Omit<ClousingLinesModel,
+    "id"|
+    "employe"|
+    "creationDate"|
+    "closingStartDate"|
+    "closingEndtDate"|
+    "status"|
+    "closingConfirmation"|
+    "mxn"|
+    "usd"|
+    "eur"|
+    "lib"|
+    "can">;
+
 export interface TDC {
   nameBank: string;
+  total: number;
+}
+
+export interface Currency {
+  id: number;
+  symbol: string;
   total: number;
 }
 
@@ -61,6 +83,7 @@ export interface ClousingContextType {
   loading: boolean;
   error: string;
   tdcHeader: TDC[];
+  currHeader: Currency[];
   getInfo: (
     subsidiary: number,
     store: number,

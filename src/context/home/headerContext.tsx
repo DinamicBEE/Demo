@@ -2,6 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { ClousingLinesModel, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/constants.model';
+import { getInfoColumn } from '@services/clousingService';
 
 const headersContext = createContext<HeaderContextType>({} as HeaderContextType);
 
@@ -28,6 +29,11 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     try {
       const data = createObjectHeader(clousingData);
+
+      /* const info = getInfoColumn(clousingData.id);
+
+      console.log("info", info); */
+
 
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 
@@ -116,7 +122,7 @@ function createObjectHeader(dataRow: ClousingLinesModel) {
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
     difference: dataRow.difference,
-    service: dataRow.service,
+    service: dataRow.service == undefined ? 0 : dataRow.service,
     discountPOS: 1000,
     discountClousing: dataRow.discount,
     closures: {

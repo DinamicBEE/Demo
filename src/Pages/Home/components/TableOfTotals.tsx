@@ -26,6 +26,8 @@ import { Alert } from "@components/ui/alert";
 import { CurrencyInput } from "@components/NumericInput";
 import {
   ClousingLinesModel,
+  ClousingLinesTotals,
+  Currency,
   TableOfTotalsProps,
   TDC,
 } from "@models/common.clousing.model";
@@ -54,6 +56,7 @@ function TableOfTotals({
     setDataRow,
     pagination,
     tdcHeader,
+    currHeader,
   } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
@@ -65,17 +68,13 @@ function TableOfTotals({
     totalPhysical: 0,
     difference: 0,
     extra: 0,
-    mxm: 0,
-    usd: 0,
-    eur: 0,
-    lib: 0,
-    can: 0,
     customer: 0,
     specialCustomer: 0,
     prepaid: 0,
     employees: 0,
     intercompany: 0,
     tips: 0,
+    currencies: [] as Currency[],
     tdc: [] as TDC[],
   });
 
@@ -83,23 +82,40 @@ function TableOfTotals({
 
   useEffect(() => {
     if (data.length > 0) {      
-      const newTotals: any = data.reduce(
+      console.log("Data con currencies", data);
+      
+      const newTotals: ClousingLinesTotals = data.reduce(
         (acc, curr) => {
+          
           acc.totalPOS += curr.totalPOS || 0;
           acc.totalPhysical += curr.totalPhysical || 0;
           acc.difference += curr.difference || 0;
           acc.extra += curr.extra || 0;
-          acc.mxm += curr.mxm || 0;
+      /*  acc.mxm += curr.mxm || 0;
           acc.usd += curr.usd || 0;
           acc.eur += curr.eur || 0;
           acc.lib += curr.lib || 0;
-          acc.can += curr.can || 0;
+          acc.can += curr.can || 0; */
           acc.customer += curr.customer || 0;
           acc.specialCustomer += curr.specialCustomer || 0;
           acc.prepaid += curr.prepaid || 0;
           acc.employees += curr.employees || 0;
           acc.intercompany += curr.intercompany || 0;
           acc.tips += curr.tips || 0;
+          curr.currencies.forEach( (currency: Currency) => {
+            const currCurrency = acc.currencies.find(
+              (c) => c.symbol === currency.symbol
+            );
+            if (currCurrency) {
+              currCurrency.total += currency.total || 0;
+            } else {
+              acc.currencies.push({
+                id: currency.id,
+                symbol: currency.symbol,
+                total: currency.total || 0
+              })
+            }
+          });
           curr.tdc.forEach((tdcItem: TDC) => {
             const existingTdc = acc.tdc.find(
               (item) => item.nameBank === tdcItem.nameBank
@@ -121,11 +137,6 @@ function TableOfTotals({
           totalPhysical: 0,
           difference: 0,
           extra: 0,
-          mxm: 0,
-          usd: 0,
-          eur: 0,
-          lib: 0,
-          can: 0,
           customer: 0,
           specialCustomer: 0,
           prepaid: 0,
@@ -133,6 +144,7 @@ function TableOfTotals({
           intercompany: 0,
           tips: 0,
           tdc: [] as TDC[],
+          currencies: [] as Currency[],
         }
       );
       setTotals(newTotals);
@@ -151,11 +163,11 @@ function TableOfTotals({
       totalPhysical: Number(totals.totalPhysical.toFixed(2)),
       difference: Number(totals.difference.toFixed(2)),
       extra: Number(totals.extra.toFixed(2)),
-      mxm: Number(totals.mxm.toFixed(2)),
-      usd: Number(totals.usd.toFixed(2)),
-      eur: Number(totals.eur.toFixed(2)),
-      lib: Number(totals.lib.toFixed(2)),
-      can: Number(totals.can.toFixed(2)),
+      currencies: totals.currencies.map((currency) => ({
+        id: currency.id,
+        symbol: currency.symbol,
+        total: Number(currency.total.toFixed(2))
+      })),
       customer: Number(totals.customer.toFixed(2)),
       specialCustomer: Number(totals.specialCustomer.toFixed(2)),
       prepaid: Number(totals.prepaid.toFixed(2)),
@@ -163,7 +175,7 @@ function TableOfTotals({
       intercompany: Number(totals.intercompany.toFixed(2)),
       status: "",
       closingConfirmation: true,
-      discount: 0,
+      discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
       iva: 0,
       service: 0,
       tips: Number(totals.tips.toFixed(2)),
@@ -345,21 +357,16 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Extras
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      MXN
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      USD
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      EUR
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      LIB
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      CAN
-                    </Table.ColumnHeader>
+                    {currHeader.length > 0 &&
+                      currHeader.map((item: Currency) => (
+                        <Table.ColumnHeader
+                          key={item.id}
+                          textAlign="center"
+                        >
+                          {item.symbol.toUpperCase()}
+                        </Table.ColumnHeader>
+                      ))}
+                    
                     <Table.ColumnHeader textAlign="center">
                       Clientes General
                     </Table.ColumnHeader>
@@ -455,56 +462,26 @@ function TableOfTotals({
                         </Text>
                       </Table.Cell>
 
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.mxm}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell>
+                      {currHeader.length > 0 &&
+                        item.currencies.length > 0 &&
+                        currHeader.map((currItem) => {
+                          const currValue = item.currencies.find(
+                            (curr) => curr.symbol === currItem.symbol
+                          );
+                          return (
+                            <Table.Cell key={currItem.symbol} textAlign="end">
+                              <Text>
+                                <FormatNumber
+                                  value={currValue ? currValue.total : 0}
+                                  style="currency"
+                                  currency="USD"
+                                />
+                              </Text>
+                            </Table.Cell>
+                          );
+                        })}
 
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.usd}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell>
-
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.eur}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell>
-
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.lib}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell>
-
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.can}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell>
-
+                      
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
@@ -616,41 +593,23 @@ function TableOfTotals({
                         currency="USD"
                       />
                     </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.mxm}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.usd}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.eur}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.lib}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.can}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
+
+                    {currHeader.length > 0 &&
+                      totals.currencies != undefined &&
+                      currHeader.map((currItem) => {
+                        const currValue = totals.currencies.find(
+                          (curr) => curr.symbol === currItem.symbol
+                        );
+                        return (
+                          <Table.Cell key={currItem.symbol} textAlign="end">
+                            <FormatNumber
+                              value={currValue ? currValue.total : 0}
+                              style="currency"
+                              currency="USD"
+                            />
+                          </Table.Cell>
+                        );
+                      })}
                     <Table.Cell textAlign="end">
                       <FormatNumber
                         value={totals.customer}
@@ -687,6 +646,7 @@ function TableOfTotals({
                       />
                     </Table.Cell>
                     {tdcHeader.length > 0 &&
+                      totals.tdc != undefined &&
                       tdcHeader.map((tdcItem) => {
                         const tdcValue = totals.tdc.find(
                           (tdc) => tdc.nameBank === tdcItem.nameBank

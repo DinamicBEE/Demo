@@ -36,6 +36,7 @@ import {
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
+import axios from "axios";
 /**
  * This function gets the totals
  * of the selected closure and the
@@ -64,6 +65,33 @@ export const getHeaders = async (clousingId: number): Promise<HeaderData> => {
   }
 };
 
+export const getInfoColumn = async (clousingId: number): Promise<ResponseModel> => {
+  try {
+    const response = await axios.get("https://localhost:8080/cash-register-closure/api/registerclosure/info-colum", {
+      params: {
+        cashId: clousingId
+      }
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return {
+        success: false,
+        data: [],
+        message: "Error al obtener info de taxes y descuentos",
+      };
+    }
+  } catch (error) {
+    console.error("Error en la ejecución", error);
+    return {
+      success: false,
+      data: [],
+      message: "Error en la ejecución",
+    };
+  }
+}
+
 /**
  * This function gets the information
  * of the selected box cut cash section
@@ -75,7 +103,8 @@ export const getCashClousing = async (
   idCurrency: number
 ): Promise<ResponseModel> => {
   try {
-    // Instead of using the actual API endpoint
+    console.log("clousingId", clousingId);
+    
     const response = await api.get(CASH, {
       params: {
         crcId: clousingId,

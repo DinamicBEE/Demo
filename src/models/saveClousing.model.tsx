@@ -1,3 +1,4 @@
+import { Currency } from "./common.clousing.model";
 import { CouponCatalogModel } from "./prepaid.model";
 
 // Interfaces base para tipos comunes
@@ -60,6 +61,7 @@ interface TDC {
   total: Total;
   lines: TDCLine[];
 }
+
 
 interface CustomerLine extends LineBase {
   customers: string;
@@ -155,4 +157,5 @@ export interface ClousingSave {
   employee: Employee;
   prepaid: Prepaid;
   intercompany: Intercompany;
+  currencies: Currency[];
 }

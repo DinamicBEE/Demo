@@ -113,6 +113,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      cashRef !== undefined &&
                       cashRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " + cashRef.current[employee.id].total?.totalPhysical
@@ -129,6 +130,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      tdcRef != undefined &&
                       tdcRef.current[employee.id]?.total?.totalPhysical !== undefined
                         ? "$ " + tdcRef.current[employee.id].total?.totalPhysical
                         : "$ " + 0}
@@ -144,6 +146,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      customerRef !== undefined &&
                       customerRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
@@ -161,6 +164,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      specialCustRef !== undefined &&
                       specialCustRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
@@ -178,6 +182,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      prepaidRef !== undefined &&
                       prepaidRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical
@@ -194,6 +199,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      employeeRef !== undefined &&
                       employeeRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
@@ -211,6 +217,7 @@ function ClousingLayout({
 
                     <Text color="fg.muted">
                       {employee?.id !== undefined &&
+                      intercompanyRef !== undefined &&
                       intercompanyRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
