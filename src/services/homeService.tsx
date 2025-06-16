@@ -37,7 +37,6 @@ export const getGeneralInfo = async (
         size: 10,
       },
     });
-    console.log("response", response.data);
     
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
@@ -94,7 +93,6 @@ export const getGeneralInfo = async (
       })),
     };
 
-    console.log("transformedData", transformedData);
     
 
     return transformedData as ClousingModel;

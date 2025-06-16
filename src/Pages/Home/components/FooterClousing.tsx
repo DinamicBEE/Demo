@@ -194,7 +194,6 @@ function FooterClousing({
         total: curr.totalFisico || 0
       }))
     }
-    // console.log("descuento informativo",header[clousingId].discountClousing);
     const body: ClousingSave = {
       id: clousingId,
       cash: {
@@ -402,7 +401,7 @@ function FooterClousing({
     }
 
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
-      console.log("error");
+      console.log("Hay diferencia");
 
       setOpenDialogDifference(true);
       return;

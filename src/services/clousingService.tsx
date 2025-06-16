@@ -103,7 +103,7 @@ export const getCashClousing = async (
   idCurrency: number
 ): Promise<ResponseModel> => {
   try {
-    console.log("clousingId", clousingId);
+    // console.log("clousingId", clousingId);
     
     const response = await api.get(CASH, {
       params: {

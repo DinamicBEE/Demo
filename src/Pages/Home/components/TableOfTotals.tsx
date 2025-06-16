@@ -82,7 +82,7 @@ function TableOfTotals({
 
   useEffect(() => {
     if (data.length > 0) {      
-      console.log("Data con currencies", data);
+      // console.log("Data con currencies", data);
       
       const newTotals: ClousingLinesTotals = data.reduce(
         (acc, curr) => {
