@@ -84,7 +84,7 @@ export interface HeaderContextType {
   header: HeaderContext;
   error: string;
   loading: boolean;
-  getHeader: (clousingData: ClousingLinesModel) => HeaderData;
+  getHeader: (clousingData: ClousingLinesModel) => Promise<HeaderData>;
   updateHeaderState: (newHeader: any) => void;
   updateTotal: (
     newtotal: number,
@@ -113,6 +113,13 @@ export interface HeaderData {
   discountPOS: number;
   discountClousing?: number;
   closures: ClousingType;
+}
+
+export interface ExtraInfo {
+  //Returar "?" cuando se tenga el el endpoint al 100%
+  totalDiscount: number;
+  totalTax?: number; 
+  totalDiscountPOS?: number; //???????????????
 }
 
 export interface ClousingType {

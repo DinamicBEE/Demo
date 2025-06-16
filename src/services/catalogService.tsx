@@ -1,10 +1,11 @@
-import { CurrencyModel } from "@models/common.clousing.model";
+import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import {
   CURRENCY,
   EMPLOYEEDELETE,
   EMPLOYEELIST,
+  GET_EXTRAINFO,
   LOCATIONS,
   REASONLIST,
   SUBSIDIARIES,
@@ -202,5 +203,23 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
   } catch(e) {
     console.error("Error al eliminar el empleado del preguardado", e);
     return false;
+  }
+}
+
+export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
+  try {
+    if (cashId === null) throw new Error("CashClosureID no puede ser nulo");
+    const response = await api.get(GET_EXTRAINFO, {
+      params: {
+        cashId: cashId,
+      },
+    });
+    const extraInfo = response.data;
+    console.log("ExtraInfo: ", extraInfo);
+    return extraInfo;
+    
+  } catch (error) {
+    console.error("Error al obtener la información extra: ", error);
+    return {} as any;
   }
 }
