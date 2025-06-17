@@ -215,7 +215,7 @@ export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
       },
     });
     const extraInfo = response.data;
-    console.log("ExtraInfo: ", extraInfo);
+    // console.log("ExtraInfo: ", extraInfo);
     return extraInfo;
     
   } catch (error) {
