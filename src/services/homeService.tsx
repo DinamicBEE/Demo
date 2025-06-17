@@ -1,5 +1,5 @@
 import api from "../api/index";
-import { ClousingModel, TDC } from "@models/common.clousing.model";
+import { ClousingModel, Currency, TDC } from "@models/common.clousing.model";
 import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
@@ -116,7 +116,7 @@ export const getGeneralInfo = async (
   }
 };
 
-export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
+export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: Currency[]) {
   const csvString = [
     [
       "Vendedor",
@@ -125,11 +125,12 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
       "Diferencia",
       "Estatus",
       "Extras",
-      "MXN",
-      "USD",
-      "EUR",
-      "LIB",
-      "CAN",
+      // "MXN",
+      // "USD",
+      // "EUR",
+      // "LIB",
+      // "CAN",
+      currHeader.map((item) => item.symbol).join(","),
       "Clientes General",
       "Clientes Especiales",
       "Prepago",
@@ -144,12 +145,19 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
       item.totalPhysical,
       Number(item.difference).toFixed(2),
       item.status,
-      item.mxm,
-      item.mxm,
-      item.usd,
-      item.eur,
-      item.lib,
-      item.can,
+      item.extra,
+      // item.mxm,
+      // item.mxm,
+      // item.usd,
+      // item.eur,
+      // item.lib,
+      // item.can,
+      ...currHeader.map((currency)=> {
+        const currItem = item.currencies.find(
+          (itemCurr: Currency) => itemCurr.symbol === currency.symbol
+        );
+        return currItem ? currItem.total : 0;
+      }),
       item.customer,
       item.specialCustomer,
       item.prepaid,
@@ -158,7 +166,7 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[]) {
 
       ...tdcHeader.map((tdc) => {
         const tdcItem = item.tdc.find(
-          (itemTDC: any) => itemTDC.nameBank === tdc.nameBank
+          (itemTDC: TDC) => itemTDC.nameBank === tdc.nameBank
         );
         return tdcItem ? tdcItem.total : 0;
       }),

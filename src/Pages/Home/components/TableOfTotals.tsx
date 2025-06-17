@@ -188,7 +188,7 @@ function TableOfTotals({
       closingEndtDate: "",
     });
 
-    exportCSV(dataWithTotals, header, tdcHeader);
+    exportCSV(dataWithTotals, header, tdcHeader, currHeader);
   }
 
   const openDialog = (item: any) => {
