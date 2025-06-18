@@ -186,7 +186,7 @@ function FooterClousing({
         })),
       }));
     };
-
+    // console.log("descuento informativo",header[clousingId].discountClousing);
     const body: ClousingSave = {
       id: clousingId,
       cash: {
@@ -239,7 +239,6 @@ function FooterClousing({
         lines: mapTdcLines(tdc.lines),
       },
     };
-
     const response: any = await sendCashClousing(body, isConfirm);
 
     if (response === "response") {

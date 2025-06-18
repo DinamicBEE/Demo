@@ -3,7 +3,7 @@ import { Box, Grid, Group, Input, InputAddon, Button, Skeleton } from "@chakra-u
 import { useHeaders } from "@context/home/headerContext";
 import { useEffect } from "react";
 import { HeaderData } from "@models/common.clousing.model";
-import { CurrencyInput } from "@components/NumericInput";
+import { CurrencyInput, EditableCurrencyInput } from "@components/NumericInput";
 import { useClousing } from "@context/home/clousingContext";
 
 function HeaderClousing({
@@ -18,17 +18,38 @@ function HeaderClousing({
   subsidiary: string;
 }) {
   const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
+
   const { dataRow } = useClousing();
-  const { getHeader, header } = useHeaders();
+  const { getHeader, header, updateHeaderState } = useHeaders();
 
   useEffect(() => {
-    if (!header[id]) {
-      const headerData = getHeader(dataRow);
-      setLocalHeader(headerData);
-    } else {
-      setLocalHeader(header[id]);
+    const fetchHeader = async () => {
+      if (!header[id]) {
+        const headerData = await getHeader(dataRow);
+        setLocalHeader(headerData);
+      } else {
+        setLocalHeader(header[id]);
+      }
+    };
+    fetchHeader();
+  }, [header, id, dataRow, getHeader]);
+
+  const handleDiscountInputChange = (value: string) => {
+
+    const numericValue = Number(value.replace(/[^0-9.-]+/g, ""));
+
+    if (!isNaN(numericValue) && value !== undefined) {
+
+      setLocalHeader((prev) => {
+        if (!prev) return undefined;
+        const updatedLocal = { ...prev, discountClousing: numericValue };
+        updateHeaderState({ ...header, [id]: updatedLocal });
+              
+        return updatedLocal;
+      });
     }
-  }, [header]);
+    
+  }
 
   return (
     <Box>
@@ -95,11 +116,19 @@ function HeaderClousing({
           loading={false}
         />
 
-        {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} />
+        {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} /> 
 
-                <CurrencyInput value={localHeader?.discountPOS} name={"Descuento + IVA POS"} loading={false} />
+                <CurrencyInput 
+                  value={localHeader?.discountPOS}
+                  name={"Descuento + IVA POS"}
+                  loading={false} />*/}
 
-                <CurrencyInput value={localHeader?.discountClousing} name={"Descuento físico"} loading={false} /> */}
+                <EditableCurrencyInput 
+                  value={localHeader?.discountClousing} 
+                  name={"Descuento físico"} 
+                  disabled={closingConfirmation}
+                  onChange={handleDiscountInputChange}
+                  loading={false} /> 
 
         <Button
           size="sm"

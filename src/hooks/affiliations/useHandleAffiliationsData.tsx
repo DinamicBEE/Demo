@@ -1,7 +1,5 @@
 import { Bank, LotClosure } from "@models/lotClosure.model";
 import React from "react";
-import { set } from "react-hook-form";
-
 export const useHandleAffiliationsData = () => {
   // Function to handle input data and update local banks
   const handleInputData = (

@@ -112,7 +112,7 @@ export const getTDCClousing = async (
   try {
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
-    });
+    });    
     const newResponse = {
       ...response.data,
       lines: response.data.lines.map((line: any) => ({
@@ -796,7 +796,7 @@ export const processFiles = async (
     // Eliminar duplicados usando Map para mejor rendimiento
     const uniqueMap = new Map<string, Record<string, unknown>>();
 
-    console.log(allData);
+    // console.log(allData);
 
     allData.forEach((record) => {
       const pspReference = record["Psp Reference"]

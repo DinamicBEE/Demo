@@ -1,7 +1,7 @@
-import { CurrencyModel } from "@models/common.clousing.model";
+import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
-import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_STATUS, LOCATIONS,
+import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
@@ -273,6 +273,23 @@ export const getLocations = async (subIds: number[]): Promise<location[]> => {
   }
 }
 
+export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
+  try {
+    if (cashId === null) throw new Error("CashClosureID no puede ser nulo");
+    const response = await api.get(GET_EXTRAINFO, {
+      params: {
+        cashId: cashId,
+      },
+    });
+    const extraInfo = response.data;
+    // console.log("ExtraInfo: ", extraInfo);
+    return extraInfo;
+    
+  } catch (error) {
+    console.error("Error al obtener la información extra: ", error);
+    return {} as any;
+  }
+}
 
 
 const zones = [

@@ -10,7 +10,6 @@ import {
   Skeleton,
   HStack,
 } from "@chakra-ui/react";
-
 import {
   PaginationItems,
   PaginationNextTrigger,
@@ -31,7 +30,7 @@ import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import { TableInput } from "@components/NumericInput";
 import FilterCustomer from "@components/FilterCustomer";
-import { getCustomers, getCustomersPrepaid } from "@services/catalogService";
+import { getCustomersPrepaid } from "@services/catalogService";
 import DialogCoupons from "./DialogCoupons";
 
 const pageSize = 10;
@@ -79,7 +78,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         } */
 
         setCustomers(customersApi);
-        console.log(prepaid.total);
+        // console.log(prepaid.total);
 
         if (prepaid?.total)
           setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
@@ -180,7 +179,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (coupon.length < 1) return;
     setLoadingAdded(true);
 
-    const couponModel = coupons.find((item) => item.folioCustom === coupon);
+    const couponModel = coupons.find((item) => item.barCode === coupon);
 
     if (couponModel === undefined) {
       toastContoller(couponModel);
@@ -269,7 +268,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     // Update the data with the new prepaid lines
     updateData(updatePrepaid);
     setLoadingAdded(false);
-    console.log(updatePrepaid);
+    // console.log(updatePrepaid);
   }
 
   function handleInputTextData(

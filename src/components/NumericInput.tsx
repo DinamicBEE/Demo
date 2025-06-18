@@ -24,12 +24,13 @@ function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     );
 };
 
-function EditableCurrencyInput({ name, value, loading, onChange }: CurrencyInputProps) {
+function EditableCurrencyInput({ name, value, loading, onChange, disabled }: CurrencyInputProps) {
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
             <Skeleton loading={loading}>
                 <NumericFormat
+                    disabled={disabled || false}
                     customInput={Input}
                     thousandSeparator=","
                     decimalSeparator="."
