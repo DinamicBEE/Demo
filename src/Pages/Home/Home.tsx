@@ -112,7 +112,7 @@ function Home() {
   async function fetchLocations(subId: number) {
     setCatalogLoading(true);
     const locationsData = await getStoresData(subId);
-    //console.log("Locations Data: ", locationsData);
+    console.log("Locations Data: ", locationsData);
 
     setCatalogLoading(false);
 
@@ -214,6 +214,7 @@ function Home() {
           store={location}
           startDate={startDate ?? new Date()}
           endDate={endDate ?? new Date()}
+          isReport={false}
         />
       )}
     </Box>

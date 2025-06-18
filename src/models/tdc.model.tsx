@@ -141,3 +141,9 @@ export interface VoucherFilter {
   onSelect: (voucher: any, itemId?: number | string) => void;
   disabled: boolean;
 }
+
+export interface voucherSelectOption {
+  label: string;
+  value: string;
+  description?: string;
+}

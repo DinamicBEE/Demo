@@ -18,6 +18,7 @@ function TableOfTotals({
   store,
   endDate,
   startDate,
+  isReport
 }: TableOfTotalsProps) {
   
   const { data, totals, loading, error, header, getInfo, setDataRow,
@@ -90,7 +91,7 @@ function TableOfTotals({
 
       <Box>
 
-        <GeneralInfo subsidiary={subsidiary} store={store}></GeneralInfo>
+        <GeneralInfo subsidiary={subsidiary} store={store} isReport={isReport}></GeneralInfo>
 
         <Box>
           <Grid

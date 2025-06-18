@@ -52,6 +52,40 @@ export interface ClousingLinesModel {
 export interface TotalsModel extends Omit<ClousingLinesModel, "id" | "employe" | "status" | "creationDate" 
 | "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva"> {};
 
+export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" | "employe" | "creationDate" | "extra"
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm"> {
+  id?: number,
+  ubicacion: string,
+  cdc: string | null,
+  mxn: number | null,
+  generalTotal: number | null,
+  tpvBancomerUsd: number,
+  tpvSbdellMxn:  number,
+  tpvColdpatria: number,
+  tpvAmexcoCop: number,
+  tpvBanamexUsd: number,
+  tpvBancomer: number,
+  tpvAmexco: number,
+  tpvBanamex: number,
+  tpvBbvaCop: number,
+  tpvSbdellUsd: number,
+  tpvBancoColombia: number,
+  sbdellAmexMxn: number,
+  sbdellAmexUsd: number,
+  tpvNetpay: number,
+  webKiosko: number,
+  tpvSantander: number,
+  webappUsd: number,
+  tpvDinners: number,
+  tpvAdyen:  number,
+  tpvAdyenAmex: number,
+  tpvAdyenKiosko: number,
+  tpvKioskoUsd: number,
+};
+
+export interface ReportTotalsModel extends Omit<ReportClousingLinesModel, "id" | "ubicacion" | "status" | "cdc">{
+}
+
 export interface TDC {
   nameBank: string;
   total: number;
@@ -190,6 +224,7 @@ export interface TableOfTotalsProps {
   store: location;
   startDate: Date;
   endDate: Date;
+  isReport: boolean;
 }
 
 export interface ConfirmDialogProps {
@@ -223,6 +258,8 @@ export interface CustomerClousingFormProps {
 }
 
 export interface GeneralInfoProps {
-  subsidiary: SubsidiaryModal;
-  store: location; 
+  subsidiary?: SubsidiaryModal;
+  store?: location;
+  isReport: boolean;
+  totals?: TotalModel
 }

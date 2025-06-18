@@ -1,34 +1,38 @@
 import { useEffect, useState } from "react";
-import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection, VStack } from "@chakra-ui/react";
+import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { selectOption } from "@models/common.model";
-
-import { useList } from "@context/home/listsContext";
-import { getCountries, getStatus, getZones } from "@services/catalogService";
-import DatePicker from "../LotClosure/components/DatePicker";
+import { getCountries, getLocations, getStatus, getSubsidiariesByCountry } from "@services/catalogService";
+import GeneralInfo from "./components/table/GeneralInfo";
+import { getGeneralReports } from "@services/reportService";
+import { ReportClousingLinesModel, ReportTotalsModel, TotalModel } from "@models/common.clousing.model";
+import TableGeneralReport from "./components/table/TableGeneralReport";
+import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
+import Loading from "@components/Loading";
+import { reportTotals } from "@services/homeService";
 
 function Home_v2() {
-
-    const { getSubsidiariesData } = useList();
 
     const [countries, setCountries] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
     const [subsidiaries, setSubsidiaries] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] }));
-    const [zones, setZones] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
     const [cdc, setCDC] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
     const [status, setStatus] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
 
-    const [country, setCountry] = useState<selectOption[]>([]);
-    const [selectedSubsidiary, setSelectedSubsidiary] = useState<selectOption[]>([]);
-    const [selectedAreas, setSelectedAreas] = useState<selectOption[]>([]);
+    const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
+    const [rowtotals, setRowTotals] = useState<ReportTotalsModel>({} as ReportTotalsModel);
+    const [totals, setTotals] = useState<TotalModel>({} as TotalModel);
+    
+    const [formattedDate, setFormattedDate] = useState<string>('');
+    const initialDate = new Date();
 
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null ]);
-    const [startDate, endDate] = dateRange;
+    const [showTable, setShowTable] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
 
     const mapToSelectOptions = <T extends { id: number; name: string }>(
       items: T[]
@@ -54,8 +58,6 @@ function Home_v2() {
 
                 await Promise.all([
                     fetchAndSetData(getCountries, setCountries),
-                    fetchAndSetData(getSubsidiariesData, setSubsidiaries),
-                    fetchAndSetData(getZones, setZones),
                     fetchAndSetData(getStatus, setStatus),
                 ]);
                 
@@ -67,6 +69,26 @@ function Home_v2() {
         fetchData();
     }, 
     []);
+
+    async function getDataReport() {
+        setShowTable(true);
+        setLoading(true);
+
+        const report = await getGeneralReports(selectedCDC, formattedDate)
+
+        const totals = reportTotals(report);
+        const newTotals: TotalModel ={
+            totalPOS: totals.totalPOS,
+            totalPhysical: totals.totalPhysical,
+            difference: totals.difference,
+        }
+
+        setRowTotals(totals);
+        setTotals(newTotals);
+        setDataReport(report);
+
+        setLoading(false);
+    }
 
     return (
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
@@ -85,7 +107,8 @@ function Home_v2() {
                             value: item.value,
                             label: item.label,
                         }));
-                        setCountry(selectedCountries);
+
+                        fetchAndSetData(() => getSubsidiariesByCountry(selectedCountries[0].label), setSubsidiaries);
                     }}
                 >
                     <SelectLabel fontFamily="heading">
@@ -111,7 +134,9 @@ function Home_v2() {
                             value: item.value,
                             label: item.label,
                         }));
-                        setSelectedSubsidiary(selectedSubsidiaries);
+                        const subIds = selectedSubsidiaries.map((sub) => sub.value); 
+                        
+                        fetchAndSetData(() => getLocations(subIds), setCDC);
                     }}
                 >
                     <SelectLabel fontFamily="heading">
@@ -128,36 +153,20 @@ function Home_v2() {
                     ))}
                     </SelectContent>
                 </SelectRoot>
-
-                <SelectRoot
-                    multiple={true}
-                    collection={zones}
-                    onValueChange={(event) => {
-                        const selectedAreas = event.items.map((item: selectOption) => ({
-                            value: item.value,
-                            label: item.label,
-                        }));
-                        setSelectedAreas(selectedAreas);
-                    }}
-                >
-                    <SelectLabel fontFamily="heading">
-                    Selecciona Ubicación
-                    </SelectLabel>
-                    <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona Subsidiaria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    {zones.items.length > 0 && zones.items.map((item: selectOption) => (
-                        <SelectItem item={item} key={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectContent>
-                </SelectRoot>
                 
                 <SelectRoot
                     multiple={true}
                     collection={cdc}
+                    onValueChange={(event) => {
+                        const selectedcdc = event.items.map((item: selectOption) => ({
+                            value: item.value,
+                            label: item.label,
+                        }));
+                        const cdcIds = selectedcdc.map((cdc) => cdc.value);
+
+                        setSelectedCDC(cdcIds);                      
+                        
+                    }}
                 >
                     <SelectLabel fontFamily="heading">
                     Selecciona Centro de consumo
@@ -201,26 +210,42 @@ function Home_v2() {
                 </SelectRoot>
 
                 <Field.Root>
-                    <Field.Label>Rango de fechas</Field.Label>
-                    <DatePicker
-                        startDate={startDate}
-                        endDate={endDate}
-                        onChange={setDateRange}
-                    />
+                    <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
-                <GridItem colSpan={1} />
+                <GridItem colSpan={2} />
 
-                <Button
+                {formattedDate != '' && (<Button
+                alignSelf={"flex-end"}
                     colorPalette="meraInfo"
-                    onClick={() => {
-                        console.log("Buscar clicked", {country, selectedSubsidiary, selectedAreas, selectedStatus});
+                    onClick={async () => {
+                        getDataReport()
                     }}
                 >
                     Buscar
                 </Button>
+                )}
             </Grid>
+
+            {loading && (
+                <Box position="fixed" top="50%" left="50%">
+                    <Loading />
+                </Box>
+            )
+            }
+
+            { showTable && (
                 
+                <>
+                
+                    <GeneralInfo isReport={true} totals={totals}></GeneralInfo>
+        
+                    <TableGeneralReport DataReport={dataReport} Totals={rowtotals}></TableGeneralReport>
+           
+                </>
+
+            )}
+
         </Box>
     );
 }

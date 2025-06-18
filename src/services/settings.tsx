@@ -24,5 +24,9 @@ export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByDate
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';
 export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBatchClosure';
 
+export const GET_REPORT = '/crc/cash-register-closure/api/registerclosure/summary';
+export const GET_COUNTRIES = '/crc/cash-register-closure/api/subsidiaria/countries';
+export const GET_STATUS = '/crc/cash-register-closure/api/summary/status';
+
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;

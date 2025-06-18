@@ -1,7 +1,7 @@
 import { CurrencyModel } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
-import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, LOCATIONS,
+import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_STATUS, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
@@ -200,15 +200,30 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
 
 export const getCountries = async (): Promise<location[]> => {
   try {
-    // const response = await api.get("/crc/cash-register-closure/api/countries");
-    // const countries = response.data.map((country: any) => ({
-    //   value: country.id,
-    //   label: country.name,
-    // }));
+    const response = await api.get(GET_COUNTRIES);
+
+    const countries = response.data.map((country: string, index: number) => ({
+      id: index + 1,
+      name: country,
+    }));
     
     return countries;
   } catch (error) {
     console.error("Error al obtener los países:", error);
+    return [];
+  }
+}
+
+export const getSubsidiariesByCountry = async (country: string): Promise<location[]> => {
+  try {
+    const username = Cookies.get("username");
+    const response = await api.get(SUBSIDIARIES, {
+      params: { user: username, country: country },
+    });
+   
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las zonas:", error);
     return [];
   }
 }
@@ -230,11 +245,11 @@ export const getZones = async (): Promise<location[]> => {
 
 export const getStatus = async (): Promise<location[]> => {
   try {
-    // const response = await api.get("/crc/cash-register-closure/api/status");
-    // const status = response.data.map((stat: any) => ({
-    //   value: stat.id,
-    //   label: stat.name,
-    // }));
+    const response = await api.get(GET_STATUS);
+    const status = response.data.map((stat: any) => ({
+      id: stat.id,
+      name: stat.status,
+    }));
     
     return status;
   } catch (error) {
@@ -243,28 +258,22 @@ export const getStatus = async (): Promise<location[]> => {
   }
 }
 
+export const getLocations = async (subIds: number[]): Promise<location[]> => {
+  try {
+    const idsList = subIds.join(",");
 
+    const response = await api.get(LOCATIONS,{
+      params: { subsidiaria: idsList },
+    });
 
-const countries = [
-  {
-    id: 1, name: "Estados Unidos"
-  },
-  {
-    id: 2, name: "Canadá"
-  },
-  {
-    id: 3, name: "México"
-  },
-  {
-    id: 4, name: "Brasil"
-  },
-  {
-    id: 5, name: "Argentina"
-  },
-  {
-    id: 6, name: "España"
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las ubicaciones:", error);
+    return [];
   }
-]
+}
+
+
 
 const zones = [
   {
@@ -279,12 +288,4 @@ const zones = [
   {
     id: 4, name: "Aeropuerto Bajio"
   }
-]
-
-const status = [
-  { id: 1, name: "Cerrado" },
-  { id: 2, name: "Reabierto" },
-  { id: 3, name: "Con Diferencia" },
-  { id: 4, name: "Abierto" },
-  { id: 5, name: "Re-cerrado" }
 ]
