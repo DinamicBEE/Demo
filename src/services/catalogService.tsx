@@ -1,15 +1,8 @@
-import { CurrencyModel } from "@models/common.clousing.model";
-import { StoreModel, SubsidiaryModal } from "@models/common.model";
+import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
+import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
-import {
-  CURRENCY,
-  EMPLOYEEDELETE,
-  EMPLOYEELIST,
-  LOCATIONS,
-  REASONLIST,
-  SUBSIDIARIES,
-  TICKETS,
-} from "./settings";
+import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
+  REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 
@@ -204,3 +197,112 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
     return false;
   }
 }
+
+export const getCountries = async (): Promise<location[]> => {
+  try {
+    const response = await api.get(GET_COUNTRIES);
+
+    const countries = response.data.map((country: string, index: number) => ({
+      id: index + 1,
+      name: country,
+    }));
+    
+    return countries;
+  } catch (error) {
+    console.error("Error al obtener los países:", error);
+    return [];
+  }
+}
+
+export const getSubsidiariesByCountry = async (country: string): Promise<location[]> => {
+  try {
+    const username = Cookies.get("username");
+    const response = await api.get(SUBSIDIARIES, {
+      params: { user: username, country: country },
+    });
+   
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las zonas:", error);
+    return [];
+  }
+}
+
+export const getZones = async (): Promise<location[]> => {
+  try {
+    // const response = await api.get("/crc/cash-register-closure/api/zones");
+    // const zones = response.data.map((zone: any) => ({
+    //   value: zone.id,
+    //   label: zone.name,
+    // }));
+    
+    return zones;
+  } catch (error) {
+    console.error("Error al obtener las zonas:", error);
+    return [];
+  }
+}
+
+export const getStatus = async (): Promise<location[]> => {
+  try {
+    const response = await api.get(GET_STATUS);
+    const status = response.data.map((stat: any) => ({
+      id: stat.id,
+      name: stat.status,
+    }));
+    
+    return status;
+  } catch (error) {
+    console.error("Error al obtener los estados:", error);
+    return [];
+  }
+}
+
+export const getLocations = async (subIds: number[]): Promise<location[]> => {
+  try {
+    const idsList = subIds.join(",");
+
+    const response = await api.get(LOCATIONS,{
+      params: { subsidiaria: idsList },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las ubicaciones:", error);
+    return [];
+  }
+}
+
+export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
+  try {
+    if (cashId === null) throw new Error("CashClosureID no puede ser nulo");
+    const response = await api.get(GET_EXTRAINFO, {
+      params: {
+        cashId: cashId,
+      },
+    });
+    const extraInfo = response.data;
+    // console.log("ExtraInfo: ", extraInfo);
+    return extraInfo;
+    
+  } catch (error) {
+    console.error("Error al obtener la información extra: ", error);
+    return {} as any;
+  }
+}
+
+
+const zones = [
+  {
+    id: 1, name: "ABT1"
+  },
+  {
+    id: 2, name: "ABT2"
+  },
+  {
+    id: 3, name: "ABT3"
+  },
+  {
+    id: 4, name: "Aeropuerto Bajio"
+  }
+]

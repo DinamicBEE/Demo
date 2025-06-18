@@ -1,29 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  Button,
-  Grid,
-  VStack,
-  HStack,
-  Heading,
-  createListCollection,
-  ListCollection,
-  Field,
-  Box,
-  GridItem,
-} from "@chakra-ui/react";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "@components/ui/select";
+import { Button, Grid, VStack, HStack, Heading, createListCollection,
+  ListCollection, Field, Box, GridItem } from "@chakra-ui/react";
+import { SelectContent, SelectItem, SelectLabel, SelectRoot,
+  SelectTrigger, SelectValueText } from "@components/ui/select";
 import { Alert } from "@components/ui/alert";
 import { useList } from "@context/home/listsContext";
 import { useClousing } from "@context/home/clousingContext";
-import TableOfTotals from "./components/TableOfTotals";
-import "./Home.css";
+import TableOfTotals from "./components/table/TableOfTotals";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
@@ -39,7 +22,6 @@ function Home() {
   const [storeBySub, setStoreBySub] = useState<ListCollection<{ value: number; label: string }>>(
     createListCollection<{ value: number; label: string }>({ items: [] })
   );
-  const [isAdyen, setIsAdyen] = useState<boolean>(false);
   const [location, setLocation] = useState<location>({} as location);
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
   const [showTable, setShowTable] = useState<boolean>(false);
@@ -50,8 +32,6 @@ function Home() {
     null,
   ]);
   const [startDate, endDate] = dateRange;
-  const [page, setPage] = useState<number>(1);
-  const [isSearch, setIsSearch] = useState<string>("");
 
   useEffect(() => {
     async function fetchData() {
@@ -132,8 +112,7 @@ function Home() {
   async function fetchLocations(subId: number) {
     setCatalogLoading(true);
     const locationsData = await getStoresData(subId);
-
-    // setStores((prev) => locationsData);
+    console.log("Locations Data: ", locationsData);
 
     setCatalogLoading(false);
 
@@ -179,32 +158,29 @@ function Home() {
               </SelectContent>
             </SelectRoot>
 
+            <SelectRoot
+              collection={storeBySub}
+              onValueChange={(event) => {
+                const itemSelected = {
+                  id: event.items[0].value,
+                  name: event.items[0].label,
+                };
 
-            {/* {SubSelect.id != 0 && SubSelect.id != null && ( */}
-              <SelectRoot
-                collection={storeBySub}
-                onValueChange={(event) => {
-                  const itemSelected = {
-                    id: event.items[0].value,
-                    name: event.items[0].label,
-                  };
-
-                  setLocation(itemSelected);
-                }}
-              >
-                <SelectLabel>Selecciona Centro de consumo</SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText placeholder="Selecciona Centro de consumo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(SubSelect.id != 0 && SubSelect.id != null) && storeBySub.items.map((item) => (
-                    <SelectItem item={item} key={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            {/* )} */}
+                setLocation(itemSelected);
+              }}
+            >
+              <SelectLabel>Selecciona Centro de consumo</SelectLabel>
+              <SelectTrigger>
+                <SelectValueText placeholder="Selecciona Centro de consumo" />
+              </SelectTrigger>
+              <SelectContent>
+                {(SubSelect.id != 0 && SubSelect.id != null) && storeBySub.items.map((item) => (
+                  <SelectItem item={item} key={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
 
             {location.id != 0 && (
               <Field.Root>
@@ -223,8 +199,6 @@ function Home() {
                 onClick={() => {
                   setShowTable(true);
                   getInfo(SubSelect.id, location.id, 0, startDate, endDate, true);
-                  setIsAdyen(false);
-                  setPage(1);
                 }}
               >
                 Buscar
@@ -232,16 +206,6 @@ function Home() {
             )}
           </Grid>
         </HStack>
-        {/* <Checkbox
-                  onCheckedChange={
-                      (event) => {
-                          filterDataAdyen(event.checked as boolean);
-                          setIsAdyen(event.checked as boolean);
-                      }
-                  }
-                  checked={isAdyen}
-                hidden={data.length === 0}
-              >Adyen</Checkbox> */}
       </VStack>
 
       {showTable && (
@@ -250,8 +214,7 @@ function Home() {
           store={location}
           startDate={startDate ?? new Date()}
           endDate={endDate ?? new Date()}
-          page={page}
-          setPage={setPage}
+          isReport={false}
         />
       )}
     </Box>

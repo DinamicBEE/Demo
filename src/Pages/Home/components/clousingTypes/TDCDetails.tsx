@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Field,
   Flex,
   FormatNumber,
   Table,
@@ -14,7 +13,6 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@components/ui/pagination";
-import { Checkbox } from "@components/ui/checkbox";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import {
@@ -27,7 +25,6 @@ import {
   DialogFooter,
 } from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
-import { validateDetails } from "@services/clousingService";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
 import Loading from "@components/Loading";
@@ -67,7 +64,6 @@ function TDCDetails({
   const [visibleItems, setVisibleItems] = useState<Voucher[]>([]);
   const [localAmount, setLocalAmount] = useState<number>(0);
   const [vouchersSelected, setVouchersSelected] = useState(0);
-  // const [selectedVouchers, setSelectedVouchers] = useState<Voucher[]>([]);
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
@@ -162,24 +158,9 @@ function TDCDetails({
     setLoading(true);
 
     if (lineId !== null && detailsLocal !== undefined) {
-      /*    if (detailsLocal.bank !== "TPV ADYEN") { */
       updateLineClousing(detailsLocal);
       onClose();
       setIsOpenDialogSave(false);
-      /* } */ /* else if (detailsLocal.bank === "TPV ADYEN") {
-        const detailsValidated: BankLineModel = await validateDetails(
-          clousingId,
-          lineId,
-          selectedVouchers,
-          detailsLocal.vouchers.filter((item) => item.status),
-          detailsLocal
-        );
-        setDetailsLocal(detailsValidated);
-        setDetails(detailsValidated, clousingId, lineId);
-        updateLineClousing(detailsValidated);
-        onClose();
-        setIsOpenDialogSave(false);
-      } */
       setLoading(false);
     }
   }
@@ -306,16 +287,8 @@ function TDCDetails({
                 </Button>
               </Flex>
             )}
-            {/*  {detailsLocal?.bank != "ADYEN" && ( */}
 
             <Flex mb={4} mt={4} width="100%">
-              {/*  <InputAddon>Cheque</InputAddon>
-                <Skeleton loading={loading}>
-                  <Input
-                    placeholder="No. Cheque"
-                    onChange={(e) => setChequeValue(e.target.value)}
-                  />
-                </Skeleton> */}
 
               <FilterVoucher
                 label={true}
@@ -333,40 +306,6 @@ function TDCDetails({
               <Table.Root size="sm" variant="outline">
                 <Table.Header>
                   <Table.Row bg="bg.subtle">
-                    {/*   {detailsLocal?.bank === "TPV ADYEN" && (
-                      <Table.ColumnHeader textAlign="center">
-                        <Checkbox
-                          top="1"
-                          aria-label="Select row"
-                          checked={detailsLocal.vouchers.every(
-                            (item) => item.successAdyen
-                          )}
-                          disabled={
-                            dataFilesProcess &&
-                            dataFilesProcess.consolidatedData
-                              ? false
-                              : true
-                          }
-                          onCheckedChange={(changes) => {
-                            const updatedDetails = detailsLocal.vouchers.map(
-                              (detail) => ({
-                                ...detail,
-                                successAdyen: changes.checked as boolean,
-                              })
-                            );
-                            const updatedDetailsLocal = {
-                              ...detailsLocal,
-                              details: updatedDetails,
-                            };
-                            setDetailsLocal(updatedDetailsLocal);
-                            updateLocalBanksTotal(
-                              updatedDetailsLocal,
-                              setDetailsLocal
-                            );
-                          }}
-                        />
-                      </Table.ColumnHeader>
-                    )} */}
                     <Table.ColumnHeader textAlign="center">
                       Fecha de cierre
                     </Table.ColumnHeader>
@@ -383,11 +322,6 @@ function TDCDetails({
                       
                     </Table.ColumnHeader>
 
-                    {/*    {detailsLocal?.bank === "TPV ADYEN" && (
-                      <Table.ColumnHeader textAlign="center">
-                        Diferencias
-                      </Table.ColumnHeader>
-                    )} */}
                   </Table.Row>
                 </Table.Header>
 
@@ -395,47 +329,7 @@ function TDCDetails({
                   {visibleItems?.map((item: Voucher) => (
                     <Table.Row
                       key={`${item.idCustom}-${item.check}-${item.amount}`}
-                      /*   backgroundColor={isCheckValid(
-                        item.successAdyen,
-                        item.difference
-                      )} */
                     >
-                      {/*   {detailsLocal?.bank === "TPV ADYEN" && (
-                        <Table.Cell>
-                          <Checkbox
-                            top="1"
-                            aria-label="Select row"
-                            checked={item.successAdyen}
-                            disabled={
-                              dataFilesProcess &&
-                              dataFilesProcess.consolidatedData
-                                ? false
-                                : true
-                            }
-                            onCheckedChange={(changes) => {
-                              const updatedDetails = visibleItems.map(
-                                (detail) =>
-                                  detail.id === item.id
-                                    ? {
-                                        ...detail,
-                                        successAdyen:
-                                          changes.checked as boolean,
-                                      }
-                                    : detail
-                              );
-                              const updatedDetailsLocal = {
-                                ...detailsLocal,
-                                details: updatedDetails,
-                              };
-                              setDetailsLocal(updatedDetailsLocal);
-                              updateLocalBanksTotal(
-                                updatedDetailsLocal,
-                                setDetailsLocal
-                              );
-                            }}
-                          />
-                        </Table.Cell>
-                      )} */}
                       
                       <Table.Cell textAlign="center">
                         <Text>{item.dateDisplay}</Text>
@@ -475,14 +369,7 @@ function TDCDetails({
                           </Tooltip>
                         </Text>
                       </Table.Cell>
-                      {/*      {detailsLocal?.bank === "TPV ADYEN" && (
-                        <Table.Cell textAlign="center">
-                          <Text>{item.difference?.date}</Text>
-                          <Text>{item.difference?.check}</Text>
-                          <Text>{item.difference?.amount}</Text>
-                          <Text>{item.difference?.general}</Text>
-                        </Table.Cell>
-                      )} */}
+
                     </Table.Row>
                   ))}
                 </Table.Body>
@@ -516,11 +403,6 @@ function TDCDetails({
 
           <DialogFooter>
             <Flex gap={4}>
-              {/*    <CurrencyInput
-                value={localAmount}
-                name={"Total"}
-                loading={detailsLoading || false}
-              /> */}
 
               <Button
                 colorPalette="meraPrimary"

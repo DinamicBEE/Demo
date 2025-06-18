@@ -16,6 +16,16 @@ const routesConfig = [
       ),
     },
     {
+      path: '/homeV2',
+      element: lazy(() => import('../Pages/Home/Home_v2')),
+      roles: ['admin', 'user'],
+      wrapper: (Component: React.ComponentType) => (
+        <HomeProvider>
+          <Component />
+        </HomeProvider>
+      ),
+    },
+    {
       path: '/lotClosure',
       element: lazy(() => import('../Pages/LotClosure/LotClosure')),
       roles: ['admin', 'user'],
@@ -48,7 +58,7 @@ const routesConfig = [
     {
       path: '/currencymanagement',
       element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
-      roles: ['admin'],
+      roles: ['admin', 'user'],
     }
   ];
   

@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { es } from "date-fns/locale/es";
 import DatePicker, { registerLocale } from "react-datepicker";
-//import AddExchangeRate from "./AddExchangeRate";
+import AddExchangeRate from "./AddExchangeRate";
 import FilterEmployee from "@components/FilterEmployee";
 import { Employee } from "@models/employee.model";
 import { getCurrencies, getEmployees } from "@services/catalogService";
@@ -30,7 +30,7 @@ function CurrencyManagement() {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
-    //const [open, setOpen] = useState<boolean>(false);
+    const [open, setOpen] = useState<boolean>(false);
 
     const [page, setPage] = useState(1)
     const [dataBase, setDataBase] = useState<CurrenciesDataModel[]>([])
@@ -58,7 +58,7 @@ function CurrencyManagement() {
     useEffect(()=>{
       async function fetchData() {
         const employeeList: Employee[] =  await getEmployees(1,1);
-        const currencies = await getCurrencies(1, 1); //id base currency and id cash closure
+        //const currencies = await getCurrencies(1, 1); //id base currency and id cash closure
         
         let createCurrenciList = createListCollection({
           items: currencies
@@ -84,13 +84,13 @@ function CurrencyManagement() {
       handleFilter();
     }, [filterFlag]);
 
-    // const openDiaolog = () => {
-    //   setOpen(true);
-    // }
+    const openDiaolog = () => {
+      setOpen(true);
+    }
   
-    // const closeDiaolog = () => {
-    //   setOpen(false);
-    // }
+    const closeDiaolog = () => {
+      setOpen(false);
+    }
     
     const handleChange = (range: [Date | null, Date | null]) => {
       const [startDate, endDate] = range;
@@ -188,7 +188,7 @@ function CurrencyManagement() {
             <Button colorPalette="meraInfo" onClick={()=>setFilterFlag(true)}> Filtrar </Button>
           </Grid>
 
-          {/* <Grid
+          <Grid
             templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
             gap={4}
             mb={4}
@@ -209,7 +209,7 @@ function CurrencyManagement() {
             >
               Nuevo tipo de cambio
             </Button>
-          </Grid> */}
+          </Grid>
 
           <Table.ScrollArea rounded="md" borderWidth="1px">
             <Table.Root variant="outline">
@@ -286,7 +286,7 @@ function CurrencyManagement() {
           </PaginationRoot>
         </Box>
 
-        {/* <AddExchangeRate isOpen={open} onClose={closeDiaolog} curriesProps={currenciesLocal} /> */}
+        <AddExchangeRate isOpen={open} onClose={closeDiaolog} curriesProps={currenciesLocal} />
       </>
     );
 

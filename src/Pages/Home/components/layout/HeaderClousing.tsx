@@ -23,14 +23,15 @@ function HeaderClousing({
   const { getHeader, header, updateHeaderState } = useHeaders();
 
   useEffect(() => {
-    if (!header[id]) {
-      const headerData = getHeader(dataRow);
-      // console.log("Header info", headerData);
-      
-      setLocalHeader(headerData);
-    } else {
-      setLocalHeader(header[id]);
-    }
+    const fetchHeader = async () => {
+      if (!header[id]) {
+        const headerData = await getHeader(dataRow);
+        setLocalHeader(headerData);
+      } else {
+        setLocalHeader(header[id]);
+      }
+    };
+    fetchHeader();
   }, [header, id, dataRow, getHeader]);
 
   const handleDiscountInputChange = (value: string) => {
@@ -117,18 +118,17 @@ function HeaderClousing({
 
         {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} /> 
 
-                
+                <CurrencyInput 
+                  value={localHeader?.discountPOS}
+                  name={"Descuento + IVA POS"}
+                  loading={false} />*/}
+
                 <EditableCurrencyInput 
                   value={localHeader?.discountClousing} 
                   name={"Descuento físico"} 
                   disabled={closingConfirmation}
                   onChange={handleDiscountInputChange}
-                  loading={false} /> */}
-                  <CurrencyInput 
-                  value={localHeader?.discountPOS}
-                  name={"Descuento + IVA POS"}
-                  loading={false} />
-
+                  loading={false} /> 
 
         <Button
           size="sm"

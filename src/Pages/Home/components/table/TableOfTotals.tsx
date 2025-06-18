@@ -1,25 +1,7 @@
-import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormatNumber,
-  Grid,
-  GridItem,
-  Group,
-  Input,
-  InputAddon,
-  Skeleton,
-  Table,
-  Tag,
-  Text,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { useState } from "react";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
+  PaginationRoot } from "@components/ui/pagination";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
@@ -32,161 +14,53 @@ import {
   TDC,
 } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
-import "../Home.css";
 import { STATUS } from "@models/status.model";
-import { getStatusColor } from "../../../utils/getStatusColor";
-import ClousingLayout from "./ClousingLayout";
-
-const pageSize = 5;
+import { getStatusColor } from "../../../../utils/getStatusColor";
+import ClousingLayout from "../layout/ClousingLayout";
+import TotalsRow from "./TotalsRow";
+import GeneralInfo from "./GeneralInfo";
 
 function TableOfTotals({
   subsidiary,
   store,
   endDate,
   startDate,
-  page,
-  setPage,
+  isReport
 }: TableOfTotalsProps) {
-  const {
-    data,
-    loading,
-    error,
-    header,
-    getInfo,
-    setDataRow,
-    pagination,
-    tdcHeader,
-    currHeader,
-  } = useClousing();
+  
+  const { data, totals, loading, error, header, getInfo, setDataRow,
+    pagination, tdcHeader, currHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [totals, setTotals] = useState({
-    totalPOS: 0,
-    totalPhysical: 0,
-    difference: 0,
-    extra: 0,
-    customer: 0,
-    specialCustomer: 0,
-    prepaid: 0,
-    employees: 0,
-    intercompany: 0,
-    tips: 0,
-    currencies: [] as Currency[],
-    tdc: [] as TDC[],
-  });
-
-  const startRange = (page - 1) * pageSize;
-
-  useEffect(() => {
-    if (data.length > 0) {      
-      // console.log("Data con currencies", data);
-      
-      const newTotals: ClousingLinesTotals = data.reduce(
-        (acc, curr) => {
-          
-          acc.totalPOS += curr.totalPOS || 0;
-          acc.totalPhysical += curr.totalPhysical || 0;
-          acc.difference += curr.difference || 0;
-          acc.extra += curr.extra || 0;
-      /*  acc.mxm += curr.mxm || 0;
-          acc.usd += curr.usd || 0;
-          acc.eur += curr.eur || 0;
-          acc.lib += curr.lib || 0;
-          acc.can += curr.can || 0; */
-          acc.customer += curr.customer || 0;
-          acc.specialCustomer += curr.specialCustomer || 0;
-          acc.prepaid += curr.prepaid || 0;
-          acc.employees += curr.employees || 0;
-          acc.intercompany += curr.intercompany || 0;
-          acc.tips += curr.tips || 0;
-          curr.currencies.forEach( (currency: Currency) => {
-            const currCurrency = acc.currencies.find(
-              (c) => c.symbol === currency.symbol
-            );
-            if (currCurrency) {
-              currCurrency.total += currency.total || 0;
-            } else {
-              acc.currencies.push({
-                id: currency.id,
-                symbol: currency.symbol,
-                total: currency.total || 0
-              })
-            }
-          });
-          curr.tdc.forEach((tdcItem: TDC) => {
-            const existingTdc = acc.tdc.find(
-              (item) => item.nameBank === tdcItem.nameBank
-            );
-            if (existingTdc) {
-              existingTdc.total += tdcItem.total || 0;
-            } else {
-              acc.tdc.push({
-                nameBank: tdcItem.nameBank,
-                total: tdcItem.total || 0,
-              });
-            }
-          });
-          // acc.adyenTotal += curr.adyenTotal || 0;
-          return acc;
-        },
-        {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-          extra: 0,
-          customer: 0,
-          specialCustomer: 0,
-          prepaid: 0,
-          employees: 0,
-          intercompany: 0,
-          tips: 0,
-          tdc: [] as TDC[],
-          currencies: [] as Currency[],
-        }
-      );
-      setTotals(newTotals);
-    }
-  }, [data]);
+  const [page, setPage] = useState<number>(1);
 
   function handleExportCSV() {
-    // Create a copy of the data array
+
     const dataWithTotals = [...data];
 
-    // Add totals row as the last item
-    dataWithTotals.push({
+    const newTotals ={
+      ...totals,
       id: 90000,
       employe: "TOTALES",
-      totalPOS: Number(totals.totalPOS.toFixed(2)),
-      totalPhysical: Number(totals.totalPhysical.toFixed(2)),
-      difference: Number(totals.difference.toFixed(2)),
-      extra: Number(totals.extra.toFixed(2)),
-      currencies: totals.currencies.map((currency) => ({
-        id: currency.id,
-        symbol: currency.symbol,
-        total: Number(currency.total.toFixed(2))
-      })),
-      customer: Number(totals.customer.toFixed(2)),
-      specialCustomer: Number(totals.specialCustomer.toFixed(2)),
-      prepaid: Number(totals.prepaid.toFixed(2)),
-      employees: Number(totals.employees.toFixed(2)),
-      intercompany: Number(totals.intercompany.toFixed(2)),
       status: "",
       closingConfirmation: true,
       discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
       iva: 0,
       service: 0,
-      tips: Number(totals.tips.toFixed(2)),
-      tdc: totals.tdc.map((tdcItem) => ({
-        nameBank: tdcItem.nameBank,
-        total: Number(tdcItem.total.toFixed(2)),
-      })),
       creationDate: "",
       closingStartDate: "",
       closingEndtDate: "",
-    });
+      currencies: totals.currencies.map((currency) => ({
+        id: currency.id,
+        symbol: currency.symbol,
+        total: Number(currency.total.toFixed(2))
+      })),
+    }
+
+    dataWithTotals.push(newTotals)
 
     exportCSV(dataWithTotals, header, tdcHeader, currHeader);
   }
@@ -228,72 +102,8 @@ function TableOfTotals({
       )}
 
       <Box>
-        <Box mb={6}>
-          <Grid
-            templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
-            gap={4}
-            mb={4}
-          >
-            <Group>
-              <InputAddon>Subsidiaria</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  placeholder="No seleccionada"
-                  value={subsidiary.name}
-                  readOnly
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Restaurante</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  placeholder="No seleccionada"
-                  value={store.name}
-                  readOnly
-                  id={store.id.toString()}
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Fecha</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  disabled
-                  placeholder="No seleccionada"
-                  defaultValue={header.date}
-                />
-              </Skeleton>
-            </Group>
-            <Group>
-              <InputAddon>Hora</InputAddon>
-              <Skeleton loading={loading}>
-                <Input
-                  disabled
-                  placeholder="No seleccionada"
-                  defaultValue={header.time}
-                />
-              </Skeleton>
-            </Group>
-            <CurrencyInput
-              name={"Total Ventas"}
-              value={header.totalPOS}
-              loading={loading}
-            />
-            <CurrencyInput
-              name={"Total Ventas Registradas"}
-              value={header.totalPhysical}
-              loading={loading}
-            />
-            <CurrencyInput
-              name={"Diferencia"}
-              value={header.difference}
-              loading={loading}
-            />
 
-            <Text></Text>
-          </Grid>
-        </Box>
+        <GeneralInfo subsidiary={subsidiary} store={store} isReport={isReport}></GeneralInfo>
 
         <Box>
           <Grid
@@ -561,115 +371,7 @@ function TableOfTotals({
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                  <Table.Row bg="gray.100" fontWeight="bold">
-                    <Table.Cell textAlign="center"></Table.Cell>
-                    <Table.Cell textAlign="center">Totales</Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.totalPOS}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.totalPhysical}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.difference}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell />
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.extra}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-
-                    {currHeader.length > 0 &&
-                      totals.currencies != undefined &&
-                      currHeader.map((currItem) => {
-                        const currValue = totals.currencies.find(
-                          (curr) => curr.symbol === currItem.symbol
-                        );
-                        return (
-                          <Table.Cell key={currItem.symbol} textAlign="end">
-                            <FormatNumber
-                              value={currValue ? currValue.total : 0}
-                              style="currency"
-                              currency="USD"
-                            />
-                          </Table.Cell>
-                        );
-                      })}
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.customer}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.specialCustomer}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.prepaid}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.employees}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.intercompany}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                    {tdcHeader.length > 0 &&
-                      totals.tdc != undefined &&
-                      tdcHeader.map((tdcItem) => {
-                        const tdcValue = totals.tdc.find(
-                          (tdc) => tdc.nameBank === tdcItem.nameBank
-                        );
-                        return (
-                          <Table.Cell key={tdcItem.nameBank} textAlign="end">
-                            <FormatNumber
-                              value={tdcValue ? tdcValue.total : 0}
-                              style="currency"
-                              currency="USD"
-                            />
-                          </Table.Cell>
-                        );
-                      })}
-
-                    <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={totals.tips}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Table.Cell>
-                  </Table.Row>
+                  <TotalsRow></TotalsRow>
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>

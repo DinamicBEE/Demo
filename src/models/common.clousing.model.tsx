@@ -29,11 +29,11 @@ export interface ClousingLinesModel {
   difference: number;
   status: string;
   extra: number;
-  /* mxm: number;
-  usd: number;
-  eur: number;
-  lib: number;
-  can: number; */
+  mxm?: number;
+  usd?: number;
+  eur?: number;
+  lib?: number;
+  can?: number;
   customer: number;
   specialCustomer: number;
   prepaid: number;
@@ -64,6 +64,42 @@ export type ClousingLinesTotals =
     "eur"|
     "lib"|
     "can">;
+export interface TotalsModel extends Omit<ClousingLinesModel, "id" | "employe" | "status" | "creationDate" 
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva"> {};
+
+export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" | "employe" | "creationDate" | "extra"
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm"> {
+  id?: number,
+  ubicacion: string,
+  cdc: string | null,
+  mxn: number | null,
+  generalTotal: number | null,
+  tpvBancomerUsd: number,
+  tpvSbdellMxn:  number,
+  tpvColdpatria: number,
+  tpvAmexcoCop: number,
+  tpvBanamexUsd: number,
+  tpvBancomer: number,
+  tpvAmexco: number,
+  tpvBanamex: number,
+  tpvBbvaCop: number,
+  tpvSbdellUsd: number,
+  tpvBancoColombia: number,
+  sbdellAmexMxn: number,
+  sbdellAmexUsd: number,
+  tpvNetpay: number,
+  webKiosko: number,
+  tpvSantander: number,
+  webappUsd: number,
+  tpvDinners: number,
+  tpvAdyen:  number,
+  tpvAdyenAmex: number,
+  tpvAdyenKiosko: number,
+  tpvKioskoUsd: number,
+};
+
+export interface ReportTotalsModel extends Omit<ReportClousingLinesModel, "id" | "ubicacion" | "status" | "cdc">{
+}
 
 export interface TDC {
   nameBank: string;
@@ -80,6 +116,7 @@ export interface Currency {
 export interface ClousingContextType {
   header: HeaderClousingModel;
   data: ClousingLinesModel[];
+  totals: TotalsModel;
   loading: boolean;
   error: string;
   tdcHeader: TDC[];
@@ -107,7 +144,7 @@ export interface HeaderContextType {
   header: HeaderContext;
   error: string;
   loading: boolean;
-  getHeader: (clousingData: ClousingLinesModel) => HeaderData;
+  getHeader: (clousingData: ClousingLinesModel) => Promise<HeaderData>;
   updateHeaderState: (newHeader: any) => void;
   updateTotal: (
     newtotal: number,
@@ -138,6 +175,13 @@ export interface HeaderData {
   closures: ClousingType;
 }
 
+export interface ExtraInfo {
+  //Returar "?" cuando se tenga el el endpoint al 100%
+  totalDiscount: number;
+  totalTax?: number; 
+  totalDiscountPOS?: number; //???????????????
+}
+
 export interface ClousingType {
   cash: TotalModel;
   customer: TotalModel;
@@ -157,9 +201,6 @@ export interface FooterClousing {
   idCurrency: number;
   dateClousing: string;
   propStatus: string;
-  // data?: TotalModel | undefined;
-  // loading?: boolean;
-  // onChange?: () => Promise<boolean>;
 }
 
 export interface TotalModel {
@@ -213,8 +254,7 @@ export interface TableOfTotalsProps {
   store: location;
   startDate: Date;
   endDate: Date;
-  page: number;
-  setPage: (page: number) => void;
+  isReport: boolean;
 }
 
 export interface ConfirmDialogProps {
@@ -245,4 +285,11 @@ export interface CustomerClousingFormProps {
   title?: string;
   idCurrency: number;
   idClousing: number;
+}
+
+export interface GeneralInfoProps {
+  subsidiary?: SubsidiaryModal;
+  store?: location;
+  isReport: boolean;
+  totals?: TotalModel
 }

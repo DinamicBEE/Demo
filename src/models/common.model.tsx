@@ -61,3 +61,8 @@ export interface ErrorDialogContextType {
   showErrorDialog: (message: string) => void;
   closeErrorDialog: () => void;
 }
+
+export interface selectOption {
+  value: number; 
+  label: string;
+}

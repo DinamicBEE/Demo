@@ -8,7 +8,7 @@ import {
   Span,
   Stack,
 } from "@chakra-ui/react";
-import { VoucherFilter } from "@models/tdc.model";
+import { VoucherFilter, voucherSelectOption } from "@models/tdc.model";
 
 function FilterVoucher({
   vouchers,
@@ -21,14 +21,14 @@ function FilterVoucher({
   //
 
   const [searchQuery, setSearchQuery] = useState<string>("Selecciona ticket");
-  const [filteredVouchers, setFilteredVouchers] = useState<ListCollection>(
-    createListCollection({ items: [] })
+  const [filteredVouchers, setFilteredVouchers] = useState<ListCollection<voucherSelectOption>>(
+    createListCollection<voucherSelectOption>({ items: [] })
   );
   const searchRef = useRef<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const voucherCollection = createListCollection({
+    const voucherCollection = createListCollection<voucherSelectOption>({
       items: vouchers.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
@@ -64,7 +64,7 @@ function FilterVoucher({
       voucher.check.toLowerCase().includes(query)
     );
 
-    const voucherCollection = createListCollection({
+    const voucherCollection = createListCollection<voucherSelectOption>({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,

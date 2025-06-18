@@ -38,6 +38,7 @@ import {
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
+import { selectOption } from "@models/common.model";
 
 function AddEmployee({
   clousingId,
@@ -63,10 +64,10 @@ function AddEmployee({
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [reasons, setReasons] = useState<ListCollection>(
-    createListCollection({ items: [] })
+    createListCollection<selectOption>({ items: [] })
   );
   const [tickets, setTickets] = useState<ListCollection>(
-    createListCollection({ items: [] })
+    createListCollection<selectOption>({ items: [] })
   );
 
   const {

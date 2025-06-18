@@ -23,18 +23,18 @@ import { lazy, useState, Suspense, useEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { ClousingLayoutProps } from "@models/common.clousing.model";
-import IntercompanyClousing from "./clousingTypes/IntercompanyClousing";
-import SpecialCustomersClousing from "./clousingTypes/SpecialCustomers";
-import ExitDialog from "./ExitDialog";
+import IntercompanyClousing from "../clousingTypes/IntercompanyClousing";
+import SpecialCustomersClousing from "../clousingTypes/SpecialCustomers";
+import ExitDialog from "../notifications/ExitDialog";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
-const CashClousing = lazy(() => import("./clousingTypes/CashClousing"));
-const TDCClousing = lazy(() => import("./clousingTypes/TDCClousing"));
+const CashClousing = lazy(() => import("../clousingTypes/CashClousing"));
+const TDCClousing = lazy(() => import("../clousingTypes/TDCClousing"));
 const CustomersClousing = lazy(
-  () => import("./clousingTypes/CustomersClousing")
+  () => import("../clousingTypes/CustomersClousing")
 ); 
-const PrepaidClousing = lazy(() => import("./clousingTypes/PrepaidClousing"));
+const PrepaidClousing = lazy(() => import("../clousingTypes/PrepaidClousing"));
 const EmployeesClousing = lazy(
-  () => import("./clousingTypes/EmployeesClousing")
+  () => import("../clousingTypes/EmployeesClousing")
 );
 import { useHeaders } from "@context/home/headerContext";
 

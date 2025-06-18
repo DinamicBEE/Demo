@@ -1,8 +1,8 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState } from 'react';
-import { ClousingLinesModel, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
+import { ClousingLinesModel, ExtraInfo, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/constants.model';
-import { getInfoColumn } from '@services/clousingService';
+import { getExtraInfo } from '@services/catalogService';
 
 const headersContext = createContext<HeaderContextType>({} as HeaderContextType);
 
@@ -19,7 +19,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     headerRef.current = newHeader;
   };
 
-  const getHeader = (clousingData: ClousingLinesModel) => {
+  const getHeader = async (clousingData: ClousingLinesModel): Promise<HeaderData> => {
     setLoading(true);
 
     if (headerRef.current[clousingData.id]) {
@@ -28,7 +28,8 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const data = createObjectHeader(clousingData);
+      const extraInfo = await getExtraInfo(clousingData.id);
+      const data = createObjectHeader(clousingData, extraInfo);
 
       /* const info = getInfoColumn(clousingData.id);
 
@@ -111,7 +112,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function createObjectHeader(dataRow: ClousingLinesModel) {
+function createObjectHeader(dataRow: ClousingLinesModel, extraInfo: ExtraInfo) {
 
   
   const headerData: HeaderData = {
@@ -122,9 +123,9 @@ function createObjectHeader(dataRow: ClousingLinesModel) {
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
     difference: dataRow.difference,
-    service: dataRow.service == undefined ? 0 : dataRow.service,
-    discountPOS: 1000,
-    discountClousing: dataRow.discount,
+    service: dataRow.service || 0,
+    discountPOS: extraInfo.totalDiscountPOS || 0,
+    discountClousing: extraInfo.totalDiscount || 0,
     closures: {
       cash: { totalPOS: 0, totalPhysical: 0, difference: 0 },
       customer: { totalPOS: 0, totalPhysical: 0, difference: 0 },
