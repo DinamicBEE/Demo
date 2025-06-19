@@ -1,0 +1,68 @@
+
+
+export enum REPORT_KEY {
+  REPDES_01 = 1,
+  REPMIX_01 = 2,
+  REPMIX_02 = 3,
+  REPVEN_01 = 4,
+  REPVEN_02 = 5,
+  REPVEN_03 = 6,
+  REPVEN_04 = 7,
+  REPVOI_01 = 8,
+  REPCUP_01 = 9,
+  REPBAN_01 = 10,
+  REPBAN_02 = 11,
+}
+
+export const REPORT_CONFIG = [
+  { report: 1, name: 'Descuentos', date: true, subsidiary: true, cdc: true, employees: true, approver: true, 
+    categories: false, subcategories: false, family: false, items: false, paymentMethod: false, currency: false},
+  { report: 2, name: 'P-MIX: General', date: true, subsidiary: true, cdc: true, employees: false, approver: false, 
+    categories: true, subcategories: true, family: true, items: true, paymentMethod: false, currency: false},
+  { report: 3, name: 'P-MIX: Empleados', date: true, subsidiary: true, cdc: true, employees: true, approver: false, 
+    categories: true, subcategories: true, family: true, items: true, paymentMethod: false, currency: false},
+  { report: 4, name: 'Ventas: Empleados', date: true, subsidiary: true, cdc: true, employees: true, approver: false, 
+    categories: false, subcategories: false, family: false, items: false, paymentMethod: false, currency: false},
+  { report: 5, name: 'Ventas: Categorias y familias', date: true, subsidiary: true, cdc: true, employees: false, approver: false, 
+    categories: true, subcategories: true, family: true, items: false, paymentMethod: false, currency: false},
+  { report: 6, name: 'Ventas: Formas de pago', date: true, subsidiary: true, cdc: true, employees: false, approver: false, 
+    categories: false, subcategories: false, family: false, items: false, paymentMethod: true, currency: true},
+  { report: 7, name: 'Ventas: Ventas vs Descuentos', date: true, subsidiary: true, cdc: true, employees: false, approver: false, 
+    categories: false, subcategories: false, family: false, items: false, paymentMethod: false, currency: false},
+  { report: 8, name: 'Voids', date: true, subsidiary: true, cdc: true, employees: true, approver: true, 
+    categories: false, subcategories: false, family: false, items: true, paymentMethod: false, currency: false, exchangeRate: false },
+  { report: 9, name: 'Cupones', date: true, subsidiary: true, cdc: true, employees: false, approver: false, 
+    categories: false, subcategories: false, family: false, items: false, paymentMethod: false, currency: false, exchangeRate: false },
+];
+
+export const TABLE_CONFIG = [
+  { report:  1, headers: [
+    { label: 'Fecha de Venta', key: 'date' },
+    { label: 'Centro de consumo', key: 'cdc' },
+    { label: 'Venta Ticket', key: 'discountType' },
+    { label: 'Importe Descuentos', key: 'discountAmount' },
+    { label: 'Venta Total', key: 'totalSale' },
+    { label: '% Descuentos / Venta Ticket', key: 'discountPercentage' },
+    { label: 'Empleado', key: 'employe' },
+    { label: 'Aprobador', key: 'approver' },
+  ] },
+  { report: 2, headers: [
+    { label: 'Fecha de Venta', key: 'date' },
+    { label: 'Subsidiaria', key: 'subsidiary' },
+    { label: 'Centro de consumo', key: 'cdc' },
+    { label: 'Categoria', key: 'category' },
+    { label: 'Subcategoria', key: 'subcategory' },
+    { label: 'Familia', key: 'family' },
+    { label: 'Clave', key: 'key' },
+    { label: 'Producto', key: 'item' },
+    { label: 'Venta Total', key: 'totalSale' },
+    { label: 'Voids', key: 'voids' },
+    { label: 'Descuentos', key: 'discounts' },
+    { label: 'Ventas Netas', key: 'netSales' },
+    { label: '# items', key: 'quantity' },
+    { label: '% Ventas / Categoría', key: 'categoryPercentage' },
+    { label: '% Ventas / Familia', key: 'familyPercentage' },
+    { label: 'Costo', key: 'cost' },
+    { label: '%Costo / Ventas', key: 'costPercentage' },
+  ] },
+];
