@@ -3,6 +3,9 @@ export const API_USER = 'https://reqres.in/api';
 export const API_CATALOG = 'https://run.mocky.io/v3';
 export const API_HOME = 'https://run.mocky.io/v3';
 export const API_LOCAL = import.meta.env.VITE_API_URL;
+export const API_CRC = '';
+export const API_LOT = '';
+
 export const SUBSIDIARIES = '/crc/cash-register-closure/api/subsidiaria/list';
 export const LOCATIONS = '/crc/cash-register-closure/api/subsidiaria/store';
 export const CURRENCY = '/crc/cash-register-closure/api/currency/list';
@@ -28,6 +31,21 @@ export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBat
 export const GET_REPORT = '/crc/cash-register-closure/api/registerclosure/summary';
 export const GET_COUNTRIES = '/crc/cash-register-closure/api/subsidiaria/countries';
 export const GET_STATUS = '/crc/cash-register-closure/api/summary/status';
+
+export const GET_CATEGORIES = '';
+export const GET_SUBCATEGORIES = '';
+export const GET_FAMILIES = '';
+export const GET_ITEMS = '';
+
+export const REPORT_DESCOUNTS = '';
+export const REPORT_MIXGEN = '';
+export const REPORT_MIXEMP = '';
+export const REPORT_VENEMP = '';
+export const REPORT_VENCATFAM = '';
+export const REPORT_VENMETPAY = '';
+export const REPORT_VENDES = '';
+export const REPORT_VOIC = '';
+export const REPORT_CUP = '';
 
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;
