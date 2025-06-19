@@ -5,14 +5,7 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
-import { CurrencyInput } from "@components/NumericInput";
-import {
-  ClousingLinesModel,
-  ClousingLinesTotals,
-  Currency,
-  TableOfTotalsProps,
-  TDC,
-} from "@models/common.clousing.model";
+import { ClousingLinesModel, Currency, TableOfTotalsProps, TDC } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../../utils/getStatusColor";
