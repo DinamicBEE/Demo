@@ -1,9 +1,24 @@
-import { Box, Button, CloseButton, Drawer, Heading, Portal, Separator } from "@chakra-ui/react"
+import { Box, Button, CloseButton, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
+import { useColorModeValue } from "@components/ui/color-mode";
 import { ReportsPropsModel } from "@models/reports.model";
-import { useState } from "react"
-import { MdOutlineMenu, MdChevronRight  } from "react-icons/md";
+import { MENU_CONFIG } from "@models/reportsConstansts.model";
+import { MdOutlineMenu, MdChevronRight } from "react-icons/md";
 
-function LateralMenu({open, setOpen}: ReportsPropsModel): JSX.Element {
+
+function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel): JSX.Element {
+  const activeBg = useColorModeValue('green.50', 'green.900');
+  const activeColor = useColorModeValue('green.700', 'green.200');
+  const inactiveColor = useColorModeValue('rgb(45, 55, 72)', 'gray.200');
+
+  const handleClick = (reportCode: number) => {
+    onReportClick(reportCode);
+    setOpen(false);
+  };
+
+  const isActive = (reportCode: number | null) => {
+    return reportCode !== null && reportCode === currentReport;
+  };
+
   return (
     <Drawer.Root
       key={"start"}
@@ -11,7 +26,7 @@ function LateralMenu({open, setOpen}: ReportsPropsModel): JSX.Element {
       open={open}
       onOpenChange={(e) => setOpen(e.open)}
     >
-      <Drawer.Trigger asChild>
+      <Drawer.Trigger >
         <Button variant="outline" size="sm">
           <MdOutlineMenu />
         </Button>
@@ -19,7 +34,7 @@ function LateralMenu({open, setOpen}: ReportsPropsModel): JSX.Element {
       <Portal>
         <Drawer.Backdrop />
         <Drawer.Positioner>
-          <Drawer.Content >
+          <Drawer.Content>
             <Drawer.CloseTrigger
               display="block"
               position={"absolute"}
@@ -28,52 +43,69 @@ function LateralMenu({open, setOpen}: ReportsPropsModel): JSX.Element {
             >
               <CloseButton size="sm" />
             </Drawer.CloseTrigger>
-            <Drawer.Header >
-              <Drawer.Title>Componente de Menú</Drawer.Title>
+            <Drawer.Header>
+              <Drawer.Title>Menú de Reportes</Drawer.Title>
             </Drawer.Header>
             <Drawer.Body>
-              
-
-              <Box paddingBottom={"15px"}>
-                <Heading size="lg" display={"flex"} flexDirection={"row"} alignItems={"center"}>Descuentos <MdChevronRight /></Heading>
-                
-              </Box>
-              <Separator />
-              <Box paddingBottom={"15px"}>
-                <Heading size="lg" >P-MIX</Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>General<MdChevronRight/></Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>Empleados <MdChevronRight /></Heading>
-              </Box>
-              <Separator />
-              <Box paddingBottom={"15px"}>
-                <Heading size="lg">Ventas</Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>Empleados <MdChevronRight /></Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>Categorías y Familias <MdChevronRight /></Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>Formas de Pago <MdChevronRight /></Heading>
-                <Heading size="md" paddingLeft={"30px"} display={"flex"} flexDirection={"row"} alignItems={"center"}>Ventas vs Descuentos <MdChevronRight /></Heading>
-              </Box>
-              <Separator />
-              <Box paddingBottom={"15px"}>
-                <Heading size="lg" display={"flex"} flexDirection={"row"} alignItems={"center"}>Voids <MdChevronRight /></Heading>
-              </Box>
-              <Separator />
-              <Box paddingBottom={"15px"}>
-                <Heading size="lg" display={"flex"} flexDirection={"row"} alignItems={"center"}>Cupones <MdChevronRight /></Heading>
-              </Box>
-              <Separator />
-
-
+              <VStack p={4} align={"flex-start"} width={"full"} gap={4}>
+                {MENU_CONFIG.map((item) => (
+                  <Box key={item.id} width="full">
+                    {item.subCategories === null ? (
+                      <HStack 
+                        as="a" 
+                        onClick={() => item.reportCode && handleClick(item.reportCode)}
+                        fontWeight="bold"
+                        fontSize={"16px"}
+                        mb={"8px"}
+                        color={isActive(item.reportCode) ? activeColor : inactiveColor}
+                        bg={isActive(item.reportCode) ? activeBg : 'transparent'}
+                        _hover={{ color: "green.500", cursor: "pointer" }}
+                        justifyContent="space-between"
+                        textAlign="left"
+                        px={3}
+                        py={2}
+                        borderRadius="md"
+                      >
+                        <Text>{item.categoryName}</Text>
+                        <MdChevronRight/>
+                      </HStack>
+                    ) : (
+                      <>
+                        <Heading size="md" mb={2} textAlign="left" width={"full"} px={3}>
+                          {item.categoryName}
+                        </Heading>
+                        <VStack pl={4} align="flex-start" width={"full"} gap={2}>
+                          {item.subCategories.map((subItem) => (
+                            <HStack
+                              key={subItem.id}
+                              as="a"
+                              onClick={() => handleClick(subItem.reportCode)}
+                              width="full"
+                              justifyContent="space-between"
+                              color={isActive(subItem.reportCode) ? activeColor : inactiveColor}
+                              bg={isActive(subItem.reportCode) ? activeBg : 'transparent'}
+                              _hover={{ color: "green.500", cursor: "pointer" }}
+                              px={3}
+                              py={2}
+                              borderRadius="md"
+                            >
+                              <Text>{subItem.name}</Text>
+                              <MdChevronRight />
+                            </HStack>
+                          ))}
+                        </VStack>
+                      </>
+                    )}
+                    <Separator />
+                  </Box>
+                ))}
+              </VStack>
             </Drawer.Body>
-            {/* <Drawer.Footer>
-              <Button variant="outline">Cancel</Button>
-              <Button>Save</Button>
-            </Drawer.Footer> */}
           </Drawer.Content>
         </Drawer.Positioner>
       </Portal>
     </Drawer.Root>
   )
-  
 }
 
 export default LateralMenu;
