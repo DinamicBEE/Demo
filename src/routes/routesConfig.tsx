@@ -59,6 +59,11 @@ const routesConfig = [
       path: '/currencymanagement',
       element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
       roles: ['admin', 'user'],
+    },
+    {
+      path: '/reports',
+      element: lazy(() => import('../Pages/Reports/Reports')),
+      roles: ['admin', 'user'],
     }
   ];
   
