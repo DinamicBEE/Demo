@@ -112,7 +112,6 @@ function Home() {
   async function fetchLocations(subId: number) {
     setCatalogLoading(true);
     const locationsData = await getStoresData(subId);
-    console.log("Locations Data: ", locationsData);
 
     setCatalogLoading(false);
 
