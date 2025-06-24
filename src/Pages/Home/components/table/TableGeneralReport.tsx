@@ -74,16 +74,16 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                                     <FormatNumber value={row.mxn ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.usd} style="currency" currency="USD" />
+                                    <FormatNumber value={row.usd ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.eur} style="currency" currency="USD" />
+                                    <FormatNumber value={row.eur ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.lib} style="currency" currency="USD" />
+                                    <FormatNumber value={row.lib ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.can} style="currency" currency="USD" />
+                                    <FormatNumber value={row.can ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <FormatNumber value={row.customer} style="currency" currency="USD" />
@@ -189,16 +189,16 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                                 <FormatNumber value={Totals.mxn ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.usd} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.usd ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.eur} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.eur ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.lib} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.lib ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.can} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.can ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.customer} style="currency" currency="USD" />
@@ -296,11 +296,11 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                 setPage(e.page);
                 }}
             >
-            <HStack>
-                <PaginationPrevTrigger />
-                <PaginationItems />
-                <PaginationNextTrigger />
-            </HStack>
+                <HStack>
+                    <PaginationPrevTrigger />
+                    <PaginationItems />
+                    <PaginationNextTrigger />
+                </HStack>
             </PaginationRoot>
         </Box>
     );

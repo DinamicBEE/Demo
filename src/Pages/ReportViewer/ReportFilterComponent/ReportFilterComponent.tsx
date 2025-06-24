@@ -28,7 +28,7 @@ import { RiFilterLine } from "react-icons/ri";
 import { Checkbox } from "@components/ui/checkbox";
 import "./ReportFilter.css";
 import { generateReportCSV } from "@services/reportService";
-import { useReportContext } from "@context/reports/reportsContext";
+import { useReportContext } from "@context/reports/reportContext";
 
 
 export const ReportFilterComponent = () => {

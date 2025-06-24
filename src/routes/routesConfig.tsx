@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import React, { lazy } from 'react';
 import { HomeProvider } from '../context/home/homeProvider';
 import { ReportsProvider } from '@context/reports/reportsProvider';
 import { ApprovalsProvider } from '../context/approvals/approvalsProvider';
@@ -64,6 +64,11 @@ const routesConfig = [
       path: '/reports',
       element: lazy(() => import('../Pages/Reports/Reports')),
       roles: ['admin', 'user'],
+      wrapper: (Component: React.ComponentType) => (
+        <ReportsProvider>
+          <Component />
+        </ReportsProvider>
+      )
     }
   ];
   
