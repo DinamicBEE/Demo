@@ -26,7 +26,7 @@ function Reports() {
         />
         <Heading>Reportes 2.0</Heading>
       </HStack>
-      <Filters />
+      <Filters currentReport={currentReport}/>
       {/* <ReportTable currentReport={currentReport} /> */}
     </Box>
   );

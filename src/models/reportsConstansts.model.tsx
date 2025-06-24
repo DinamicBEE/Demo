@@ -37,8 +37,8 @@ export const REPORT_CONFIG = [
     date: true,
     subsidiary: true,
     cdc: true,
-    employees: true,
-    approver: true,
+    employees: false,
+    approver: false,
     categories: false,
     subcategories: false,
     family: false,
@@ -436,3 +436,19 @@ export const MENU_CONFIG = [
     reportCode: REPORT_KEY.REPCUP_01,
   },
 ];
+
+export const FILTER_LABELS = {
+  date: 'Rango de fechas',
+  subsidiary: 'Sucursal',
+  cdc: 'Centro de costo',
+  employees: 'Empleados',
+  approver: 'Aprobador',
+  categories: 'Categorías',
+  subcategories: 'Subcategorías',
+  family: 'Familia',
+  items: 'Artículos',
+  paymentMethod: 'Método de pago',
+  currency: 'Moneda',
+  exchangeRate: 'Tipo de cambio'
+};
+export type FilterKey = keyof Omit<typeof REPORT_CONFIG[0], 'report' | 'name'>;

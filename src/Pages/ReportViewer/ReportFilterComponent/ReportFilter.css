@@ -28,6 +28,43 @@
   box-shadow: none;
 }
 
+/* Icono de X para borrar fechas */
+.react-datepicker__close-icon::after {
+  background-color: rgba(0,0,0,0.2) !important;
+}
+
+
+/* Color del header del selector de fechas */
+.react-datepicker__header {
+  background-color: #66BB6A !important;
+  border: 1px;
+}
+
+.react-datepicker__current-month {
+  color: white !important;
+}
+
+.react-datepicker__day-name {
+  color: white !important;
+}
+
+
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(102, 187, 106, 0.3) !important;
+}
+
+.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--in-range) {
+   background-color: rgba(102, 187, 106, 0.3) !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__day--in-range {
+  background-color: rgba(102, 187, 106, 0.8) !important;
+}
+
 .secondary-button-filter {
   min-width: 30%;
   width: 100%;

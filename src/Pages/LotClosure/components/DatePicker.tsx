@@ -13,6 +13,7 @@ import { es } from "date-fns/locale/es";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
 import { DatePickerProps } from "@models/lotClosure.model";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 
 const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
   <Input
@@ -20,9 +21,11 @@ const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
     ref={ref}
     onClick={onClick}
     onChange={onChange}
-    focusRingColor={"green.400"}
     placeholder="Selecciona un rango de fechas"
     autoComplete="off"
+    focusRingColor= "#e4e4e7"
+    borderWidth={"1px"}
+    w={"100%"}
   />
 );
 customDateInput.displayName = "DateInput";
@@ -58,7 +61,6 @@ const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
         onChange={onChange}
         isClearable={true}
         customInput={<CustomInput />}
-        className="react-datapicker__input-text"
         locale={es}
         renderCustomHeader={({
           date,
@@ -68,17 +70,24 @@ const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
           changeMonth,
         }) => (
           <HStack>
-            <Button size="xs" variant="plain" onClick={decreaseMonth}>
-              <FaArrowLeft />
+            <Button
+              size="xs"
+              variant="plain"
+              onClick={decreaseMonth}
+              color={"white"}
+            >
+              <MdChevronLeft/>
             </Button>
 
             <NativeSelectRoot size={"xs"} variant={"plain"}>
               <NativeSelectField
+                color={'white'}
+                fontWeight={"bold"}
                 value={getYear(date)}
                 onChange={({ target: { value } }) => changeYear(Number(value))}
               >
                 {years.map((option) => (
-                  <option key={option} value={option}>
+                  <option key={option} value={option} style={{color: "black", fontWeight: "normal"}}>
                     {option}
                   </option>
                 ))}
@@ -87,21 +96,28 @@ const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
 
             <NativeSelectRoot size={"xs"} variant={"plain"}>
               <NativeSelectField
+                color={'white'}
+                fontWeight={"bold"}
                 value={months[getMonth(date)]}
                 onChange={({ target: { value } }) =>
                   changeMonth(months.indexOf(value))
                 }
               >
                 {months.map((option) => (
-                  <option key={option} value={option}>
+                  <option key={option} value={option} style={{color: "black", fontWeight: "normal"}}>
                     {option}
                   </option>
                 ))}
               </NativeSelectField>
             </NativeSelectRoot>
 
-            <Button size="xs" variant="plain" onClick={increaseMonth}>
-              <FaArrowRight />
+            <Button
+              size="xs"
+              color={"white"}
+              variant="plain"
+              onClick={increaseMonth}
+            >
+              <MdChevronRight/>
             </Button>
           </HStack>
         )}
