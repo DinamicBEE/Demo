@@ -10,7 +10,7 @@ import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
 registerLocale("es", es);
 
-function Filters({ currentReport }: FilterPropsModel): JSX.Element {
+function Filters({ currentReport }: FilterPropsModel) {
   const [filterConfig, setFilterConfig] = useState<FilterConfigModel | null>({} as FilterConfigModel);
   // const [startDate, setStartDate] = useState<Date | null>(null);
   // const [endDate, setEndDate] = useState<Date | null>(null);

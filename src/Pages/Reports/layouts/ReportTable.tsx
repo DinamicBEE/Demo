@@ -10,7 +10,7 @@ const pageSize = 10;
 
 function ReportTable({currentReport}: { currentReport: number}) {
     const [headers, setHeaders] = useState<HeaderReportModel[]>([]);
-    const [data, setData] = useState<any[]>([]);
+    //const [data, setData] = useState<any[]>([]);
     const [visibleItems, setVisibleItems] = useState<any[]>([]);
     const { reportData, loading, getReportData } = useReportsContext();
 
@@ -34,18 +34,20 @@ function ReportTable({currentReport}: { currentReport: number}) {
         getHeaders();
     }, [currentReport]);
 
-    useEffect(() => {
+    // useEffect(() => {
         
-        if(reportData){
-            setData(reportData);
-        }
+    //     if(reportData){
+    //         setData(reportData);
+    //     }
 
-    }, [reportData]);
+    // }, [reportData]);
 
     useEffect(() => {
-        setPage(page);
-        const items = reportData?.slice(startRange, endRange);
-        setVisibleItems(items);
+        if(reportData){
+            setPage(page);
+            const items = reportData?.slice(startRange, endRange);
+            setVisibleItems(items);
+        }
     }, [page, reportData]);
 
     function renderCellContent(key: string, value: any) {
