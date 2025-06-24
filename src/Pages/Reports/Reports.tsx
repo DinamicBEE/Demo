@@ -26,10 +26,11 @@ function Reports() {
         />
         <Heading>Reportes 2.0</Heading>
       </HStack>
-      <Filters />
+      
+      <Filters currentReport={currentReport}/>
       
       { currentReport !== null && <ReportTable currentReport={currentReport} /> }
-    
+
     </Box>
   );
 }

@@ -1,14 +1,22 @@
 import { useEffect, useState } from "react";
-import { Box, FormatNumber, Table, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
 import { TABLE_CONFIG } from "@models/reportsConstansts.model";
 import { HeaderReportModel, ReporGeneralRequesttModel } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+
+const pageSize = 10;
 
 function ReportTable({currentReport}: { currentReport: number}) {
     const [headers, setHeaders] = useState<HeaderReportModel[]>([]);
     const [data, setData] = useState<any[]>([]);
+    const [visibleItems, setVisibleItems] = useState<any[]>([]);
     const { reportData, loading, getReportData } = useReportsContext();
+
+    const [page, setPage] = useState<number>(1);
+    const startRange = (page - 1) * pageSize;
+    const endRange = startRange + pageSize;
   
     useEffect(() => {
         async function getHeaders() {
@@ -33,6 +41,12 @@ function ReportTable({currentReport}: { currentReport: number}) {
         }
 
     }, [reportData]);
+
+    useEffect(() => {
+        setPage(page);
+        const items = reportData?.slice(startRange, endRange);
+        setVisibleItems(items);
+    }, [page, reportData]);
 
     function renderCellContent(key: string, value: any) {
         if (key === 'quantity') {
@@ -64,7 +78,7 @@ function ReportTable({currentReport}: { currentReport: number}) {
                             ))}
                         </Table.Header>
                         <Table.Body>
-                            {data.map((row, index) => (
+                            {visibleItems.map((row, index) => (
                                 <Table.Row key={index}>
                                     {headers.map((header) => (
                                         <Table.Cell key={header.key}>
@@ -76,8 +90,9 @@ function ReportTable({currentReport}: { currentReport: number}) {
                         </Table.Body>
                     </Table.Root>
                 </Table.ScrollArea>
-                {/* <PaginationRoot
-                    pageSize={10}
+                <PaginationRoot
+                    count={reportData?.length ?? 0}
+                    pageSize={pageSize}
                     page={page}
                     onPageChange={(e) => {
                     setPage(e.page);
@@ -88,7 +103,7 @@ function ReportTable({currentReport}: { currentReport: number}) {
                         <PaginationItems />
                         <PaginationNextTrigger />
                     </HStack>
-                </PaginationRoot> */}
+                </PaginationRoot>
             </Box>
         </>
     );

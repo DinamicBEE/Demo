@@ -4,14 +4,11 @@ import { Table, Button, Input, Box, Text, FormatNumber, Heading, Spinner, Skelet
 import { ActionBarContent, ActionBarRoot, ActionBarSelectionTrigger, ActionBarSeparator } from "@components/ui/action-bar";
 import { RiCheckFill } from "react-icons/ri";
 import { Checkbox } from "@components/ui/checkbox";
-//import { CheckedChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/checkbox/namespace";
-import { useUser } from "../../context/UserContext";
 import "./ReportViewer.css";
 import { InputGroup } from "@components/ui/input-group";
 import { useReportContext } from "@context/reports/reportContext";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { fetchInitialData } from "@services/reportService";
-//import { Skeleton } from "@components/ui/skeleton";
 import { ReportFilterComponent } from "./ReportFilterComponent/ReportFilterComponent";
 import { getCurrentDate } from './ReportComponents/getCurrentDate';
 import Cookies from "js-cookie";

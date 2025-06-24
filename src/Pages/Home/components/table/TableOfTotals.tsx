@@ -5,10 +5,8 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
-import { CurrencyInput } from "@components/NumericInput";
 import {
   ClousingLinesModel,
-  ClousingLinesTotals,
   Currency,
   TableOfTotalsProps,
   TDC,
