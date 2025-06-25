@@ -11,7 +11,7 @@ const pageSize = 10;
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
     const [headers, setHeaders] = useState<HeaderReportModel<ReportTypeMap[K]>[]>([]);
     const [visibleItems, setVisibleItems] = useState<ReportTypeMap[K][]>([]);
-    const { reportData, loading, getReportData } = useReportsContext();
+    const { reportData, loading } = useReportsContext();
 
     const [page, setPage] = useState<number>(1);
     const startRange = (page - 1) * pageSize;
@@ -22,13 +22,10 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport);
             if (reportHeader) {
                 setHeaders(reportHeader.headers as HeaderReportModel<ReportTypeMap[K]>[]);
+                setVisibleItems([]);
             } else {
                 setHeaders([]);
             }
-            const request: ReporGeneralRequesttModel = {
-                report: currentReport
-            }
-            getReportData(request)
         }
         getHeaders();
     }, [currentReport]);
@@ -44,6 +41,10 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     function renderCellContent(key: keyof ReportTypeMap[K], value: any) {
         if (key === 'quantity') {
             return <Text>{value}</Text>;
+        }
+        
+        if (String(key).toLowerCase().includes('percentage')) {
+            return <Text>{value} %</Text>;
         }
         
         if (typeof value === 'number') {

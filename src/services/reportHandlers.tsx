@@ -12,7 +12,7 @@ export const handleDiscountData = (rawData: any[]): DiscountReportModel[] => {
       : 0;
 
     return {
-      date: item.venta,
+      date: item.venta.split(' ')[0],
       cdc: item.centroDeConsumo,
       discountType: item.descuento,
       discountAmount: discountAmount,

@@ -1,13 +1,15 @@
 import { Box, Stack, Text, Button, createListCollection, Field, Grid } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText,
 } from "@components/ui/select";
-import { AppliedFilters, FilterConfigModel, FilterPropsModel,
+import { AppliedFilters, FilterConfigModel, FilterPropsModel, ReporGeneralRequesttModel,
 } from "@models/reports.model";
 import { FILTER_LABELS, FilterKey, REPORT_CONFIG } from "@models/reportsConstansts.model";
 import { useEffect, useState } from "react";
 import { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
+import { generateReportCSV_V2 } from "@services/reportService";
+import { useReportsContext } from "@context/reports/reportsContext";
 registerLocale("es", es);
 
 function Filters({ currentReport }: FilterPropsModel) {
@@ -18,12 +20,13 @@ function Filters({ currentReport }: FilterPropsModel) {
   const [startDate, endDate] = dateRange;
   const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
 
+  const { getReportData, reportData } = useReportsContext();
+
   useEffect(() => {
     setSelectedValues({});
     const filters = REPORT_CONFIG.find((item) => item.report === currentReport);
     setFilterConfig(filters || null);
 
-    console.log("filters: ", filters);
   }, [currentReport]);
 
   if (!currentReport) {
@@ -71,7 +74,8 @@ function Filters({ currentReport }: FilterPropsModel) {
     setEndDate(endDate);
   }; */
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
+
     if (!filterConfig) return;
     const allFilters: AppliedFilters = {};
 
@@ -89,7 +93,12 @@ function Filters({ currentReport }: FilterPropsModel) {
       }
     });
 
-    console.log("Filtros aplicados:", allFilters);
+    const request: ReporGeneralRequesttModel = {
+        report: currentReport,
+        //TODO: Se rompe el tipado
+        //filterOpction: allFilters
+    }
+    await getReportData(request)
   };
 
   return (
@@ -143,7 +152,15 @@ function Filters({ currentReport }: FilterPropsModel) {
       <Button mt={4} colorScheme="green" width="full" onClick={applyFilters}>
         Aplicar Filtros
       </Button>
+
+      {/* Revisar la validacion de disable, se requeire una variable del componente */}
+      <Button colorPalette="meraPrimary" disabled={reportData.length === 0} onClick={()=>{
+        generateReportCSV_V2(currentReport, reportData)
+      }}>
+        Exportar CSV
+      </Button>
     </Box>
+
   );
 }
 

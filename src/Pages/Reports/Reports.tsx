@@ -12,7 +12,6 @@ function Reports() {
   const handleReportChange = (reportCode: number) => {
     setCurrentReport(reportCode);
     // Aquí puedes agregar lógica adicional cuando cambia el reporte
-    console.log("Reporte cambiado a:", reportCode);
   };
 
   return (

@@ -8,7 +8,7 @@ export const useReportsContext = () => useContext(reportsContext);
 
 export function ReportsSectionProvider({ children } : { children : ReactNode }){
 
-    const [reportData, setReportData] = useState<any>();
+    const [reportData, setReportData] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false)
 
     const getReportData = useCallback(

@@ -38,7 +38,7 @@ export interface ReportFilterModel {
   };
 
 export interface ReportContextType {
-  reportData: any;
+  reportData: any[];
   loading: boolean;
   getReportData: (reportType: ReporGeneralRequesttModel) => Promise<any>;
 }
