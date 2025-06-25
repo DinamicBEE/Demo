@@ -4,6 +4,7 @@ import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { DescountDummyData, PMIXEmployeeDummyData, PMIXGeneralDummyData, VENCatFamDummyData, VENEmployeeDummyData, VENPaymentDummyData } from "@models/reportFakeData.model";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
+import { REPORTSERVICE_CONFIG } from "@models/reportsConstansts.model";
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -443,15 +444,18 @@ export const getGeneralReports = async (cdcids:number[], date:string): Promise<R
 }
 
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
-
+ 
   let response: any[];
+  const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
 
   try {
     
     switch (request.report) {
         case 1:
   
-            response = DescountDummyData.discounts
+            response = reportConfig?.handleData
+              ? reportConfig.handleData(DescountDummyData.discounts)
+              : []
   
             break;
     

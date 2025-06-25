@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
 import { TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { HeaderReportModel, ReporGeneralRequesttModel } from "@models/reports.model";
+import { HeaderReportModel, ReporGeneralRequesttModel, ReportTypeMap } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 
 const pageSize = 10;
 
-function ReportTable({currentReport}: { currentReport: number}) {
-    const [headers, setHeaders] = useState<HeaderReportModel[]>([]);
-    //const [data, setData] = useState<any[]>([]);
-    const [visibleItems, setVisibleItems] = useState<any[]>([]);
+function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
+    const [headers, setHeaders] = useState<HeaderReportModel<ReportTypeMap[K]>[]>([]);
+    const [visibleItems, setVisibleItems] = useState<ReportTypeMap[K][]>([]);
     const { reportData, loading, getReportData } = useReportsContext();
 
     const [page, setPage] = useState<number>(1);
@@ -22,7 +21,7 @@ function ReportTable({currentReport}: { currentReport: number}) {
         async function getHeaders() {
             const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport);
             if (reportHeader) {
-                setHeaders(reportHeader.headers);
+                setHeaders(reportHeader.headers as HeaderReportModel<ReportTypeMap[K]>[]);
             } else {
                 setHeaders([]);
             }
@@ -34,14 +33,6 @@ function ReportTable({currentReport}: { currentReport: number}) {
         getHeaders();
     }, [currentReport]);
 
-    // useEffect(() => {
-        
-    //     if(reportData){
-    //         setData(reportData);
-    //     }
-
-    // }, [reportData]);
-
     useEffect(() => {
         if(reportData){
             setPage(page);
@@ -50,7 +41,7 @@ function ReportTable({currentReport}: { currentReport: number}) {
         }
     }, [page, reportData]);
 
-    function renderCellContent(key: string, value: any) {
+    function renderCellContent(key: keyof ReportTypeMap[K], value: any) {
         if (key === 'quantity') {
             return <Text>{value}</Text>;
         }
@@ -76,14 +67,14 @@ function ReportTable({currentReport}: { currentReport: number}) {
                     <Table.Root size="sm" variant="outline">
                         <Table.Header>
                             {headers.map((header) => (
-                                <Table.ColumnHeader key={header.key}>{header.label}</Table.ColumnHeader>
+                                <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
                             ))}
                         </Table.Header>
                         <Table.Body>
                             {visibleItems.map((row, index) => (
                                 <Table.Row key={index}>
                                     {headers.map((header) => (
-                                        <Table.Cell key={header.key}>
+                                        <Table.Cell key={String(header.key)}>
                                             {renderCellContent(header.key, row[header.key])}
                                         </Table.Cell>
                                     ))}

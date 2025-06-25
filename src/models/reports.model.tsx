@@ -7,9 +7,9 @@ export interface ReportsPropsModel {
   onReportClick: (reportCode: number) => void;
 }
 
-export interface HeaderReportModel {
+export interface HeaderReportModel<T extends ReportData> {
   label: string;
-  key: string;
+  key: keyof T;
 }
 
 export interface TablePropsModel {
@@ -64,4 +64,59 @@ export interface FilterConfigModel {
   
 export type AppliedFilters = {
   [key in FilterKey]?: string | Date | null;
+};
+
+export interface DiscountReportModel {
+  date: string | Date;
+  cdc: string;
+  discountType: string;
+  discountAmount: number;
+  totalSale: number;
+  discountPercentage: number;
+  employee: string;
+  approver: string;
+}
+
+export interface PMixGeneralReportModel {
+  date: string | Date;
+  subsidiary: string;
+  cdc: string;
+  category: string;
+  subcategory: string;
+  family: string;
+  key: string;
+  item: string;
+  totalSale: number;
+  voids: number;
+  discounts: number;
+  netSales: number;
+  quantity: number;
+  categoryPercentage: number;
+  familyPercentage: number;
+  cost: number;
+  costPercentage: number;
+}
+
+export interface PMixEmployeeReportModel {
+  date: string | Date;
+  location: string;
+  employee: string;
+  cdc: string;
+  category: string;
+  subcategory: string;
+  family: string;
+  key: string;
+  product: string;
+  netSales: number;
+  quantity: number;
+  cost: number;
+  costPercentage: number;
+}
+
+export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel;
+
+export type ReportTypeMap = {
+  1: DiscountReportModel;
+  2: PMixGeneralReportModel;
+  3: PMixEmployeeReportModel;
 };

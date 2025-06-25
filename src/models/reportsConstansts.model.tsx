@@ -1,3 +1,5 @@
+
+import { reportHandlers } from "@services/reportHandlers";
 import * as SETTINGS from "@services/settings";
 
 export enum REPORT_KEY {
@@ -362,7 +364,7 @@ export const REPORTSERVICE_CONFIG = [
     report: REPORT_KEY.REPDES_01,
     url: SETTINGS.REPORT_DESCOUNTS,
     bodyRequest: null,
-    handleData: null,
+    handleData: reportHandlers.handleDiscountData,
   },
   {
     report: REPORT_KEY.REPMIX_01,
