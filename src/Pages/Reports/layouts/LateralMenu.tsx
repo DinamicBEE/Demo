@@ -1,12 +1,12 @@
-import { Box, Button, CloseButton, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
+import { Box, CloseButton, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
 import { useColorModeValue } from "@components/ui/color-mode";
 import { ReportsPropsModel } from "@models/reports.model";
 import { MENU_CONFIG } from "@models/reportsConstansts.model";
-import { MdOutlineMenu, MdChevronRight } from "react-icons/md";
+import { MdChevronRight } from "react-icons/md";
 import { RiMenuUnfold3Line } from "react-icons/ri";
 
 
-function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel): JSX.Element {
+function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel) {
   const activeBg = useColorModeValue('green.50', 'green.900');
   const activeColor = useColorModeValue('green.700', 'green.200');
   const inactiveColor = useColorModeValue('rgb(45, 55, 72)', 'gray.200');

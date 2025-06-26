@@ -17,7 +17,6 @@ registerLocale("es", es);
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [filterConfig, setFilterConfig] = useState<FilterConfigModel | null>({} as FilterConfigModel);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [startDate, endDate] = dateRange;
   const [selectedValues, setSelectedValues] = useState<ReportFilterModel>({} as ReportFilterModel);
   const [filterData, setFilterData] = useState<FilterData>({});
