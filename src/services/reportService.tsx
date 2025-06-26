@@ -4,7 +4,7 @@ import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { DescountDummyData, PMIXEmployeeDummyData, PMIXGeneralDummyData, VENCatFamDummyData, VENEmployeeDummyData, VENPaymentDummyData } from "@models/reportFakeData.model";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
-import { REPORTSERVICE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORT_CONFIG, REPORTSERVICE_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -544,3 +544,32 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
   }
 
 }
+
+export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
+
+  const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
+  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
+  const date = new Date(Date.now());
+  const formattedDate = date.toISOString().split('T')[0];
+
+  const csvString = [
+    (reportHeader ?? []).map((header) => header.label),
+    ...rows.map((row) => [
+      (reportHeader ?? []).map((header) => row[header.key])
+    ])
+  ]
+  .map((row) => Array.isArray(row) ? row.join(",") : row)
+  .join("\n");
+
+  const bom = "\uFEFF";
+  const blob = new Blob([bom + csvString], {type: 'text/csv;charset=utf-8;'});
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${title}_${formattedDate}`;
+  document.body.appendChild(link)
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);  
+};
