@@ -2,8 +2,8 @@ import { FilterKey } from "./reportsConstansts.model";
 
 export interface ReportsPropsModel {
   open: boolean;
-  setOpen: (open: boolean) => void;
   currentReport?: number | null;
+  setOpen: (open: boolean) => void;
   onReportClick: (reportCode: number) => void;
 }
 
@@ -24,26 +24,37 @@ export interface ReporGeneralRequesttModel {
 
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
-    date: string,
-    subsidiary: number,
-    cdc: number,
-    employees: number,
-    approver: number,
-    categories: number,
-    subcategories: number,
-    family: number,
-    items: number,
-    paymentMethod: number,
-    currency: number,
-  };
-
-export interface ReportContextType {
-  reportData: any;
-  loading: boolean;
-  getReportData: (reportType: ReporGeneralRequesttModel) => Promise<any>;
+  date: string,
+  subsidiary: number,
+  cdc: number[],
+  employees: number,
+  approver: number,
+  categories: number,
+  subcategories: number,
+  family: number,
+  items: number,
+  paymentMethod: number,
+  currency: number,
+  exchangeRate?: number,
+};
+  
+  export interface ReportContextType {
+    reportData: any;
+    loading: boolean;
+    getReportData: (reportType: ReporGeneralRequesttModel) => Promise<any>;
+  }
+  export interface FilterPropsModel {
+    currentReport?: number | null;
+    reportName: (name: string) => void;
 }
-export interface FilterPropsModel {
-  currentReport?: number | null;
+
+export interface FilterOption {
+  value: string;
+  label: string;
+}
+
+export interface FilterData {
+  [key: string]: FilterOption[];
 }
 
 export interface FilterConfigModel {
@@ -63,7 +74,7 @@ export interface FilterConfigModel {
   }
   
 export type AppliedFilters = {
-  [key in FilterKey]?: string | Date | null;
+  [key in FilterKey]?: string | number | null | number[];
 };
 
 export interface DiscountReportModel {

@@ -1,4 +1,4 @@
-import { Box, Heading, HStack } from "@chakra-ui/react"
+import { Box, Heading, HStack, VStack } from "@chakra-ui/react"
 import { useState } from "react"
 import LateralMenu from "./layouts/LateralMenu";
 import Filters from "./layouts/Filters";
@@ -7,6 +7,8 @@ import ReportTable from "./layouts/ReportTable";
 function Reports() {
   const [open, setOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState<number | null>(null);
+  const [reportName, setReportName] = useState<string>('Reporte no seleccionado')
+  
 
   // Función para manejar el cambio de reporte
   const handleReportChange = (reportCode: number) => {
@@ -15,19 +17,24 @@ function Reports() {
     console.log("Reporte cambiado a:", reportCode);
   };
 
+  const handleReportNameChange = (name: string) => {
+    setReportName(name || 'Reporte no seleccionado')
+  }
+
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
-      <HStack>
+      <VStack align={"start"} gap={1}>
         <LateralMenu 
           open={open} 
           setOpen={setOpen} 
           currentReport={currentReport}
           onReportClick={handleReportChange} // Pasamos el manejador como prop
         />
-        <Heading>Reportes 2.0</Heading>
-      </HStack>
+        
+        <Heading paddingLeft={4}> {reportName} </Heading>
+      </VStack>
       
-      <Filters currentReport={currentReport}/>
+      <Filters currentReport={currentReport} reportName={handleReportNameChange}/>
       
       { currentReport !== null && <ReportTable currentReport={currentReport} /> }
 

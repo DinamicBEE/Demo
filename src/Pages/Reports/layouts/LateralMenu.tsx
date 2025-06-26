@@ -3,6 +3,7 @@ import { useColorModeValue } from "@components/ui/color-mode";
 import { ReportsPropsModel } from "@models/reports.model";
 import { MENU_CONFIG } from "@models/reportsConstansts.model";
 import { MdOutlineMenu, MdChevronRight } from "react-icons/md";
+import { RiMenuUnfold3Line } from "react-icons/ri";
 
 
 function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel): JSX.Element {
@@ -27,9 +28,17 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
       onOpenChange={(e) => setOpen(e.open)}
     >
       <Drawer.Trigger >
-        <Button variant="outline" size="sm">
-          <MdOutlineMenu />
-        </Button>
+        <HStack cursor="pointer" _hover={{textDecoration:"underline",transform:"all 0.5s"}}
+            color="green.500" fontWeight={400}>
+          <Box >
+                <RiMenuUnfold3Line />
+          </Box>
+          <Box>
+            <Text >
+            Abrir menú se reportes
+            </Text>
+        </Box>
+        </HStack>
       </Drawer.Trigger>
       <Portal>
         <Drawer.Backdrop />

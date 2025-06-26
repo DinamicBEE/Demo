@@ -1,10 +1,34 @@
 import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
+import { FilterOption } from "@models/reports.model";
 import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
+
+
+export const getFilterOptions = async (key: string, optional?: number): Promise<FilterOption[]> =>{
+  switch (key) {
+    case "subsidiary":
+      const subsidiaries = await getSubsidiaries();
+      return subsidiaries.map(item => ({
+        value: item.id.toString(),
+        label: item.name
+      }));
+    case "cdc":
+      const stores = await getStores(optional!);      
+      return stores.map(item => ({
+        value: item.id.toString(),
+        label: item.name
+      }));
+  
+    default:
+      return [];
+      //throw new Error(`Método ${key} no implementado`);
+      
+  }
+}
 
 /**
  * This function gets the list of active subsides
@@ -17,8 +41,8 @@ export const getSubsidiaries = async (): Promise<SubsidiaryModal[]> => {
       params: { user: username },
     });
 
-    const subs = response.data;
-
+    const subs = response.data || [];
+    
     return subs;
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
@@ -38,8 +62,7 @@ export const getStores = async (subId: number): Promise<StoreModel[]> => {
       params: { subsidiaria: subId },
     });
 
-    const locs = response.data;
-
+    const locs = response.data || [];
     return locs;
   } catch (error) {
     console.error("Error al obtener las tiendas:", error);

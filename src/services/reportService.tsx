@@ -416,6 +416,10 @@ export const resetFilters = async (): Promise<Row[]> => {
   return []; // Cambiar por el respaldo real
 };
 
+// TODO
+/* ========================================= REPORTES 2.0 ========================================= */
+
+
 export const getGeneralReports = async (cdcids:number[], date:string): Promise<ReportClousingLinesModel[]> => {
   try {
     
