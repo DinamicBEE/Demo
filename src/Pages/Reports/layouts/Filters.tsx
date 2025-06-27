@@ -25,10 +25,25 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   const { getReportData, reportData } = useReportsContext();
 
+  const reset: ReportFilterModel = {
+    approver: null,
+    categories: null,
+    cdc: [],
+    currency: null,
+    date: null,
+    employees: null,
+    family: null,
+    items: null,
+    paymentMethod: null,
+    subcategories: null,
+    subsidiary: null,
+    exchangeRate: null
+  }
+
   useEffect(() => {
 
     const loadInitialData = async() =>{
-      setSelectedValues({} as ReportFilterModel);
+      setSelectedValues(reset);
       reportName("");
       const filters = REPORT_CONFIG.find((item) => item.report === currentReport);
       setFilterConfig(filters || null);
@@ -47,6 +62,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     }
 
     loadInitialData();
+    // console.log("selectedValues", selectedValues);
+    
   }, [currentReport]);
 
   const loadFilterData = async (filterKey: FilterKey, parentValue?: number) => {
@@ -96,32 +113,15 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   }
 
   const handleSelectChange = (filterKey: FilterKey, value: any) => {
-    let prevCdc: number[] = [];
-    if (filterKey === "cdc") {
-      prevCdc = selectedValues.cdc
-      if (prevCdc.includes(value)) {
-        const index = prevCdc.findIndex((item: number) => item === value);
-        if (index !== -1) {
-          prevCdc.splice(index, 1);
-        }
-      } else {
-        prevCdc.push(value);
-      }
-    }
     
-   const newValues = filterKey !== "cdc" ? {
+    
+   const newValues = {
     ...selectedValues,
     [filterKey]: value,
-   } : {
-    ...selectedValues,
-    [filterKey]: prevCdc,
    };
     if (filterKey === "subsidiary") {
-      newValues.cdc = [];
-    }
-
-    console.log("newValues", newValues);
-    
+      newValues.cdc = reset.cdc;
+    }    
 
     setSelectedValues(newValues);
   };
@@ -199,15 +199,11 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
               </Stack>
             ) : filterKey === "cdc" ? (
               <SelectRoot
-                multiple
+                multiple={true}
                 collection={createListCollection({ items: filterData.cdc || [] })}
-                onValueChange={(ev) => handleSelectChange(filterKey, ev.value[0])}
-                value={
-                  typeof selectedValues[filterKey] === "string"
-                    ? [selectedValues[filterKey] as string]
-                    : []
-                  }
+                onValueChange={(ev) => handleSelectChange(filterKey, ev.value)}
                 disabled={!selectedValues.subsidiary || loadingFilters.cdc}
+                value={selectedValues[filterKey].map(String) || [null]}
               >
                 <SelectLabel fontFamily="heading">
                   {FILTER_LABELS[filterKey]}
@@ -219,7 +215,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                       loadingFilters.cdc
                         ? "Cargando opciones..."
                         : selectedValues[filterKey]?.length > 0
-                          ? `${selectedValues[filterKey].length} seleccionados`
+                          ? `${selectedValues.cdc.length} seleccionados`
                           : selectedValues.subsidiary
                             ? `Selecciona ${FILTER_LABELS[filterKey]}`
                             : "Primero selecciona una subsidiaria"
@@ -231,7 +227,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                     <SelectItem
                       key={option.value}
                       item={option}
-                      backgroundColor={selectedValues.cdc.includes(Number(option.value)) ? '#c4c4c4': '#fff'}
                     >
                       {option.label}
                     </SelectItem>
@@ -245,10 +240,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                   handleSelectChange(filterKey, Number(ev.value[0]));
                 }}
                 value={
-                  typeof selectedValues[filterKey] === "string"
-                    ? [selectedValues[filterKey] as string]
-                    : []
-                }
+                  selectedValues[filterKey] === undefined || selectedValues[filterKey] === null 
+                    ? [] 
+                    : [selectedValues[filterKey].toString()]
+                  }
                 disabled={loadingFilters[filterKey]}
               >
                 <SelectLabel fontFamily="heading">
@@ -275,7 +270,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         ))}
       </Grid>
 
-      <Button mt={4} colorScheme="green" width="full" onClick={applyFilters}>
+      <Button mt={4} colorScheme="green.400" width="full" onClick={applyFilters}>
         Aplicar Filtros
       </Button>
 

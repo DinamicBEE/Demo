@@ -24,18 +24,18 @@ export interface ReporGeneralRequesttModel {
 
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
-  date: string,
-  subsidiary: number,
-  cdc: number[],
-  employees: number,
-  approver: number,
-  categories: number,
-  subcategories: number,
-  family: number,
-  items: number,
-  paymentMethod: number,
-  currency: number,
-  exchangeRate?: number,
+  date: string | null,
+  subsidiary: number | null,
+  cdc: number[] | [],
+  employees: number | null,
+  approver: number | null,
+  categories: number | null,
+  subcategories: number | null,
+  family: number | null,
+  items: number | null,
+  paymentMethod: number | null,
+  currency: number | null,
+  exchangeRate?: number | null,
 };
   
   export interface ReportContextType {
