@@ -146,10 +146,10 @@ function Home() {
               onValueChange={(event) => filterStore(event)}
             >
               <SelectLabel fontFamily="heading">
-                Selecciona Subsidiaria
+                Subsidiaria
               </SelectLabel>
               <SelectTrigger>
-                <SelectValueText placeholder="Selecciona Subsidiaria" />
+                <SelectValueText placeholder="Selecciona subsidiaria" />
               </SelectTrigger>
               <SelectContent>
                 {subsidiary.items.length > 0 && subsidiary.items.map((item) => (
@@ -162,6 +162,7 @@ function Home() {
 
             <SelectRoot
               collection={storeBySub}
+              disabled={SubSelect.id == 0 || SubSelect.id == null || SubSelect == undefined}
               onValueChange={(event) => {
                 const itemSelected = {
                   id: event.items[0].value,
@@ -171,9 +172,12 @@ function Home() {
                 setLocation(itemSelected);
               }}
             >
-              <SelectLabel>Selecciona Centro de consumo</SelectLabel>
+              <SelectLabel>Centro de consumo</SelectLabel>
               <SelectTrigger>
-                <SelectValueText placeholder="Selecciona Centro de consumo" />
+                <SelectValueText placeholder={
+                  SubSelect.id == 0 || SubSelect.id == null || SubSelect == undefined
+                  ? "Seleccione primero una subsidiaria"
+                  : "Selecciona Centro de consumo"} />
               </SelectTrigger>
               <SelectContent>
                 {(SubSelect.id != 0 && SubSelect.id != null) && storeBySub.items.map((item) => (
@@ -186,13 +190,14 @@ function Home() {
 
             {location.id != 0 && (
               <Field.Root>
+                <Field.Label>Fecha</Field.Label>
                 <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
               </Field.Root>
             )}
             <GridItem colSpan={1} />
-            {formattedDate && (
               <Button
                 colorPalette="meraInfo"
+                disabled={SubSelect.id === undefined || location.id === undefined || formattedDate.length === 0}
                 onClick={() => {
                   setShowTable(true);
                   getInfo(SubSelect.id, location.id, 0, new Date(`${formattedDate}T00:00:00`), new Date(`${formattedDate}T00:00:00`), true);
@@ -200,7 +205,6 @@ function Home() {
               >
                 Buscar
               </Button>
-            )}
           </Grid>
         </HStack>
       </VStack>

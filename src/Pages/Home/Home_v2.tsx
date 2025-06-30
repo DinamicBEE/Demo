@@ -112,10 +112,10 @@ function Home_v2() {
                     }}
                 >
                     <SelectLabel fontFamily="heading">
-                    Selecciona País
+                    País
                     </SelectLabel>
                     <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona Subsidiaria" />
+                    <SelectValueText placeholder="Selecciona un país" />
                     </SelectTrigger>
                     <SelectContent>
                     {countries.items.length > 0 && countries.items.map((item: selectOption) => (
@@ -140,10 +140,10 @@ function Home_v2() {
                     }}
                 >
                     <SelectLabel fontFamily="heading">
-                    Selecciona Empresa
+                    Empresa
                     </SelectLabel>
                     <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona Subsidiaria" />
+                    <SelectValueText placeholder="Selecciona una empresa" />
                     </SelectTrigger>
                     <SelectContent>
                     {subsidiaries.items.length > 0 && subsidiaries.items.map((item: selectOption) => (
@@ -169,10 +169,10 @@ function Home_v2() {
                     }}
                 >
                     <SelectLabel fontFamily="heading">
-                    Selecciona Centro de consumo
+                    Centro de consumo
                     </SelectLabel>
                     <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona Subsidiaria" />
+                    <SelectValueText placeholder="Selecciona un centro de consumo" />
                     </SelectTrigger>
                     <SelectContent>
                     {cdc.items.length > 0 && cdc.items.map((item: selectOption) => (
@@ -195,10 +195,10 @@ function Home_v2() {
                     }}
                 >
                     <SelectLabel fontFamily="heading">
-                    Selecciona Estatus
+                    Estatus
                     </SelectLabel>
                     <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona Subsidiaria" />
+                    <SelectValueText placeholder="Selecciona un estatus" />
                     </SelectTrigger>
                     <SelectContent>
                     {status.items.length > 0 && status.items.map((item: selectOption) => (
