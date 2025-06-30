@@ -187,12 +187,6 @@ function Home() {
             {location.id != 0 && (
               <Field.Root>
                 <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
-                {/* <Field.Label>Rango de fechas</Field.Label>
-                <DatePicker
-                  startDate={startDate}
-                  endDate={endDate}
-                  onChange={setDateRange}
-                /> */}
               </Field.Root>
             )}
             <GridItem colSpan={1} />
