@@ -195,7 +195,7 @@ function Home() {
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location.id, 0, new Date(`${formattedDate}T00:00:00`), new Date(formattedDate), true);
+                  getInfo(SubSelect.id, location.id, 0, new Date(`${formattedDate}T00:00:00`), new Date(`${formattedDate}T00:00:00`), true);
                 }}
               >
                 Buscar
