@@ -5,6 +5,7 @@ import { Button, HStack, Input, NativeSelectField, NativeSelectRoot } from '@cha
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
 import "./DatePicker.css";
+import "react-datepicker/dist/react-datepicker.css";
 interface DatePickerProps {
   onDateChange: (formattedDate: string) => void;
   initialDate?: Date;
