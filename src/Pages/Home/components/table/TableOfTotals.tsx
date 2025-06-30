@@ -28,7 +28,7 @@ function TableOfTotals({
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
 
-  const [page, setPage] = useState<number>(1);
+  //const [page, setPage] = useState<number>(1);
 
   function handleExportCSV() {
 
@@ -121,7 +121,7 @@ function TableOfTotals({
                 getInfo(
                   subsidiary.id,
                   store.id,
-                  page - 1,
+                  0,
                   startDate,
                   endDate,
                   true
@@ -157,9 +157,9 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center" minW="110px">
                       Estatus
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+                    {/* <Table.ColumnHeader textAlign="center">
                       Extras
-                    </Table.ColumnHeader>
+                    </Table.ColumnHeader> */}
                     {currHeader.length > 0 &&
                       currHeader.map((item: Currency) => (
                         <Table.ColumnHeader
@@ -254,7 +254,7 @@ function TableOfTotals({
                           <Tag.Label>{item.status}</Tag.Label>
                         </Tag.Root>
                       </Table.Cell>
-
+{/* 
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
@@ -263,7 +263,7 @@ function TableOfTotals({
                             currency="USD"
                           />
                         </Text>
-                      </Table.Cell>
+                      </Table.Cell> */}
 
                       {currHeader.length > 0 &&
                         item.currencies.length > 0 &&
@@ -368,7 +368,7 @@ function TableOfTotals({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot
+            {/* <PaginationRoot
               count={pagination.totaRegistros}
               pageSize={10}
               page={page}
@@ -389,7 +389,7 @@ function TableOfTotals({
                 <PaginationItems />
                 <PaginationNextTrigger />
               </HStack>
-            </PaginationRoot>
+            </PaginationRoot> */}
           </Box>
         )}
 

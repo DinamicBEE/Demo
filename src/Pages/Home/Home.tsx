@@ -10,6 +10,7 @@ import TableOfTotals from "./components/table/TableOfTotals";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
 import DatePicker from "../LotClosure/components/DatePicker";
+import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 
 function Home() {
   const [subsidiary, setSubsidiary] = useState<ListCollection<{ value: number; label: string; idCurrency?: number }>>(
@@ -27,11 +28,13 @@ function Home() {
   const [showTable, setShowTable] = useState<boolean>(false);
   const { getInfo } = useClousing();
   const { getStoresData, error, getSubsidiariesData } = useList();
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
-  const [startDate, endDate] = dateRange;
+  // const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+  //   null,
+  //   null,
+  // ]);
+  // const [startDate, endDate] = dateRange;
+  const [formattedDate, setFormattedDate] = useState<string>('');
+  const initialDate = new Date();
 
   useEffect(() => {
     async function fetchData() {
@@ -112,7 +115,6 @@ function Home() {
   async function fetchLocations(subId: number) {
     setCatalogLoading(true);
     const locationsData = await getStoresData(subId);
-    console.log("Locations Data: ", locationsData);
 
     setCatalogLoading(false);
 
@@ -184,21 +186,22 @@ function Home() {
 
             {location.id != 0 && (
               <Field.Root>
-                <Field.Label>Rango de fechas</Field.Label>
+                <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
+                {/* <Field.Label>Rango de fechas</Field.Label>
                 <DatePicker
                   startDate={startDate}
                   endDate={endDate}
                   onChange={setDateRange}
-                />
+                /> */}
               </Field.Root>
             )}
             <GridItem colSpan={1} />
-            {endDate && startDate && (
+            {formattedDate && (
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location.id, 0, startDate, endDate, true);
+                  getInfo(SubSelect.id, location.id, 0, new Date(formattedDate), new Date(formattedDate), true);
                 }}
               >
                 Buscar
@@ -212,8 +215,8 @@ function Home() {
         <TableOfTotals
           subsidiary={SubSelect}
           store={location}
-          startDate={startDate ?? new Date()}
-          endDate={endDate ?? new Date()}
+          startDate={new Date(formattedDate) ?? new Date()}
+          endDate={new Date(formattedDate) ?? new Date()}
           isReport={false}
         />
       )}

@@ -42,7 +42,6 @@ export const getCashClousing = async (
   idCurrency: number
 ): Promise<ResponseModel> => {
   try {
-    // console.log("clousingId", clousingId);
     
     const response = await api.get(CASH, {
       params: {
@@ -75,16 +74,14 @@ export const getCashClousing = async (
       total: {
         totalPOS: newTotalPOS,
         totalPhysical: newTotalFisico,
-        difference: newTotalPOS - newTotalFisico,
+        difference: newTotalFisico - newTotalPOS,
       },
-      // tips: dummy.,
     };
-
     const responseData: ResponseModel = {
       success: true,
       data: data,
     };
-
+    
     return responseData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
@@ -108,12 +105,12 @@ export const getTDCClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<TDCModel> => {
-  // console.log(clousingId)
 
   try {
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
-    });    
+    });   
+    console.log(response) 
     const newResponse = {
       ...response.data,
       lines: response.data.lines.map((line: any) => ({
@@ -128,13 +125,13 @@ export const getTDCClousing = async (
           dateDisplay: format(new Date(v.date), "dd/MM/yyyy"),
         })),
       })),
+      total:{
+        difference: response.data.total.totalPhysical - response.data.total.totalPOS,
+        totalPOS: response.data.total.totalPOS,
+        totalPhysical: response.data.total.totalPhysical
+      }
     };
 
-    /* return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 1000);
-    }); */
     return newResponse;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
@@ -155,9 +152,9 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-
+    console.log(response)
     const lines = response.data.generalClientResponseList.map((line: any) => {
-      // Desestructurar el objeto para separar amountMx del resto de propiedades
+
       const { amountMx, coupons, ...restOfLine } = line;
 
       // Crear nuevo objeto con las propiedades deseadas
@@ -177,7 +174,7 @@ export const getCustomerClousing = async (
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.totalDifference ?? 0,
+        difference: response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },
@@ -241,14 +238,14 @@ export const getSpecialCustomerClousing = async (
     const newTotalFisico = lines
       .map((line: any) => Number(line.ammountMXN))
       .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newDiff = Number(newTotalPOS - newTotalFisico);
+    const newDiff = Number(newTotalFisico - newTotalPOS);
 
     const data = {
       id: clousingId,
       total: {
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
-        difference: response.data.totalDifference ?? 0,
+        difference: newDiff ?? 0,
       },
       lines: [...lines],
     };
@@ -327,7 +324,7 @@ export const getPrepaidClousing = async (
       total: {
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
-        difference: response.data.totalDifference ?? 0,
+        difference: response.data.total.totalPhysical - response.data.total.totalPOS,
       },
       lines: updateLines,
     };
@@ -424,7 +421,7 @@ export const getEmployeeClousing = async (
       0
     );
     const totalPOS = responseAxios.data.totalPos ?? 0;
-    const difference = totalPOS - totalPhysical;
+    const difference = totalPhysical - totalPOS;
 
     const employeeDataCopyAxios = {
       id: clousingId,
@@ -483,7 +480,7 @@ export const getIntercompanyClousing = async (
       (acc: number, curr: any) => acc + Number(curr.amount),
       0
     );
-    const difference = totalPOS - totalPhysical;
+    const difference = totalPhysical - totalPOS;
 
     const responseCopy = {
       id: clousingId,

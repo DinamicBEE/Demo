@@ -34,10 +34,9 @@ export const getGeneralInfo = async (
         startDate: startDateFormat,
         endDate: endDateFormat,
         page: page,
-        size: 10,
+        size: 100,
       },
     });
-    
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
       0
@@ -59,7 +58,7 @@ export const getGeneralInfo = async (
         time: format(new Date(), "HH:mm"),
         totalPOS: totalPOS,
         totalPhysical: totalPhysical,
-        difference: totalPOS - totalPhysical,
+        difference: totalPhysical - totalPOS,
       },
       clousingLines: response.data.registerClosure.map((line: any) => ({
         ...line,
@@ -68,7 +67,7 @@ export const getGeneralInfo = async (
         employe: line.employe,
         totalPOS: line.totalPOS,
         totalPhysical: line.totalPhysical,
-        difference: line.totalPOS - line.totalPhysical,
+        difference: line.totalPhysical - line.totalPOS,
         status: getStatus(line.status),
         extra: line.exta,
         // mxm: line.generalTotal || 0,

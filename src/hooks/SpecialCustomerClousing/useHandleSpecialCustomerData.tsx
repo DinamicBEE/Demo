@@ -89,8 +89,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
             0
         );
         
-        const newDifference =
-          specialCustomerData.total.totalPOS - newTotalFisico;
+        const newDifference = newTotalFisico - specialCustomerData.total.totalPOS;
 
         const newTotal: TotalModel = {
           totalPOS: specialCustomerData.total.totalPOS,
