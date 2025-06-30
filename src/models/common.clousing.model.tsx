@@ -40,7 +40,7 @@ export interface ClousingLinesModel {
   employees: number;
   intercompany: number;
   service?: number;
-  discount?: number;
+  discountPhysical?: number;
   iva?: number;
   closingConfirmation: boolean;
   creationDate: string;
@@ -170,7 +170,7 @@ export interface HeaderData {
   totalClousing?: number;
   difference?: number;
   service: number;
-  discountPOS: number;
+  discountPhysical: number;
   discountClousing?: number;
   closures: ClousingType;
 }
@@ -179,7 +179,7 @@ export interface ExtraInfo {
   //Returar "?" cuando se tenga el el endpoint al 100%
   totalDiscount: number;
   totalTax?: number; 
-  totalDiscountPOS?: number; //???????????????
+  discountPhysical?: number; //???????????????
 }
 
 export interface ClousingType {

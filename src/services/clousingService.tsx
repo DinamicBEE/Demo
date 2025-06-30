@@ -524,7 +524,7 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
   try {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
-
+    
     const response = await api.post(
       "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
       body
