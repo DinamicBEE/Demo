@@ -174,7 +174,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
                 prepaid: dataClousing.prepaid,
                 status: dataClousing.status,
                 currencies: dataClousing.currencies,
-                tdc: dataClousing.tdc
+                tdc: dataClousing.tdc,
+                discountPhysical: dataClousing.discountPhysical,
               }
             : item
         )
