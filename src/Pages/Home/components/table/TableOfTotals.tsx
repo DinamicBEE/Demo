@@ -20,14 +20,11 @@ function TableOfTotals({
 }: TableOfTotalsProps) {
   
   const { data, totals, loading, error, header, getInfo, setDataRow,
-    pagination, tdcHeader, currHeader } = useClousing();
+    tdcHeader, currHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
-
-  //const [page, setPage] = useState<number>(1);
-  
 
   function handleExportCSV() {
 
@@ -77,6 +74,8 @@ function TableOfTotals({
   const closeDialog = () => {
     setSelectedEmployee(null);
     setIsDialogOpen(false);
+    //TODO:Validar que fue un cierre de caja
+    //getInfo(subsidiary.id, store.id, 0, startDate, endDate, true);
   };
 
   function statusColor(status: STATUS) {
@@ -156,9 +155,7 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center" minW="110px">
                       Estatus
                     </Table.ColumnHeader>
-                    {/* <Table.ColumnHeader textAlign="center">
-                      Extras
-                    </Table.ColumnHeader> */}
+
                     {currHeader.length > 0 &&
                       currHeader.map((item: Currency) => (
                         <Table.ColumnHeader
@@ -253,16 +250,6 @@ function TableOfTotals({
                           <Tag.Label>{item.status}</Tag.Label>
                         </Tag.Root>
                       </Table.Cell>
-{/* 
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.extra}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
-                      </Table.Cell> */}
 
                       {currHeader.length > 0 &&
                         item.currencies.length > 0 &&
@@ -367,28 +354,6 @@ function TableOfTotals({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            {/* <PaginationRoot
-              count={pagination.totaRegistros}
-              pageSize={10}
-              page={page}
-              onPageChange={(e) => {
-                setPage(e.page);
-                getInfo(
-                  subsidiary.id,
-                  store.id,
-                  e.page - 1,
-                  startDate,
-                  endDate,
-                  false
-                );
-              }}
-            >
-              <HStack>
-                <PaginationPrevTrigger />
-                <PaginationItems />
-                <PaginationNextTrigger />
-              </HStack>
-            </PaginationRoot> */}
           </Box>
         )}
 
@@ -402,6 +367,7 @@ function TableOfTotals({
         location={store}
         subsidiary={subsidiary}
         isEdit={isEdit}
+        getInfo={getInfo}
       ></ClousingLayout>
     </>
   );
