@@ -120,7 +120,7 @@ function HeaderClousing({
 
                 <CurrencyInput 
                   value={localHeader?.discountClousing}
-                  name={"Descuento + IVA POS"}
+                  name={"Descuento POS"}
                   loading={false} />
 
                 <EditableCurrencyInput 

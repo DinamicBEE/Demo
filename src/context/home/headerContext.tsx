@@ -125,7 +125,7 @@ function createObjectHeader(dataRow: ClousingLinesModel, extraInfo: ExtraInfo) {
     difference: dataRow.difference,
     service: dataRow.service || 0,
     discountPhysical: extraInfo.discountPhysical || 0,
-    discountClousing: extraInfo.totalDiscount || 0,
+    discountClousing: Math.abs(extraInfo.totalDiscount) || 0,
     closures: {
       cash: { totalPOS: 0, totalPhysical: 0, difference: 0 },
       customer: { totalPOS: 0, totalPhysical: 0, difference: 0 },

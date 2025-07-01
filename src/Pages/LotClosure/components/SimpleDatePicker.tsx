@@ -17,7 +17,7 @@ const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
     ref={ref}
     onClick={onClick}
     onChange={onChange}
-    focusRingColor={"green.400"}
+    focusRing={"none"}
     placeholder="Selecciona una fecha"
     autoComplete="off"
   />
@@ -56,7 +56,7 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     
-    return `${year}-${month}-${day}`;
+    return `${day}/${month}/${year}`;
   };
 
   // Efecto para notificar al padre cuando cambia la fecha

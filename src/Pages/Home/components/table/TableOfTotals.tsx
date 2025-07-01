@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
-  PaginationRoot } from "@components/ui/pagination";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
@@ -29,6 +27,7 @@ function TableOfTotals({
   const [isEdit, setIsEdit] = useState(false);
 
   //const [page, setPage] = useState<number>(1);
+  
 
   function handleExportCSV() {
 
@@ -40,7 +39,7 @@ function TableOfTotals({
       employe: "TOTALES",
       status: "",
       closingConfirmation: true,
-      discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
+      // discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
       iva: 0,
       service: 0,
       creationDate: "",

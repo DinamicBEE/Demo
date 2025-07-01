@@ -213,8 +213,8 @@ function Home() {
         <TableOfTotals
           subsidiary={SubSelect}
           store={location}
-          startDate={new Date(formattedDate) ?? new Date()}
-          endDate={new Date(formattedDate) ?? new Date()}
+          startDate={new Date(`${formattedDate}T00:00:00`) ?? new Date()}
+          endDate={new Date(`${formattedDate}T00:00:00`) ?? new Date()}
           isReport={false}
         />
       )}
