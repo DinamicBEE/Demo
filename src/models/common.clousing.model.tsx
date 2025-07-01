@@ -201,6 +201,7 @@ export interface FooterClousing {
   idCurrency: number;
   dateClousing: string;
   propStatus: string;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TotalModel {
@@ -247,6 +248,7 @@ export interface ClousingLayoutProps {
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TableOfTotalsProps {
@@ -262,6 +264,7 @@ export interface ConfirmDialogProps {
   closeDialog: () => void;
   sendData: (isConfrim: boolean) => void;
   isConfrim: boolean;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface ExitDialogProps {

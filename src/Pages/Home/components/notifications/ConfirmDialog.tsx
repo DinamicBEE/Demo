@@ -16,6 +16,7 @@ function ConfirmDialog({
   closeDialog,
   sendData,
   isConfrim,
+  getInfo
 }: ConfirmDialogProps) {
   return (
     <DialogRoot open={isOpen} onOpenChange={closeDialog}>
@@ -53,6 +54,7 @@ function ConfirmDialog({
             onClick={() => {
               sendData(isConfrim);
               closeDialog();
+              if(!isConfrim){getInfo}
             }}
           >
             Confirmar

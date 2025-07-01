@@ -40,6 +40,7 @@ function FooterClousing({
   idCurrency,
   dateClousing,
   propStatus,
+  getInfo
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -466,6 +467,7 @@ function FooterClousing({
         closeDialog={() => setButtonLoading(false)}
         sendData={sendClousing}
         isConfrim={isConfirm}
+        getInfo={getInfo}
       />
       {loading && <Loading />}
       <ErrorDialog
