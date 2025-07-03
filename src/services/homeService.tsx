@@ -26,6 +26,7 @@ export const getGeneralInfo = async (
     //2025-04-02
     // 2025-05-05T06:00:00.000Z
 
+    
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
     const response = await api.get(GET_CLOUSINGS, {
@@ -35,6 +36,7 @@ export const getGeneralInfo = async (
         endDate: endDateFormat,
         page: page,
         size: 100,
+        serverId: 42,
       },
     });
     const totalPOS = response.data.registerClosure.reduce(
