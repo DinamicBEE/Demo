@@ -54,7 +54,7 @@ export const getGeneralInfo = async (
       header: {
         subsidiaryName: "DIVIERTETE",
         storeName: "BAR GGRILL LS CUN T2A",
-        date: endDateFormat,
+        date: format(endDateFormat, "dd/MM/yyyy"),
         time: format(new Date(), "HH:mm"),
         totalPOS: totalPOS,
         totalPhysical: totalPhysical,

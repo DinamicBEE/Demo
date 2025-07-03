@@ -57,6 +57,7 @@ const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
         endDate={endDate}
         onChange={onChange}
         isClearable={true}
+        dateFormat="dd/MM/yyyy"
         customInput={<CustomInput />}
         className="react-datapicker__input-text"
         locale={es}

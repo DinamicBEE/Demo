@@ -69,7 +69,7 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
       selected={selectedDate}
       onChange={(date: Date | null) => setSelectedDate(date)}
       isClearable={true}
-      dateFormat="yyyy-MM-dd"
+      dateFormat="dd/MM/yyyy"
       placeholderText="Selecciona una fecha"
       customInput={<CustomInput />}
       className="react-datapicker__input-text"
