@@ -44,6 +44,7 @@ function ClousingLayout({
   employee,
   location,
   subsidiary,
+  getInfo
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
 
@@ -330,6 +331,7 @@ function ClousingLayout({
               idCurrency={subsidiary.idCurrency}
               dateClousing={employee?.closingStartDate ?? ""}
               propStatus={employee?.status ?? ""}
+              getInfo={getInfo}
             />
           </DialogFooter>
 

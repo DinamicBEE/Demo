@@ -40,7 +40,7 @@ export interface ClousingLinesModel {
   employees: number;
   intercompany: number;
   service?: number;
-  discount?: number;
+  discountPhysical?: number;
   iva?: number;
   closingConfirmation: boolean;
   creationDate: string;
@@ -170,7 +170,7 @@ export interface HeaderData {
   totalClousing?: number;
   difference?: number;
   service: number;
-  discountPOS: number;
+  discountPhysical: number;
   discountClousing?: number;
   closures: ClousingType;
 }
@@ -179,7 +179,7 @@ export interface ExtraInfo {
   //Returar "?" cuando se tenga el el endpoint al 100%
   totalDiscount: number;
   totalTax?: number; 
-  totalDiscountPOS?: number; //???????????????
+  discountPhysical?: number; //???????????????
 }
 
 export interface ClousingType {
@@ -201,6 +201,7 @@ export interface FooterClousing {
   idCurrency: number;
   dateClousing: string;
   propStatus: string;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TotalModel {
@@ -247,6 +248,7 @@ export interface ClousingLayoutProps {
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TableOfTotalsProps {
@@ -262,6 +264,7 @@ export interface ConfirmDialogProps {
   closeDialog: () => void;
   sendData: (isConfrim: boolean) => void;
   isConfrim: boolean;
+  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface ExitDialogProps {

@@ -30,7 +30,7 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
 
     const newTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number, exchangeRate: number }) => acc + (curr.totalFisico), 0);
 
-    const newDifference = (cashData.total?.totalPOS || 0) - newTotalPhysical;
+    const newDifference =  newTotalPhysical - (cashData.total?.totalPOS || 0);
 
     const newTotal: TotalModel = {
       totalPOS: cashData.total?.totalPOS || 0,

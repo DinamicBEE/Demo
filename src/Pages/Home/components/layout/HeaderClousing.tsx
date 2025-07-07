@@ -42,7 +42,7 @@ function HeaderClousing({
 
       setLocalHeader((prev) => {
         if (!prev) return undefined;
-        const updatedLocal = { ...prev, discountClousing: numericValue };
+        const updatedLocal = { ...prev, discountPhysical: numericValue };
         updateHeaderState({ ...header, [id]: updatedLocal });
               
         return updatedLocal;
@@ -116,15 +116,15 @@ function HeaderClousing({
           loading={false}
         />
 
-        {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} /> 
+        {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} /> */}
 
                 <CurrencyInput 
-                  value={localHeader?.discountPOS}
-                  name={"Descuento + IVA POS"}
-                  loading={false} />*/}
+                  value={localHeader?.discountClousing}
+                  name={"Descuento POS"}
+                  loading={false} />
 
                 <EditableCurrencyInput 
-                  value={localHeader?.discountClousing} 
+                  value={localHeader?.discountPhysical || 0} 
                   name={"Descuento físico"} 
                   disabled={closingConfirmation}
                   onChange={handleDiscountInputChange}

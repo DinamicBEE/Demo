@@ -1,22 +1,16 @@
-import { useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text, HStack } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
-  PaginationRoot } from "@components/ui/pagination";
+import { useMemo, useState } from "react";
+import { Box, Button, FormatNumber, Grid, GridItem, HStack, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
-import {
-  ClousingLinesModel,
-  Currency,
-  TableOfTotalsProps,
-  TDC,
-} from "@models/common.clousing.model";
+import { ClousingLinesModel, Currency, TableOfTotalsProps, TDC } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../../utils/getStatusColor";
 import ClousingLayout from "../layout/ClousingLayout";
 import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
+import { FiChevronUp, FiChevronDown } from "react-icons/fi";
 
 function TableOfTotals({
   subsidiary,
@@ -27,13 +21,15 @@ function TableOfTotals({
 }: TableOfTotalsProps) {
   
   const { data, totals, loading, error, header, getInfo, setDataRow,
-    pagination, tdcHeader, currHeader } = useClousing();
+    tdcHeader, currHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
+  const [sortConfig, setSortConfig] =
+    useState<{ key: string | null; direction: 'asc' | 'desc' }>
+    ({ key: null, direction: 'asc' });
 
-  const [page, setPage] = useState<number>(1);
 
   function handleExportCSV() {
 
@@ -45,7 +41,7 @@ function TableOfTotals({
       employe: "TOTALES",
       status: "",
       closingConfirmation: true,
-      discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
+      // discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
       iva: 0,
       service: 0,
       creationDate: "",
@@ -83,11 +79,50 @@ function TableOfTotals({
   const closeDialog = () => {
     setSelectedEmployee(null);
     setIsDialogOpen(false);
+    //TODO:Validar que fue un cierre de caja
+    //getInfo(subsidiary.id, store.id, 0, startDate, endDate, true);
   };
 
   function statusColor(status: STATUS) {
     return getStatusColor(status);
   }
+
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = useMemo(() => {
+    let sortableItems = [...data];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        const aValue = a[sortConfig.key as keyof ClousingLinesModel];
+        const bValue = b[sortConfig.key as keyof ClousingLinesModel];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortConfig.direction === 'asc'
+            ? aValue.localeCompare(bValue, undefined, { numeric: true, sensitivity: 'base' })
+            : bValue.localeCompare(aValue, undefined, { numeric: true, sensitivity: 'base' });
+        } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortConfig.direction === 'asc'
+            ? aValue - bValue
+            : bValue - aValue;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [data, sortConfig]);
+
+  const getSortIcon = (key: string) => {
+    if (sortConfig.key !== key) {
+      return null;
+    }
+    return sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />;
+  };
 
   return (
     <>
@@ -126,7 +161,7 @@ function TableOfTotals({
                 getInfo(
                   subsidiary.id,
                   store.id,
-                  page - 1,
+                  0,
                   startDate,
                   endDate,
                   true
@@ -138,7 +173,7 @@ function TableOfTotals({
           </Grid>
         </Box>
 
-        {data.length >= 1 && (
+        {sortedData.length >= 1 && (
           <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px">
               <Table.Root size="sm" variant="outline">
@@ -147,24 +182,22 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Fecha
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Vendedor
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employe')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Vendedor {getSortIcon('employe')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Total POS
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPOS')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Total POS {getSortIcon('totalPOS')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Total Físico
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPhysical')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Total Físico {getSortIcon('totalPhysical')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Diferencia
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('difference')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Diferencia {getSortIcon('difference')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" minW="110px">
-                      Estatus
+                    <Table.ColumnHeader textAlign="center" minW="110px" onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Estatus {getSortIcon('status')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Extras
-                    </Table.ColumnHeader>
+
                     {currHeader.length > 0 &&
                       currHeader.map((item: Currency) => (
                         <Table.ColumnHeader
@@ -175,20 +208,20 @@ function TableOfTotals({
                         </Table.ColumnHeader>
                       ))}
                     
-                    <Table.ColumnHeader textAlign="center">
-                      Clientes General
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('customer')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Clientes General {getSortIcon('customer')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Clientes Especiales
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('specialCustomer')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Clientes Especiales {getSortIcon('specialCustomer')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Prepago
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('prepaid')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Prepago {getSortIcon('prepaid')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      CXC Empleados
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employees')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>CXC Empleados {getSortIcon('employees')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
-                      Intercompañia
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('intercompany')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Intercompañia {getSortIcon('intercompany')}</HStack>
                     </Table.ColumnHeader>
                     {tdcHeader.length > 0 &&
                       tdcHeader.map((item: TDC) => (
@@ -199,13 +232,13 @@ function TableOfTotals({
                           {item.nameBank.toUpperCase()}
                         </Table.ColumnHeader>
                       ))}
-                    <Table.ColumnHeader textAlign="center">
-                      Propinas electrónica
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('tips')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Propinas electrónica {getSortIcon('tips')}</HStack>
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {data.map((item: ClousingLinesModel) => (
+                  {sortedData.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
                       <Table.Cell textAlign="center">
                         <Text>{item.closingStartDate}</Text>
@@ -258,16 +291,6 @@ function TableOfTotals({
                         >
                           <Tag.Label>{item.status}</Tag.Label>
                         </Tag.Root>
-                      </Table.Cell>
-
-                      <Table.Cell textAlign="end">
-                        <Text>
-                          <FormatNumber
-                            value={item.extra}
-                            style="currency"
-                            currency="USD"
-                          />
-                        </Text>
                       </Table.Cell>
 
                       {currHeader.length > 0 &&
@@ -373,28 +396,6 @@ function TableOfTotals({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot
-              count={pagination.totaRegistros}
-              pageSize={10}
-              page={page}
-              onPageChange={(e) => {
-                setPage(e.page);
-                getInfo(
-                  subsidiary.id,
-                  store.id,
-                  e.page - 1,
-                  startDate,
-                  endDate,
-                  false
-                );
-              }}
-            >
-              <HStack>
-                <PaginationPrevTrigger />
-                <PaginationItems />
-                <PaginationNextTrigger />
-              </HStack>
-            </PaginationRoot>
           </Box>
         )}
 
@@ -408,6 +409,7 @@ function TableOfTotals({
         location={store}
         subsidiary={subsidiary}
         isEdit={isEdit}
+        getInfo={getInfo}
       ></ClousingLayout>
     </>
   );

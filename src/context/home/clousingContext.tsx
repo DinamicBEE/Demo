@@ -62,6 +62,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       isSearch: boolean = false
     ) => {
       try {
+        setError('');
         const queryKey = `${subsidiary}-${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
 
         const pageKey = `${queryKey}-page-${page}`;
@@ -96,7 +97,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         }
 
         setLoading(true);
-
+        
         const response = await getGeneralInfo(
           subsidiary,
           store,
@@ -122,7 +123,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
         const totals = calculateClousingTotals(currentPageData);
 
-        setData(currentPageData);
+        setData(currentPageData.sort((a,b) => a.employe.localeCompare(b.employe)));
         setTotals(totals);
         setOriginalData(currentPageData);
         setTdcHeader(response.clousingLines[0]?.tdc || []);
@@ -174,7 +175,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
                 prepaid: dataClousing.prepaid,
                 status: dataClousing.status,
                 currencies: dataClousing.currencies,
-                tdc: dataClousing.tdc
+                tdc: dataClousing.tdc,
+                discountPhysical: dataClousing.discountPhysical,
               }
             : item
         )
