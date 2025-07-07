@@ -182,19 +182,19 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Fecha
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employe')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employe')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Vendedor {getSortIcon('employe')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPOS')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPOS')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Total POS {getSortIcon('totalPOS')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPhysical')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPhysical')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Total Físico {getSortIcon('totalPhysical')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('difference')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('difference')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Diferencia {getSortIcon('difference')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" minW="110px" onClick={() => handleSort('status')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" minW="110px" onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Estatus {getSortIcon('status')}</HStack>
                     </Table.ColumnHeader>
 
@@ -208,19 +208,19 @@ function TableOfTotals({
                         </Table.ColumnHeader>
                       ))}
                     
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('customer')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('customer')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Clientes General {getSortIcon('customer')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('specialCustomer')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('specialCustomer')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Clientes Especiales {getSortIcon('specialCustomer')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('prepaid')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('prepaid')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Prepago {getSortIcon('prepaid')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employees')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employees')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>CXC Empleados {getSortIcon('employees')}</HStack>
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('intercompany')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('intercompany')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Intercompañia {getSortIcon('intercompany')}</HStack>
                     </Table.ColumnHeader>
                     {tdcHeader.length > 0 &&
@@ -232,7 +232,7 @@ function TableOfTotals({
                           {item.nameBank.toUpperCase()}
                         </Table.ColumnHeader>
                       ))}
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('tips')} cursor="pointer">
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('tips')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Propinas electrónica {getSortIcon('tips')}</HStack>
                     </Table.ColumnHeader>
                   </Table.Row>
