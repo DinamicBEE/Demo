@@ -477,7 +477,9 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
         
         case 4:
   
-            response = VENEmployeeDummyData.venEmployee
+            response = reportConfig?.handleData
+              ? reportConfig.handleData(VENEmployeeDummyData.venEmployee)
+              : []
   
             break;
     

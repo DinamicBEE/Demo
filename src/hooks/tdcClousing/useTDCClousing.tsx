@@ -74,8 +74,7 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
       0
     );
 
-    const newDifference =
-      (tdcData?.total?.totalPOS || 0) - (newTotalPhysical || 0);
+    const newDifference = (newTotalPhysical || 0) - (tdcData?.total?.totalPOS || 0);
 
     const newTotal: TotalModel = {
       totalPOS: tdcData?.total?.totalPOS || 0,

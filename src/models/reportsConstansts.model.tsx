@@ -382,7 +382,7 @@ export const REPORTSERVICE_CONFIG = [
     report: REPORT_KEY.REPVEN_01,
     url: SETTINGS.REPORT_VENEMP,
     bodyRequest: null,
-    handleData: null,
+    handleData: reportHandlers.handleEmployeeSalesData,
   },
   {
     report: REPORT_KEY.REPVEN_02,

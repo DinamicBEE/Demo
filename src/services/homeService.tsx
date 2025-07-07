@@ -26,6 +26,7 @@ export const getGeneralInfo = async (
     //2025-04-02
     // 2025-05-05T06:00:00.000Z
 
+    
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
     const response = await api.get(GET_CLOUSINGS, {
@@ -34,10 +35,10 @@ export const getGeneralInfo = async (
         startDate: startDateFormat,
         endDate: endDateFormat,
         page: page,
-        size: 10,
+        size: 100,
+        serverId: 42,
       },
     });
-    
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
       0
@@ -55,11 +56,11 @@ export const getGeneralInfo = async (
       header: {
         subsidiaryName: "DIVIERTETE",
         storeName: "BAR GGRILL LS CUN T2A",
-        date: endDateFormat,
+        date: format(endDateFormat, "dd/MM/yyyy"),
         time: format(new Date(), "HH:mm"),
         totalPOS: totalPOS,
         totalPhysical: totalPhysical,
-        difference: totalPOS - totalPhysical,
+        difference: totalPhysical - totalPOS,
       },
       clousingLines: response.data.registerClosure.map((line: any) => ({
         ...line,
@@ -68,7 +69,7 @@ export const getGeneralInfo = async (
         employe: line.employe,
         totalPOS: line.totalPOS,
         totalPhysical: line.totalPhysical,
-        difference: line.totalPOS - line.totalPhysical,
+        difference: line.totalPhysical - line.totalPOS,
         status: getStatus(line.status),
         extra: line.exta,
         // mxm: line.generalTotal || 0,

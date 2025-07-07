@@ -1,4 +1,4 @@
-import { DiscountReportModel } from "@models/reports.model";
+import { DiscountReportModel, EmployeeSalesModel } from "@models/reports.model";
 
 export const handleDiscountData = (rawData: any[]): DiscountReportModel[] => {
 
@@ -24,6 +24,39 @@ export const handleDiscountData = (rawData: any[]): DiscountReportModel[] => {
   });
 }
 
+export const handleEmployeeSalesData = (rawData: any[]): EmployeeSalesModel[] => {
+
+  return rawData.map(item => {
+    const totalSale = parseFloat(item.ventaTotal || '0');
+    const voids = parseFloat(item.voids || '0');
+    const discounts = parseFloat(item.descuentos || '0');
+    const netSales = (item.ventasNetas || '0');
+    const pax = parseFloat(item.pax || '0');
+    const salePer = (item.venta || '0');
+
+    return {
+      date: item.fechaDeVenta.split(' ')[0],
+      location: item.ubicacion,
+      cdc: item.centroDeConsumo,
+      employee: item.empleado,
+      totalSale: totalSale,
+      voids: voids,
+      discounts: discounts,
+      netSales: netSales,
+      pax: pax,
+      salePer: parseFloat(salePer),
+      checksCount: parseFloat(item.numeroCheques || '0'),
+      averageCheck: parseFloat(item.chequePromedio || '0'),
+      food: parseFloat(item.alimentos || '0'),
+      drinks: parseFloat(item.bebidas || '0'),
+      boutique: parseFloat(item.boutique || '0'),
+      photos: parseFloat(item.fotos || '0'),
+      unclassified: parseFloat(item.noClasificada || '0')
+    }
+  });
+}
+
 export const reportHandlers = {
   handleDiscountData,
+  handleEmployeeSalesData
 };

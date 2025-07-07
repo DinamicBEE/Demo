@@ -170,7 +170,7 @@ export const useHandleCustomer = (
       (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
       0
     );
-    const newDifference = customerData.total.totalPOS - newTotalFisico;
+    const newDifference = newTotalFisico - customerData.total.totalPOS;
 
     const newTotal: TotalModel = {
       totalPOS: customerData.total.totalPOS,

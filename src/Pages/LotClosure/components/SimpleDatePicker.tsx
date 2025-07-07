@@ -1,8 +1,11 @@
 import React, { useState, useEffect, forwardRef } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import { es } from "date-fns/locale/es";
-import { Input } from '@chakra-ui/react';
-
+import { Button, HStack, Input, NativeSelectField, NativeSelectRoot } from '@chakra-ui/react';
+import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { getYear, getMonth } from "date-fns";
+import "./DatePicker.css";
+import "react-datepicker/dist/react-datepicker.css";
 interface DatePickerProps {
   onDateChange: (formattedDate: string) => void;
   initialDate?: Date;
@@ -14,7 +17,7 @@ const customDateInput = ({ value, onClick, onChange }: any, ref: any) => (
     ref={ref}
     onClick={onClick}
     onChange={onChange}
-    focusRingColor={"green.400"}
+    focusRing={"none"}
     placeholder="Selecciona una fecha"
     autoComplete="off"
   />
@@ -24,6 +27,24 @@ customDateInput.displayName = "DateInput";
 const CustomInput = forwardRef(customDateInput);
 
 const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate }) => {
+    const months = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+  const years = Array.from(
+    { length: new Date().getFullYear() - 1990 + 1 },
+    (_, i) => 1990 + i
+  );
   // Estado para almacenar la fecha seleccionada
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate || new Date());
 
@@ -44,16 +65,61 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
   }, [selectedDate, onDateChange]);
 
   return (
-  
-      <ReactDatePicker
-        selected={selectedDate}
-        onChange={(date: Date | null) => setSelectedDate(date)}
-        isClearable={true}
-        dateFormat="dd-MM-yyyy"
-        placeholderText="Selecciona una fecha"
-        customInput={<CustomInput />}
-        locale={es}
-      />
+    <ReactDatePicker
+      selected={selectedDate}
+      onChange={(date: Date | null) => setSelectedDate(date)}
+      isClearable={true}
+      dateFormat="dd/MM/yyyy"
+      placeholderText="Selecciona una fecha"
+      customInput={<CustomInput />}
+      className="react-datapicker__input-text"
+      locale={es}
+      renderCustomHeader={({
+        date,
+        decreaseMonth,
+        increaseMonth,
+        changeYear,
+        changeMonth,
+      }) => (
+        <HStack>
+          <Button size="xs" variant="plain" onClick={decreaseMonth}>
+            <FaArrowLeft />
+          </Button>
+
+          <NativeSelectRoot size={"xs"} variant={"plain"}>
+            <NativeSelectField
+              value={getYear(date)}
+              onChange={({ target: { value } }) => changeYear(Number(value))}
+            >
+              {years.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </NativeSelectField>
+          </NativeSelectRoot>
+
+          <NativeSelectRoot size={"xs"} variant={"plain"}>
+            <NativeSelectField
+              value={months[getMonth(date)]}
+              onChange={({ target: { value } }) =>
+                changeMonth(months.indexOf(value))
+              }
+            >
+              {months.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </NativeSelectField>
+          </NativeSelectRoot>
+
+          <Button size="xs" variant="plain" onClick={increaseMonth}>
+            <FaArrowRight />
+          </Button>
+        </HStack>
+      )}
+    />
   );
 };
 

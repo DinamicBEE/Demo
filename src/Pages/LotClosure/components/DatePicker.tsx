@@ -60,6 +60,7 @@ const DatePicker = ({ endDate, startDate, onChange }: DatePickerProps) => {
         endDate={endDate}
         onChange={onChange}
         isClearable={true}
+        dateFormat="dd/MM/yyyy"
         customInput={<CustomInput />}
         locale={es}
         renderCustomHeader={({

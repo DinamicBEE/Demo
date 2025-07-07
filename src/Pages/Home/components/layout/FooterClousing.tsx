@@ -40,6 +40,7 @@ function FooterClousing({
   idCurrency,
   dateClousing,
   propStatus,
+  getInfo
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -196,6 +197,7 @@ function FooterClousing({
     }
     const body: ClousingSave = {
       id: clousingId,
+      discountPhysical: headerRef.current[clousingId].discountPhysical | 0,
       cash: {
         idCurrencySub: idCurrency,
         electronicTips: cash.electronicTips,
@@ -293,6 +295,7 @@ function FooterClousing({
         prepaid: body.prepaid.total.totalPhysical,
         intercompany: body.intercompany.total.totalPhysical,
         mxm: newMxm,
+        discountPhysical: headerRef.current[clousingId].discountPhysical,
         /* body.cash.lines.find((line) => line.currency === "MXN")
             ?.totalFisico ?? 0, */
         usd:
@@ -464,6 +467,7 @@ function FooterClousing({
         closeDialog={() => setButtonLoading(false)}
         sendData={sendClousing}
         isConfrim={isConfirm}
+        getInfo={getInfo}
       />
       {loading && <Loading />}
       <ErrorDialog
