@@ -9,7 +9,6 @@ import { useClousing } from "@context/home/clousingContext";
 import TableOfTotals from "./components/table/TableOfTotals";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
-import DatePicker from "../LotClosure/components/DatePicker";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 
 function Home() {
