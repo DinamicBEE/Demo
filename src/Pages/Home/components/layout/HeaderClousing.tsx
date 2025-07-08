@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Box, Grid, Group, Input, InputAddon, Button, Skeleton } from "@chakra-ui/react";
 import { useHeaders } from "@context/home/headerContext";
-import { useEffect } from "react";
 import { HeaderData } from "@models/common.clousing.model";
 import { CurrencyInput, EditableCurrencyInput } from "@components/NumericInput";
 import { useClousing } from "@context/home/clousingContext";
@@ -17,39 +16,49 @@ function HeaderClousing({
   location: string;
   subsidiary: string;
 }) {
-  const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
-
   const { dataRow } = useClousing();
   const { getHeader, header, updateHeaderState } = useHeaders();
+  const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
+  const [discountValue, setDiscountValue] = useState(0);
+
+  const currentHeader = useMemo(() => header[id], [header, id]);
+
+  const fetchHeader = useCallback(async () => {
+    if (!currentHeader) {
+      const headerData = await getHeader(dataRow);
+      setLocalHeader(headerData);
+    } else {
+      setLocalHeader(currentHeader);
+    }
+  }, [currentHeader, dataRow, getHeader]);
 
   useEffect(() => {
-    const fetchHeader = async () => {
-      if (!header[id]) {
-        const headerData = await getHeader(dataRow);
-        setLocalHeader(headerData);
-      } else {
-        setLocalHeader(header[id]);
-      }
-    };
     fetchHeader();
-  }, [header, id, dataRow, getHeader]);
+  }, [fetchHeader]);
 
-  const handleDiscountInputChange = (value: string) => {
-
+  const handleDiscountInputChange = useCallback((value: string) => {
     const numericValue = Number(value.replace(/[^0-9.-]+/g, ""));
-
     if (!isNaN(numericValue) && value !== undefined) {
-
-      setLocalHeader((prev) => {
-        if (!prev) return undefined;
-        const updatedLocal = { ...prev, discountPhysical: numericValue };
-        updateHeaderState({ ...header, [id]: updatedLocal });
-              
-        return updatedLocal;
-      });
+      setDiscountValue(numericValue);
     }
-    
-  }
+  }, []);
+
+  useEffect(() => {
+    if (localHeader && discountValue !== localHeader.discountPhysical) {
+      const updatedLocal = { ...localHeader, discountPhysical: discountValue };
+      setLocalHeader(updatedLocal);
+      updateHeaderState({ ...header, [id]: updatedLocal });
+    }
+  }, [discountValue, localHeader, header, id, updateHeaderState]);
+
+  const memoizedHeaderProps = useMemo(() => ({
+    date: localHeader?.date || "",
+    totalPOS: localHeader?.totalPOS,
+    totalClousing: localHeader?.totalClousing,
+    difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : undefined,
+    discountClousing: localHeader?.discountClousing,
+    discountPhysical: discountValue
+  }), [localHeader, discountValue]);
 
   return (
     <Box>
@@ -68,67 +77,56 @@ function HeaderClousing({
         <Group>
           <InputAddon>Ubicación</InputAddon>
           <Skeleton loading={false}>
-            <Input
-              value={location || ""}
-              placeholder="Ubicación"
-              readOnly
-            />
+            <Input value={location || ""} placeholder="Ubicación" readOnly />
           </Skeleton>
         </Group>
 
         <Group>
           <InputAddon>Empresa</InputAddon>
           <Skeleton loading={false}>
-            <Input
-              value={subsidiary || ""}
-              placeholder="Empresa"
-              readOnly
-            />
+            <Input value={subsidiary || ""} placeholder="Empresa" readOnly />
           </Skeleton>
         </Group>
 
         <Group>
           <InputAddon>Fecha</InputAddon>
           <Skeleton loading={false}>
-            <Input
-              value={localHeader?.date || ""}
-              placeholder="Fecha"
-              readOnly
-            />
+            <Input value={memoizedHeaderProps.date} placeholder="Fecha" readOnly />
           </Skeleton>
         </Group>
 
+        {/* Inputs de moneda */}
         <CurrencyInput
-          value={localHeader?.totalPOS}
+          value={memoizedHeaderProps.totalPOS}
           name={"Corte POS"}
           loading={false}
         />
 
         <CurrencyInput
-          value={localHeader?.totalClousing}
+          value={memoizedHeaderProps.totalClousing}
           name={"Corte físico"}
           loading={false}
         />
 
         <CurrencyInput
-          value={Number(localHeader?.difference?.toFixed(2))}
+          value={memoizedHeaderProps.difference}
           name={"Diferencia"}
           loading={false}
         />
 
-        {/* <CurrencyInput value={localHeader?.service} name={"Servicio 10%"} loading={false} /> */}
+        <CurrencyInput 
+          value={memoizedHeaderProps.discountClousing}
+          name={"Descuento POS"}
+          loading={false} 
+        />
 
-                <CurrencyInput 
-                  value={localHeader?.discountClousing}
-                  name={"Descuento POS"}
-                  loading={false} />
-
-                <EditableCurrencyInput 
-                  value={localHeader?.discountPhysical || 0} 
-                  name={"Descuento físico"} 
-                  disabled={closingConfirmation}
-                  onChange={handleDiscountInputChange}
-                  loading={false} /> 
+        <EditableCurrencyInput 
+          value={memoizedHeaderProps.discountPhysical || 0} 
+          name={"Descuento físico"} 
+          disabled={closingConfirmation}
+          onChange={handleDiscountInputChange}
+          loading={false} 
+        />
 
         <Button
           size="sm"

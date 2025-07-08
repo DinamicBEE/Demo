@@ -10,7 +10,7 @@ import { getStatusColor } from "../../../../utils/getStatusColor";
 import ClousingLayout from "../layout/ClousingLayout";
 import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
-import { FiChevronUp, FiChevronDown } from "react-icons/fi";
+import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 
 function TableOfTotals({
   subsidiary,
@@ -26,10 +26,7 @@ function TableOfTotals({
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel | null>(null);
   const [isEdit, setIsEdit] = useState(false);
-  const [sortConfig, setSortConfig] =
-    useState<{ key: string | null; direction: 'asc' | 'desc' }>
-    ({ key: null, direction: 'asc' });
-
+  const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
 
   function handleExportCSV() {
 
@@ -86,43 +83,6 @@ function TableOfTotals({
   function statusColor(status: STATUS) {
     return getStatusColor(status);
   }
-
-  const handleSort = (key: string) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const sortedData = useMemo(() => {
-    let sortableItems = [...data];
-    if (sortConfig.key !== null) {
-      sortableItems.sort((a, b) => {
-        const aValue = a[sortConfig.key as keyof ClousingLinesModel];
-        const bValue = b[sortConfig.key as keyof ClousingLinesModel];
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-          return sortConfig.direction === 'asc'
-            ? aValue.localeCompare(bValue, undefined, { numeric: true, sensitivity: 'base' })
-            : bValue.localeCompare(aValue, undefined, { numeric: true, sensitivity: 'base' });
-        } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return sortConfig.direction === 'asc'
-            ? aValue - bValue
-            : bValue - aValue;
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [data, sortConfig]);
-
-  const getSortIcon = (key: string) => {
-    if (sortConfig.key !== key) {
-      return null;
-    }
-    return sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />;
-  };
 
   return (
     <>
