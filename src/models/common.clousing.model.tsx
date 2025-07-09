@@ -1,4 +1,4 @@
-import { location, SubsidiaryModal } from "./common.model";
+import { location, selectOption, SubsidiaryModal } from "./common.model";
 import { CLOUSING_KEY } from "./constants.model";
 
 export interface ClousingModel {
@@ -71,7 +71,10 @@ export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" 
 | "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm"> {
   id?: number,
   ubicacion: string,
+  subsidiariaId: number,
+  subsidiariaCurrencyId: number,
   cdc: string | null,
+  cdcId: number,
   mxn: number | null,
   generalTotal: number | null,
   tpvBancomerUsd: number,
@@ -122,7 +125,6 @@ export interface ClousingContextType {
   tdcHeader: TDC[];
   currHeader: Currency[];
   getInfo: (
-    subsidiary: number,
     store: number,
     page: number,
     startDate: Date,
@@ -201,7 +203,7 @@ export interface FooterClousing {
   idCurrency: number;
   dateClousing: string;
   propStatus: string;
-  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
+  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TotalModel {
@@ -248,7 +250,7 @@ export interface ClousingLayoutProps {
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
-  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
+  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TableOfTotalsProps {
@@ -264,7 +266,7 @@ export interface ConfirmDialogProps {
   closeDialog: () => void;
   sendData: (isConfrim: boolean) => void;
   isConfrim: boolean;
-  getInfo: (subsidiary: number, store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
+  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface ExitDialogProps {
@@ -295,4 +297,17 @@ export interface GeneralInfoProps {
   store?: location;
   isReport: boolean;
   totals?: TotalModel
+}
+
+export interface HomeParamsProps {
+  subsidiary?: SubsidiaryModal;
+  store?: location;
+  date: string
+}
+
+export interface SelectHandlerParams<T = selectOption> {
+  newItems: T[];
+  currentSelected: T[];
+  setSelectedOptions: (options: T[]) => void;
+  setSelectedIds?: (ids: number[]) => void; // Opcional si necesitas los IDs
 }

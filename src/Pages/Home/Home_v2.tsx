@@ -10,6 +10,7 @@ import TableGeneralReport from "./components/table/TableGeneralReport";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import Loading from "@components/Loading";
 import { reportTotals } from "@services/homeService";
+import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
 
 function Home_v2() {
 
@@ -22,7 +23,10 @@ function Home_v2() {
     const [status, setStatus] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
 
+    const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
+    const [selectedSubsidiaries, setSelectedSubsidiaries] = useState<selectOption[]>([]);
     const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
+    const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
     const [rowtotals, setRowTotals] = useState<ReportTotalsModel>({} as ReportTotalsModel);
     const [totals, setTotals] = useState<TotalModel>({} as TotalModel);
@@ -71,23 +75,53 @@ function Home_v2() {
     []);
 
     async function getDataReport() {
-        setShowTable(true);
         setLoading(true);
-
-        const report = await getGeneralReports(selectedCDC, formattedDate)
-
+        const estatusNames = selectedStatus.map((status) => status.label);
+        const report = await getGeneralReports(selectedCDC, formattedDate, estatusNames)
+        
         const totals = reportTotals(report);
         const newTotals: TotalModel ={
             totalPOS: totals.totalPOS,
             totalPhysical: totals.totalPhysical,
             difference: totals.difference,
         }
-
+        
         setRowTotals(totals);
         setTotals(newTotals);
         setDataReport(report);
-
+        
+        setShowTable(true);
         setLoading(false);
+    }
+
+    const handleSubsidiariesChange = (event: { items: selectOption[] }) => {
+        handleMultiSelectChange({
+            newItems: event.items,
+            currentSelected: selectedSubsidiaries,
+            setSelectedOptions: setSelectedSubsidiaries,
+            setSelectedIds: setSelectedSubIds
+        })
+
+        if(selectedSubIds.length > 0) {
+            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        }
+    };
+
+    const handleCDCChange = (event: { items: selectOption[] }) => {
+        handleMultiSelectChange({
+            newItems: event.items,
+            currentSelected: selectedCDCOptions,
+            setSelectedOptions: setSelectedOptions,
+            setSelectedIds: setSelectedCDC
+        })
+    };
+
+    const handleStatusChange = (event: { items: selectOption[] }) => {
+        handleMultiSelectChange({
+            newItems: event.items,
+            currentSelected: selectedStatus,
+            setSelectedOptions: setSelectedStatus
+        });
     }
 
     return (
@@ -125,89 +159,33 @@ function Home_v2() {
                     ))}
                     </SelectContent>
                 </SelectRoot>
+            
+                {renderMultiSelectWithControls(
+                    subsidiaries,
+                    handleSubsidiariesChange,
+                    "Centro de consumo",
+                    "Selecciona una empresa",
+                    selectedSubsidiaries
+                  )
+                }
                 
-                <SelectRoot
-                    multiple={true}
-                    collection={subsidiaries}
-                    onValueChange={(event) => {
-                        const selectedSubsidiaries = event.items.map((item: selectOption) => ({
-                            value: item.value,
-                            label: item.label,
-                        }));
-                        const subIds = selectedSubsidiaries.map((sub) => sub.value); 
-                        
-                        fetchAndSetData(() => getLocations(subIds), setCDC);
-                    }}
-                >
-                    <SelectLabel fontFamily="heading">
-                    Empresa
-                    </SelectLabel>
-                    <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona una empresa" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    {subsidiaries.items.length > 0 && subsidiaries.items.map((item: selectOption) => (
-                        <SelectItem item={item} key={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectContent>
-                </SelectRoot>
-                
-                <SelectRoot
-                    multiple={true}
-                    collection={cdc}
-                    onValueChange={(event) => {
-                        const selectedcdc = event.items.map((item: selectOption) => ({
-                            value: item.value,
-                            label: item.label,
-                        }));
-                        const cdcIds = selectedcdc.map((cdc) => cdc.value);
+                {renderMultiSelectWithControls(
+                    cdc,
+                    handleCDCChange,
+                    "Centro de consumo",
+                    "Selecciona un centro de consumo",
+                    selectedCDCOptions
+                  )
+                }
 
-                        setSelectedCDC(cdcIds);                      
-                        
-                    }}
-                >
-                    <SelectLabel fontFamily="heading">
-                    Centro de consumo
-                    </SelectLabel>
-                    <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona un centro de consumo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    {cdc.items.length > 0 && cdc.items.map((item: selectOption) => (
-                        <SelectItem item={item} key={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectContent>
-                </SelectRoot>
-
-                <SelectRoot
-                    multiple={true}
-                    collection={status}
-                    onValueChange={(event) => {
-                        const selectedStatus = event.items.map((item: selectOption) => ({
-                            value: item.value,
-                            label: item.label,
-                        }));
-                        setSelectedStatus(selectedStatus);
-                    }}
-                >
-                    <SelectLabel fontFamily="heading">
-                    Estatus
-                    </SelectLabel>
-                    <SelectTrigger>
-                    <SelectValueText placeholder="Selecciona un estatus" />
-                    </SelectTrigger>
-                    <SelectContent>
-                    {status.items.length > 0 && status.items.map((item: selectOption) => (
-                        <SelectItem item={item} key={item.value}>
-                        {item.label}
-                        </SelectItem>
-                    ))}
-                    </SelectContent>
-                </SelectRoot>
+                {renderMultiSelectWithControls(
+                    status,
+                    handleStatusChange,
+                    "Estatus",
+                    "Selecciona un estatus",
+                    selectedStatus
+                  )
+                }
 
                 <Field.Root>
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
@@ -240,7 +218,7 @@ function Home_v2() {
                 
                     <GeneralInfo isReport={true} totals={totals}></GeneralInfo>
         
-                    <TableGeneralReport DataReport={dataReport} Totals={rowtotals}></TableGeneralReport>
+                    <TableGeneralReport DataReport={dataReport} Totals={rowtotals} date={formattedDate}></TableGeneralReport>
            
                 </>
 

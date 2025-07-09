@@ -100,7 +100,7 @@ export const selectSlotRecipe = defineSlotRecipe({
       textAlign: "start",
       borderRadius: "l1",
       _highlighted: {
-        bg: "bg.emphasized/60",
+        bg: "meraSuccess.emphasized/40"//"bg.emphasized/60",
       },
       _disabled: {
         pointerEvents: "none",

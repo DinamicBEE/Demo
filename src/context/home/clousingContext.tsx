@@ -54,7 +54,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
   const getInfo = useCallback(
     async (
-      subsidiary: number,
       store: number,
       page: number,
       startDate: Date,
@@ -63,7 +62,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     ) => {
       try {
         setError('');
-        const queryKey = `${subsidiary}-${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
+        const queryKey = `${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
 
         const pageKey = `${queryKey}-page-${page}`;
 
@@ -99,7 +98,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         setLoading(true);
         
         const response = await getGeneralInfo(
-          subsidiary,
           store,
           page,
           startDate,

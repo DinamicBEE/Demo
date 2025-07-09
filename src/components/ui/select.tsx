@@ -69,7 +69,7 @@ export const SelectItem = React.forwardRef<
   return (
     <ChakraSelect.Item key={item.value} item={item} {...rest} ref={ref}>
       {children}
-      <ChakraSelect.ItemIndicator />
+      {/* <ChakraSelect.ItemIndicator /> */}
     </ChakraSelect.Item>
   )
 })

@@ -22,7 +22,7 @@ export function PublicRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
 
   if (isLoading) return <Loading />;
-  if (isAuthenticated && user) return <Navigate to="/home" replace />;
+  if (isAuthenticated && user) return <Navigate to="/homeV2" replace />;
   return children;
 }
 

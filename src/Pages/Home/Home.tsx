@@ -9,7 +9,6 @@ import { useClousing } from "@context/home/clousingContext";
 import TableOfTotals from "./components/table/TableOfTotals";
 import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
-import DatePicker from "../LotClosure/components/DatePicker";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 
 function Home() {
@@ -28,11 +27,7 @@ function Home() {
   const [showTable, setShowTable] = useState<boolean>(false);
   const { getInfo } = useClousing();
   const { getStoresData, error, getSubsidiariesData } = useList();
-  // const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-  //   null,
-  //   null,
-  // ]);
-  // const [startDate, endDate] = dateRange;
+
   const [formattedDate, setFormattedDate] = useState<string>('');
   const initialDate = new Date();
 
@@ -200,7 +195,7 @@ function Home() {
                 disabled={SubSelect.id === undefined || location.id === undefined || formattedDate.length === 0}
                 onClick={() => {
                   setShowTable(true);
-                  getInfo(SubSelect.id, location.id, 0, new Date(`${formattedDate}T00:00:00`), new Date(`${formattedDate}T00:00:00`), true);
+                  getInfo(location.id, 0, new Date(`${formattedDate}T00:00:00`), new Date(`${formattedDate}T00:00:00`), true);
                 }}
               >
                 Buscar

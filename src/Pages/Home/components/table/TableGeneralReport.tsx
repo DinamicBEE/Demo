@@ -1,13 +1,42 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
-import { ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
+import { HomeParamsProps, ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
+import { useClousing } from "@context/home/clousingContext";
+import { format } from "date-fns";
 
 
-function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel}) {
+function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
 
     const [page, setPage] = useState<number>(1);
+    const navigate = useNavigate();
+    const { getInfo } = useClousing();
     
+    function getDetailsCDC (id: number){
+
+        const cdcData = DataReport.find((cdc) => cdc.cdcId === id);
+
+        const homeParams: HomeParamsProps = {
+            subsidiary: {
+                id: cdcData?.subsidiariaId ?? 0,
+                name: cdcData?.ubicacion ??  "",
+                idCurrency: cdcData?.subsidiariaCurrencyId ?? 0
+            },
+            store:{
+                id: cdcData?.cdcId  ?? 0,
+                name: cdcData?.cdc ??  ""
+            },
+            date: date,
+        }
+
+        getInfo(homeParams.store?.id ?? 0, 0, new Date(date + "T00:00:00"), new Date(date + "T00:00:00"), true)
+        navigate("/homeV3",{
+            state: { homeParams }
+        })
+
+    }
+
     return (
         <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px">
@@ -59,7 +88,18 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                         {DataReport.map((row) => (
                             <Table.Row key={row.id}>
                                 <Table.Cell><Text> {row.ubicacion} </Text></Table.Cell>
-                                <Table.Cell><Text> {row.cdc} </Text></Table.Cell>
+                                <Table.Cell>
+                                    <Text
+                                        as="span"
+                                        cursor="pointer"
+                                        textDecoration="underline"
+                                        color="blue.500"
+                                        onClick={() => {
+                                            getDetailsCDC(row.cdcId);
+                                        }}
+
+                                    > {row.cdc} </Text>
+                                </Table.Cell>
                                 <Table.Cell>
                                     <FormatNumber value={row.totalPOS} style="currency" currency="USD" />
                                 </Table.Cell>
@@ -74,16 +114,16 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                                     <FormatNumber value={row.mxn ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.usd} style="currency" currency="USD" />
+                                    <FormatNumber value={row.usd ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.eur} style="currency" currency="USD" />
+                                    <FormatNumber value={row.eur ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.lib} style="currency" currency="USD" />
+                                    <FormatNumber value={row.lib ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <FormatNumber value={row.can} style="currency" currency="USD" />
+                                    <FormatNumber value={row.can ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>
                                 <Table.Cell>
                                     <FormatNumber value={row.customer} style="currency" currency="USD" />
@@ -189,16 +229,16 @@ function TableGeneralReport({DataReport, Totals}: {DataReport: ReportClousingLin
                                 <FormatNumber value={Totals.mxn ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.usd} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.usd  ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.eur} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.eur  ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.lib} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.lib  ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
-                                <FormatNumber value={Totals.can} style="currency" currency="USD" />
+                                <FormatNumber value={Totals.can  ?? 0} style="currency" currency="USD" />
                             </Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.customer} style="currency" currency="USD" />

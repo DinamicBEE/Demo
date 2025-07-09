@@ -159,7 +159,6 @@ function TableOfTotals({
               colorPalette="meraInfo"
               onClick={() => {
                 getInfo(
-                  subsidiary.id,
                   store.id,
                   0,
                   startDate,
