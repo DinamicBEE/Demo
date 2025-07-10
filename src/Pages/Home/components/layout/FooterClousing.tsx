@@ -287,7 +287,7 @@ function FooterClousing({
       setDataClousing({
         id: body.id,
         date: header[body.id].totalClousing,
-        difference: (header[body.id]?.totalPOS ?? 0) - newTotalphysical,
+        difference: newTotalphysical - (header[body.id]?.totalPOS ?? 0),
         totalClousing: newTotalphysical,
         customer: body.customer.total.totalPhysical,
         specialCustomer: body.specialCustomer.total.totalPhysical,
