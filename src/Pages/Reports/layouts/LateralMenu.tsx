@@ -1,9 +1,9 @@
-import { Box, CloseButton, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
+import { Box, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
 import { useColorModeValue } from "@components/ui/color-mode";
 import { ReportsPropsModel } from "@models/reports.model";
 import { MENU_CONFIG } from "@models/reportsConstansts.model";
 import { MdChevronRight } from "react-icons/md";
-import { RiMenuUnfold3Line } from "react-icons/ri";
+import { RiMenuUnfold3Line, RiCloseLargeFill } from "react-icons/ri";
 
 
 function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel) {
@@ -28,7 +28,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
       onOpenChange={(e) => setOpen(e.open)}
     >
       <Drawer.Trigger >
-        <HStack cursor="pointer" _hover={{textDecoration:"underline",transform:"all 0.5s"}}
+        <HStack cursor="pointer" _hover={{textDecoration:"underline"}}
             color="green.500" fontWeight={400}>
           <Box >
                 <RiMenuUnfold3Line />
@@ -47,10 +47,13 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
             <Drawer.CloseTrigger
               display="block"
               position={"absolute"}
-              top={"1%"} right={"5%"}
+              top={"2%"} right={"5%"}
               justifyContent="flex-end"
+              fontWeight={400} cursor="pointer"
+              _hover={{textDecoration:"underline"}}
             >
-              <CloseButton size="sm" />
+                <RiCloseLargeFill  />
+              
             </Drawer.CloseTrigger>
             <Drawer.Header>
               <Drawer.Title>Menú de Reportes</Drawer.Title>
