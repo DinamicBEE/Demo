@@ -10,7 +10,7 @@ import TableGeneralReport from "./components/table/TableGeneralReport";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import Loading from "@components/Loading";
 import { reportTotals } from "@services/homeService";
-import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
+import { handleMultiSelectChange, fetchAndSetData, renderMultiSelectWithControls } from "../../utils/selectManagement";
 
 function Home_v2() {
 
@@ -37,24 +37,6 @@ function Home_v2() {
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
-
-    const mapToSelectOptions = <T extends { id: number; name: string }>(
-      items: T[]
-    ): selectOption[] => items.map((item) => ({
-        value: item.id,
-        label: item.name,
-    }));
-
-    const fetchAndSetData = async <T extends { id: number; name: string }>(
-      fetchFn: () => Promise<T[]>,
-      setter: (data: ReturnType<typeof createListCollection<selectOption>>) => void
-    ) => {
-      const data = await fetchFn();
-      const options = createListCollection<selectOption>({
-        items: mapToSelectOptions(data),
-      });
-      setter(options);
-    };
 
     useEffect(() => {
         async function fetchData() {
@@ -163,7 +145,7 @@ function Home_v2() {
                 {renderMultiSelectWithControls(
                     subsidiaries,
                     handleSubsidiariesChange,
-                    "Centro de consumo",
+                    "Empresa",
                     "Selecciona una empresa",
                     selectedSubsidiaries
                   )

@@ -4,7 +4,6 @@ import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { HomeParamsProps, ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
 import { useClousing } from "@context/home/clousingContext";
-import { format } from "date-fns";
 
 
 function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
