@@ -9,8 +9,10 @@ export const renderMultiSelectWithControls = (
   onValueChange: (event: { items: selectOption[] }) => void,
   label: string,
   placeholder: string,
-  selectedItems: selectOption[]
+  selectedItems: selectOption[],
+  disableCondition: boolean
 ) => {
+
   const isItemSelected = (item: selectOption) => {
     return selectedItems.some(selected => selected.value === item.value);
   };
@@ -25,7 +27,7 @@ export const renderMultiSelectWithControls = (
       collection={collection}
       value={selectedItems.map(item => item.value.toString())}
       onValueChange={onValueChange}
-      disabled={collection.items.length === 0}
+      disabled={disableCondition && collection.items.length === 0}
     >
       <SelectLabel fontFamily="heading">{label}</SelectLabel>
       <SelectTrigger>
@@ -103,6 +105,7 @@ export const handleMultiSelectChange = <T extends { value: number }>({
 
   setSelectedOptions(updatedSelection);
   setSelectedIds?.(updatedSelection.map(item => item.value));
+
 };
 
 export const mapToSelectOptions = <T extends { id: number; name: string }>(

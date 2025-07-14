@@ -76,6 +76,12 @@ function Home_v2() {
         setLoading(false);
     }
 
+    useEffect(() => {
+        if (selectedSubIds.length > 0) {
+            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        }
+    }, [selectedSubIds]);
+
     const handleSubsidiariesChange = (event: { items: selectOption[] }) => {
         handleMultiSelectChange({
             newItems: event.items,
@@ -83,10 +89,10 @@ function Home_v2() {
             setSelectedOptions: setSelectedSubsidiaries,
             setSelectedIds: setSelectedSubIds
         })
-
-        if(selectedSubIds.length > 0) {
-            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
-        }
+        // console.log("Selected Subsidiaries:", selectedSubIds);
+        // if(selectedSubIds.length > 0) {
+        //     fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        // }
     };
 
     const handleCDCChange = (event: { items: selectOption[] }) => {
@@ -147,7 +153,8 @@ function Home_v2() {
                     handleSubsidiariesChange,
                     "Empresa",
                     "Selecciona una empresa",
-                    selectedSubsidiaries
+                    selectedSubsidiaries,
+                    true
                   )
                 }
                 
@@ -156,7 +163,8 @@ function Home_v2() {
                     handleCDCChange,
                     "Centro de consumo",
                     "Selecciona un centro de consumo",
-                    selectedCDCOptions
+                    selectedCDCOptions,
+                    true
                   )
                 }
 
@@ -165,7 +173,8 @@ function Home_v2() {
                     handleStatusChange,
                     "Estatus",
                     "Selecciona un estatus",
-                    selectedStatus
+                    selectedStatus,
+                    true
                   )
                 }
 
