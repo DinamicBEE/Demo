@@ -163,7 +163,7 @@ function Home_v2() {
                 {renderMultiSelectWithControls(
                     subsidiaries,
                     handleSubsidiariesChange,
-                    "Centro de consumo",
+                    "Empresa",
                     "Selecciona una empresa",
                     selectedSubsidiaries
                   )

@@ -79,8 +79,10 @@ export const handleMultiSelectChange = <T extends { value: number }>({
     return;
   }
 
-  const isAdding = !newItems.some(newItem => 
-    currentSelected.some(selected => selected.value === newItem.value)
+  const isAdding = !newItems.some(newItem => {
+      newItem !== undefined ? currentSelected.some(selected => selected.value === newItem.value) : false;
+
+    }
   );
 
   let updatedSelection: T[];
@@ -88,7 +90,7 @@ export const handleMultiSelectChange = <T extends { value: number }>({
   if (isAdding) {
     updatedSelection = [...currentSelected, ...newItems].reduce(
       (acc: T[], current) => {
-        if (!acc.some(item => item.value === current.value)) {
+        if (current !== undefined && !acc.some(item => item.value === current.value)) {
           acc.push(current);
         }
         return acc;
@@ -96,7 +98,7 @@ export const handleMultiSelectChange = <T extends { value: number }>({
     );
   } else {
     updatedSelection = currentSelected.filter(
-      item => !newItems.some(newItem => newItem.value === item.value)
+      item => !newItems.some(newItem => newItem !== undefined ? newItem.value === item.value : false)
     );
   }
 

@@ -4,7 +4,7 @@ import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { HomeParamsProps, ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
 import { useClousing } from "@context/home/clousingContext";
-import { format } from "date-fns";
+import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 
 
 function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
@@ -12,6 +12,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
     const [page, setPage] = useState<number>(1);
     const navigate = useNavigate();
     const { getInfo } = useClousing();
+    const { sortedData, handleSort, getSortIcon } = useSortableTable<ReportClousingLinesModel>(DataReport);
     
     function getDetailsCDC (id: number){
 
@@ -43,49 +44,127 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                 <Table.Root size="sm" variant="outline">
                     <Table.Header>
                         <Table.Row>
-                            <Table.ColumnHeader>Ubicación</Table.ColumnHeader>
-                            <Table.ColumnHeader>CDC</Table.ColumnHeader>
-                            <Table.ColumnHeader>Total POS</Table.ColumnHeader>
-                            <Table.ColumnHeader>Total Físico</Table.ColumnHeader>
-                            <Table.ColumnHeader>Diferencia</Table.ColumnHeader>
-                            <Table.ColumnHeader>Estatus</Table.ColumnHeader>
-                            <Table.ColumnHeader>MXN</Table.ColumnHeader>
-                            <Table.ColumnHeader>USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>EUR</Table.ColumnHeader>
-                            <Table.ColumnHeader>LIB</Table.ColumnHeader>
-                            <Table.ColumnHeader>CAN</Table.ColumnHeader>
-                            <Table.ColumnHeader>Clientes General</Table.ColumnHeader>
-                            <Table.ColumnHeader>Clientes Especiales</Table.ColumnHeader>
-                            <Table.ColumnHeader>Prepago</Table.ColumnHeader>
-                            <Table.ColumnHeader>CXC Empleados</Table.ColumnHeader>
-                            <Table.ColumnHeader>Intercompañia</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Bancomer USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Sbdell MXN</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Coldpatria</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Amexco COP</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Banamex USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Bancomer</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Amexco</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Banamex</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Bbva COP</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Sbdell USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV BancoColombia</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV sbdell Amex MXN</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV sbdell Amex USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Netpay</Table.ColumnHeader>
-                            <Table.ColumnHeader>WEB Kiosko</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Santander</Table.ColumnHeader>
-                            <Table.ColumnHeader>WEB app USD</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Dinners</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV Adyen</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV AdyenAmex</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV AdyenKiosko</Table.ColumnHeader>
-                            <Table.ColumnHeader>TPV KioskoUsd</Table.ColumnHeader>
-                            <Table.ColumnHeader>Propinas electrónica</Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('ubicacion')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Ubicación {getSortIcon('ubicacion')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('cdc')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>CDC {getSortIcon('cdc')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('totalPOS')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Total POS {getSortIcon('totalPOS')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('totalPhysical')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Total Físico {getSortIcon('totalPhysical')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('difference')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Diferencia {getSortIcon('difference')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Estatus {getSortIcon('status')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('mxn')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>MXN {getSortIcon('mxn')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('usd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>USD {getSortIcon('usd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('eur')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>EUR {getSortIcon('eur')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('lib')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>LIB {getSortIcon('lib')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('can')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>CAN {getSortIcon('can')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('customer')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Clientes Generales {getSortIcon('customer')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('specialCustomer')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Clientes Especiales {getSortIcon('specialCustomer')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('prepaid')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Prepago {getSortIcon('prepaid')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('employees')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>CXC Empleados {getSortIcon('employees')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('intercompany')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Intercompañia {getSortIcon('intercompany')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBancomerUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Bancomer USD {getSortIcon('tpvBancomerUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvSbdellMxn')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Sbdell MXN {getSortIcon('tpvSbdellMxn')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvColdpatria')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Coldpatria {getSortIcon('tpvColdpatria')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvAmexcoCop')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Amexco COP {getSortIcon('tpvAmexcoCop')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBanamexUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Banamex USD {getSortIcon('tpvBanamexUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBancomer')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Bancomer {getSortIcon('tpvBancomer')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvAmexco')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Amexco {getSortIcon('tpvAmexco')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBanamex')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Banamex {getSortIcon('tpvBanamex')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBbvaCop')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Bbva COP {getSortIcon('tpvBbvaCop')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvSbdellUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Sbdell USD {getSortIcon('tpvSbdellUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvBancoColombia')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV BancoColombia {getSortIcon('tpvBancoColombia')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('sbdellAmexMxn')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV sbdell Amex MXN {getSortIcon('sbdellAmexMxn')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('sbdellAmexUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV sbdell Amex USD {getSortIcon('sbdellAmexUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvNetpay')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Netpay {getSortIcon('tpvNetpay')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('webKiosko')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>WEB Kiosko {getSortIcon('webKiosko')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvSantander')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Santander {getSortIcon('tpvSantander')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('webappUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>WEB app USD {getSortIcon('webappUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvDinners')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Dinners {getSortIcon('tpvDinners')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvAdyen')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV Adyen {getSortIcon('tpvAdyen')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvAdyenAmex')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV AdyenAmex {getSortIcon('tpvAdyenAmex')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvAdyenKiosko')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV AdyenKiosko {getSortIcon('tpvAdyenKiosko')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tpvKioskoUsd')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>TPV KioskoUsd {getSortIcon('tpvKioskoUsd')}</HStack>
+                            </Table.ColumnHeader>
+                            <Table.ColumnHeader onClick={() => handleSort('tips')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                              <HStack justify={"center"}>Propinas electrónica {getSortIcon('tips')}</HStack>
+                            </Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {DataReport.map((row) => (
+                        {sortedData.map((row) => (
                             <Table.Row key={row.id}>
                                 <Table.Cell><Text> {row.ubicacion} </Text></Table.Cell>
                                 <Table.Cell>
