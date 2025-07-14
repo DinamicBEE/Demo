@@ -1,4 +1,4 @@
-import { ListCollection } from "@chakra-ui/react";
+import { createListCollection, ListCollection } from "@chakra-ui/react";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { SelectHandlerParams } from "@models/common.clousing.model";
@@ -9,8 +9,10 @@ export const renderMultiSelectWithControls = (
   onValueChange: (event: { items: selectOption[] }) => void,
   label: string,
   placeholder: string,
-  selectedItems: selectOption[]
+  selectedItems: selectOption[],
+  disableCondition: boolean
 ) => {
+
   const isItemSelected = (item: selectOption) => {
     return selectedItems.some(selected => selected.value === item.value);
   };
@@ -25,6 +27,7 @@ export const renderMultiSelectWithControls = (
       collection={collection}
       value={selectedItems.map(item => item.value.toString())}
       onValueChange={onValueChange}
+      disabled={disableCondition && collection.items.length === 0}
     >
       <SelectLabel fontFamily="heading">{label}</SelectLabel>
       <SelectTrigger>
@@ -104,4 +107,23 @@ export const handleMultiSelectChange = <T extends { value: number }>({
 
   setSelectedOptions(updatedSelection);
   setSelectedIds?.(updatedSelection.map(item => item.value));
+
+};
+
+export const mapToSelectOptions = <T extends { id: number; name: string }>(
+  items: T[]
+): selectOption[] => items.map((item) => ({
+    value: item.id,
+    label: item.name,
+}));
+
+export const fetchAndSetData = async <T extends { id: number; name: string }>(
+  fetchFn: () => Promise<T[]>,
+  setter: (data: ReturnType<typeof createListCollection<selectOption>>) => void
+) => {
+  const data = await fetchFn();
+  const options = createListCollection<selectOption>({
+    items: mapToSelectOptions(data),
+  });
+  setter(options);
 };

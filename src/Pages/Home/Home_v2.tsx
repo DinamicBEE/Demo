@@ -10,7 +10,7 @@ import TableGeneralReport from "./components/table/TableGeneralReport";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import Loading from "@components/Loading";
 import { reportTotals } from "@services/homeService";
-import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
+import { handleMultiSelectChange, fetchAndSetData, renderMultiSelectWithControls } from "../../utils/selectManagement";
 
 function Home_v2() {
 
@@ -37,24 +37,6 @@ function Home_v2() {
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
-
-    const mapToSelectOptions = <T extends { id: number; name: string }>(
-      items: T[]
-    ): selectOption[] => items.map((item) => ({
-        value: item.id,
-        label: item.name,
-    }));
-
-    const fetchAndSetData = async <T extends { id: number; name: string }>(
-      fetchFn: () => Promise<T[]>,
-      setter: (data: ReturnType<typeof createListCollection<selectOption>>) => void
-    ) => {
-      const data = await fetchFn();
-      const options = createListCollection<selectOption>({
-        items: mapToSelectOptions(data),
-      });
-      setter(options);
-    };
 
     useEffect(() => {
         async function fetchData() {
@@ -94,6 +76,12 @@ function Home_v2() {
         setLoading(false);
     }
 
+    useEffect(() => {
+        if (selectedSubIds.length > 0) {
+            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        }
+    }, [selectedSubIds]);
+
     const handleSubsidiariesChange = (event: { items: selectOption[] }) => {
         handleMultiSelectChange({
             newItems: event.items,
@@ -101,10 +89,10 @@ function Home_v2() {
             setSelectedOptions: setSelectedSubsidiaries,
             setSelectedIds: setSelectedSubIds
         })
-
-        if(selectedSubIds.length > 0) {
-            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
-        }
+        // console.log("Selected Subsidiaries:", selectedSubIds);
+        // if(selectedSubIds.length > 0) {
+        //     fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        // }
     };
 
     const handleCDCChange = (event: { items: selectOption[] }) => {
@@ -165,7 +153,8 @@ function Home_v2() {
                     handleSubsidiariesChange,
                     "Empresa",
                     "Selecciona una empresa",
-                    selectedSubsidiaries
+                    selectedSubsidiaries,
+                    true
                   )
                 }
                 
@@ -174,7 +163,8 @@ function Home_v2() {
                     handleCDCChange,
                     "Centro de consumo",
                     "Selecciona un centro de consumo",
-                    selectedCDCOptions
+                    selectedCDCOptions,
+                    true
                   )
                 }
 
@@ -183,7 +173,8 @@ function Home_v2() {
                     handleStatusChange,
                     "Estatus",
                     "Selecciona un estatus",
-                    selectedStatus
+                    selectedStatus,
+                    true
                   )
                 }
 
