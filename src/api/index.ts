@@ -127,8 +127,7 @@ api.interceptors.response.use(
         error,
         window.location.pathname
       );
-      console.log("Error en interceptor:", error);
-      if (typeof error.status === "number" && error.status >= 400 && error.status < 500) {
+      if (typeof error.status === "number" && error.status === 404) { //Validar con Back uso correcto de codigos
         toast(errorResponse, "warning");
       } else {
         toast(errorResponse, "error");

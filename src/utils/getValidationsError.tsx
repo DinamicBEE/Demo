@@ -23,6 +23,7 @@ export const defaultErrors: Record<string, string> = {
 
 const specificErrors: Record<string, Record<string, string>> = {
   "/": loginErrors,
+  "login": loginErrors,
   "home": loginErrors,
 };
 
@@ -33,9 +34,9 @@ export const getValidationsError = (
 
   const errorCode = error.code as string;
   const serverMessage =
-    error.response && error.response.data !== null
-      ? (error.response.data as { mensaje?: string }).mensaje
-      : undefined;
+    error.response && error.response.data !== null && typeof error.response.data === "object" && "mensaje" in error.response.data
+      ? (error.response?.data as { mensaje?: string }).mensaje
+      : error.response?.data;
   // Unir errores específicos del path con los errores por defecto
   const messages = { ...defaultErrors, ...(specificErrors[path] || {}) };
   // Si el servidor envió un mensaje específico, lo devolvemos
@@ -53,8 +54,14 @@ export const getValidationsError = (
       );
     }
 
-    if( firstPartOfMessage !== "") {
-      return firstPartOfMessage
+    if (firstPartOfMessage !== "") {
+      const excludedMessages = [
+        "Invalid username or password",
+        "The user is locked"
+      ];
+      if (!excludedMessages.includes(firstPartOfMessage)) {
+        return firstPartOfMessage;
+      }
     }
 
     if (messages[firstPartOfMessage]) {
