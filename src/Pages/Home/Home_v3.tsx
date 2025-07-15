@@ -3,11 +3,25 @@ import TableOfTotals from "./components/table/TableOfTotals";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { HomeParamsProps } from "@models/common.clousing.model";
 import { IoReturnUpBack } from "react-icons/io5";
+import { useEffect } from "react";
+import { useClousing } from "@context/home/clousingContext";
 
 function Home_v3() {
     const location = useLocation();
     const navigate = useNavigate();
+    const { getInfo } = useClousing();
     const { homeParams } = location.state as { homeParams: HomeParamsProps };
+  
+    useEffect(() => {
+
+      console.log("Home_v3 homeParams:", homeParams);
+      if (!homeParams || !homeParams.subsidiary || !homeParams.store || !homeParams.date) {
+        navigate("/homeV2");
+      } else {
+        getInfo(homeParams.store?.id ?? 0, 0, new Date(homeParams.date + "T00:00:00"), new Date(homeParams.date + "T00:00:00"), true)
+      }
+
+    }, []);
     
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">

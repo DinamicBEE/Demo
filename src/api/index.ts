@@ -1,6 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import https from 'https';
-import { Buffer } from 'buffer';
 import Cookies from "js-cookie";
 import { API_AUTH, MODE } from "../services/settings";
 import { refreshAuthToken } from "@services/authService";
@@ -25,18 +23,6 @@ const removeTokens = () => {
   Cookies.remove("accessToken");
   Cookies.remove("refreshToken");
 };
-
-// const getHttpsAgent = () => {
-//   if (process.env.KAFKA_CERT_BASE64) {
-//     const certBuffer = Buffer.from(process.env.KAFKA_CERT_BASE64, 'base64');
-//     return new https.Agent({
-//       pfx: certBuffer,
-//       passphrase: process.env.KAFKA_CERT_PASSWORD || '',
-//       rejectUnauthorized: true,
-//     });
-//   }
-//   return undefined;
-// };
 
 // Configuración base del cliente Axios
 const api = axios.create({
@@ -118,6 +104,7 @@ api.interceptors.response.use(
             throw new Error("Error al renovar el token");
           }
         } catch (err: any) {
+          //console.error("Error al renovar el token:", err);
           toast(err.message, "error");
           removeTokens();
           reject(err);
@@ -140,8 +127,11 @@ api.interceptors.response.use(
         error,
         window.location.pathname
       );
-
-      toast(errorResponse, "error");
+      if (typeof error.status === "number" && error.status === 404) { //Validar con Back uso correcto de codigos
+        toast(errorResponse, "warning");
+      } else {
+        toast(errorResponse, "error");
+      }
     }
     return Promise.reject(error);
   }
