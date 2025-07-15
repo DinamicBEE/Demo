@@ -188,7 +188,7 @@ export const getCustomerClousing = async (
 
     return responseData;
   } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
+    //console.error("Error al obtener los valores generales:", error);
     const responseData: ResponseModel = {
       success: false,
       data: {

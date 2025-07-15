@@ -1,4 +1,3 @@
-import { useErrorContext } from "@context/ErrorContext";
 import { AxiosError } from "axios";
 
 const SERVER_ERROR_MESSAGE = "Error en el servidor";
@@ -33,7 +32,10 @@ export const getValidationsError = (
 ): string  => {
 
   const errorCode = error.code as string;
-  const serverMessage = error.response?.data;
+  const serverMessage =
+    error.response && error.response.data !== null
+      ? (error.response.data as { mensaje?: string }).mensaje
+      : undefined;
   // Unir errores específicos del path con los errores por defecto
   const messages = { ...defaultErrors, ...(specificErrors[path] || {}) };
   // Si el servidor envió un mensaje específico, lo devolvemos
@@ -49,6 +51,10 @@ export const getValidationsError = (
         minutes +
         " minutos."
       );
+    }
+
+    if( firstPartOfMessage !== "") {
+      return firstPartOfMessage
     }
 
     if (messages[firstPartOfMessage]) {
