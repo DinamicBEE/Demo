@@ -330,7 +330,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
       </PaginationRoot>
 
       {specialCustLoading && (
-        <Box position="fixed" top="50%" left="50%" zIndex="1">
+        <Box position="fixed" top="50%" left="50%" zIndex={1000}>
           <Loading />
         </Box>
       )}
