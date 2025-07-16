@@ -19,7 +19,6 @@ export const getGeneralInfo = async (
   endDate: Date
 ): Promise<ClousingModel> => {
   try {
-    // console.log(subsidiary, store)
     //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
     //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
     //2025-04-02
