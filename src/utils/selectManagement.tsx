@@ -18,8 +18,12 @@ export const renderMultiSelectWithControls = (
   };
 
   const handleSelectAll = () => {
+  if (selectedItems.length === collection.items.length) {
+    onValueChange({ items: [] });
+  } else {
     onValueChange({ items: [...collection.items] });
-  };
+  }
+};
 
   return (
     <SelectRoot
@@ -75,25 +79,24 @@ export const handleMultiSelectChange = <T extends { value: number }>({
   setSelectedOptions,
   setSelectedIds
 }: SelectHandlerParams<T>) => {
+  const validNewItems = newItems.filter((item): item is T => item !== undefined && item !== null);
 
-  if (newItems.length === 0) {
+  if (validNewItems.length === 0) {
     setSelectedOptions([]);
     setSelectedIds?.([]);
     return;
   }
 
-  const isAdding = !newItems.some(newItem => {
-      newItem !== undefined ? currentSelected.some(selected => selected.value === newItem.value) : false;
-
-    }
+  const isAdding = validNewItems.some(newItem => 
+    !currentSelected.some(selected => selected.value === newItem.value)
   );
 
   let updatedSelection: T[];
 
   if (isAdding) {
-    updatedSelection = [...currentSelected, ...newItems].reduce(
+    updatedSelection = [...currentSelected, ...validNewItems].reduce(
       (acc: T[], current) => {
-        if (current !== undefined && !acc.some(item => item.value === current.value)) {
+        if (!acc.some(item => item.value === current.value)) {
           acc.push(current);
         }
         return acc;
@@ -101,13 +104,12 @@ export const handleMultiSelectChange = <T extends { value: number }>({
     );
   } else {
     updatedSelection = currentSelected.filter(
-      item => !newItems.some(newItem => newItem !== undefined ? newItem.value === item.value : false)
+      item => !validNewItems.some(newItem => newItem.value === item.value)
     );
   }
 
   setSelectedOptions(updatedSelection);
   setSelectedIds?.(updatedSelection.map(item => item.value));
-
 };
 
 export const mapToSelectOptions = <T extends { id: number; name: string }>(

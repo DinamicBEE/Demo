@@ -14,7 +14,6 @@ function Home_v3() {
   
     useEffect(() => {
 
-      console.log("Home_v3 homeParams:", homeParams);
       if (!homeParams || !homeParams.subsidiary || !homeParams.store || !homeParams.date) {
         navigate("/homeV2");
       } else {
