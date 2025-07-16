@@ -46,7 +46,7 @@ export const renderMultiSelectWithControls = (
               variant="surface"
               onClick={(e) => {
                 e.stopPropagation();
-                handleSelectAll()
+                handleSelectAll();
               }}
             >
               {selectedItems.length === collection.items.length ?
