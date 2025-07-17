@@ -110,7 +110,6 @@ export const getTDCClousing = async (
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
     });   
-    console.log(response) 
     const newResponse = {
       ...response.data,
       lines: response.data.lines.map((line: any) => ({

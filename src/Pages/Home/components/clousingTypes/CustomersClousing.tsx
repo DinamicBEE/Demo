@@ -79,7 +79,6 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
       setCustomersData(customers);
       setcurrenciesForSelect(createCurrenciList);
       setCurrencies(currencies);
-      console.log("CustomersData", customers.total.totalPhysical);
       
       if (customers?.total?.difference < 0) {
         updateTotal(customers.total.totalPOS, data.id, CLOUSING_KEY.CUSTOMER);
@@ -254,7 +253,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
           </HStack>
         </PaginationRoot>
         {customerLoading && (
-          <Box position="fixed" top="50%" left="50%" zIndex="1">
+          <Box position="fixed" top="50%" left="50%" zIndex={1000}>
             <Loading />
           </Box>
         )}

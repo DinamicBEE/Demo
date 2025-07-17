@@ -214,7 +214,7 @@ function CashClousing({ data, idCurrency }: any) {
         </PaginationRoot>
 
         {cashLoading && (
-          <Box position="fixed" top="50%" left="50%" zIndex="1">
+          <Box position="fixed" top="50%" left="50%"  zIndex={1000}>
             <Loading />
           </Box>
         )}
