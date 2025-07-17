@@ -28,7 +28,7 @@ const pageSize = 10;
 function TableOfLotClosure({
   company,
   location,
-  dateRange,
+  date,
   showTable,
 }: TableLotsClosureProps) {
   const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
@@ -112,7 +112,7 @@ function TableOfLotClosure({
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
-                  fetchLotClosureData(dateRange, location.id, company.id, true);
+                  fetchLotClosureData(date, [location.id], true);
                 }}
                 disabled={loading}
               >
@@ -147,9 +147,9 @@ function TableOfLotClosure({
                     <Table.ColumnHeader textAlign="center">
                       Diferencia
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+                    {/* <Table.ColumnHeader textAlign="center">
                       Empleado (Realizado por)
-                    </Table.ColumnHeader>
+                    </Table.ColumnHeader> */}
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -176,9 +176,9 @@ function TableOfLotClosure({
                       <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      <Table.Cell textAlign="center">
+                      {/* <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
-                      </Table.Cell>
+                      </Table.Cell> */}
                     </Table.Row>
                   )}
                   {lotsClosure.length === 0 && !loading && (
@@ -246,9 +246,9 @@ function TableOfLotClosure({
                             />
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="center">
+                        {/* <Table.Cell textAlign="center">
                           <Text>{item.employeeName}</Text>
-                        </Table.Cell>
+                        </Table.Cell> */}
                       </Table.Row>
                     ))}
                 </Table.Body>

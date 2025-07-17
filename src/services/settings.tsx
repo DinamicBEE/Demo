@@ -21,7 +21,8 @@ export const GET_COUPONS = '/crc/cash-register-closure/api/prepaid/coupons';
 export const GET_PREPAID = '/crc/cash-register-closure/api/prepaid/get';
 export const GET_EXTRAINFO = '/crc/cash-register-closure/api/registerclosure/info-colum' // Descuentos y taxes de CRC
 //Cierrre de Lote
-export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByDates';
+export const GET_BATCHDATES = '/crc/cash-register-closure/batchclosure/getBatchByDates'; //! DEPRECATED
+export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchClosures';
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';
 export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBatchClosure';
 

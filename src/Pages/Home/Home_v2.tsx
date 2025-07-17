@@ -89,10 +89,6 @@ function Home_v2() {
             setSelectedOptions: setSelectedSubsidiaries,
             setSelectedIds: setSelectedSubIds
         })
-        // console.log("Selected Subsidiaries:", selectedSubIds);
-        // if(selectedSubIds.length > 0) {
-        //     fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
-        // }
     };
 
     const handleCDCChange = (event: { items: selectOption[] }) => {

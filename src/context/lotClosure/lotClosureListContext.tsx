@@ -1,22 +1,7 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
-import {
-  getBanks,
-  getLotsClosure,
-  updateBankService,
-} from "@services/lotClosureService";
-import {
-  LotClosureContextType,
-  LotClosure,
-  Bank,
-} from "@models/lotClosure.model";
+import { ReactNode, createContext, useContext, useState,
+  useMemo, useCallback, useRef } from "react";
+import { getBanks, getLotsClosure, updateBankService } from "@services/lotClosureService";
+import { LotClosureContextType, LotClosure, Bank, LotsClosureContext } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
 import { format } from "date-fns";
 
@@ -28,48 +13,48 @@ export const useLotClosureList = () => useContext(LotClosureListContext);
 
 export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [lotsClosure, setLotsClosure] = useState<LotClosure[]>([]);
-  const lostClosureCache = useRef<{ [key: number]: LotClosure[] }>({});
+  const lostClosureCache = useRef<LotsClosureContext>({});
   const [banks, setBanks] = useState<Bank[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [updateBankLoading, setUpdateBankLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const bankCache = useRef<{ [key: number]: Bank[] }>({});
-  const [dateRangeLocal, setDateRange] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
+  // const [dateRangeLocal, setDateRange] = useState<[Date | null, Date | null]>([
+  //   null,
+  //   null,
+  // ]);
 
   const fetchLotClosureData = useCallback(
     async (
-      dateRange: [Date | null, Date | null],
-      locationId: number,
-      companyId: number,
+      date: string,
+      locationId: number[],
       isRefresh?: boolean
     ) => {
-      setDateRange(dateRange);
-      const [startDate, endDate] = dateRange;
+      //setDateRange(dateRange);
+      //const [startDate, endDate] = dateRange;
 
       // Función helper para formatear fechas y manejar valores nulos
-      const formatDateOrDefault = (date: Date | null): string =>
-        format(date || new Date(), "yyyy-MM-dd");
+      // const formatDateOrDefault = (date: Date | null): string =>
+      //   format(date || new Date(), "yyyy-MM-dd");
 
       // Formatear fechas del nuevo rango
-      const formattedStartDate = formatDateOrDefault(startDate);
-      const formattedEndDate = formatDateOrDefault(endDate);
-      const dateRangeString = `${formattedStartDate} - ${formattedEndDate}`;
+      // const formattedStartDate = formatDateOrDefault(startDate);
+      // const formattedEndDate = formatDateOrDefault(endDate);
+      // const dateRangeString = `${formattedStartDate} - ${formattedEndDate}`;
 
       // Formatear fechas del rango en caché
-      const cachedStartDate = formatDateOrDefault(dateRangeLocal[0]);
-      const cachedEndDate = formatDateOrDefault(dateRangeLocal[1]);
-      const dateRangeCache = `${cachedStartDate} - ${cachedEndDate}`;
+      // const cachedStartDate = formatDateOrDefault(dateRangeLocal[0]);
+      // const cachedEndDate = formatDateOrDefault(dateRangeLocal[1]);
+      // const dateRangeCache = `${cachedStartDate} - ${cachedEndDate}`;
       
       if (
-        lostClosureCache.current[locationId] &&
-        !isRefresh &&
-        dateRangeCache === dateRangeString
+        lostClosureCache.current[date] &&
+        !isRefresh 
+        //&&
+        //dateRangeCache === dateRangeString
       ) {
-        setLotsClosure(lostClosureCache.current[locationId]);
+        setLotsClosure(lostClosureCache.current[date]);
         return;
       }
       setLoading(true);
@@ -80,8 +65,8 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           setLotsClosure([]);
           lostClosureCache.current = {};
         }
-        const response = await getLotsClosure(dateRange, locationId, companyId);
-        lostClosureCache.current[locationId] = response;
+        const response = await getLotsClosure(date);
+        lostClosureCache.current[date] = response;
         setLotsClosure(response);
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));

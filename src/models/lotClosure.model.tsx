@@ -61,7 +61,7 @@ export interface Location {
 export interface TableLotsClosureProps {
   company: SubsidiaryModal;
   location: location;
-  dateRange: [Date | null, Date | null];
+  date: string;
   showTable: boolean;
 }
 
@@ -93,9 +93,8 @@ export interface LotClosureContextType {
   loadingBanks: boolean;
   updateBankLoading: boolean;
   fetchLotClosureData: (
-    dateRange: [Date | null, Date | null],
-    locationId: number,
-    companyId: number,
+    dateRange: string,
+    locationId: number[],
     isRefresh?: boolean
   ) => Promise<void>;
   fetchBanks: (lotId: number) => Promise<Bank[]>;
@@ -112,4 +111,8 @@ export interface LotCatalogContextType {
   ) => void;
   fetchCompanies: () => Promise<void>;
   fetchLocations: (companyId: number) => Promise<void>;
+}
+
+export interface LotsClosureContext {
+  [key:string]: LotClosure[]
 }

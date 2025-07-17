@@ -1,42 +1,30 @@
 import { LotClosure, Bank } from "@models/lotClosure.model";
 import Cookies from "js-cookie";
-import {
-  GET_BATCH,
-  LOCATIONS,
-  SUBSIDIARIES,
-  GET_BATCH_DETAILS,
-  CONFIRM_BATCH,
-} from "./settings";
+import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
+  GET_BATCH_DETAILS, CONFIRM_BATCH } from "./settings";
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
-import { format } from "date-fns";
 
 export const getLotsClosure = async (
-  dateRange: [Date | null, Date | null],
-  locationId: number,
-  companyId: number
+  date: string
 ): Promise<LotClosure[]> => {
   try {
-    const startDateFormat = format(
-      dateRange[0] ? dateRange[0] : new Date(),
-      "dd-MM-yyyy"
-    );
-    const endDateFormat = format(
-      dateRange[1] ? dateRange[1] : new Date(),
-      "dd-MM-yyyy"
-    );
+
+    const dateArray = date.split("-");
+    const newFormatDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+
     const response = await api.get(GET_BATCH, {
       params: {
-        consId: locationId,
-        startDate: startDateFormat,
-        endDate: endDateFormat,
+        date: newFormatDate
       },
     });
+
     const transformedData = response.data.map((lot: any) => ({
       ...lot,
       status: getStatus(lot.status),
     }));
+
     return transformedData as LotClosure[];
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
