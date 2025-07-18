@@ -3,6 +3,7 @@ import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { SelectHandlerParams } from "@models/common.clousing.model";
 import { selectOption } from "@models/common.model";
+import { useEffect, useState } from "react";
 
 export const renderMultiSelectWithControls = (
   collection: ListCollection<selectOption>,
@@ -12,32 +13,47 @@ export const renderMultiSelectWithControls = (
   selectedItems: selectOption[],
   disableCondition: boolean
 ) => {
+  const [value, setValue] = useState<number[]>([])
+
 
   const isItemSelected = (item: selectOption) => {
     return selectedItems.some(selected => selected.value === item.value);
   };
 
   const handleSelectAll = () => {
-    console.log();
     
   if (selectedItems.length === collection.items.length) {
     onValueChange({ items: [] });
+    setValue([]);
   } else {
     onValueChange({ items: [...collection.items] });
+    setValue(collection.items.map(item => item.value));
   }
 };
+
+useEffect(() => {
+  setValue(selectedItems.map(item => item.value));
+}, [selectedItems]);
+
+  const handleChange = (e: any) => {
+    onValueChange(e);
+    setValue(e.value);
+  }
+
 
   return (
     <SelectRoot
       multiple={true}
+      closeOnSelect={false}
       collection={collection}
-      value={selectedItems.map(item => item.value.toString())}
-      onValueChange={onValueChange}
+      onValueChange={handleChange}
+      value={value}
       disabled={disableCondition && collection.items.length === 0}
     >
       <SelectLabel fontFamily="heading">{label}</SelectLabel>
       <SelectTrigger>
-        <SelectValueText placeholder={placeholder} />
+        <SelectValueText placeholder={placeholder}
+        />
       </SelectTrigger>
       <SelectContent>
         <Box p={2}>
@@ -62,7 +78,7 @@ export const renderMultiSelectWithControls = (
         </Box>
         {collection.items.length > 0 &&
           collection.items.map((item: selectOption) => (
-            <SelectItem item={item} key={item.value} 
+            <SelectItem item={item} key={item.value.toString()} 
               bg={isItemSelected(item) ? 'success.100' : 'transparent'}
               _hover={{ bg: 'success.100' }}>
               <HStack>
@@ -81,22 +97,26 @@ export const handleMultiSelectChange = <T extends { value: number }>({
   setSelectedOptions,
   setSelectedIds
 }: SelectHandlerParams<T>) => {
-  const validNewItems = newItems.filter((item): item is T => item !== undefined && item !== null);
 
-  if (validNewItems.length === 0) {
+  
+
+  if (newItems.length === 0) {
     setSelectedOptions([]);
     setSelectedIds?.([]);
+
     return;
+    
   }
 
-  const isAdding = validNewItems.some(newItem => 
+  const isAdding = newItems.some(newItem => 
     !currentSelected.some(selected => selected.value === newItem.value)
   );
-
+  console.log(isAdding);
+  
   let updatedSelection: T[];
 
   if (isAdding) {
-    updatedSelection = [...currentSelected, ...validNewItems].reduce(
+    updatedSelection = [...currentSelected, ...newItems].reduce(
       (acc: T[], current) => {
         if (!acc.some(item => item.value === current.value)) {
           acc.push(current);
@@ -105,13 +125,17 @@ export const handleMultiSelectChange = <T extends { value: number }>({
       }, []
     );
   } else {
-    updatedSelection = currentSelected.filter(
-      item => !validNewItems.some(newItem => newItem.value === item.value)
-    );
+    updatedSelection = newItems
+   /*  updatedSelection = currentSelected.filter(
+      item => !newItems.some(newItem => newItem.value == item.value)
+    ); */
   }
 
-  setSelectedOptions(updatedSelection);
-  setSelectedIds?.(updatedSelection.map(item => item.value));
+    setSelectedOptions(updatedSelection);
+    if (setSelectedIds) {
+      setSelectedIds(updatedSelection.map(item => item.value));
+    }
+  
 };
 
 export const mapToSelectOptions = <T extends { id: number; name: string }>(

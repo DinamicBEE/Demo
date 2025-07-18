@@ -79,10 +79,12 @@ function Home_v2() {
     useEffect(() => {
         if (selectedSubIds.length > 0) {
             fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+        } else {
+          setCDC(createListCollection<selectOption>({ items: [] }))
         }
     }, [selectedSubIds]);
 
-    const handleSubsidiariesChange = (event: { items: selectOption[] }) => {
+    const handleSubsidiariesChange = (event: { items: selectOption[] }) => {      
         handleMultiSelectChange({
             newItems: event.items,
             currentSelected: selectedSubsidiaries,
@@ -160,7 +162,7 @@ function Home_v2() {
                     "Centro de consumo",
                     "Selecciona un centro de consumo",
                     selectedCDCOptions,
-                    true
+                    selectedSubsidiaries.length > 0 ? false : true
                   )
                 }
 
