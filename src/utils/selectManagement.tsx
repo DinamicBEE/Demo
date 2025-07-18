@@ -111,7 +111,6 @@ export const handleMultiSelectChange = <T extends { value: number }>({
   const isAdding = newItems.some(newItem => 
     !currentSelected.some(selected => selected.value === newItem.value)
   );
-  console.log(isAdding);
   
   let updatedSelection: T[];
 
