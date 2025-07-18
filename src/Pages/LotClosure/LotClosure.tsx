@@ -7,18 +7,13 @@ import { SelectContent, SelectItem, SelectLabel, SelectRoot,
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
-import { location, selectOption, SubsidiaryModal } from "@models/common.model";
+import { selectOption } from "@models/common.model";
 import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
 
 function LotClosure() {
-  const [companyId, setCompanyId] = useState(0);
-  const [companySelected, setCompanySelected] = useState<SubsidiaryModal>(
-    {} as SubsidiaryModal
-  );
+
   const [locationId, setLocationId] = useState<number[]>([]);
-  const [locationSelected, setLocationSelected] = useState<location>(
-     {} as location
-  );
+
   const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
 
   const [formattedDate, setFormattedDate] = useState<string>('');
@@ -34,29 +29,8 @@ function LotClosure() {
       setShowTable(true);
     }
     await fetchLotClosureData(formattedDate, locationId, false);
-    const getCompanies = comapanies.items.find(
-      (company) => company.value === companyId
-    );
-    // const getLocations = locations.items.find(
-    //   (location) => location.value === locationId
-    // );
-    setCompanySelected({
-      id: getCompanies?.value || 0,
-      name: getCompanies?.label || "",
-      idCurrency: 0,
-    });
-    // setLocationSelected({
-    //   id: getLocations?.value || 0,
-    //   name: getLocations?.label || "",
-    // });
-  };
 
-  // const onSelectedCompany = (companyIdSelected: string[]) => {
-  //   if (Number(companyIdSelected) !== companyId) {
-  //     setLocationId(0);
-  //     setCompanyId(Number(companyIdSelected));
-  //   }
-  // };
+  };
 
   const handleCDCChange = (event: { items: selectOption[] }) => {
       handleMultiSelectChange({
@@ -125,8 +99,7 @@ function LotClosure() {
               colorPalette="meraInfo"
               onClick={search}
               disabled={
-                companyId !== 0 &&
-                locationId.length > 0 
+                locationId.length < 0 
               }
             >
               Buscar
@@ -136,8 +109,7 @@ function LotClosure() {
       </VStack>
       <TableOfLotClosure
         showTable={showTable}
-        company={companySelected}
-        location={locationSelected}
+        locations={locationId}
         date={formattedDate}
       />
     </Box>
