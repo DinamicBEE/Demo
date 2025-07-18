@@ -18,6 +18,8 @@ export const renderMultiSelectWithControls = (
   };
 
   const handleSelectAll = () => {
+    console.log();
+    
   if (selectedItems.length === collection.items.length) {
     onValueChange({ items: [] });
   } else {
