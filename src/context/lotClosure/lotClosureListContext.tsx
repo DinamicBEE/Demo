@@ -2,8 +2,6 @@ import { ReactNode, createContext, useContext, useState,
   useMemo, useCallback, useRef } from "react";
 import { getBanks, getLotsClosure, updateBankService } from "@services/lotClosureService";
 import { LotClosureContextType, LotClosure, Bank, LotsClosureContext } from "@models/lotClosure.model";
-import { STATUS } from "@models/status.model";
-import { format } from "date-fns";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -20,10 +18,17 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [updateBankLoading, setUpdateBankLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const bankCache = useRef<{ [key: number]: Bank[] }>({});
-  // const [dateRangeLocal, setDateRange] = useState<[Date | null, Date | null]>([
-  //   null,
-  //   null,
-  // ]);
+
+  const filterDataLots = (date: string, locationId: number[]) => {
+    if(locationId.length > 0) {
+      const filteredLots = lostClosureCache.current[date].filter(
+            (lot) => locationId.includes(lot.consumerCenterId));
+      setLotsClosure(filteredLots);
+    } else {
+      setLotsClosure(lostClosureCache.current[date]);
+    }
+  }
+
 
   const fetchLotClosureData = useCallback(
     async (
@@ -31,30 +36,12 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       locationId: number[],
       isRefresh?: boolean
     ) => {
-      //setDateRange(dateRange);
-      //const [startDate, endDate] = dateRange;
-
-      // Función helper para formatear fechas y manejar valores nulos
-      // const formatDateOrDefault = (date: Date | null): string =>
-      //   format(date || new Date(), "yyyy-MM-dd");
-
-      // Formatear fechas del nuevo rango
-      // const formattedStartDate = formatDateOrDefault(startDate);
-      // const formattedEndDate = formatDateOrDefault(endDate);
-      // const dateRangeString = `${formattedStartDate} - ${formattedEndDate}`;
-
-      // Formatear fechas del rango en caché
-      // const cachedStartDate = formatDateOrDefault(dateRangeLocal[0]);
-      // const cachedEndDate = formatDateOrDefault(dateRangeLocal[1]);
-      // const dateRangeCache = `${cachedStartDate} - ${cachedEndDate}`;
-      
+      console.log("locations", locationId);
       if (
         lostClosureCache.current[date] &&
         !isRefresh 
-        //&&
-        //dateRangeCache === dateRangeString
       ) {
-        setLotsClosure(lostClosureCache.current[date]);
+        filterDataLots(date, locationId);
         return;
       }
       setLoading(true);
@@ -67,7 +54,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
         }
         const response = await getLotsClosure(date);
         lostClosureCache.current[date] = response;
-        setLotsClosure(response);
+        filterDataLots(date, locationId);
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -85,48 +72,19 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setUpdateBankLoading(true);
       try {
         const body = {
-          cashRegisterClosureId: localLotClosure.cashRegisterClosureId,
-          batchClosureId: localLotClosure.id,
-          totalPos: localLotClosure.totalPos,
-          totalLote: localLotClosure.totalLote,
-          difference: localLotClosure.difference,
+          ...localLotClosure,
+          batchClosureId: typeof localLotClosure.id === "number" ? localLotClosure.id : null,
           batchDetailsRequest: localBank.map((bank) => ({
-            batchDetailsId: bank.batchDetailsId,
-            bankTerminalId: bank.bankTerminalId,
-            totalPos: bank.totalPos,
-            totalCrc: bank.totalCrc,
-            totalBatch: bank.totalBatch,
-            difference: bank.difference,
+            ...bank,
+            batchDetailsId: typeof bank.batchDetailsId === "string" ? null : bank.batchDetailsId,
             lines: bank.affiliationList.map((line) => ({
-              affiliationDetailsId: line.affiliationDetailsId,
-              affiliationId: line.affiliationId,
-              amount: line.amount,
+              ...line
             })),
           })),
         };
 
-        const response = await updateBankService(body);
+        await updateBankService(body);
 
-        if (response === "CONFIRMED") {
-          setBanks(localBank);
-          bankCache.current[lotId] = localBank;
-          const updatedLot = {
-            ...localLotClosure,
-            status:
-              localLotClosure.difference === 0
-                ? STATUS.Close
-                : STATUS.WITH_DIFFERENCE,
-            difference: localLotClosure.difference,
-          };
-          const prevLots =
-            lostClosureCache.current[localLotClosure.consumerCenterId];
-          const updatedLots = prevLots.map((lot) =>
-            lot.id === lotId ? updatedLot : lot
-          );
-          setLotsClosure(updatedLots);
-          lostClosureCache.current[localLotClosure.consumerCenterId] =
-            updatedLots;
-        }
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
         throw error;
@@ -138,13 +96,13 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const fetchBanks = useCallback(
-    async (lotId: number) => {
-      if (bankCache.current[lotId]) return bankCache.current[lotId];
+    async (cdcId: number, date:string) => {
+      if (bankCache.current[cdcId]) return bankCache.current[cdcId]; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
       setLoadingBanks(true);
       try {
-        const response = await getBanks(lotId);
+        const response = await getBanks(cdcId, date);
         setBanks(response);
-        bankCache.current[lotId] = response;
+        bankCache.current[cdcId] = response;
         return response;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));

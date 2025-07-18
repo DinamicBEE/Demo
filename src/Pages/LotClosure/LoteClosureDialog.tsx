@@ -1,32 +1,11 @@
-import {
-  Button,
-  Flex,
-  Text,
-  Box,
-  Table,
-  Grid,
-  GridItem,
-  Separator,
-  Skeleton,
-  Spinner,
-} from "@chakra-ui/react";
+import { Button, Flex, Text, Box, Table, Grid, GridItem, Separator,
+  Skeleton, Spinner } from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
-import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogFooter,
-} from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
+  DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useHandleAffiliationsData } from "@hooks/affiliations/useHandleAffiliationsData";
-import {
-  Bank,
-  LotClosure,
-  LotClosureDialogProps,
-} from "@models/lotClosure.model";
+import { Bank, LotClosure, LotClosureDialogProps } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
@@ -35,8 +14,7 @@ function LoteClosureDialog({
   isOpen,
   onClose,
   lot,
-  company,
-  location,
+  date
 }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading, error } =
     useLotClosureList();
@@ -69,7 +47,7 @@ function LoteClosureDialog({
     await updateBank(localLot.id, localBanks, localLot);
     if (error === "") {
       setOpenCloseLot(false);
-      onClose();
+      onClose(true);
       toast("Lote cerrado correctamente", "success");
     }
   };
@@ -78,7 +56,7 @@ function LoteClosureDialog({
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.id);
+        const banks = await fetchBanks(lot.consumerCenterId, date);
         setLocalBanks(banks);
       }
     };
@@ -91,7 +69,7 @@ function LoteClosureDialog({
         scrollBehavior="inside"
         size="full"
         open={isOpen}
-        onOpenChange={() => onClose()}
+        onOpenChange={() => onClose(false)}
         closeOnEscape={false}
         closeOnInteractOutside={false}
       >
@@ -105,9 +83,8 @@ function LoteClosureDialog({
                 direction={{ base: "column", sm: "row" }}
                 gap={2}
               >
-                <Text>{company.name}</Text>
-                <Text> Ubicación: {location.name}</Text>
-                {/* <Text>Cierre Lote: {lot?.dateClosed}</Text> */}
+                <Text>{lot.subsidiary}</Text>
+                <Text> Ubicación: {lot.consumerCenter}</Text>
               </Flex>
             </DialogTitle>
             <DialogCloseTrigger />
@@ -154,7 +131,7 @@ function LoteClosureDialog({
                           />
                           <CurrencyInput
                             name={"Corte caja"}
-                            value={bank.totalCrc}
+                            value={lot.totalPos}
                             loading={false}
                           />
                           <CurrencyInput
@@ -268,37 +245,6 @@ function LoteClosureDialog({
                   )}
                 </Flex>
               </GridItem>
-           {/*    <GridItem>
-                <Flex direction="column" gap={2}>
-                  <Text fontWeight="extrabold" textStyle="lg">
-                    Número de lotes
-                  </Text>
-                  <Table.ScrollArea rounded="md" borderWidth="1px">
-                    <Table.Root size="sm" variant="outline" interactive={false}>
-                      <Table.Header>
-                        <Table.Row>
-                          <Table.ColumnHeader textAlign="center">
-                            Número de lote
-                          </Table.ColumnHeader>
-                          <Table.ColumnHeader textAlign="center">
-                            Monto
-                          </Table.ColumnHeader>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        <Table.Row>
-                          <Table.Cell textAlign="center">
-                            <Text>1</Text>
-                          </Table.Cell>
-                          <Table.Cell textAlign="center">
-                            <Text>1000</Text>
-                          </Table.Cell>
-                        </Table.Row>
-                      </Table.Body>
-                    </Table.Root>
-                  </Table.ScrollArea>
-                </Flex>
-              </GridItem> */}
             </Grid>
           </DialogBody>
           <DialogFooter>

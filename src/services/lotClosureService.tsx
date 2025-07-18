@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { LotClosure, Bank } from "@models/lotClosure.model";
 import Cookies from "js-cookie";
 import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
@@ -19,9 +20,10 @@ export const getLotsClosure = async (
         date: newFormatDate
       },
     });
-
-    const transformedData = response.data.map((lot: any) => ({
-      ...lot,
+    console.log("response", response.data);
+    const transformedData = response.data.map((lot: any, index:number) => ({
+      ...lot, 
+      id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
       status: getStatus(lot.status),
     }));
 
@@ -72,12 +74,27 @@ export const getLocations = async (
   }
 };
 
-export const getBanks = async (lotId: number) => {
+export const getBanks = async (cdcId: number, date:string) => {
   try {
+    
+    const dateArray = date.split("-");
+    const newFormatDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+
     const response = await api.get(GET_BATCH_DETAILS, {
-      params: { batchId: lotId },
+      params: { 
+        consId: cdcId,
+        startDate: newFormatDate
+      },
     });
-    return response.data as Bank[];
+
+    const transformedData = response.data.map((bank: any) => ({
+      ...bank, 
+      batchDetailsId: bank.batchDetailsId === null ? "BankID-" + uuidv4() : bank.batchDetailsId, 
+
+    }));
+
+    console.log("response", response.data);
+    return transformedData as Bank[];
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];

@@ -1,21 +1,8 @@
 import { Suspense, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormatNumber,
-  Grid,
-  HStack,
-  Skeleton,
-  Table,
-  Tag,
-  Text,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { Box, Button, FormatNumber, Grid, HStack, Skeleton,
+  Table, Tag, Text } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
+  PaginationRoot } from "@components/ui/pagination";
 import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
@@ -26,8 +13,7 @@ import { getStatusColor } from "../../utils/getStatusColor";
 
 const pageSize = 10;
 function TableOfLotClosure({
-  company,
-  location,
+  locations,
   date,
   showTable,
 }: TableLotsClosureProps) {
@@ -55,7 +41,6 @@ function TableOfLotClosure({
         heders: [
           { label: "Ubicación", key: "location" },
           { label: "Empresa", key: "company" },
-          //{ label: "Numero de lote", key: "lotNumber" },
           { label: "Estado", key: "status" },
           { label: "Total POS", key: "totalPOS" },
           { label: "Total Lote", key: "totalLot" },
@@ -65,12 +50,11 @@ function TableOfLotClosure({
         data: lotsClosure.map((item) => ({
           location: item.consumerCenter,
           company: item.subsidiary,
-          //  lotNumber: item.lotNumber,
           status: item.status,
           totalPOS: item.totalPos,
           totalLot: item.totalLote,
           difference: item.difference,
-          employe: item.employeeName,
+          employe: item.employeeCreator === null ? " --- " : item.employeeCreator,
         })),
       },
       "lotes-cierre"
@@ -82,14 +66,15 @@ function TableOfLotClosure({
     setIsDialogOpen(true);
   };
 
-  const closeDialog = () => {
+  const closeDialog = (isRefresh:boolean) => {
+    isRefresh ? fetchLotClosureData(date, locations, true) : null;
     setSelectedLot({} as LotClosure);
     setIsDialogOpen(false);
   };
 
   return (
     <>
-      {/*  {loading && <Loading />} */}
+
       {showTable && (
         <Box>
           <Box>
@@ -112,7 +97,7 @@ function TableOfLotClosure({
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
-                  fetchLotClosureData(date, [location.id], true);
+                  fetchLotClosureData(date, locations, true);
                 }}
                 disabled={loading}
               >
@@ -132,9 +117,6 @@ function TableOfLotClosure({
                     <Table.ColumnHeader textAlign="center">
                       Empresa
                     </Table.ColumnHeader>
-                    {/*      <Table.ColumnHeader textAlign="center">
-                      Numero de lote
-                    </Table.ColumnHeader> */}
                     <Table.ColumnHeader textAlign="center">
                       Estado
                     </Table.ColumnHeader>
@@ -147,9 +129,9 @@ function TableOfLotClosure({
                     <Table.ColumnHeader textAlign="center">
                       Diferencia
                     </Table.ColumnHeader>
-                    {/* <Table.ColumnHeader textAlign="center">
+                    <Table.ColumnHeader textAlign="center">
                       Empleado (Realizado por)
-                    </Table.ColumnHeader> */}
+                    </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -176,9 +158,9 @@ function TableOfLotClosure({
                       <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
-                      {/* <Table.Cell textAlign="center">
+                      <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
-                      </Table.Cell> */}
+                      </Table.Cell>
                     </Table.Row>
                   )}
                   {lotsClosure.length === 0 && !loading && (
@@ -206,9 +188,6 @@ function TableOfLotClosure({
                             {item.subsidiary}
                           </Text>
                         </Table.Cell>
-                        {/*   <Table.Cell textAlign="center">
-                          <Text>{item.lotNumber}</Text>
-                        </Table.Cell> */}
                         <Table.Cell textAlign="center">
                           <Tag.Root colorPalette={statusColor(item.status)}>
                             <Tag.Label>{item.status}</Tag.Label>
@@ -235,20 +214,15 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              /*  value={
-                                item.status === STATUS.OPEN
-                                  ? 0
-                                  : item.totalPOS - item.totalLot
-                              } */
                               value={item.difference}
                               style="currency"
                               currency="USD"
                             />
                           </Text>
                         </Table.Cell>
-                        {/* <Table.Cell textAlign="center">
-                          <Text>{item.employeeName}</Text>
-                        </Table.Cell> */}
+                        <Table.Cell textAlign="center">
+                          <Text>{item.employeeCreator === null ? " --- " : item.employeeCreator}</Text>
+                        </Table.Cell>
                       </Table.Row>
                     ))}
                 </Table.Body>
@@ -274,8 +248,7 @@ function TableOfLotClosure({
           isOpen={isDialogOpen}
           lot={selectedLot}
           onClose={closeDialog}
-          location={location}
-          company={company}
+          date={date}
         />
       </Suspense>
     </>
