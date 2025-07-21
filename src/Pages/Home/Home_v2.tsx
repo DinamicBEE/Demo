@@ -149,8 +149,8 @@ function Home_v2() {
                 {renderMultiSelectWithControls(
                     subsidiaries,
                     handleSubsidiariesChange,
-                    "Empresa",
-                    "Selecciona una empresa",
+                    "Subsidiaria",
+                    "Selecciona una Subsidiaria",
                     selectedSubsidiaries,
                     true
                   )

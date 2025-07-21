@@ -27,7 +27,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                         </Skeleton>
                     </Group>
                     <Group>
-                        <InputAddon>Restaurante</InputAddon>
+                        <InputAddon>CDC</InputAddon>
                         <Skeleton loading={loading}>
                             <Input
                                 placeholder="No seleccionada"
@@ -60,12 +60,12 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     </Group>
 
                     <CurrencyInput
-                        name={"Total Ventas"}
+                        name={"Total POS"}
                         value={header.totalPOS}
                         loading={loading}
                     />
                     <CurrencyInput
-                        name={"Total Ventas Registradas"}
+                        name={"Total Físico"}
                         value={header.totalPhysical}
                         loading={loading}
                     />
@@ -86,12 +86,12 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     mb={4}
                 >
                     <CurrencyInput
-                        name={"Total Ventas"}
+                        name={"Total POS"}
                         value={totals?.totalPOS}
                         loading={loading}
                     />
                     <CurrencyInput
-                        name={"Total Ventas Registradas"}
+                        name={"Total Físico"}
                         value={totals?.totalPhysical}
                         loading={loading}
                     />
