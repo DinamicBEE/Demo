@@ -181,11 +181,16 @@ export const useHandleCustomer = (
     const updateCustomerData = { ...customerRef.current, total: newTotal };
 
     if (newTotalFisico > 0) {
-      if (newTotal.difference < 0) {
+      if(newTotalFisico > newTotal.totalPOS) {
         updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
       } else {
         updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
       }
+      // if (newTotal.difference < 0) {
+      //   updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
+      // } else {
+      //   updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
+      // }
     }
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
