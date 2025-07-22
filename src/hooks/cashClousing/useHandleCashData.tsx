@@ -23,7 +23,7 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
       item.id == itemId ? {
         ...item,
         totalFisico: parseFloat(value),
-        difference: (item.totalPOS) - parseFloat(value),
+        difference: parseFloat(value) - (item.totalPOS),
         denominations: updatedDenominations ?? item.denominations,
       } : item
     );
