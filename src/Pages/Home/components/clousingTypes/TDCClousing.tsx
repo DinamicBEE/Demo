@@ -66,11 +66,13 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   }, [page]);
 
   function formatDate(dateString: string) {
+    const hora = dateString.split("T")[1];    
+    
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return `${day}/${month}/${year} ${hora}`;
   }
 
   const openDiaolog = (id: number | string, data: BankLineModel) => {
