@@ -291,14 +291,14 @@ export const getPrepaidClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
     //PrepaidMOCKData;
-
-    const updateLines = response.data.prepagoResponse.map(
+    
+    const updateLines = await response.data.prepagoResponse.map(
       (item: PrepaidLineModel) => {
         return {
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
           edit: item.supplementsQuantity > 0 ? true : false,
-          coupons: item.coupons
+          coupons: item.coupons != null
             ? item.coupons.map((coupon: CouponCatalogModel) => ({
                 ...coupon,
                 // Generate new UUID for null IDs, otherwise keep existing ID
@@ -324,7 +324,7 @@ export const getPrepaidClousing = async (
       total: {
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
-        difference: response.data.total.totalPhysical - response.data.total.totalPOS,
+        difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
       lines: updateLines,
     };

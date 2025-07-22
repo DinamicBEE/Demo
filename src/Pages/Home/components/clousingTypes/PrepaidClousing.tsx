@@ -63,7 +63,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       const prepaid: PrepaidModel = await getPrepaidData(
         data?.id,
         data?.closingStartDate
-      );
+      );      
       if (prepaid.lines.length > 0) {
         const couponsList: CouponCatalogModel[] = await getCouponData(
           cdc,
