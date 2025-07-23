@@ -56,8 +56,11 @@ function LoteClosureDialog({
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.consumerCenterId, date);        
-        setLocalBanks(banks);
+        const banks = await fetchBanks(lot.consumerCenterId, date);
+        const sortedBanks = [...banks].sort((a, b) =>
+          a.bankTerminalName.localeCompare(b.bankTerminalName)
+        );
+        setLocalBanks(sortedBanks);
       }
     };
     fetchData();
