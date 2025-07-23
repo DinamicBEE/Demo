@@ -17,6 +17,7 @@ export interface LotClosure {
 }
 
 export interface Bank {
+  totalCrc: number;
   bankTerminalId: number;
   bankTerminalName: string;
   batchClosureId: number;

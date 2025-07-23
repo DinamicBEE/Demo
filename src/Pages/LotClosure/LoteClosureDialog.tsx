@@ -56,7 +56,7 @@ function LoteClosureDialog({
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.consumerCenterId, date);
+        const banks = await fetchBanks(lot.consumerCenterId, date);        
         setLocalBanks(banks);
       }
     };
@@ -131,7 +131,7 @@ function LoteClosureDialog({
                           />
                           <CurrencyInput
                             name={"Corte caja"}
-                            value={lot.totalPos}
+                            value={bank.totalBatch}
                             loading={false}
                           />
                           <CurrencyInput
