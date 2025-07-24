@@ -69,6 +69,11 @@ const routesConfig = [
       path: '/currencymanagement',
       element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
       roles: ['admin', 'user'],
+    },
+    {
+      path: '/starbucks',
+      element: lazy(() => import('../Pages/starbucksClosure/Closure')),
+      roles: ['admin', 'user'],
     }
   ];
   
