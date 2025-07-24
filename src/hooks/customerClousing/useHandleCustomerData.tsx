@@ -186,11 +186,6 @@ export const useHandleCustomer = (
       } else {
         updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
       }
-      // if (newTotal.difference < 0) {
-      //   updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
-      // } else {
-      //   updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
-      // }
     }
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
