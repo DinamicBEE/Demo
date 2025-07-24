@@ -28,14 +28,15 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
       } : item
     );
 
-    const newTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number, exchangeRate: number }) => acc + (curr.totalFisico), 0);
+    const preTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number }) => acc + (curr.totalFisico), 0);
+    const newTotalPhysical = preTotalPhysical - (cashData.tips || 0);
 
     const newDifference =  newTotalPhysical - (cashData.total?.totalPOS || 0);
 
     const newTotal: TotalModel = {
       totalPOS: cashData.total?.totalPOS || 0,
       totalPhysical: newTotalPhysical,
-      difference: newDifference,
+      difference: newDifference ,
     };
 
     const updateCashdata = {
@@ -55,12 +56,25 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
 
   function handleChangeTips(value: string) {
 
-    const updateCashdata = { ...cashData, tips: parseFloat(value), }
+    const preTotalPhysical = cashData.currencies.reduce((acc: number, curr: { totalFisico: number }) => acc + (curr.totalFisico), 0);
+    const newTotalPhysical = preTotalPhysical - parseFloat(value);
+
+    const updateCashdata = { 
+      ...cashData, 
+      tips: parseFloat(value), 
+      total: { 
+        totalPhysical: newTotalPhysical,
+        totalPOS: cashData.total?.totalPOS ?? 0,
+        difference: cashData.total?.difference ?? 0,
+      } 
+    }
 
     setData(updateCashdata);
 
     cashRef.current = updateCashdata
 
+    updateTotal(updateCashdata.total.totalPhysical, clousingId, CLOUSING_KEY.CASH);
+    setFooterData(updateCashdata.total, clousingId, CLOUSING_KEY.CASH);
     setCashData(cashRef.current, clousingId);
   }
 
