@@ -271,14 +271,14 @@ function LoteClosureDialog({
                 }
                 onClick={() => handleOpenCloseLot()}
                 colorPalette="meraInfo"
-                disabled={
+                /* disabled={
                   localBanks.length === 0 ||
                   localBanks.some((bank) => {
                     return bank.affiliationList.some(
                       (afiliation) => afiliation.amount === 0
                     );
                   })
-                }
+                } */
               >
                 Guardar
               </Button>
