@@ -20,7 +20,6 @@ export const getLotsClosure = async (
         date: newFormatDate
       },
     });
-    console.log("response", response.data);
     const transformedData = response.data.map((lot: any, index:number) => ({
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
@@ -93,7 +92,6 @@ export const getBanks = async (cdcId: number, date:string) => {
 
     }));
 
-    console.log("response", response.data);
     return transformedData as Bank[];
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);

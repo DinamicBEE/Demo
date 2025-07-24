@@ -36,7 +36,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       locationId: number[],
       isRefresh?: boolean
     ) => {
-      console.log("locations", locationId);
       if (
         lostClosureCache.current[date] &&
         !isRefresh 
