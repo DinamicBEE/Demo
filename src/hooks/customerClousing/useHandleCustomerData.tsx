@@ -174,18 +174,14 @@ export const useHandleCustomer = (
 
     const newTotal: TotalModel = {
       totalPOS: customerData.total.totalPOS,
-      totalPhysical: newTotalFisico,
+      totalPhysical: newTotalFisico > customerData.total.totalPOS ? customerData.total.totalPOS : newTotalFisico,
       difference: newDifference,
     };
 
     const updateCustomerData = { ...customerRef.current, total: newTotal };
 
     if (newTotalFisico > 0) {
-      if(newTotalFisico > newTotal.totalPOS) {
-        updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
-      } else {
-        updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
-      }
+      updateTotal(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER);
     }
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);

@@ -57,14 +57,26 @@ function LoteClosureDialog({
       if (isOpen) {
         setLocalLot(lot);
         const banks = await fetchBanks(lot.consumerCenterId, date);
-        const sortedBanks = [...banks].sort((a, b) =>
+        const sortedBanks = [...banks].sort((a, b) => 
           a.bankTerminalName.localeCompare(b.bankTerminalName)
         );
-        setLocalBanks(sortedBanks);
+        cleanNameBank(sortedBanks);
       }
     };
+    
     fetchData();
   }, [isOpen]);
+
+  const cleanNameBank = (banks: Bank[]) => {
+    const cleanedBanks = banks.map((bank) => {
+      const cleanedName = bank.bankTerminalName.replace(/^TPV\s*/i, '');
+      return {
+        ...bank,
+        bankTerminalName: cleanedName
+      };
+    });
+    setLocalBanks(cleanedBanks);
+  }
 
   return (
     <>
@@ -259,14 +271,14 @@ function LoteClosureDialog({
                 }
                 onClick={() => handleOpenCloseLot()}
                 colorPalette="meraInfo"
-                disabled={
+                /* disabled={
                   localBanks.length === 0 ||
                   localBanks.some((bank) => {
                     return bank.affiliationList.some(
                       (afiliation) => afiliation.amount === 0
                     );
                   })
-                }
+                } */
               >
                 Guardar
               </Button>
