@@ -126,6 +126,24 @@ export const useHandleCustomer = (
     updateContext(updatedCurrencies);
   }
 
+  function handleChangeCustomer( event: any, id: number | string) {
+    const updateCustomer = customerData.lines.map(
+      (item: CustomerLines) =>
+        item.id === id
+          ? {
+              ...item,
+              idClient: event.items[0].value,
+              nameClient: event.items[0].label,
+            }
+          : item
+    )
+    customerData.lines = updateCustomer;
+    setCustomer({ ...customerData});
+    customerRef.current = customerData;
+    setCustomerData(customerRef.current, clousingId);
+    updateContext(updateCustomer);
+  }
+
   function addCustomerRecord(
     newCustomer: CustomerForm,
     currencies: CurrencyModel[] | undefined
@@ -139,6 +157,7 @@ export const useHandleCustomer = (
 
     const newRecord: CustomerLines = {
       id: "customer-" + uuidv4(),
+      idClient: newCustomer.idClient,
       // Generar un ID temporal
       currency: currency?.value.toString() || "",
       currencyId: Number(currency?.value) || 0,
@@ -198,5 +217,5 @@ export const useHandleCustomer = (
     setCustomerData(updateCustomerData, clousingId);
   }
 
-  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord };
+  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer };
 };

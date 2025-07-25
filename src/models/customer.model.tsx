@@ -23,6 +23,7 @@ export interface CustomerContext {
 export interface CustomerLines {
     id: number | string;
     nameClient: string;
+    idClient: number;
     coupons: number;
     currency: string;
     pax: number;
@@ -41,6 +42,7 @@ export interface CustomerModel {
 }
 
 export interface CustomerForm { 
+    idClient: number,
     nameClient: string,
     coupons: number,
     currency: number, 
