@@ -155,9 +155,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (dataClousing.id) {
-      console.log("dataClousing",dataClousing);
-      
+    if (dataClousing.id) {      
       setData((prevData) =>
         prevData.map((item) =>
           item.id == dataClousing.id
