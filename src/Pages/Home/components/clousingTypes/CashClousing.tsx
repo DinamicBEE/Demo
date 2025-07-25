@@ -37,7 +37,6 @@ function CashClousing({ data, idCurrency }: any) {
       const cashData = await getCashData(data.id, idCurrency);
       
       if (cashData.total != undefined) {
-        console.log(cashData.total);
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
       }
 

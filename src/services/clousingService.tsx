@@ -49,7 +49,6 @@ export const getCashClousing = async (
         idCurrency: idCurrency,
       },
     });
-    console.log(response.data);
 
     const cashDataCopy = {
       ...response.data,
