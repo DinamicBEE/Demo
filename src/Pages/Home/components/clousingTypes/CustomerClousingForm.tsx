@@ -59,6 +59,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
   const onSubmitForm = (data: CustomerForm) => {
     if (selectClient?.label) {
       const transformedData: CustomerForm = {
+        idClient: selectClient.value,
         nameClient: selectClient.label,
         coupons: data.coupons,
         currency: data.currency,
