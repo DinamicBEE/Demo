@@ -49,6 +49,7 @@ export const getCashClousing = async (
         idCurrency: idCurrency,
       },
     });
+    console.log(response.data);
 
     const cashDataCopy = {
       ...response.data,
@@ -62,21 +63,21 @@ export const getCashClousing = async (
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines
-      .map((currency: CashLines) => currency.totalPOS)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalPOS = dummy.lines
+    //   .map((currency: CashLines) => currency.totalPOS)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
-    const newTotalFisico = dummy.currencies
-      .map((currency: CashLines) => currency.totalFisico)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalFisico = dummy.currencies
+    //   .map((currency: CashLines) => currency.totalFisico)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       ...dummy,
-      total: {
-        totalPOS: newTotalPOS,
-        totalPhysical: newTotalFisico,
-        difference: newTotalFisico - newTotalPOS,
-      },
+      // total: {
+      //   totalPOS: newTotalPOS,
+      //   totalPhysical: newTotalFisico,
+      //   difference: newTotalFisico - newTotalPOS,
+      // },
     };
     const responseData: ResponseModel = {
       success: true,
