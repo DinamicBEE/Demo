@@ -100,7 +100,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setLoadingBanks(true);
       try {
         const response = await getBanks(cdcId, date);
-        setBanks(response);
+        setBanks(response);        
         bankCache.current[cdcId] = response;
         return response;
       } catch (error) {

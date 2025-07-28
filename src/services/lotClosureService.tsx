@@ -24,7 +24,8 @@ export const getLotsClosure = async (
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
       status: getStatus(lot.status),
-    }));
+      difference: lot.totalLote - lot.totalPos
+    }));    
 
     return transformedData as LotClosure[];
   } catch (error) {
