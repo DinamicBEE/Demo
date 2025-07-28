@@ -100,11 +100,6 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
           CLOUSING_KEY.CUSTOMER
         );
       }
-      /*     updateTotal(
-        customers.total.totalPhysical,
-        data.id,
-        CLOUSING_KEY.CUSTOMER
-      );  */
 
       const items = customers?.lines?.slice(startRange, endRange);      
       setVisibleItems(items);
@@ -139,19 +134,9 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
     onOpen();
   };
   
-//   const handleChangeCustomer = (id: number | string, label: string[]) => {
-//   setCustomersData((prev) => {
-//     const updatedLines = prev.lines.map((line) =>
-//       line.id === id ? { ...line, nameClient: label[0] } : line
-//     );
-//     return { ...prev, lines: updatedLines };
-//   });
-// };
-
   return (
     <>
       <Box>
-        {/* <Toaster /> */}
         <Button mb={2} onClick={() => openDialog()}>
           Agregar cliente
         </Button>

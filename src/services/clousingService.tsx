@@ -49,6 +49,7 @@ export const getCashClousing = async (
         idCurrency: idCurrency,
       },
     });
+    console.log("Cash Clousing Response:", response.data);
 
     const cashDataCopy = {
       ...response.data,
@@ -152,6 +153,7 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
+    console.log("Customer Clousing Response:", response.data);
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
@@ -173,7 +175,7 @@ export const getCustomerClousing = async (
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.totalPhysical - response.data.totalPos,
+        difference: response.data.difference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },
