@@ -213,7 +213,12 @@ function FooterClousing({
       },
       customer: {
         lines: mapCustomerLines(customer.lines),
-        total: customer.total,
+        // total: customer.total
+        total: {
+          totalPOS: customer.total?.totalPOS ?? 0,
+          totalPhysical: customer.total?.totalPhysical ?? 0,
+          difference: customer.total?.difference ?? 0,
+        },
       },
       intercompany: {
         total: intercompany.total,
