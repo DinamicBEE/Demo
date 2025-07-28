@@ -190,11 +190,12 @@ export const useHandleCustomer = (
       0
     );
     const newDifference = newTotalFisico - customerData.total.totalPOS;
+    //const inverseDifference = customerData.total.totalPOS - newTotalFisico;
 
     const newTotal: TotalModel = {
       totalPOS: customerData.total.totalPOS,
       totalPhysical: newTotalFisico > customerData.total.totalPOS ? customerData.total.totalPOS : newTotalFisico,
-      difference: newDifference,
+      difference: newDifference//newTotalFisico > customerData.total.totalPOS ? inverseDifference : newDifference,
     };
 
     const updateCustomerData = { ...customerRef.current, total: newTotal };

@@ -172,7 +172,7 @@ export const getCustomerClousing = async (
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.totalPhysical - response.data.totalPos,
+        difference: response.data.difference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },
