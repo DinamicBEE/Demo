@@ -18,7 +18,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                 >
                     <Group>
                         <InputAddon>Subsidiaria</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                             <Input
                                 placeholder="No seleccionada"
                                 value={subsidiary?.name}
@@ -28,7 +28,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     </Group>
                     <Group>
                         <InputAddon>CDC</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                             <Input
                                 placeholder="No seleccionada"
                                 value={store?.name}
@@ -40,7 +40,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
 
                     <Group>
                         <InputAddon>Fecha</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                         <Input
                             disabled
                             placeholder="No seleccionada"
@@ -50,7 +50,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     </Group>
                     <Group>
                         <InputAddon>Hora</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                         <Input
                             disabled
                             placeholder="No seleccionada"
