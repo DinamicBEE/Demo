@@ -48,8 +48,7 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });
-
+    });    
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
