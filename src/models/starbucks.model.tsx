@@ -18,3 +18,8 @@ export interface StarbucksTableModel {
     creditCards: TDC[];
     cxc: number
 }
+
+export interface StarbucksTableHeader {
+  currencies: Currency[];
+  creditCards: TDC[];
+}
