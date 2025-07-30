@@ -1,12 +1,5 @@
-import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogFooter,
-} from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
+  DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
@@ -44,11 +37,10 @@ function ClousingLayout({
   employee,
   location,
   subsidiary,
-  getInfo
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
-  const { getCashData, cashRef } = useCashClousing();
+  const { cashRef } = useCashClousing();
   const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
   const { setEmployee, employeeRef } = useEmployeeContext();
@@ -335,13 +327,9 @@ function ClousingLayout({
             <FooterClousing
               clousingType={value}
               clousingId={employee?.id ?? 0}
-              currencyId={subsidiary.idCurrency}
-              closeDialog={() => onClose()}
+              closeDialog={onClose}
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
-              dateClousing={employee?.closingStartDate ?? ""}
-              propStatus={employee?.status ?? ""}
-              getInfo={getInfo}
             />
           </DialogFooter>
 
@@ -353,7 +341,7 @@ function ClousingLayout({
           setOpenDialogExit(false);
         }}
         closeOnExit={() => {
-          onClose();
+          onClose(false);
           if (employee && employee.id) {
             delete cashRef.current[employee.id];
             delete customerRef.current[employee.id];

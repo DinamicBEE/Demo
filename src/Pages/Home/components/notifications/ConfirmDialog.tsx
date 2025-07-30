@@ -15,8 +15,7 @@ function ConfirmDialog({
   isOpen,
   closeDialog,
   sendData,
-  isConfrim,
-  getInfo
+  isConfirm
 }: ConfirmDialogProps) {
   return (
     <DialogRoot open={isOpen} onOpenChange={closeDialog}>
@@ -24,11 +23,11 @@ function ConfirmDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {!isConfrim ? "Confirmar corte de caja" : "Guardar Corte de Caja"}
+            {!isConfirm ? "Confirmar corte de caja" : "Guardar Corte de Caja"}
           </DialogTitle>
         </DialogHeader>
         <DialogBody>
-          {!isConfrim ? (
+          {!isConfirm ? (
             <>
               <h2>
                 Esta apunto de enviar el corte de caja, una vez confirmado no se
@@ -52,9 +51,8 @@ function ConfirmDialog({
           <Button
             colorPalette="meraPrimary"
             onClick={() => {
-              sendData(isConfrim);
+              sendData(isConfirm);
               closeDialog();
-              if(!isConfrim){getInfo}
             }}
           >
             Confirmar

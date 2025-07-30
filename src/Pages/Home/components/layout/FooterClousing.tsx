@@ -3,11 +3,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Button } from "@components/ui/button";
 import { CurrencyInput } from "@components/NumericInput";
 import { useFooter } from "@context/home/footerClousingContext";
-import type {
-  AlertClousing,
-  FooterClousing,
-  TotalModel,
-} from "@models/common.clousing.model";
+import type { AlertClousing, FooterClousing, TotalModel } from "@models/common.clousing.model";
 import { sendCashClousing } from "@services/clousingService";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
@@ -16,7 +12,6 @@ import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
-import { useClousing } from "@context/home/clousingContext";
 import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "../notifications/ConfirmDialog";
 import Loading from "@components/Loading";
@@ -27,7 +22,6 @@ import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "../notifications/ErrorDialog";
-import { STATUS } from "@models/status.model";
 import { BankLineModel } from "@models/tdc.model";
 import { toaster } from "@components/ui/toaster";
 import { CashLines } from "@models/cash.model";
@@ -38,9 +32,6 @@ function FooterClousing({
   closeDialog,
   closingConfirmation,
   idCurrency,
-  dateClousing,
-  propStatus,
-  getInfo
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -58,7 +49,6 @@ function FooterClousing({
   const { setEmployee, employee } = useEmployeeContext();
   const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { prepaidRef, setCoupons } = usePrepaidContext();
-  const { setDataClousing, tdcHeader, currHeader } = useClousing();
   const { header, headerRef } = useHeaders();
 
   useEffect(() => {
@@ -82,7 +72,6 @@ function FooterClousing({
     const tdc = tdcRef.current[clousingId];
     const customer = customerRef.current[clousingId];
     const specialCustomer = specialCustRef.current[clousingId];
-    // const employee = await getEmployeetData(clousingId);
     const prepaid = prepaidRef.current[clousingId];
     const intercompany = intercompanyRef.current[clousingId];
 
@@ -142,7 +131,6 @@ function FooterClousing({
 
     const mapEmployeeLines = (lines: EmployeeLine[]) =>
       lines.map(({ employeeNumber, reason, ticketNumber, ...rest }) => ({
-        // id: typeof rest.id === "number" ? rest.id : null,
         id: typeof rest.id === "number" ? rest.id : null,
         amount: rest.amount,
         employeeId: rest.employeeId ?? 0,
@@ -250,84 +238,10 @@ function FooterClousing({
       },
       currencies:  mapCurrLines(cash.currencies ?? []),
     };
-
-    console.log("Body", body);
     
     const response: any = await sendCashClousing(body, isConfirm);
 
     if (response === "response") {
-      const statusNew =
-        isConfirm === true
-          ? STATUS.Open
-          : body.prepaid.lines.length > 0 && prepaid.total?.difference !== 0
-            ? STATUS.Close
-            : header[body.id] &&
-                Number(header[body.id].difference?.toFixed(2)) !== 0
-              ? STATUS.WITH_DIFFERENCE // Still mark as "with difference" regardless of previous status
-              : propStatus === STATUS.REOPENED
-                ? STATUS.RECLOSED // Preserve reopened/reclosed status only if there's no difference
-                : STATUS.Close;
-
-      const mxm =
-        body.cash.lines.find((line) => line.currency === "MXN")?.totalFisico ??
-        0;
-      let newMxm = 0;
-      if (mxm > 0) {
-        newMxm =
-          body.cash.electronicTips === 0 ? mxm : mxm - body.cash.electronicTips;
-      }
-
-      const newTotalphysical =
-        (cash.total?.totalPhysical ?? 0) +
-        (tdc.total?.totalPhysical ?? 0) +
-        (customer.total?.totalPhysical ?? 0) +
-        (specialCustomer.total?.totalPhysical ?? 0) +
-        ((employee && "total" in employee
-          ? employee.total?.totalPhysical
-          : 0) ?? 0) +
-        (prepaid.total?.totalPhysical ?? 0) +
-        (intercompany.total?.totalPhysical ?? 0);
-
-      setDataClousing({
-        id: body.id,
-        date: header[body.id].totalClousing,
-        difference: newTotalphysical - (header[body.id]?.totalPOS ?? 0),
-        totalClousing: newTotalphysical,
-        customer: body.customer.total.totalPhysical,
-        specialCustomer: body.specialCustomer.total.totalPhysical,
-        employee: body.specialCustomer.total.totalPhysical,
-        prepaid: body.prepaid.total.totalPhysical,
-        intercompany: body.intercompany.total.totalPhysical,
-        mxm: newMxm,
-        discountPhysical: headerRef.current[clousingId].discountPhysical,
-        /* body.cash.lines.find((line) => line.currency === "MXN")
-            ?.totalFisico ?? 0, */
-        usd:
-          body.cash.lines.find((line) => line.currency === "USD")
-            ?.totalFisico ?? 0,
-        eur:
-          body.cash.lines.find((line) => line.currency === "EUR")
-            ?.totalFisico ?? 0,
-        lib:
-          body.cash.lines.find((line) => line.currency === "LIB")
-            ?.totalFisico ?? 0,
-        can:
-          body.cash.lines.find((line) => line.currency === "CAD")
-            ?.totalFisico ?? 0,
-        status: isConfirm === true ? propStatus : statusNew,
-        closingConfirmation: !isConfirm,
-        //tips: body.cash.electronicTips,
-        tdc: tdcHeader.map((item) => ({
-          nameBank: item.nameBank,
-          total:
-            body.tdc.lines.find((line) => line.bank === item.nameBank)?.physical ?? 0,
-        })),
-        currencies: currHeader.map((item) => ({
-          id: item.id,
-          symbol: item.symbol,
-          total: body.currencies.find((line) => line.symbol === item.symbol)?.total ?? 0
-        }))
-      });
 
       if (isConfirm === true) {
         delete cashRef.current[clousingId];
@@ -339,11 +253,9 @@ function FooterClousing({
         setCoupons({} as any);
         setEmployee({} as any);
         setIntercompany({} as any);
-        // delete headerRef.current[employee.id];
       }
-      closeDialog();
-    } else {
-    }
+      closeDialog(true);
+    } 
     setloading(false);
     setButtonLoading(false);
   }
@@ -378,7 +290,6 @@ function FooterClousing({
       if (difference === true) return;
     }
 
-    // const prepaid = await getPrepaidData(clousingId, dateClousing);
     const ref: PrepaidModel = prepaidRef.current[clousingId];
     const clientNull = ref?.lines.some(
       (line) => line.client === null || line.client === ""
@@ -408,7 +319,6 @@ function FooterClousing({
     }
 
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
-      console.log("Hay diferencia");
 
       setOpenDialogDifference(true);
       return;
@@ -470,8 +380,7 @@ function FooterClousing({
         isOpen={buttonLoading}
         closeDialog={() => setButtonLoading(false)}
         sendData={sendClousing}
-        isConfrim={isConfirm}
-        getInfo={getInfo}
+        isConfirm={isConfirm}
       />
       {loading && <Loading />}
       <ErrorDialog
