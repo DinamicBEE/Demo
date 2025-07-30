@@ -23,7 +23,7 @@ import Loading from "@components/Loading";
 import { ClousingSave } from "@models/saveClousing.model";
 import { CustomerLines } from "@models/customer.model";
 import { IntercompanyLine } from "@models/intercompany.model";
-import { PrepaidLineModel } from "@models/prepaid.model";
+import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import { SpecialCustomerLines } from "@models/specialCustome.model";
 import ErrorDialog from "../notifications/ErrorDialog";
@@ -52,12 +52,12 @@ function FooterClousing({
 
   const { getFooterData } = useFooter();
   const { getCashData, cashRef } = useCashClousing();
-  const { getTDCData, tdcRef } = useTDCContext();
-  const { getCustomerData, customerRef } = useCustomerContext();
-  const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
+  const { tdcRef } = useTDCContext();
+  const { customerRef } = useCustomerContext();
+  const { specialCustRef } = useSpecialCustContext();
   const { setEmployee, employee } = useEmployeeContext();
-  const { getIntercompanyData, setIntercompany } = useIntercompanyContext();
-  const { getPrepaidData, prepaidRef, setCoupons } = usePrepaidContext();
+  const { setIntercompany, intercompanyRef } = useIntercompanyContext();
+  const { prepaidRef, setCoupons } = usePrepaidContext();
   const { setDataClousing, tdcHeader, currHeader } = useClousing();
   const { header, headerRef } = useHeaders();
 
@@ -78,13 +78,13 @@ function FooterClousing({
   async function sendClousing(isConfirm: boolean) {
     setloading(true);
 
-    const cash = await getCashData(clousingId, idCurrency);
-    const tdc = await getTDCData(clousingId, idCurrency);
-    const customer = await getCustomerData(clousingId);
-    const specialCustomer = await getSpecialCustData(clousingId, idCurrency);
+    const cash = cashRef.current[clousingId];
+    const tdc = tdcRef.current[clousingId];
+    const customer = customerRef.current[clousingId];
+    const specialCustomer = specialCustRef.current[clousingId];
     // const employee = await getEmployeetData(clousingId);
-    const prepaid = await getPrepaidData(clousingId, dateClousing);
-    const intercompany = await getIntercompanyData(clousingId);
+    const prepaid = prepaidRef.current[clousingId];
+    const intercompany = intercompanyRef.current[clousingId];
 
     const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
@@ -158,16 +158,7 @@ function FooterClousing({
         coupons: line.coupons
           .filter((coupon) => coupon.isExpired === false)
           .map((coupon) => ({
-            id: coupon.id,
-            barCode: coupon.barCode,
-            folio: coupon.folio,
-            amount: coupon.amount,
-            validityDate: coupon.validityDate,
-            consumeCenterId: coupon.consumeCenterId,
-            consumeCenter: coupon.consumeCenter,
-            client: coupon.client,
-            clientId: coupon.clientId,
-            isExpired: coupon.isExpired,
+            ...coupon
           })),
       }));
 
@@ -177,14 +168,7 @@ function FooterClousing({
         id: typeof rest.id === "number" ? rest.id : null,
         POS: rest.pos,
         vouchers: rest.vouchers.map((voucher) => ({
-          id: voucher.id,
-          date: voucher.date,
-          check: voucher.check,
-          amount: voucher.amount,
-          status: voucher.status, // Convert string to boolean
-          voucherId: voucher.voucherId,
-          amountConversion: voucher.amountConversion,
-          uniqueIdVoucher: voucher.uniqueIdVoucher,
+          ...voucher
         })),
       }));
     };
@@ -212,25 +196,29 @@ function FooterClousing({
         total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
       customer: {
-        lines: mapCustomerLines(customer.lines),
-        // total: customer.total
-        total: {
-          totalPOS: customer.total?.totalPOS ?? 0,
-          totalPhysical: customer.total?.totalPhysical ?? 0,
-          difference: customer.total?.difference ?? 0,
+        lines: mapCustomerLines(customer != undefined ? customer.lines : []),
+        total: customer != undefined ? customer.total :
+        {
+          totalPOS:  0,
+          totalPhysical:  0,
+          difference:  0,
         },
       },
       intercompany: {
-        total: intercompany.total,
-        lines: mapIntercompanyLines(intercompany.lines),
-      },
-      specialCustomer: {
-        total: specialCustomer.total ?? {
+        lines: mapIntercompanyLines(intercompany != undefined ? intercompany.lines : []),
+        total: intercompany != undefined && intercompany.total ? intercompany.total : {
           totalPOS: 0,
           totalPhysical: 0,
           difference: 0,
         },
-        lines: mapSpecialCustomerLines(specialCustomer.lines ?? []),
+      },
+      specialCustomer: {
+        lines: mapSpecialCustomerLines(specialCustomer != undefined ? specialCustomer.lines : []),
+        total: specialCustomer != undefined && specialCustomer.total ? specialCustomer.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
       },
       employee: {
         total: (employee as Record<number, EmployeeModel>)[clousingId]
@@ -244,16 +232,27 @@ function FooterClousing({
         ),
       },
       prepaid: {
-        total: prepaid.total,
-        lines: mapPrepaidLines(prepaid.lines),
+        lines: mapPrepaidLines(prepaid != undefined ? prepaid.lines : []),
+        total: prepaid != undefined && prepaid.total ? prepaid.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
       },
       tdc: {
         idCurrencySub: idCurrency,
-        total: tdc.total,
-        lines: mapTdcLines(tdc.lines),
+        lines: mapTdcLines(tdc != undefined ? tdc.lines : []),
+        total: tdc != undefined && tdc.total ? tdc.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
       },
       currencies:  mapCurrLines(cash.currencies ?? []),
     };
+
+    console.log("Body", body);
+    
     const response: any = await sendCashClousing(body, isConfirm);
 
     if (response === "response") {
@@ -379,13 +378,13 @@ function FooterClousing({
       if (difference === true) return;
     }
 
-    const prepaid = await getPrepaidData(clousingId, dateClousing);
-    const ref = prepaidRef.current[clousingId];
+    // const prepaid = await getPrepaidData(clousingId, dateClousing);
+    const ref: PrepaidModel = prepaidRef.current[clousingId];
     const clientNull = ref?.lines.some(
       (line) => line.client === null || line.client === ""
     );
 
-    if (clientNull && prepaid.lines.length > 0) {
+    if (clientNull && ref.lines.length > 0) {
       showToast({
         title: "Error",
         description: "Falta agregar clientes a prepago",
@@ -394,11 +393,11 @@ function FooterClousing({
       return;
     }
 
-    const allHaveCoupons = prepaid.lines.every(
+    const allHaveCoupons = ref != undefined ? ref.lines.every(
       (line) => line.coupons.length > 0
-    );
+    ) : false;
 
-    if (!allHaveCoupons && isConfirm === false && prepaid.lines.length > 0) {
+    if (!allHaveCoupons && isConfirm === false && ref != undefined && ref.lines.length > 0) {
       showToast({
         title: "Error",
         description:
