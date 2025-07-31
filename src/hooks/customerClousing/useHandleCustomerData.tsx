@@ -126,6 +126,24 @@ export const useHandleCustomer = (
     updateContext(updatedCurrencies);
   }
 
+  function handleChangeCustomer( event: any, id: number | string) {
+    const updateCustomer = customerData.lines.map(
+      (item: CustomerLines) =>
+        item.id === id
+          ? {
+              ...item,
+              idClient: event.items[0].value,
+              nameClient: event.items[0].label,
+            }
+          : item
+    )
+    customerData.lines = updateCustomer;
+    setCustomer({ ...customerData});
+    customerRef.current = customerData;
+    setCustomerData(customerRef.current, clousingId);
+    updateContext(updateCustomer);
+  }
+
   function addCustomerRecord(
     newCustomer: CustomerForm,
     currencies: CurrencyModel[] | undefined
@@ -139,6 +157,7 @@ export const useHandleCustomer = (
 
     const newRecord: CustomerLines = {
       id: "customer-" + uuidv4(),
+      idClient: newCustomer.idClient,
       // Generar un ID temporal
       currency: currency?.value.toString() || "",
       currencyId: Number(currency?.value) || 0,
@@ -171,16 +190,18 @@ export const useHandleCustomer = (
       0
     );
     const newDifference = newTotalFisico - customerData.total.totalPOS;
+    //const inverseDifference = customerData.total.totalPOS - newTotalFisico;
 
     const newTotal: TotalModel = {
       totalPOS: customerData.total.totalPOS,
-      totalPhysical: newTotalFisico,
-      difference: newDifference,
+      totalPhysical: newTotalFisico > customerData.total.totalPOS ? customerData.total.totalPOS : newTotalFisico,
+      difference: newDifference//newTotalFisico > customerData.total.totalPOS ? inverseDifference : newDifference,
     };
 
     const updateCustomerData = { ...customerRef.current, total: newTotal };
 
     if (newTotalFisico > 0) {
+<<<<<<< HEAD
       console.log("New total physical:", newTotalFisico);
       console.log("Current total POS:", newTotal.totalPOS);
       if(newTotalFisico > newTotal.totalPOS) {
@@ -193,6 +214,9 @@ export const useHandleCustomer = (
       // } else {
       //   updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
       // }
+=======
+      updateTotal(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER);
+>>>>>>> e347369d39d016b74de9c357bc5a1cd852be4d0b
     }
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
@@ -200,5 +224,5 @@ export const useHandleCustomer = (
     setCustomerData(updateCustomerData, clousingId);
   }
 
-  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord };
+  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer };
 };

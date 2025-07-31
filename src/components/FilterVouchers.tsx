@@ -42,7 +42,7 @@ function FilterVoucher({
       items: sortedVouchers.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
+        description: `${formatNumber(voucher.amount)} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);
@@ -87,10 +87,17 @@ function FilterVoucher({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
+        description: `${formatNumber(voucher.amount)} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);
+  }
+
+  function formatNumber(value: number) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
   }
 
   function handleSelect(event: any) {

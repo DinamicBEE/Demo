@@ -48,8 +48,7 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });
-
+    });    
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
@@ -62,21 +61,21 @@ export const getCashClousing = async (
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines
-      .map((currency: CashLines) => currency.totalPOS)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalPOS = dummy.lines
+    //   .map((currency: CashLines) => currency.totalPOS)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
-    const newTotalFisico = dummy.currencies
-      .map((currency: CashLines) => currency.totalFisico)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalFisico = dummy.currencies
+    //   .map((currency: CashLines) => currency.totalFisico)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       ...dummy,
-      total: {
-        totalPOS: newTotalPOS,
-        totalPhysical: newTotalFisico,
-        difference: newTotalFisico - newTotalPOS,
-      },
+      // total: {
+      //   totalPOS: newTotalPOS,
+      //   totalPhysical: newTotalFisico,
+      //   difference: newTotalFisico - newTotalPOS,
+      // },
     };
     const responseData: ResponseModel = {
       success: true,
@@ -152,7 +151,6 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-    console.log(response)
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
@@ -174,7 +172,7 @@ export const getCustomerClousing = async (
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.totalPhysical - response.data.totalPos,
+        difference: response.data.difference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },

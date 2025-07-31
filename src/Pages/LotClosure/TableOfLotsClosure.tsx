@@ -27,7 +27,7 @@ function TableOfLotClosure({
 
   useEffect(() => {
     setPage(page);
-    const items = lotsClosure.slice(startRange, endRange);
+    const items = lotsClosure.slice(startRange, endRange);    
     setVisibleItems(items);
   }, [page, lotsClosure]);
 
@@ -112,7 +112,7 @@ function TableOfLotClosure({
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">
-                      Ubicación
+                      CDC
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       Empresa
@@ -175,9 +175,6 @@ function TableOfLotClosure({
                     visibleItems.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
-                          <Text>{item.consumerCenter}</Text>
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
                           <Text
                             as="span"
                             cursor="pointer"
@@ -185,6 +182,11 @@ function TableOfLotClosure({
                             color="blue.500"
                             onClick={() => openDialog(item)}
                           >
+                            {item.consumerCenter}
+                          </Text>
+                        </Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Text>
                             {item.subsidiary}
                           </Text>
                         </Table.Cell>
