@@ -48,9 +48,7 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });
-    console.log("Cash Clousing Response:", response.data);
-
+    });    
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
@@ -153,7 +151,6 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-    console.log("Customer Clousing Response:", response.data);
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;

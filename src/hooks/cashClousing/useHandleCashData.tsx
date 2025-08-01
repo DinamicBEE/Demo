@@ -30,7 +30,6 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
 
     const preTotalPhysical = updatedData.reduce((acc: number, curr: { totalFisico: number }) => acc + (curr.totalFisico), 0);
     const newTotalPhysical = preTotalPhysical - (cashData.tips || 0);
-    console.log("New Total Physical:", newTotalPhysical);
     const newDifference =  newTotalPhysical - (cashData.total?.totalPOS || 0);
 
     const newTotal: TotalModel = {

@@ -137,7 +137,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   return (
     <>
       <Box>
-        <Button mb={2} onClick={() => openDialog()}>
+        <Button mb={2} onClick={() => openDialog()} disabled={data?.closingConfirmation}>
           Agregar cliente
         </Button>
         <Table.ScrollArea rounded="md" borderWidth="1px">

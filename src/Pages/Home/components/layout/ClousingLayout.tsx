@@ -1,12 +1,5 @@
-import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogFooter,
-} from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
+  DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
@@ -19,7 +12,7 @@ import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
 import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing";
-import { lazy, useState, Suspense, useEffect } from "react";
+import { lazy, useState, Suspense, useEffect, useLayoutEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/constants.model";
 import { ClousingLayoutProps } from "@models/common.clousing.model";
@@ -44,9 +37,17 @@ function ClousingLayout({
   employee,
   location,
   subsidiary,
-  getInfo
 }: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
+  const [openDialogExit, setOpenDialogExit] = useState(false);
+  const { cashRef } = useCashClousing();
+  const { getCustomerData, customerRef } = useCustomerContext();
+  const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
+  const { setEmployee, employeeRef } = useEmployeeContext();
+  const { getPrepaidData, prepaidRef,setCoupons } = usePrepaidContext();
+  const { getTDCData, tdcRef } = useTDCContext();
+  const { getIntercompanyData, setIntercompany, intercompanyRef } = useIntercompanyContext();
+  const { headerRef } = useHeaders();
 
   const tabs = useTabs({
     defaultValue: CLOUSING_KEY.CASH,
@@ -61,15 +62,16 @@ function ClousingLayout({
     }
   }, [isOpen]);
 
-  const [openDialogExit, setOpenDialogExit] = useState(false);
-  const { cashRef } = useCashClousing();
-  const { customerRef } = useCustomerContext();
-  const { specialCustRef } = useSpecialCustContext();
-  const { setEmployee, employeeRef } = useEmployeeContext();
-  const { prepaidRef,setCoupons } = usePrepaidContext();
-  const { tdcRef } = useTDCContext();
-  const { setIntercompany, intercompanyRef } = useIntercompanyContext();
-  const { headerRef } = useHeaders();
+  useLayoutEffect(() => {
+    if (isOpen) {
+      getCustomerData(employee?.id ?? 0);
+      getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency);
+      getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? "");
+      getTDCData(employee?.id ?? 0, subsidiary.idCurrency);
+      getIntercompanyData(employee?.id ?? 0);
+    }
+  }, [isOpen])
+  
 
   return (
     <>
@@ -325,13 +327,9 @@ function ClousingLayout({
             <FooterClousing
               clousingType={value}
               clousingId={employee?.id ?? 0}
-              currencyId={subsidiary.idCurrency}
-              closeDialog={() => onClose()}
+              closeDialog={onClose}
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
-              dateClousing={employee?.closingStartDate ?? ""}
-              propStatus={employee?.status ?? ""}
-              getInfo={getInfo}
             />
           </DialogFooter>
 
@@ -343,7 +341,7 @@ function ClousingLayout({
           setOpenDialogExit(false);
         }}
         closeOnExit={() => {
-          onClose();
+          onClose(false);
           if (employee && employee.id) {
             delete cashRef.current[employee.id];
             delete customerRef.current[employee.id];

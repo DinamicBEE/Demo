@@ -73,11 +73,13 @@ function TableOfTotals({
     setDataRow(item);
   };
 
-  const closeDialog = () => {
+  const closeDialog = (isRefresh: boolean) => {
     setSelectedEmployee(null);
     setIsDialogOpen(false);
     //TODO:Validar que fue un cierre de caja
-    //getInfo(subsidiary.id, store.id, 0, startDate, endDate, true);
+    if(isRefresh) {
+      getInfo(store.id, 0, startDate, endDate, true);
+    }
   };
 
   function statusColor(status: STATUS) {
@@ -368,7 +370,6 @@ function TableOfTotals({
         location={store}
         subsidiary={subsidiary}
         isEdit={isEdit}
-        getInfo={getInfo}
       ></ClousingLayout>
     </>
   );

@@ -1,6 +1,7 @@
 import { createListCollection } from "@chakra-ui/react";
 import { AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
+import { GETLISTCLOUSING } from "./settings";
 
 export const approvalsServices = {
 
@@ -48,10 +49,15 @@ export const approvalsServices = {
   },
 
   //obtiene el listado de las cajas y lotes.
-  async getClosingList(idConsumerCenter: number): Promise<any> {
-    try {
-      const response = await api.get(`/crc/cash-register-closure/api/reason/listClosing?idConsumerCenter=${idConsumerCenter}`);
-      const result: AprovalsClousureCash[] = response.data;
+  async getClosingList(idConsumerCenter: number, date: string): Promise<any> {
+    try {      
+      const response = await api.get(GETLISTCLOUSING, {
+        params: {
+          idConsumerCenter: idConsumerCenter,
+          date: date,
+        }
+      });
+      const result: AprovalsClousureCash[] = response.data;      
 
       return result
 

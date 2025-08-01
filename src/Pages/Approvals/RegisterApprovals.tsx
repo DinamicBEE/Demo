@@ -1,6 +1,6 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { NativeSelectField, NativeSelectRoot, Separator, Text, Textarea, useDisclosure } from "@chakra-ui/react";
+import { FieldLabel, NativeSelectField, NativeSelectRoot, Separator, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { Field } from "@components/ui/field";
@@ -11,6 +11,7 @@ import { approvalsServices } from "@services/approvalsServices";
 import { getStores, getSubsidiaries } from "@services/catalogService";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { useApi } from "@hooks/useApi";
+import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 
@@ -21,12 +22,15 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
   const { triggerRefresh } = useApprovalsList();
   const { data: subsidiariesList } = useApi(getSubsidiaries);
   const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
+  const [ idClousing, setIdClousing ] = useState<number | null>(null);
+  const [ date, setDate ] = useState<string>('');
+  const initialDate = new Date();
 
   const { data: consumerCentersList, refetch: fetchConsumerCenters, setData: setConsumerCenters } = useApi((id: number) => getStores(id), {
     autoFetch: false,
   });
 
-  const { data: closingList, refetch: fetchClousingList, setData: setClosingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
+  const { data: closingList, refetch: fetchClousingList, setData: setClosingList } = useApi((idClousing: number, date: string) => approvalsServices.getClosingList(idClousing, date), {
     autoFetch: false
   });
 
@@ -58,6 +62,13 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     }
   );
 
+  useEffect(() => {
+    if (idClousing !== null && date.length > 0) {      
+      fetchClousingList(idClousing, date);
+    }
+  }, [idClousing, date])
+  
+
   const onSubmitForm = () => onOpenConfir();
 
   const handleConfirm = () => refetch();
@@ -68,13 +79,6 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
     fetchConsumerCenters(idSubsidary); // disparas la petición
   };
-
-  const handleGetCashClousing = (data: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const idConsumerCenter: number = Number(data.target.value);
-
-    fetchClousingList(idConsumerCenter);
-  }
 
   const handleGetReasonList = (data: React.ChangeEvent<HTMLSelectElement>) => {
 
@@ -145,7 +149,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
               <Field label="Centros de Consumo">
                 <NativeSelectRoot size="md">
-                  <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
+                  <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => setIdClousing(Number(event.target.value))}>
                     {
                       consumerCentersList &&
                       consumerCentersList.map((item: any) => (
@@ -154,6 +158,10 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
                     }
                   </NativeSelectField>
                 </NativeSelectRoot>
+              </Field>
+              <Field>
+                <FieldLabel>Fecha</FieldLabel>
+                <SimpleDatePicker onDateChange={setDate} initialDate={initialDate}></SimpleDatePicker>
               </Field>
 
               {

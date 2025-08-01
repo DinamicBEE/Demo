@@ -131,8 +131,8 @@ export interface ClousingContextType {
     endDate: Date,
     isSearch: boolean
   ) => void;
-  dataClousing: any;
-  setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
+  //dataClousing: any;
+  //setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
   dataRow: any;
   setDataRow: any;
   filterDataAdyen: (isAdyen: boolean) => void;
@@ -196,14 +196,10 @@ export interface ClousingType {
 
 export interface FooterClousing {
   clousingType: CLOUSING_KEY;
-  currencyId: number;
   clousingId: number;
-  closeDialog: () => void;
+  closeDialog: (isRefresh: boolean) => void;
   closingConfirmation: boolean;
   idCurrency: number;
-  dateClousing: string;
-  propStatus: string;
-  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TotalModel {
@@ -245,12 +241,11 @@ export interface ResponseModel {
 
 export interface ClousingLayoutProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (isRefresh:boolean) => void;
   employee: ClousingLinesModel | null;
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
-  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
 }
 
 export interface TableOfTotalsProps {
@@ -264,9 +259,8 @@ export interface TableOfTotalsProps {
 export interface ConfirmDialogProps {
   isOpen: boolean;
   closeDialog: () => void;
-  sendData: (isConfrim: boolean) => void;
-  isConfrim: boolean;
-  getInfo: (store:number , page: number, startDate: Date, endDate: Date, flag: boolean) => void;
+  sendData: (isConfirm: boolean) => void;
+  isConfirm: boolean;
 }
 
 export interface ExitDialogProps {

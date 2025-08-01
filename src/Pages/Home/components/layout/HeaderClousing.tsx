@@ -69,28 +69,28 @@ function HeaderClousing({
       >
         <Group>
           <InputAddon>CDC</InputAddon>
-          <Skeleton loading={false}>
+          <Skeleton loading={false} width={"100%"}>
             <Input value={location || ""} placeholder="CDC" readOnly />
           </Skeleton>
         </Group>
 
         <Group>
           <InputAddon>Ubicación</InputAddon>
-          <Skeleton loading={false}>
+          <Skeleton loading={false} width={"100%"}>
             <Input value={location || ""} placeholder="Ubicación" readOnly />
           </Skeleton>
         </Group>
 
         <Group>
           <InputAddon>Empresa</InputAddon>
-          <Skeleton loading={false}>
+          <Skeleton loading={false} width={"100%"}>
             <Input value={subsidiary || ""} placeholder="Empresa" readOnly />
           </Skeleton>
         </Group>
 
         <Group>
           <InputAddon>Fecha</InputAddon>
-          <Skeleton loading={false}>
+          <Skeleton loading={false} width={"100%"}>
             <Input value={memoizedHeaderProps.date} placeholder="Fecha" readOnly />
           </Skeleton>
         </Group>

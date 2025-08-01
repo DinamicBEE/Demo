@@ -24,6 +24,8 @@ export const GET_EXTRAINFO = '/crc/cash-register-closure/api/registerclosure/inf
 export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchClosures';
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchClosureDetails';
 export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBatch';
+/* Solicitudes de apertura */
+export const GETLISTCLOUSING = '/crc/cash-register-closure/api/reason/listClosing';
  //! DEPRECATED
 //export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByDates';
 //export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';
