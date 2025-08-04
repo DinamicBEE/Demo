@@ -67,6 +67,7 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
   return (
     <ReactDatePicker
       selected={selectedDate}
+      popperProps={{strategy: 'fixed'}} 
       onChange={(date: Date | null) => setSelectedDate(date)}
       isClearable={true}
       dateFormat="dd/MM/yyyy"
