@@ -82,9 +82,9 @@ function HeaderClousing({
         </Group>
 
         <Group>
-          <InputAddon>Empresa</InputAddon>
+          <InputAddon>Subsidiaria</InputAddon>
           <Skeleton loading={false} width={"100%"}>
-            <Input value={subsidiary || ""} placeholder="Empresa" readOnly />
+            <Input value={subsidiary || ""} placeholder="Subsidiaria" readOnly />
           </Skeleton>
         </Group>
 
