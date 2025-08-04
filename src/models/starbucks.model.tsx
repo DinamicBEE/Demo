@@ -23,3 +23,8 @@ export interface StarbucksTableHeader {
   currencies: Currency[];
   creditCards: TDC[];
 }
+
+export interface StarbucksDetailsProps {
+  isOpen: boolean;
+  onClose: () => void;
+}

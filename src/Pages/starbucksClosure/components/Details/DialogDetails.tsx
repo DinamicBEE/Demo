@@ -1,11 +1,18 @@
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
+import { StarbucksDetailsProps } from "@models/starbucks.model";
 
-function DialogDetails() {
+function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
   return (
     <>
-        <DialogRoot>
+        <DialogRoot
+          scrollBehavior="inside"
+          size="full"
+          open={isOpen}
+          closeOnEscape={false}
+          closeOnInteractOutside={false}
+        >
             <DialogContent>
                 
                 <DialogHeader>
@@ -19,7 +26,7 @@ function DialogDetails() {
 
                 <DialogFooter>
                     
-                    <Button colorPalette="meraWarning">Guardar</Button>
+                    <Button colorPalette="meraWarning" onClick={()=> onClose()}>Guardar</Button>
                     <Button colorPalette="meraPrimary">Guardar</Button>
 
                 </DialogFooter>

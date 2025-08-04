@@ -201,22 +201,7 @@ export const useHandleCustomer = (
     const updateCustomerData = { ...customerRef.current, total: newTotal };
 
     if (newTotalFisico > 0) {
-<<<<<<< HEAD
-      console.log("New total physical:", newTotalFisico);
-      console.log("Current total POS:", newTotal.totalPOS);
-      if(newTotalFisico > newTotal.totalPOS) {
-        updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
-      } else {
-        updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
-      }
-      // if (newTotal.difference < 0) {
-      //   updateTotal(newTotal.totalPOS, clousingId, CLOUSING_KEY.CUSTOMER);
-      // } else {
-      //   updateTotal(newTotalFisico, clousingId, CLOUSING_KEY.CUSTOMER);
-      // }
-=======
       updateTotal(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER);
->>>>>>> e347369d39d016b74de9c357bc5a1cd852be4d0b
     }
 
     setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
