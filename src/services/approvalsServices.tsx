@@ -1,5 +1,5 @@
 import { createListCollection } from "@chakra-ui/react";
-import { AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
+import { AprovalsClousureList, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
 import { GETLISTCLOUSING } from "./settings";
 
@@ -49,7 +49,7 @@ export const approvalsServices = {
   },
 
   //obtiene el listado de las cajas y lotes.
-  async getClosingList(idConsumerCenter: number, date: string): Promise<any> {
+  async getClosingList(idConsumerCenter: number, date: string, type:number): Promise<AprovalsClousureList[]> {
     try {      
       const response = await api.get(GETLISTCLOUSING, {
         params: {
@@ -57,32 +57,49 @@ export const approvalsServices = {
           date: date,
         }
       });
-      const result: AprovalsClousureCash[] = response.data;      
+
+      const newType = type === 1 ? "corte" : type === 2 ? "lote": "";
+
+      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+      const result: AprovalsClousureList[] = filteredData.map((item: any) => {
+       
+        return {
+          id: item.id,
+          name: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
+        }
+ 
+      });      
 
       return result
 
     } catch (error) {
       console.log(error);
-      return [];
+      return [] as AprovalsClousureList[];
     }
   },
 
   // obtiene el listado de los motivos.
-  async getReasonsList(): Promise<any> {
+  async getReasonsList(type: Number): Promise<AprovalsReason[]> {
     try {
 
       const response = await api.get(`/crc/cash-register-closure/api/reason/list`);
-      const result: AprovalsReason[] = response.data;
+      
+      const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
 
-      const collection = createListCollection({
-        items: result
+      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+      
+      const result: AprovalsReason[] = filteredData.map((item: any) => {
+        return {
+          id: item.id,
+          name: item.reason, 
+        }
       });
 
-      return collection;
+      return result;
 
     } catch (error) {
       console.log(error)
-      return [];
+      return [] as AprovalsReason[];
     }
   }
 }
