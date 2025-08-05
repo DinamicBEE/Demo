@@ -188,6 +188,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
             
 
             <SelectRoot
+                mb={18}
                 collection={cdc}
                 onValueChange={(event) => {
                   setIdCDC(event.items[0].value);
