@@ -1,11 +1,40 @@
+import { useEffect, useState } from "react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { StarbucksDetailsProps } from "@models/starbucks.model";
-import { Box, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table } from "@chakra-ui/react";
+import { CashStarbucksModel, StarbucksDetailsProps, TDCStarbucksModel } from "@models/starbucks.model";
+import { FormatNumber, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table, Text } from "@chakra-ui/react";
 import { CurrencyInput } from "@components/NumericInput";
+import { getDetailStarbucks } from "@services/starbucksService";
+import { CiSquarePlus } from "react-icons/ci";
 
 function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
+
+  const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
+  const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
+  const [loading, setLoading] = useState(false);
+  
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      
+      const data = await getDetailStarbucks(1);
+      setCashRows(data.cash);
+      setTdcRows(data.tdc);
+
+      setLoading(false);
+
+    }
+
+    fetchData();
+
+  }, []);
+
+  function openDialog(id: string, item: CashStarbucksModel) {
+    // Logic to open dialog with item details
+    console.log("Open dialog for item:", id, item);
+  }
+  
   return (
     <>
         <DialogRoot
@@ -82,7 +111,50 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
                             </Table.Header>
                             
                             <Table.Body>
-                              {/* Aquí se agregarían las filas de datos */}
+                              {cashRows.length > 0 && 
+                                cashRows.map((row:CashStarbucksModel) => (
+                                  <Table.Row key={row.id}>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        {row.currency}
+                                      </Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <>
+                                        <Text>
+                                          <FormatNumber
+                                            value={row.total}
+                                            style="currency"
+                                            currency="USD"
+                                          />
+                                        </Text>
+
+                                        <Button marginLeft={4} onClick={() => openDialog(String(row.id), row)}>
+                                          <CiSquarePlus />
+                                        </Button>
+                                      
+                                      </>                                    
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        <FormatNumber
+                                          value={row.exchangeRate}
+                                          style="currency"
+                                          currency="USD"
+                                        />
+                                      </Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        <FormatNumber
+                                          value={row.originalCurrency}
+                                          style="currency"
+                                          currency="USD"
+                                        />
+                                      </Text>
+                                    </Table.Cell>
+                                  </Table.Row>
+                                ))}
                             </Table.Body>
 
                           </Table.Root>
@@ -112,7 +184,43 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
                             </Table.Header>
                             
                             <Table.Body>
-                              {/* Aquí se agregarían las filas de datos */}
+                              { tdcRows.length > 0 && 
+                                tdcRows.map((row:TDCStarbucksModel) => (
+                                  <Table.Row key={row.id}>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        {row.nameBank}
+                                      </Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        <FormatNumber
+                                          value={row.total}
+                                          style="currency"
+                                          currency="USD"
+                                        />
+                                      </Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        <FormatNumber
+                                          value={row.exchangeRate}
+                                          style="currency"
+                                          currency="USD"
+                                        />
+                                      </Text>
+                                    </Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Text>
+                                        <FormatNumber
+                                          value={row.originalCurrency}
+                                          style="currency"
+                                          currency="USD"
+                                        />
+                                      </Text>
+                                    </Table.Cell>
+                                  </Table.Row>
+                                ))}
                             </Table.Body>
 
                           </Table.Root>

@@ -1,5 +1,5 @@
 import { location } from "@models/common.model";
-import { StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
+import { StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -47,6 +47,23 @@ export const getStarbucksData = async (): Promise<StarbucksTableModel[]> => {
     console.error("Error fetching Starbucks data:", error);
     throw error;
   }
+}
+
+export const getDetailStarbucks = async (id: number): Promise<StarbucksTableRow> => {
+  try {
+    // Simulate an API call to fetch Starbucks detail data
+    const response = await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({cash: cashData, tdc: creditCardData});
+      }, 1000);
+    });
+
+    return response as StarbucksTableRow;
+  } catch (error) {
+    console.error("Error fetching Starbucks detail data:", error);
+    throw error;
+  }
+
 }
 
 export const dataDummy = [
@@ -391,3 +408,19 @@ export const headersDummy = {
     { nameBank: "Banamex", total: 0 },
   ]
 };
+
+export const cashData =[
+  {id:1, currency: "MXN", total: 0, exchangeRate: 1, originalCurrency: 0},
+  {id:2, currency: "USD", total: 0, exchangeRate: 17, originalCurrency: 0},
+  {id:3, currency: "EUR", total: 0, exchangeRate: 18, originalCurrency: 0},
+  {id:4, currency: "LIB", total: 0, exchangeRate: 16.83, originalCurrency: 0},
+  {id:5, currency: "CAN", total: 0, exchangeRate: 12, originalCurrency: 0},
+]
+
+export const creditCardData = [
+  {id:1, nameBank: "Amexo - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
+  {id:2, nameBank: "Santander - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
+  {id:3, nameBank: "Bancomer - USD", total: 0, exchangeRate: 1, originalCurrency: 0 },
+  {id:3, nameBank: "Bancomer - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
+  {id:4, nameBank: "Banamex - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
+]
