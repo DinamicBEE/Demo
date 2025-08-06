@@ -1,6 +1,7 @@
 import { IRole, Tokens } from "@models/auth.model";
 import api from "../api/index";
 import Cookies from "js-cookie";
+import { GETROLE, REFRESH, SIGNIN } from "./settings";
 
 //const BASE_URL = "https://reqres.in/api";
 
@@ -15,7 +16,7 @@ export const loginUser = async (
   password: string
 ): Promise<Tokens> => {
   try {
-    const response = await api.post("/auth/authentication/api/v1/auth/signin", {
+    const response = await api.post(SIGNIN, {
       login,
       password,
     });
@@ -35,7 +36,7 @@ export const refreshAuthToken = async (
 ) => {
   try {
     const response = await api.post(
-      `/auth/authentication/api/v1/auth/refresh`,
+      REFRESH,
       {
         refreshToken,
       }
@@ -50,7 +51,7 @@ export const refreshAuthToken = async (
 
 export const getUserRol = async (): Promise<IRole> => {
   try {
-    const response = await api.get("/auth/authentication/api/test/echo-role");
+    const response = await api.get(GETROLE);
     const result = response;
 
     return result.data;

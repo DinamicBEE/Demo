@@ -1,7 +1,7 @@
 import { createListCollection } from "@chakra-ui/react";
 import { AprovalsClousureList, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
-import { GETLISTCLOUSING } from "./settings";
+import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
 
 export const approvalsServices = {
 
@@ -10,7 +10,7 @@ export const approvalsServices = {
 
     try {
 
-      const response = await api.get(`/crc/cash-register-closure/api/request`);
+      const response = await api.get(GETLISTAPPROVALS);
       const result = response.data;
 
       return result;
@@ -26,7 +26,7 @@ export const approvalsServices = {
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {
     try {
 
-      const response = await api.post(`/crc/cash-register-closure/api/reason/save`, data);
+      const response = await api.post(SAVE_REQUEST, data);
 
       return response.data
 
@@ -39,7 +39,7 @@ export const approvalsServices = {
   async updateStatusRequest(data: RequestUpdateDetails): Promise<any> {
     try {
 
-      const response = await api.post(`/crc/cash-register-closure/api/supervisor/request`, data);
+      const response = await api.post(UPDATE_REQUEST, data);
 
       return response.data;
 
@@ -82,7 +82,7 @@ export const approvalsServices = {
   async getReasonsList(type: Number): Promise<AprovalsReason[]> {
     try {
 
-      const response = await api.get(`/crc/cash-register-closure/api/reason/list`);
+      const response = await api.get(GETREASONLIST);
       
       const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
 
