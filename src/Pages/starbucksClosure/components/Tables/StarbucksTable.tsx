@@ -5,6 +5,8 @@ import { getHeadersStarbucks, getStarbucksData } from "@services/starbucksServic
 import { SortableHeader } from "../../../../utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
+import Loading from "@components/Loading";
+
 
 
 function StarbucksTable() {
@@ -13,15 +15,17 @@ function StarbucksTable() {
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
     const { sortedData, handleSort, getSortIcon } = useSortableTable<StarbucksTableModel>(starbucksData);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
 
         const fetchData = async () => {
-
+          setLoading(true);
             const data = await getStarbucksData()
             const header = await getHeadersStarbucks()
             setTableHeaders(header);
             setStarbucksData(data);
+          setLoading(false)
         };
 
         fetchData();
@@ -117,6 +121,13 @@ function StarbucksTable() {
 
 
                 </Table.ScrollArea>
+
+                {loading && (
+                <Box position="fixed" top="50%" left="50%" zIndex={1000}>
+                    <Loading />
+                </Box>
+            )
+            }
 
             </Box>
 
