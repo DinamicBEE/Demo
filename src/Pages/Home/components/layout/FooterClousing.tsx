@@ -172,16 +172,16 @@ function FooterClousing({
       discountPhysical: headerRef.current[clousingId].discountPhysical | 0,
       cash: {
         idCurrencySub: idCurrency,
-        electronicTips: cash.electronicTips,
+        electronicTips: cashRef.current[clousingId].electronicTips,
         lines:
-          cash && cash.currencies
-            ? (cash.currencies as any[]).map(({ id, ...rest }) => ({
+          cashRef.current[clousingId] && cashRef.current[clousingId].currencies
+            ? (cashRef.current[clousingId].currencies as any[]).map(({ id, ...rest }) => ({
                 id: typeof id === "number" ? Number(id) : null,
                 ...rest,
               }))
             : [],
-        tips: cash.tips ?? 0,
-        total: cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
+        tips: cashRef.current[clousingId].tips ?? 0,
+        total: cashRef.current[clousingId].total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
       },
       customer: {
         lines: mapCustomerLines(customer != undefined ? customer.lines : []),
@@ -236,7 +236,7 @@ function FooterClousing({
           difference: 0,
         },
       },
-      currencies:  mapCurrLines(cash.currencies ?? []),
+      currencies:  mapCurrLines(cashRef.current[clousingId].currencies ?? []),
     };
     
     const response: any = await sendCashClousing(body, isConfirm);
@@ -270,15 +270,16 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
-    const cash = await getCashData(clousingId, idCurrency);
+    //const cash = await getCashData(clousingId, idCurrency);
+    console.log("Sending ",  cashRef.current[clousingId])
 
-    const isUSD = cash.currencies.some((line) => line.currency === "USD");
+    const isUSD = cashRef.current[clousingId].currencies.some((line) => line.currency === "USD");
 
     if (isUSD && isConfirm === false) {
-      const totalPos = cash.currencies.find(
+      const totalPos = cashRef.current[clousingId].currencies.find(
         (line) => line.currency === "USD"
       )?.totalPOS;
-      const totalPhysical = cash.currencies.find(
+      const totalPhysical = cashRef.current[clousingId].currencies.find(
         (line) => line.currency === "USD"
       )?.totalFisico;
 

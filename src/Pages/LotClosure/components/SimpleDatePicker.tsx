@@ -6,6 +6,8 @@ import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
 import "./DatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { MiddlewareReturn } from '@floating-ui/core';
+import { MiddlewareState } from '@floating-ui/dom';
 interface DatePickerProps {
   onDateChange: (formattedDate: string) => void;
   initialDate?: Date;
@@ -67,6 +69,7 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
   return (
     <ReactDatePicker
       selected={selectedDate}
+      popperProps={{strategy: 'fixed'}} 
       onChange={(date: Date | null) => setSelectedDate(date)}
       isClearable={true}
       dateFormat="dd/MM/yyyy"

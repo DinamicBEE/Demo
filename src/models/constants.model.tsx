@@ -3,6 +3,7 @@ import { PiCashRegisterLight } from "react-icons/pi";
 import { MdCurrencyExchange } from "react-icons/md";
 import { SiStarbucks } from "react-icons/si";
 import { VscGraph } from "react-icons/vsc";
+import { createListCollection } from "@chakra-ui/react";
 
 export const ALERTCLOUSING_MODEL = {
     SUCCESS: { title: 'Envio exitoso', description: 'Corte de caja enviado correctamente', type: 'success' },
@@ -40,3 +41,10 @@ export const menuItems = [
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
   { name: 'Corte de caja', path: '/starbucks', icon:<SiStarbucks />, roles: ['admin', 'user'] },
 ];
+
+export const ApprovalsReasons = createListCollection({
+  items: [
+    {label: "Corte de caja", value: 1},
+    {label: "Cierre de lote", value: 2},
+  ]
+})
