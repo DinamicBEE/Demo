@@ -103,6 +103,7 @@ export const getBanks = async (cdcId: number, date:string) => {
 export const updateBankService = async (localBank: any) => {
   try {
     const response = await api.post(CONFIRM_BATCH, localBank);
+    // Validar que esta en estatus ABIERTO response.status === 200 && console.log("Lote confirmado");
     return response.data as string;
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);

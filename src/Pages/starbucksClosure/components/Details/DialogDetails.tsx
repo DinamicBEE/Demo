@@ -228,6 +228,10 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
 
                         
                       </GridItem>
+
+                      <GridItem colSpan={3} />
+
+                      
                         
                     </Grid>
                 </DialogBody>
