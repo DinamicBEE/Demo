@@ -54,10 +54,10 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
                       mb={4}
                     >
                       <GridItem colSpan={2}>
-                        <Group>
+                        <Group width={"100%"}>
                           <InputAddon>CDC</InputAddon>
                           <Skeleton loading={false} width={"100%"}>
-                            <Input value={"Guacamole Prueba de Header"} placeholder="CDC" readOnly />
+                            <Input value={"Guacamole Prueba de Header"} placeholder="CDC" readOnly/>
                           </Skeleton>
                         </Group>
                       </GridItem>

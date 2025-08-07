@@ -24,6 +24,7 @@ function StarbucksClosure() {
   
     useEffect(() => {
         async function fetchData() {
+          setLoading(true)
             try {
 
                 await Promise.all([
@@ -33,6 +34,7 @@ function StarbucksClosure() {
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
+          setLoading(false)
         }
 
         fetchData();
