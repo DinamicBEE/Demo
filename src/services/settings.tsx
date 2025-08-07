@@ -36,6 +36,7 @@ export const SENDCASHCLOUSING = '/crc/cash-register-closure/api/closure/save';
 export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchClosures';
 export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchClosureDetails';
 export const CONFIRM_BATCH = '/crc/cash-register-closure/batchclosure/confirmBatch';
+export const ASSEMBLIESCONTROLLER_NS = '/crc/cash-register-closure/api/ns/assemblies';
 /* Solicitudes de apertura */
 export const GETLISTAPPROVALS = '/crc/cash-register-closure/api/request';
 export const SAVE_REQUEST = '/crc/cash-register-closure/api/reason/save';

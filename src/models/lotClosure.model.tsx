@@ -1,7 +1,7 @@
 import { STATUS } from "./status.model";
 import { ListCollection } from "@chakra-ui/react";
 export interface LotClosure {
-  id: number; //
+  id: number | string; //
   subId: number;
   consumerCenterId: number;
   statusId: number;
@@ -26,6 +26,7 @@ export interface Bank {
   totalBatch: number;
   totalPos: number;
   affiliationList: Afilation[]; //
+  lines?: Afilation[];
 }
 
 export interface Afilation {
@@ -102,4 +103,9 @@ export interface LotCatalogContextType {
 
 export interface LotsClosureContext {
   [key:string]: LotClosure[]
+}
+
+export interface BankUpdateRequest extends LotClosure {
+  totalCrc: number;
+  batchDetailsRequest: Bank[];
 }

@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
-import { LotClosure, Bank } from "@models/lotClosure.model";
+import { LotClosure, Bank, BankUpdateRequest } from "@models/lotClosure.model";
 import Cookies from "js-cookie";
 import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
-  GET_BATCH_DETAILS, CONFIRM_BATCH } from "./settings";
+  GET_BATCH_DETAILS, CONFIRM_BATCH, 
+  ASSEMBLIESCONTROLLER_NS} from "./settings";
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
@@ -100,12 +101,34 @@ export const getBanks = async (cdcId: number, date:string) => {
   }
 };
 
-export const updateBankService = async (localBank: any) => {
-  try {
+export const updateBankService = async (localBank: BankUpdateRequest) => {
+  try {    
     const response = await api.post(CONFIRM_BATCH, localBank);
+    if (response.status === 200 && localBank.status === "Abierto") {
+      assembliesController(localBank.consumerCenterId, localBank.batchDate)
+    }
+    
     return response.data as string;
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];
   }
 };
+
+const assembliesController = async (cdcId: number, date: string) => {
+  try {
+    
+    const dateArray = date.split("T")[0];
+    const newFormatDate = `${dateArray}`;
+
+    await api.get(ASSEMBLIESCONTROLLER_NS, {
+      params: { 
+        cdc: cdcId,
+        fecha: newFormatDate
+      },
+    });
+  } catch (error) {
+    console.error("Error al manejar los assemblies: ", error)
+    return [];
+  }
+}
