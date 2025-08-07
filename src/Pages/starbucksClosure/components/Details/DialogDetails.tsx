@@ -3,7 +3,7 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import { CashStarbucksModel, StarbucksDetailsProps, TDCStarbucksModel } from "@models/starbucks.model";
-import { FormatNumber, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, Grid, GridItem, Group, Input, InputAddon, Skeleton, Table, Text } from "@chakra-ui/react";
 import { CurrencyInput } from "@components/NumericInput";
 import { getDetailStarbucks } from "@services/starbucksService";
 import { CiSquarePlus } from "react-icons/ci";
@@ -120,7 +120,7 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
                                       </Text>
                                     </Table.Cell>
                                     <Table.Cell textAlign="center">
-                                      <>
+                                      <Box display={"flex"} direction={"row"} justifyContent={"space-evenly"} alignItems={"center"}>
                                         <Text>
                                           <FormatNumber
                                             value={row.total}
@@ -129,11 +129,11 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
                                           />
                                         </Text>
 
-                                        <Button marginLeft={4} onClick={() => openDialog(String(row.id), row)}>
+                                        <Button onClick={() => openDialog(String(row.id), row)}>
                                           <CiSquarePlus />
                                         </Button>
                                       
-                                      </>                                    
+                                      </Box>                                    
                                     </Table.Cell>
                                     <Table.Cell textAlign="center">
                                       <Text>
