@@ -31,7 +31,7 @@ function StarbucksTable() {
         fetchData();
     }, []);
 
-    const openDialog = () => {
+    const openDialog = (item:StarbucksTableModel) => {
         setIsDialogOpen(true);
     };
 
@@ -78,7 +78,7 @@ function StarbucksTable() {
                                             cursor="pointer"
                                             textDecoration="underline"
                                             color="blue.500"
-                                            onClick={() => openDialog()}
+                                            onClick={() => openDialog(item)}
                                         >
                                             {item.employee}
                                         </Text>

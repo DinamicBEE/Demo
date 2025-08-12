@@ -51,10 +51,55 @@ export const getStarbucksData = async (): Promise<StarbucksTableModel[]> => {
 
 export const getDetailStarbucks = async (id: number): Promise<StarbucksTableRow> => {
   try {
-    // Simulate an API call to fetch Starbucks detail data
+    const cashTotal = cashData.reduce((acc, curr) => acc + curr.total, 0);
+    const creditCardTotal = creditCardData.reduce((acc, curr) => acc + curr.originalCurrency, 0);
+    const cxcTotal = cxcData.reduce((acc, curr) => acc + curr.originalCurrency, 0);
+    const total =  cashTotal + creditCardTotal + cxcTotal;
+
+    let cashDataDummy = [...cashData];
+    cashDataDummy.push({
+      id: 6,
+      currency: "Total",
+      total: cashTotal,
+      exchangeRate: 0,  
+      originalCurrency: 0,
+      denominations: []
+    });
+
+    const cashDataPipe = cashDataDummy.map((item) => ({
+      ...item,
+      denominations: denominationsData.map((denomination) => ({
+        ...denomination,
+        subtotal: denomination.denomination.toLowerCase() === "cambio" ? denomination.amount : denomination.amount * parseFloat(denomination.denomination),
+      }))
+    }))
+
+    let creditCardDataDummy = [...creditCardData];
+    creditCardDataDummy.push({
+      id: 6,
+      nameBank: "Total",
+      total: 0,
+      exchangeRate: 0,
+      originalCurrency: creditCardTotal,
+    });
+
+    let cxcDataDummy = [...cxcData];
+    cxcDataDummy.push({
+      id: 3,
+      currency: "Total",
+      total: 0,
+      exchangeRate: 0,
+      originalCurrency: cxcTotal,
+    });
+    const header = {
+      date: "2024-04-01",
+      cdc: "Sucursal A",
+      total: total,
+    }
+
     const response = await new Promise((resolve) => {
       setTimeout(() => {
-        resolve({cash: cashData, tdc: creditCardData});
+        resolve({data:header, cash: cashDataPipe, tdc: creditCardDataDummy, cxc: cxcDataDummy});
       }, 1000);
     });
 
@@ -409,18 +454,110 @@ export const headersDummy = {
   ]
 };
 
-export const cashData =[
-  {id:1, currency: "MXN", total: 0, exchangeRate: 1, originalCurrency: 0},
-  {id:2, currency: "USD", total: 0, exchangeRate: 17, originalCurrency: 0},
-  {id:3, currency: "EUR", total: 0, exchangeRate: 18, originalCurrency: 0},
-  {id:4, currency: "LIB", total: 0, exchangeRate: 16.83, originalCurrency: 0},
-  {id:5, currency: "CAN", total: 0, exchangeRate: 12, originalCurrency: 0},
+export const creditCardData = [
+  {
+    id: 1,
+    nameBank: "Amexo - MXN",
+    total: 0,
+    exchangeRate: 1,
+    originalCurrency: 0,
+  },
+  {
+    id: 2,
+    nameBank: "Santander - MXN",
+    total: 0,
+    exchangeRate: 1,
+    originalCurrency: 0,
+  },
+  {
+    id: 3,
+    nameBank: "Bancomer - USD",
+    total: 0,
+    exchangeRate: 18,
+    originalCurrency: 0,
+  },
+  {
+    id: 4,
+    nameBank: "Bancomer - MXN",
+    total: 0,
+    exchangeRate: 1,
+    originalCurrency: 0,
+  },
+  {
+    id: 5,
+    nameBank: "Banamex - MXN",
+    total: 0,
+    exchangeRate: 1,
+    originalCurrency: 0,
+  },
 ]
 
-export const creditCardData = [
-  {id:1, nameBank: "Amexo - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
-  {id:2, nameBank: "Santander - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
-  {id:3, nameBank: "Bancomer - USD", total: 0, exchangeRate: 1, originalCurrency: 0 },
-  {id:3, nameBank: "Bancomer - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
-  {id:4, nameBank: "Banamex - MXN", total: 0, exchangeRate: 1, originalCurrency: 0 },
+export const cxcData = [
+  {
+    id: 1,
+    currency: "MXN",
+    total: 0,
+    exchangeRate: 1,
+    originalCurrency: 0,
+  },
+  {
+    id: 2,
+    currency: "USD",
+    total: 0,
+    exchangeRate: 18,
+    originalCurrency: 0,
+  }
+]
+
+export const denominationsData = [
+  {
+    id: 1,
+    idDenomination: 1,
+    denomination: "1000.00",
+    amount: 0,
+  },
+  {
+    id: 2,
+    idDenomination: 2,
+    denomination: "500.00",
+    amount: 5,
+  },
+  {
+    id: 3,
+    idDenomination: 3,
+    denomination: "200.00",
+    amount: 1,
+  },
+  {
+    id: 4,
+    idDenomination: 4,
+    denomination: "100.00",
+    amount: 1,
+  },
+  {
+    id: 5,
+    idDenomination: 5,
+    denomination: "50.00",
+    amount: 0,
+  },
+  {
+    id: 6,
+    idDenomination: 6,
+    denomination: "20.00",
+    amount: 1,
+  },
+  {
+    id: 7,
+    idDenomination: 7,
+    denomination: "Cambio",
+    amount: 15,
+  }
+];
+
+export const cashData =[
+  {id:1, currency: "MXN", total: 0, exchangeRate: 1, originalCurrency: 0, denominations: denominationsData},
+  {id:2, currency: "USD", total: 0, exchangeRate: 17, originalCurrency: 0, denominations: denominationsData},
+  {id:3, currency: "EUR", total: 0, exchangeRate: 18, originalCurrency: 0, denominations: denominationsData},
+  {id:4, currency: "LIB", total: 0, exchangeRate: 16.83, originalCurrency: 0, denominations: denominationsData},
+  {id:5, currency: "CAN", total: 0, exchangeRate: 12, originalCurrency: 0, denominations: denominationsData},
 ]

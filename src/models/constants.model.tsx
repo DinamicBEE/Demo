@@ -39,7 +39,7 @@ export const menuItems = [
   { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['admin'] },
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['admin', 'user'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja', path: '/starbucks', icon:<SiStarbucks />, roles: ['admin', 'user'] },
+  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: ['admin', 'user'] },
 ];
 
 export const ApprovalsReasons = createListCollection({

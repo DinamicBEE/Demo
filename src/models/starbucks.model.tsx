@@ -20,16 +20,24 @@ export interface StarbucksTableModel {
 }
 
 export interface StarbucksTableRow {
+  data: HeaderDetailsInfoModel;
   cash: CashStarbucksModel[];
   tdc: TDCStarbucksModel[];
+  cxc: CXCModel[]
 }
 
+export interface HeaderDetailsInfoModel {
+  date: string;
+  cdc: string;
+  total: number;
+}
 export interface CashStarbucksModel {
   id: number;
   currency: string;
   total: number;
   exchangeRate: number;
   originalCurrency: number;
+  denominations: DenominationsModel[];
 }
 
 export interface TDCStarbucksModel {
@@ -40,6 +48,7 @@ export interface TDCStarbucksModel {
   originalCurrency: number;
 }
 
+export interface CXCModel extends Omit<CashStarbucksModel, 'denominations'> {}
 
 export interface StarbucksTableHeader {
   currencies: Currency[];
@@ -49,4 +58,23 @@ export interface StarbucksTableHeader {
 export interface StarbucksDetailsProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+export interface DenominationsDetaislProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (denominatios:DenominationsPropModel) => void;
+    denominations: DenominationsPropModel;
+}
+
+export interface DenominationsPropModel{
+  currencyId: number;
+  denominations: DenominationsModel[];
+}
+
+export interface DenominationsModel {
+  id: number;
+  denomination: string;
+  amount: number;
+  subtotal: number;
 }
