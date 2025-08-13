@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, HStack, Table, TableCell, Text } from "@chakra-ui/react";
 import { TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { HeaderReportModel, ReporGeneralRequesttModel, ReportTypeMap } from "@models/reports.model";
+import { HeaderReportModel, ReportTypeMap } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
@@ -67,17 +67,20 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                 <Table.ScrollArea rounded="md" borderWidth="1px">
                     <Table.Root size="sm" variant="outline">
                         <Table.Header>
+                          <Table.Row>
+
                             {headers.map((header) => (
-                                <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
+                              <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
                             ))}
+                          </Table.Row>
                         </Table.Header>
                         <Table.Body>
                             {visibleItems.map((row, index) => (
                                 <Table.Row key={index}>
                                     {headers.map((header) => (
-                                        <Table.Cell key={String(header.key)}>
+                                        <TableCell key={String(header.key)}>
                                             {renderCellContent(header.key, row[header.key])}
-                                        </Table.Cell>
+                                        </TableCell>
                                     ))}
                                 </Table.Row>
                             ))}
