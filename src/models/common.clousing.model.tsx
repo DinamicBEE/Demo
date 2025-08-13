@@ -1,5 +1,12 @@
+import { CashModel } from "./cash.model";
 import { location, selectOption, SubsidiaryModal } from "./common.model";
 import { CLOUSING_KEY } from "./constants.model";
+import { CustomerModel } from "./customer.model";
+import { EmployeeModel } from "./employee.model";
+import { IntercompanyModel } from "./intercompany.model";
+import { PrepaidModel } from "./prepaid.model";
+import { SpecialCustomerModel } from "./specialCustome.model";
+import { TDCModel } from "./tdc.model";
 
 export interface ClousingModel {
   header: HeaderClousingModel;
@@ -304,4 +311,17 @@ export interface SelectHandlerParams<T = selectOption> {
   currentSelected: T[];
   setSelectedOptions: (options: T[]) => void;
   setSelectedIds?: (ids: number[]) => void; // Opcional si necesitas los IDs
+}
+
+export interface DataServiceModel {
+    cash: CashModel;
+    tdc: TDCModel;
+    customer: CustomerModel;
+    specialCustomer: SpecialCustomerModel;
+    prepaid: PrepaidModel;
+    intercompany: IntercompanyModel;
+    clousingId: number;
+    idCurrency: number;
+    discountPhysical: number;
+    employee: EmployeeModel;
 }

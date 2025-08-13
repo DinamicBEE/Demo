@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from "react";
+import { ReactNode } from "react";
 import {
   createContext,
   useContext,
@@ -9,7 +9,6 @@ import {
 import { processFiles } from "@services/clousingService";
 import { TDCAdyenContextType } from "@models/tdc.model";
 import { ProcessResult } from "@models/adyen.model";
-import { useList } from "@context/home/listsContext";
 
 const tdcAdyenContext = createContext<TDCAdyenContextType>(
   {} as TDCAdyenContextType

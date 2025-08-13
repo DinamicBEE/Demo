@@ -15,16 +15,9 @@ import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useHeaders } from "@context/home/headerContext";
 import ConfirmDialog from "../notifications/ConfirmDialog";
 import Loading from "@components/Loading";
-import { ClousingSave } from "@models/saveClousing.model";
-import { CustomerLines } from "@models/customer.model";
-import { IntercompanyLine } from "@models/intercompany.model";
-import { PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
-import { EmployeeLine, EmployeeModel } from "@models/employee.model";
-import { SpecialCustomerLines } from "@models/specialCustome.model";
+import { PrepaidModel } from "@models/prepaid.model";
 import ErrorDialog from "../notifications/ErrorDialog";
-import { BankLineModel } from "@models/tdc.model";
 import { toaster } from "@components/ui/toaster";
-import { CashLines } from "@models/cash.model";
 
 function FooterClousing({
   clousingType,
@@ -42,11 +35,11 @@ function FooterClousing({
   const [isConfirm, setIsConfirm] = useState(false);
 
   const { getFooterData } = useFooter();
-  const { getCashData, cashRef } = useCashClousing();
+  const { cashRef } = useCashClousing();
   const { tdcRef } = useTDCContext();
   const { customerRef } = useCustomerContext();
   const { specialCustRef } = useSpecialCustContext();
-  const { setEmployee, employee } = useEmployeeContext();
+  const { setEmployee, employeeRef } = useEmployeeContext();
   const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { prepaidRef, setCoupons } = usePrepaidContext();
   const { header, headerRef } = useHeaders();
@@ -74,172 +67,22 @@ function FooterClousing({
     const specialCustomer = specialCustRef.current[clousingId];
     const prepaid = prepaidRef.current[clousingId];
     const intercompany = intercompanyRef.current[clousingId];
+    const employee = employeeRef.current[clousingId];
 
-    const mapCustomerLines = (lines: CustomerLines[]) =>
-      lines.map(
-        ({
-          currencyId,
-          pax: valuePAX,
-          currency,
-          id,
-          currencyLabel,
-          ...rest
-        }) => ({
-          ...rest,
-          customers: rest.nameClient,
-          valuePAX,
-          id: typeof id === "number" ? id : null,
-          currency: currencyId,
-        })
-      );
-
-    const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
-      lines.map(({ id, ...rest }) => ({
-        ...rest,
-        id: typeof id === "number" ? id : null,
-        ticket: rest.ticket,
-      }));
-
-    const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
-      lines.map(
-        ({
-          ammountMXN: amountMXN,
-          ammountUSD: valueUSD,
-          ammount: value,
-          bill: consumption,
-          check: Check,
-          couponFolio: folioCuopon,
-          couponPrice: priceCuopon,
-          pax: pax,
-          id,
-          couponFolioUSD: folioCuoponUSD,
-          ...rest
-        }) => ({
-          ...rest,
-          id: typeof id === "number" ? id : null,
-          amountMXN,
-          valueUSD,
-          value,
-          consumption,
-          Check,
-          folioCuopon,
-          priceCuopon,
-          pax,
-          folioCuoponUSD,
-        })
-      );
-
-    const mapEmployeeLines = (lines: EmployeeLine[]) =>
-      lines.map(({ employeeNumber, reason, ticketNumber, ...rest }) => ({
-        id: typeof rest.id === "number" ? rest.id : null,
-        amount: rest.amount,
-        employeeId: rest.employeeId ?? 0,
-        reasonId: rest.reasonId ?? 0,
-        ticketId: rest.ticketId ?? null,
-        externalId: rest?.externalId ?? undefined,
-      }));
-
-    const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
-      lines.map((line) => ({
-        ...line,
-        id: typeof line.id === "number" && line.id !== 0 ? line.id : null,
-        coupons: line.coupons
-          .filter((coupon) => coupon.isExpired === false)
-          .map((coupon) => ({
-            ...coupon
-          })),
-      }));
-
-    const mapTdcLines = (lines: BankLineModel[]) => {
-      return lines.map(({ ...rest }) => ({
-        ...rest,
-        id: typeof rest.id === "number" ? rest.id : null,
-        POS: rest.pos,
-        vouchers: rest.vouchers.map((voucher) => ({
-          ...voucher
-        })),
-      }));
-    };
-    const mapCurrLines = (lines: CashLines[]) => {
-      return lines.map(({...curr}) => ({
-        id: curr.idCurrency,
-        symbol: curr.currency.toUpperCase(),
-        total: curr.totalFisico || 0
-      }))
+    const dataService = {
+      cash,
+      tdc,
+      customer,
+      specialCustomer,
+      prepaid,
+      intercompany,
+      clousingId,
+      idCurrency,
+      discountPhysical: headerRef.current[clousingId]?.discountPhysical || 0,
+      employee
     }
-    const body: ClousingSave = {
-      id: clousingId,
-      discountPhysical: headerRef.current[clousingId].discountPhysical | 0,
-      cash: {
-        idCurrencySub: idCurrency,
-        electronicTips: cashRef.current[clousingId].electronicTips,
-        lines:
-          cashRef.current[clousingId] && cashRef.current[clousingId].currencies
-            ? (cashRef.current[clousingId].currencies as any[]).map(({ id, ...rest }) => ({
-                id: typeof id === "number" ? Number(id) : null,
-                ...rest,
-              }))
-            : [],
-        tips: cashRef.current[clousingId].tips ?? 0,
-        total: cashRef.current[clousingId].total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      },
-      customer: {
-        lines: mapCustomerLines(customer != undefined ? customer.lines : []),
-        total: customer != undefined ? customer.total :
-        {
-          totalPOS:  0,
-          totalPhysical:  0,
-          difference:  0,
-        },
-      },
-      intercompany: {
-        lines: mapIntercompanyLines(intercompany != undefined ? intercompany.lines : []),
-        total: intercompany != undefined && intercompany.total ? intercompany.total : {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      },
-      specialCustomer: {
-        lines: mapSpecialCustomerLines(specialCustomer != undefined ? specialCustomer.lines : []),
-        total: specialCustomer != undefined && specialCustomer.total ? specialCustomer.total : {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      },
-      employee: {
-        total: (employee as Record<number, EmployeeModel>)[clousingId]
-          ?.total ?? {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-        lines: mapEmployeeLines(
-          (employee as Record<number, EmployeeModel>)[clousingId]?.lines ?? []
-        ),
-      },
-      prepaid: {
-        lines: mapPrepaidLines(prepaid != undefined ? prepaid.lines : []),
-        total: prepaid != undefined && prepaid.total ? prepaid.total : {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      },
-      tdc: {
-        idCurrencySub: idCurrency,
-        lines: mapTdcLines(tdc != undefined ? tdc.lines : []),
-        total: tdc != undefined && tdc.total ? tdc.total : {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      },
-      currencies:  mapCurrLines(cashRef.current[clousingId].currencies ?? []),
-    };
-    
-    const response: any = await sendCashClousing(body, isConfirm);
+
+    const response: any = await sendCashClousing(dataService, isConfirm);
 
     if (response === "response") {
 

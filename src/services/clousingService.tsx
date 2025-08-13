@@ -6,17 +6,17 @@ import {
   ProcessResult,
 } from "@models/adyen.model";
 import { CashLines, CashModel } from "@models/cash.model";
-import { ResponseModel } from "@models/common.clousing.model";
-import { CustomerModel } from "@models/customer.model";
-import { EmployeeModel } from "@models/employee.model";
-import { IntercompanyModel } from "@models/intercompany.model";
+import { DataServiceModel, ResponseModel } from "@models/common.clousing.model";
+import { CustomerLines, CustomerModel } from "@models/customer.model";
+import { EmployeeLine, EmployeeModel } from "@models/employee.model";
+import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import {
   CouponCatalogModel,
   PrepaidLineModel,
   PrepaidModel,
 } from "@models/prepaid.model";
-import { SpecialCustomerModel } from "@models/specialCustome.model";
-import { TDCModel } from "@models/tdc.model";
+import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
+import { BankLineModel, TDCModel } from "@models/tdc.model";
 import {
   CASH,
   TDC,
@@ -31,6 +31,7 @@ import {
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
+import { ClousingSave } from "@models/saveClousing.model";
 
 /**
  * This function gets the information
@@ -62,21 +63,8 @@ export const getCashClousing = async (
 
     const dummy = cashDataCopy;
 
-    // const newTotalPOS = dummy.lines
-    //   .map((currency: CashLines) => currency.totalPOS)
-    //   .reduce((acc: number, curr: number) => acc + curr, 0);
-
-    // const newTotalFisico = dummy.currencies
-    //   .map((currency: CashLines) => currency.totalFisico)
-    //   .reduce((acc: number, curr: number) => acc + curr, 0);
-
     const data = {
       ...dummy,
-      // total: {
-      //   totalPOS: newTotalPOS,
-      //   totalPhysical: newTotalFisico,
-      //   difference: newTotalFisico - newTotalPOS,
-      // },
     };
     const responseData: ResponseModel = {
       success: true,
@@ -227,7 +215,6 @@ export const getSpecialCustomerClousing = async (
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
         couponPrice: 0,
-        // exchangeRate: index + 1 === 1 ? 1 : 17, // ! Eliminar
       })
     );
 
@@ -285,11 +272,9 @@ export const getPrepaidClousing = async (
   // console.log(clousingId)
 
   try {
-    //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_PREPAID, {
       params: { idCashRegisterClosure: clousingId },
     });
-    //PrepaidMOCKData;
     
     const updateLines = await response.data.prepagoResponse.map(
       (item: PrepaidLineModel) => {
@@ -355,16 +340,6 @@ export const getCouponCatalog = async (
     const response = await api.get(GET_COUPONS, {
       params: { consumer: clousingId },
     });
-    //couponCatalogMocky;
-
-    // const data = {
-    //     ...response,
-
-    // }
-    /*     response.data[0].validityDate = "2025-09-28T00:00:00";
-    response.data[1].validityDate = "2025-05-14T00:00:00";
-    response.data[2].validityDate = "2025-05-13T00:00:00";
-    response.data[3].amount = 50; */
     if (response.data.length >= 0) {
       response.data[0].validityDate = "2025-01-01T00:00:00";
     }
@@ -407,14 +382,6 @@ export const getEmployeeClousing = async (
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
       params: { crcId: clousingId },
     });
-
-    /*  const employeeDataCopy = {
-      ...EmployeeData,
-      lines: EmployeeData.lines.map((line) => ({
-        ...line,
-        id: line.id === null ? "employee-" + uuidv4() : line.id,
-      })),
-    }; */
     const totalPhysical = responseAxios.data.reduce(
       (acc: number, curr: any) => acc + curr.amount,
       0
@@ -518,19 +485,183 @@ export const getIntercompanyClousing = async (
   }
 };
 
-//TODO: Validar si se usaran endpoints por tipo de cierre o uno con key para indentificar
-export const sendCashClousing = async (body: any, isConfirm: boolean) => {
+export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean) => {
   try {
-    //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
-    //TODO: Devolver para consulta a back
+
+     const mapCustomerLines = (lines: CustomerLines[]) =>
+      lines.map(
+        ({
+          currencyId,
+          pax: valuePAX,
+          currency,
+          id,
+          currencyLabel,
+          ...rest
+        }) => ({
+          ...rest,
+          customers: rest.nameClient,
+          valuePAX,
+          id: typeof id === "number" ? id : null,
+          currency: currencyId,
+        })
+      );
+
+    const mapIntercompanyLines = (lines: IntercompanyLine[]) =>
+      lines.map(({ id, ...rest }) => ({
+        ...rest,
+        id: typeof id === "number" ? id : null,
+        ticket: rest.ticket,
+      }));
+
+    const mapSpecialCustomerLines = (lines: SpecialCustomerLines[]) =>
+      lines.map(
+        ({
+          ammountMXN: amountMXN,
+          ammountUSD: valueUSD,
+          ammount: value,
+          bill: consumption,
+          check: Check,
+          couponFolio: folioCuopon,
+          couponPrice: priceCuopon,
+          pax: pax,
+          id,
+          couponFolioUSD: folioCuoponUSD,
+          ...rest
+        }) => ({
+          ...rest,
+          id: typeof id === "number" ? id : null,
+          amountMXN,
+          valueUSD,
+          value,
+          consumption,
+          Check,
+          folioCuopon,
+          priceCuopon,
+          pax,
+          folioCuoponUSD,
+        })
+      );
+
+    const mapEmployeeLines = (lines: EmployeeLine[]) =>
+      lines.map(({ employeeNumber, reason, ticketNumber, ...rest }) => ({
+        id: typeof rest.id === "number" ? rest.id : null,
+        amount: rest.amount,
+        employeeId: rest.employeeId ?? 0,
+        reasonId: rest.reasonId ?? 0,
+        ticketId: rest.ticketId ?? null,
+        externalId: rest?.externalId ?? undefined,
+      }));
+
+    const mapPrepaidLines = (lines: PrepaidLineModel[]) =>
+      lines.map((line) => ({
+        ...line,
+        id: typeof line.id === "number" && line.id !== 0 ? line.id : null,
+        coupons: line.coupons
+          .filter((coupon) => coupon.isExpired === false)
+          .map((coupon) => ({
+            ...coupon
+          })),
+      }));
+
+    const mapTdcLines = (lines: BankLineModel[]) => {
+      return lines.map(({ ...rest }) => ({
+        ...rest,
+        id: typeof rest.id === "number" ? rest.id : null,
+        POS: rest.pos,
+        vouchers: rest.vouchers.map((voucher) => ({
+          ...voucher
+        })),
+      }));
+    };
+    const mapCurrLines = (lines: CashLines[]) => {
+      return lines.map(({...curr}) => ({
+        id: curr.idCurrency,
+        symbol: curr.currency.toUpperCase(),
+        total: curr.totalFisico || 0
+      }))
+    }
+    const body: ClousingSave = {
+      id: dataService.clousingId,
+      discountPhysical: dataService.discountPhysical | 0,
+      cash: {
+        idCurrencySub: dataService.idCurrency,
+        electronicTips: dataService.cash.electronicTips,
+        lines:
+          dataService.cash && dataService.cash.currencies
+            ? (dataService.cash.currencies as any[]).map(({ id, ...rest }) => ({
+                id: typeof id === "number" ? Number(id) : null,
+                ...rest,
+              }))
+            : [],
+        tips: dataService.cash.tips ?? 0,
+        total: dataService.cash.total ?? { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      },
+      customer: {
+        lines: mapCustomerLines(dataService.customer != undefined ? dataService.customer.lines : []),
+        total: dataService.customer != undefined ? dataService.customer.total :
+        {
+          totalPOS:  0,
+          totalPhysical:  0,
+          difference:  0,
+        },
+      },
+      intercompany: {
+        lines: mapIntercompanyLines(dataService.intercompany != undefined ? dataService.intercompany.lines : []),
+        total: dataService.intercompany != undefined && dataService.intercompany.total ? dataService.intercompany.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+      },
+      specialCustomer: {
+        lines: mapSpecialCustomerLines(dataService.specialCustomer != undefined ? dataService.specialCustomer.lines : []),
+        total: dataService.specialCustomer != undefined && dataService.specialCustomer.total ? dataService.specialCustomer.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+      },
+      employee: {
+        total: dataService.employee
+          ?.total ?? {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+        lines: mapEmployeeLines(
+          dataService.employee.lines ?? []
+        ),
+      },
+      prepaid: {
+        lines: mapPrepaidLines(dataService.prepaid != undefined ? dataService.prepaid.lines : []),
+        total: dataService.prepaid != undefined && dataService.prepaid.total ? dataService.prepaid.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+      },
+      tdc: {
+        idCurrencySub: dataService.idCurrency,
+        lines: mapTdcLines(dataService.tdc != undefined ? dataService.tdc.lines : []),
+        total: dataService.tdc != undefined && dataService.tdc.total ? dataService.tdc.total : {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+      },
+      currencies:  mapCurrLines(dataService.cash.currencies ?? []),
+    };
     
-    const response = await api.post(SENDCASHCLOUSING,
-      {params: {
-        isPreguardado: isConfirm
-      }},
-      body
+    const response = await api.post(
+      SENDCASHCLOUSING,
+      body,
+      {
+        params: {
+          isPreguardado: isConfirm
+        }
+      }
     );
-    //TODO: Devolver para consulta a back
+
     return response.data;
   } catch (error) {
     console.error("Error al enviar los valores generales:", error);
@@ -640,45 +771,16 @@ export const processFiles = async (
             transformedRow[targetField] =
               parts.length >= 2 ? parts[1] : merchantRef;
           }
-          // Procesamiento específico para Account
-          /*  else if (
-            csvColumn === "Account" &&
-            typeof row[csvColumn] === "string"
-          ) {
-            const account = row[csvColumn] as string;
-            transformedRow[targetField] = account.split("_")[0];
-          }  */
           else if (
             csvColumn.toLowerCase().trim() === "Creation Date".toLowerCase() &&
             typeof row[csvColumn] === "string"
           ) {
             const dateSplit = (row[csvColumn] as string).split(" ");
             const dateShort = dateSplit[0];
-            // Definir los formatos posibles de fecha
-
-            const possibleFormats = [
-              "dd/MM/yyyy", // formato europeo
-              "MM/dd/yyyy", // formato americano
-              "yyyy/MM/dd", // formato ISO
-              "dd-MM-yyyy", // con guiones
-              "MM-dd-yyyy", // con guiones formato americano
-              "yyyy-MM-dd", // formato ISO con guiones
-              "dd/MM/yy",
-              // con puntos
-            ];
 
             // Intentar parsear la fecha con cada formato hasta encontrar uno válido
             let fechaParseada = null;
             let fechaFormateada = "";
-
-            /* for (const formatPattern of possibleFormats) {
-              fechaParseada = parse(dateShort, formatPattern, "dd/MM/yy");
-              if (isValid(fechaParseada)) {
-                // Si el formato funciona, salir del bucle
-                fechaFormateada = format(fechaParseada, "dd/MM/yyyy");
-                break;
-              }
-            } */
 
             // Si ninguno de los formatos funciona, intentar con Date()
             if (!isValid(fechaParseada)) {
@@ -738,33 +840,6 @@ export const processFiles = async (
                 )
                   .map(transformRow)
                   .filter(Boolean); // Filtrar valores nulos o undefined
-                /*   .filter((record) => {
-                    // Filtrar por storeName y location si están presentes
-                    const recordStore = String(
-                      record["Centro de consumo"] ||
-                        record["StoreName"] ||
-                        record["store"] ||
-                        ""
-                    ).trim();
-                    const recordLocation = String(
-                      record["Subsidiaria"] ||
-                        record["StoreLocation"] ||
-                        record["location"] ||
-                        ""
-                    ).trim();
-
-                    // Validar si ambos valores coinciden con los proporcionados
-                    // Solo filtramos si los valores de storeName y location no están vacíos
-
-                    return (
-                      (!storeName ||
-                        recordStore.toLowerCase() ===
-                          storeName.toLowerCase()) &&
-                      (!location ||
-                        recordLocation.toLowerCase() === location.toLowerCase())
-                    );
-                  }); */
-
                 resolve({ data: transformedData, fileName: file.name });
               } catch (error) {
                 reject(error);
