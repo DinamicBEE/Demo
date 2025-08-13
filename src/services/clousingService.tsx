@@ -26,6 +26,7 @@ import {
   SP_CLIENTS,
   GET_COUPONS,
   GET_PREPAID,
+  SENDCASHCLOUSING,
 } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
@@ -48,34 +49,34 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });
-
+    });    
     const cashDataCopy = {
       ...response.data,
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
-        totalFisico: currency.totalPOS < 0 ? currency.totalPOS : currency.totalFisico,
+        totalFisico: currency.totalPOS < 0 ? 0 : currency.totalFisico,
+        difference: currency.totalPOS < 0 ? Math.abs(currency.totalPOS) : currency.difference,
       })),
     };
 
     const dummy = cashDataCopy;
 
-    const newTotalPOS = dummy.lines
-      .map((currency: CashLines) => currency.totalPOS)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalPOS = dummy.lines
+    //   .map((currency: CashLines) => currency.totalPOS)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
-    const newTotalFisico = dummy.currencies
-      .map((currency: CashLines) => currency.totalFisico)
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+    // const newTotalFisico = dummy.currencies
+    //   .map((currency: CashLines) => currency.totalFisico)
+    //   .reduce((acc: number, curr: number) => acc + curr, 0);
 
     const data = {
       ...dummy,
-      total: {
-        totalPOS: newTotalPOS,
-        totalPhysical: newTotalFisico,
-        difference: newTotalFisico - newTotalPOS,
-      },
+      // total: {
+      //   totalPOS: newTotalPOS,
+      //   totalPhysical: newTotalFisico,
+      //   difference: newTotalFisico - newTotalPOS,
+      // },
     };
     const responseData: ResponseModel = {
       success: true,
@@ -110,7 +111,6 @@ export const getTDCClousing = async (
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
     });   
-    console.log(response) 
     const newResponse = {
       ...response.data,
       lines: response.data.lines.map((line: any) => ({
@@ -152,7 +152,6 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
-    console.log(response)
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
@@ -174,7 +173,7 @@ export const getCustomerClousing = async (
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.totalPhysical - response.data.totalPos,
+        difference: response.data.difference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },
@@ -188,7 +187,7 @@ export const getCustomerClousing = async (
 
     return responseData;
   } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
+    //console.error("Error al obtener los valores generales:", error);
     const responseData: ResponseModel = {
       success: false,
       data: {
@@ -291,14 +290,14 @@ export const getPrepaidClousing = async (
       params: { idCashRegisterClosure: clousingId },
     });
     //PrepaidMOCKData;
-
-    const updateLines = response.data.prepagoResponse.map(
+    
+    const updateLines = await response.data.prepagoResponse.map(
       (item: PrepaidLineModel) => {
         return {
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
           edit: item.supplementsQuantity > 0 ? true : false,
-          coupons: item.coupons
+          coupons: item.coupons != null
             ? item.coupons.map((coupon: CouponCatalogModel) => ({
                 ...coupon,
                 // Generate new UUID for null IDs, otherwise keep existing ID
@@ -324,7 +323,7 @@ export const getPrepaidClousing = async (
       total: {
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
-        difference: response.data.total.totalPhysical - response.data.total.totalPOS,
+        difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
       lines: updateLines,
     };
@@ -525,8 +524,10 @@ export const sendCashClousing = async (body: any, isConfirm: boolean) => {
     //const response = await axios.post(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`, body);
     //TODO: Devolver para consulta a back
     
-    const response = await api.post(
-      "/crc/cash-register-closure/api/closure/save?isPreguardado=" + isConfirm,
+    const response = await api.post(SENDCASHCLOUSING,
+      {params: {
+        isPreguardado: isConfirm
+      }},
       body
     );
     //TODO: Devolver para consulta a back

@@ -103,6 +103,7 @@ api.interceptors.response.use(
             throw new Error("Error al renovar el token");
           }
         } catch (err: any) {
+          //console.error("Error al renovar el token:", err);
           toast(err.message, "error");
           removeTokens();
           reject(err);
@@ -125,8 +126,11 @@ api.interceptors.response.use(
         error,
         window.location.pathname
       );
-
-      toast(errorResponse, "error");
+      if (typeof error.status === "number" && error.status === 404) { //Validar con Back uso correcto de codigos
+        toast(errorResponse, "warning");
+      } else {
+        toast(errorResponse, "error");
+      }
     }
     return Promise.reject(error);
   }

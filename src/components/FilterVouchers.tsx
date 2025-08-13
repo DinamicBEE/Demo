@@ -28,11 +28,21 @@ function FilterVoucher({
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    const sortedVouchers = [...vouchers].sort((a, b) => {
+      const checkA = Number(a.check);
+      const checkB = Number(b.check);
+      
+      if (!isNaN(checkA) && !isNaN(checkB)) {
+        return checkA - checkB;
+      }
+      return a.check.localeCompare(b.check);
+    });
+
     const voucherCollection = createListCollection<voucherSelectOption>({
-      items: vouchers.map((voucher) => ({
+      items: sortedVouchers.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
+        description: `${formatNumber(voucher.amount)} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);
@@ -49,6 +59,7 @@ function FilterVoucher({
       }
       return;
     }
+    
     let query: string = "";
     if (event.toLowerCase() === "backspace") {
       query = searchRef.current.slice(0, -1);
@@ -60,18 +71,33 @@ function FilterVoucher({
     setSearchQuery(query);
     searchRef.current = query;
 
-    const filtered = vouchers.filter((voucher) =>
-      voucher.check.toLowerCase().includes(query)
-    );
+    const filtered = vouchers
+      .filter((voucher) => voucher.check.toLowerCase().includes(query))
+      .sort((a, b) => {
+        const checkA = Number(a.check);
+        const checkB = Number(b.check);
+        
+        if (!isNaN(checkA) && !isNaN(checkB)) {
+          return checkA - checkB;
+        }
+        return a.check.localeCompare(b.check);
+      });
 
     const voucherCollection = createListCollection<voucherSelectOption>({
       items: filtered.map((voucher) => ({
         label: `${voucher.check}`,
         value: `${voucher.idCustom} - ${voucher.amount}`,
-        description: `$${voucher.amount} - Fecha: ${voucher.dateDisplay}`,
+        description: `${formatNumber(voucher.amount)} - Fecha: ${voucher.dateDisplay}`,
       })),
     });
     setFilteredVouchers(voucherCollection);
+  }
+
+  function formatNumber(value: number) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
   }
 
   function handleSelect(event: any) {
@@ -120,6 +146,7 @@ function FilterVoucher({
       </SelectRoot> */}
       <Select.Root
         collection={filteredVouchers}
+        closeOnSelect={false}
         onKeyUp={(e) => handleSearch(e.key)}
         onValueChange={(event) => handleSelect(event)}
         disabled={disabled || false}

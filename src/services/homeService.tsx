@@ -13,22 +13,22 @@ import { format } from "date-fns";
  * @returns {Promise<ClousingModel>}
  */
 export const getGeneralInfo = async (
-  subsidiary: number,
   store: number,
   page: number,
   startDate: Date,
   endDate: Date
 ): Promise<ClousingModel> => {
   try {
-    // console.log(subsidiary, store)
     //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
     //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
     //2025-04-02
     // 2025-05-05T06:00:00.000Z
 
+    console.log();
     
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
+
     const response = await api.get(GET_CLOUSINGS, {
       params: {
         consumeCenter: store,
@@ -56,7 +56,7 @@ export const getGeneralInfo = async (
       header: {
         subsidiaryName: "DIVIERTETE",
         storeName: "BAR GGRILL LS CUN T2A",
-        date: format(endDateFormat, "dd/MM/yyyy"),
+        date: format(endDate, "dd/MM/yyyy"),
         time: format(new Date(), "HH:mm"),
         totalPOS: totalPOS,
         totalPhysical: totalPhysical,
@@ -97,6 +97,7 @@ export const getGeneralInfo = async (
 
     return transformedData as ClousingModel;
   } catch (error) {
+    console.error("Error fetching general info:", error);
     return {
       header: {
         subsidiaryName: "",
@@ -337,7 +338,10 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       tpvAdyenAmex: 0,
       tpvAdyenKiosko: 0,
       tpvKioskoUsd: 0,
-      currencies: []
+      currencies: [],
+      subsidiariaId: 0,
+      subsidiariaCurrencyId: 0,
+      cdcId: 0
     }
   );
 

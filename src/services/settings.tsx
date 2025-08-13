@@ -7,6 +7,28 @@ const CRC_BASE = `/crc/cash-register-closure`;
 const API_BASE = `${CRC_BASE}/api`;
 const CRCPROC_BASE = `${CRC_BASE}/crcproc`;
 const BATCH_BASE = `${CRC_BASE}/batchclosure`;
+/* LOGIN */
+export const SIGNIN = '/auth/authentication/api/v1/auth/signin';
+export const GETROLE = '/auth/authentication/api/test/echo-role';
+export const REFRESH = '/auth/authentication/api/v1/auth/refresh';
+
+/* CORTE DE CAJA */
+export const CLIENTSLIST = '/crc/cash-register-closure/api/clients/list';
+export const CLIENTSPREPAY = '/crc/cash-register-closure/api/clients/clientPrepago';
+export const GET_INTERCOMP_EMP_LIST = '/crc/cash-register-closure/crcproc/employees/employeeListInter';
+export const GET_SUBS_LIST = '/crc/cash-register-closure/api/subsidiaria/subEmploye';
+export const SENDCASHCLOUSING = '/crc/cash-register-closure/api/closure/save';
+//Cierrre de Lote
+export const ASSEMBLIESCONTROLLER_NS = '/crc/cash-register-closure/api/ns/assemblies';
+/* Solicitudes de apertura */
+export const GETLISTAPPROVALS = '/crc/cash-register-closure/api/request';
+export const SAVE_REQUEST = '/crc/cash-register-closure/api/reason/save';
+export const UPDATE_REQUEST = '/crc/cash-register-closure/api/supervisor/request';
+export const GETLISTCLOUSING = '/crc/cash-register-closure/api/reason/listClosing';
+export const GETREASONLIST = '/crc/cash-register-closure/api/reason/list';
+ //! DEPRECATED
+//export const GET_BATCH = '/crc/cash-register-closure/batchclosure/getBatchByDates';
+//export const GET_BATCH_DETAILS = 'crc/cash-register-closure/batchclosure/getBatchDetails';
 
 export const SUBSIDIARIES = `${API_BASE}/subsidiaria/list`;
 export const LOCATIONS = `${API_BASE}/subsidiaria/store`;

@@ -1,6 +1,7 @@
 import { createListCollection } from "@chakra-ui/react";
-import { AprovalsClousureCash, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
+import { AprovalsClousureList, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
+import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
 
 export const approvalsServices = {
 
@@ -9,7 +10,7 @@ export const approvalsServices = {
 
     try {
 
-      const response = await api.get(`/crc/cash-register-closure/api/request`);
+      const response = await api.get(GETLISTAPPROVALS);
       const result = response.data;
 
       return result;
@@ -25,7 +26,7 @@ export const approvalsServices = {
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {
     try {
 
-      const response = await api.post(`/crc/cash-register-closure/api/reason/save`, data);
+      const response = await api.post(SAVE_REQUEST, data);
 
       return response.data
 
@@ -38,7 +39,7 @@ export const approvalsServices = {
   async updateStatusRequest(data: RequestUpdateDetails): Promise<any> {
     try {
 
-      const response = await api.post(`/crc/cash-register-closure/api/supervisor/request`, data);
+      const response = await api.post(UPDATE_REQUEST, data);
 
       return response.data;
 
@@ -48,35 +49,57 @@ export const approvalsServices = {
   },
 
   //obtiene el listado de las cajas y lotes.
-  async getClosingList(idConsumerCenter: number): Promise<any> {
-    try {
-      const response = await api.get(`/crc/cash-register-closure/api/reason/listClosing?idConsumerCenter=${idConsumerCenter}`);
-      const result: AprovalsClousureCash[] = response.data;
+  async getClosingList(idConsumerCenter: number, date: string, type:number): Promise<AprovalsClousureList[]> {
+    try {      
+      const response = await api.get(GETLISTCLOUSING, {
+        params: {
+          idConsumerCenter: idConsumerCenter,
+          date: date,
+        }
+      });
+
+      const newType = type === 1 ? "corte" : type === 2 ? "lote": "";
+
+      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+      const result: AprovalsClousureList[] = filteredData.map((item: any) => {
+       
+        return {
+          id: item.id,
+          name: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
+        }
+ 
+      });      
 
       return result
 
     } catch (error) {
       console.log(error);
-      return [];
+      return [] as AprovalsClousureList[];
     }
   },
 
   // obtiene el listado de los motivos.
-  async getReasonsList(): Promise<any> {
+  async getReasonsList(type: Number): Promise<AprovalsReason[]> {
     try {
 
-      const response = await api.get(`/crc/cash-register-closure/api/reason/list`);
-      const result: AprovalsReason[] = response.data;
+      const response = await api.get(GETREASONLIST);
+      
+      const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
 
-      const collection = createListCollection({
-        items: result
+      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+      
+      const result: AprovalsReason[] = filteredData.map((item: any) => {
+        return {
+          id: item.id,
+          name: item.reason, 
+        }
       });
 
-      return collection;
+      return result;
 
     } catch (error) {
       console.log(error)
-      return [];
+      return [] as AprovalsReason[];
     }
   }
 }

@@ -2,7 +2,7 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
+import { CLIENTSLIST, CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
@@ -101,7 +101,7 @@ export const getCurrencies = async (
 
 export const getCustomers = async () => {
   try {
-    const reponse = await api.get("/crc/cash-register-closure/api/clients/list");
+    const reponse = await api.get(CLIENTSLIST);
     const transformedData = reponse.data.map((customer: any) => {
       return {
         value: customer.id,
@@ -119,7 +119,7 @@ export const getCustomers = async () => {
 export const getCustomersPrepaid = async () => {
   try {
     const reponse = await api.get(
-      "/crc/cash-register-closure/api/clients/clientPrepago",
+      CLIENTSPREPAY,
       { params: { clientType: "Prepago" } }
     );
     const transformedData = reponse.data.map((customer: any) => {

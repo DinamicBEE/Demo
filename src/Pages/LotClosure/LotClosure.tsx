@@ -1,43 +1,24 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  VStack,
-  HStack,
-  Heading,
-  Flex,
-  Field,
-  Spinner,
-} from "@chakra-ui/react";
-import DatePicker from "./components/DatePicker";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "@components/ui/select";
+import { Box, Button, Grid, VStack, HStack, Heading, Flex,
+  Field, Spinner } from "@chakra-ui/react";
+import SimpleDatePicker from "./components/SimpleDatePicker";
+import { SelectContent, SelectItem, SelectLabel, SelectRoot,
+  SelectTrigger, SelectValueText } from "@components/ui/select";
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
-import { location, SubsidiaryModal } from "@models/common.model";
+import { selectOption } from "@models/common.model";
+import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
 
 function LotClosure() {
-  const [companyId, setCompanyId] = useState(0);
-  const [companySelected, setCompanySelected] = useState<SubsidiaryModal>(
-    {} as SubsidiaryModal
-  );
-  const [locationId, setLocationId] = useState(0);
-  const [locationSelected, setLocationSelected] = useState<location>(
-    {} as location
-  );
-  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-    null,
-    null,
-  ]);
-  const [startDate, endDate] = dateRange;
+
+  const [locationId, setLocationId] = useState<number[]>([]);
+
+  const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
+
+  const [formattedDate, setFormattedDate] = useState<string>('');
+  const initialDate = new Date();
+
   const { fetchLotClosureData, lotsClosure } = useLotClosureList();
   const { fetchCompanies, fetchLocations, comapanies, locations, loading } =
     useLotCatalogList();
@@ -47,29 +28,17 @@ function LotClosure() {
     if (lotsClosure.length === 0) {
       setShowTable(true);
     }
-    await fetchLotClosureData(dateRange, locationId, companyId);
-    const getCompanies = comapanies.items.find(
-      (company) => company.value === companyId
-    );
-    const getLocations = locations.items.find(
-      (location) => location.value === locationId
-    );
-    setCompanySelected({
-      id: getCompanies?.value || 0,
-      name: getCompanies?.label || "",
-      idCurrency: 0,
-    });
-    setLocationSelected({
-      id: getLocations?.value || 0,
-      name: getLocations?.label || "",
-    });
+    await fetchLotClosureData(formattedDate, locationId, false);
+
   };
 
-  const onSelectedCompany = (companyIdSelected: string[]) => {
-    if (Number(companyIdSelected) !== companyId) {
-      setLocationId(0);
-      setCompanyId(Number(companyIdSelected));
-    }
+  const handleCDCChange = (event: { items: selectOption[] }) => {
+      handleMultiSelectChange({
+          newItems: event.items,
+          currentSelected: selectedCDCOptions,
+          setSelectedOptions: setSelectedOptions,
+          setSelectedIds: setLocationId
+      })
   };
 
   return (
@@ -91,7 +60,7 @@ function LotClosure() {
               collection={comapanies}
               size="sm"
               onOpenChange={fetchCompanies}
-              onValueChange={({ value }) => onSelectedCompany(value)}
+              onValueChange={(value) => fetchLocations(Number(value.value))}
             >
               <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
@@ -112,52 +81,25 @@ function LotClosure() {
               </SelectContent>
             </SelectRoot>
 
-            <SelectRoot
-              key={companyId}
-              collection={locations}
-              size="sm"
-              onOpenChange={() => fetchLocations(companyId)}
-              onValueChange={({ value }) => setLocationId(Number(value))}
-              disabled={companyId === 0}
-            >
-              <SelectLabel>Centro de consumo</SelectLabel>
-              <SelectTrigger>
-                <SelectValueText placeholder="Selecciona un centro de consumo" />
-              </SelectTrigger>
-              <SelectContent>
-                {!loading ? (
-                  locations.items.map((location) => (
-                    <SelectItem item={location} key={location.value}>
-                      {location.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <Flex justify="center" w="100%" p={2}>
-                    <Spinner color={"#66BB6A"} />
-                  </Flex>
-                )}
-              </SelectContent>
-            </SelectRoot>
+            {renderMultiSelectWithControls(
+                locations,
+                handleCDCChange,
+                "Centro de consumo",
+                "Selecciona un centro de consumo",
+                selectedCDCOptions,
+                true
+              )
+            }
 
             <Field.Root>
-              <Field.Label>Rango de fechas</Field.Label>
-              <DatePicker
-                startDate={startDate}
-                endDate={endDate}
-                onChange={setDateRange}
-              />
+                <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
             </Field.Root>
 
             <Button
               colorPalette="meraInfo"
               onClick={search}
               disabled={
-                companyId !== 0 &&
-                locationId !== 0 &&
-                startDate !== null &&
-                endDate !== null
-                  ? false
-                  : true
+                locationId.length < 0 
               }
             >
               Buscar
@@ -167,9 +109,8 @@ function LotClosure() {
       </VStack>
       <TableOfLotClosure
         showTable={showTable}
-        company={companySelected}
-        location={locationSelected}
-        dateRange={dateRange}
+        locations={locationId}
+        date={formattedDate}
       />
     </Box>
   );

@@ -1,42 +1,32 @@
-import { location, SubsidiaryModal } from "./common.model";
 import { STATUS } from "./status.model";
 import { ListCollection } from "@chakra-ui/react";
 export interface LotClosure {
-  id: number;
-  cashRegisterClosureId: number;
-  employeeId: number;
+  id: number | string; //
   subId: number;
   consumerCenterId: number;
   statusId: number;
-  employeeName: string;
+  employeeCreator: string;
   consumerCenter: string;
   subsidiary: string;
   status: STATUS;
   totalPos: number;
   totalLote: number;
   difference: number;
-/*   company: Company;
-  location: Location;
-  lotNumber: string;
-  totalLot: number;
-  status: STATUS;
-  totalPOS: number;
-  totalClousing: number;
-  difference: number;
-  employe: string;
-  dateClosed: string; */
+  statusSolicitud: number
+  batchDate: string;
 }
 
 export interface Bank {
+  totalCrc: number;
   bankTerminalId: number;
   bankTerminalName: string;
   batchClosureId: number;
   batchDetailsId: number;
   difference: number;
   totalBatch: number;
-  totalCrc: number;
   totalPos: number;
-  affiliationList: Afilation[];
+  affiliationList: Afilation[]; //
+  lines?: Afilation[];
 }
 
 export interface Afilation {
@@ -59,9 +49,8 @@ export interface Location {
 }
 
 export interface TableLotsClosureProps {
-  company: SubsidiaryModal;
-  location: location;
-  dateRange: [Date | null, Date | null];
+  locations: number[];
+  date: string;
   showTable: boolean;
 }
 
@@ -74,10 +63,9 @@ export interface DatePickerProps {
 }
 
 export interface LotClosureDialogProps {
-  company: SubsidiaryModal;
-  location: location;
+  date:string;
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (isRefresh:boolean) => void;
   lot: LotClosure;
 }
 
@@ -93,12 +81,11 @@ export interface LotClosureContextType {
   loadingBanks: boolean;
   updateBankLoading: boolean;
   fetchLotClosureData: (
-    dateRange: [Date | null, Date | null],
-    locationId: number,
-    companyId: number,
+    dateRange: string,
+    locationId: number[],
     isRefresh?: boolean
   ) => Promise<void>;
-  fetchBanks: (lotId: number) => Promise<Bank[]>;
+  fetchBanks: (cdcId: number, date:string) => Promise<Bank[]>;
   updateBank: (lotId: number, bank: Bank[], lot: LotClosure) => Promise<void>;
 }
 
@@ -112,4 +99,13 @@ export interface LotCatalogContextType {
   ) => void;
   fetchCompanies: () => Promise<void>;
   fetchLocations: (companyId: number) => Promise<void>;
+}
+
+export interface LotsClosureContext {
+  [key:string]: LotClosure[]
+}
+
+export interface BankUpdateRequest extends LotClosure {
+  totalCrc: number;
+  batchDetailsRequest: Bank[];
 }

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useMemo,
-  useCallback, ReactNode, useEffect, useRef } from "react";
+  useCallback, ReactNode, useRef } from "react";
 import { calculateClousingTotals, getGeneralInfo } from "@services/homeService";
 import { ClousingContextType, ClousingLinesModel, ClousingModel,
   HeaderClousingModel, TDC, TotalsModel, Currency, } from "@models/common.clousing.model";
@@ -24,7 +24,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [dataClousing, setDataClousing] = useState<any>({}); // por el momento no tiene un Modelo.
   const [dataRow, setDataRow] = useState<ClousingLinesModel>(
     {} as ClousingLinesModel
   );
@@ -54,7 +53,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
 
   const getInfo = useCallback(
     async (
-      subsidiary: number,
       store: number,
       page: number,
       startDate: Date,
@@ -63,7 +61,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     ) => {
       try {
         setError('');
-        const queryKey = `${subsidiary}-${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
+        const queryKey = `${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
 
         const pageKey = `${queryKey}-page-${page}`;
 
@@ -99,7 +97,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
         setLoading(true);
         
         const response = await getGeneralInfo(
-          subsidiary,
           store,
           page,
           startDate,
@@ -156,34 +153,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     [originalData]
   );
 
-  useEffect(() => {
-    if (dataClousing.id) {
-      console.log("dataClousing",dataClousing);
-      
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id == dataClousing.id
-            ? {
-                ...item,
-                closingConfirmation: dataClousing.closingConfirmation,
-                totalPhysical: dataClousing.totalClousing,
-                difference: dataClousing.difference,
-                customer: dataClousing.customer,
-                specialCustomer: dataClousing.specialCustomer,
-                employees: dataClousing.employee,
-                intercompany: dataClousing.intercompany,
-                prepaid: dataClousing.prepaid,
-                status: dataClousing.status,
-                currencies: dataClousing.currencies,
-                tdc: dataClousing.tdc,
-                discountPhysical: dataClousing.discountPhysical,
-              }
-            : item
-        )
-      );
-    }
-  }, [dataClousing]);
-
   const value = useMemo(
     () => ({
       header,
@@ -193,8 +162,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       loading,
       error,
       getInfo,
-      dataClousing,
-      setDataClousing,
       dataRow,
       setDataRow,
       filterDataAdyen,
@@ -208,8 +175,6 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       loading,
       error,
       getInfo,
-      dataClousing,
-      setDataClousing,
       dataRow,
       setDataRow,
       filterDataAdyen,

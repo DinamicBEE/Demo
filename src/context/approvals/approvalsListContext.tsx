@@ -25,7 +25,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
 
   const [approvalsList, setApprovalsList] = useState<Approval[]>([]);
   const [shouldRefetch, setShouldRefetch] = useState(false);
-  const [dataApproval, setDataApproval] = useState<Approval>({ idRequest: 0, date: "", state: "", typeRequest: "", reason: "", comment: "", status: 3 });
+  const [dataApproval, setDataApproval] = useState<Approval>({} as Approval);
 
   const fectApprovals = (approvals: Approval[]) => {
     setApprovalsList(approvals); // ahora se reemplaza toda la lista para reflejar cambios nuevos

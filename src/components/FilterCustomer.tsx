@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CustomerFilter, EmployeeFilterProps } from "@models/employee.model";
 import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
+import { SelectValueChangeDetails } from '@chakra-ui/react';
 import {
   SelectLabel,
   SelectRoot,
@@ -9,7 +10,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@components/ui/select";
-import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 
 function FilterCustomer({
   customers,
@@ -22,8 +22,8 @@ function FilterCustomer({
   //
 
   const [searchQuery, setSearchQuery] = useState<string>("Selecciona cliente");
-  const [filteredCustomer, setFilteredCustomer] = useState<ListCollection>(
-    createListCollection({ items: [] })
+  const [filteredCustomer, setFilteredCustomer] = useState<ListCollection<{ label: string; value: any }>>(
+    createListCollection<{ label: string; value: any }>({ items: [] })
   );
   const searchRef = useRef<string>("");
 
@@ -64,7 +64,7 @@ function FilterCustomer({
     setFilteredCustomer(employeeCollection);
   }
 
-  function handleSelect(event: ValueChangeDetails<any>) {
+  function handleSelect(event: SelectValueChangeDetails<any>) {
     const selectedId = Number(event.value[0]);
 
     const customerSelect = customers.find(
@@ -92,9 +92,9 @@ function FilterCustomer({
         </SelectTrigger>
 
         <SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
-          {filteredCustomer.items.map((movie) => (
-            <SelectItem item={movie} key={movie.value}>
-              {movie.label}
+          {filteredCustomer.items.map((item) => (
+            <SelectItem item={item} key={item.value}>
+              {item.label}
             </SelectItem>
           ))}
         </SelectContent>

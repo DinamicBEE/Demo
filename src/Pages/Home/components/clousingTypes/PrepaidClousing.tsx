@@ -63,7 +63,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       const prepaid: PrepaidModel = await getPrepaidData(
         data?.id,
         data?.closingStartDate
-      );
+      );      
       if (prepaid.lines.length > 0) {
         const couponsList: CouponCatalogModel[] = await getCouponData(
           cdc,
@@ -620,7 +620,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       ></DialogCoupons>
 
       {loading && (
-        <Box position="fixed" top="50%" left="50%" zIndex="1">
+        <Box position="fixed" top="50%" left="50%" zIndex={1000}>
           <Loading />
         </Box>
       )}

@@ -22,10 +22,7 @@ export const ConfirmDialog: React.FC<ConfirmacionDialogProps> = ({ isOpen, onClo
 
           <DialogFooter>
 
-            <DialogActionTrigger>
-              <Button colorPalette='red' onClick={() => onClose()} loading={loading} disabled={loading}> Cancelar </Button>
-            </DialogActionTrigger>
-
+            <Button colorPalette='red' onClick={() => onClose()} loading={loading} disabled={loading}> Cancelar </Button>
             <Button colorPalette='green' onClick={() => onConfirm()} loading={loading} disabled={loading}> Confirmar </Button>
 
           </DialogFooter>

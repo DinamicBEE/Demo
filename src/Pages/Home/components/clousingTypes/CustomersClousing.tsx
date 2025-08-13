@@ -38,6 +38,9 @@ import { useHeaders } from "@context/home/headerContext";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
+import { getCustomers } from "@services/catalogService";
+import { selectOption } from "@models/common.model";
+
 
 const pageSize = 10;
 
@@ -48,9 +51,10 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const [CustomersData, setCustomersData] = useState<CustomerModel>(
     {} as CustomerModel
   );
+  const [customers, setCustomers] = useState<ListCollection>();
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading } = useCustomerContext();
-  const { handleCoupons, selectCurrency, handleAmountPAX } = useHandleCustomer(
+  const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer } = useHandleCustomer(
     CustomersData || ({} as CustomerModel),
     setCustomersData,
     data?.id ?? 0
@@ -74,12 +78,18 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
 
       const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
 
-      let createCurrenciList = createListCollection({ items: currencies });
+      if (!currencies) {
+        setcurrenciesForSelect(
+          createListCollection<CurrencyModel>({ items: [] })
+        );
+      } else {
+        let createCurrenciList = createListCollection({ items: currencies });
+        setcurrenciesForSelect(createCurrenciList);
+      }
+
 
       setCustomersData(customers);
-      setcurrenciesForSelect(createCurrenciList);
       setCurrencies(currencies);
-      console.log("CustomersData", customers.total.totalPhysical);
       
       if (customers?.total?.difference < 0) {
         updateTotal(customers.total.totalPOS, data.id, CLOUSING_KEY.CUSTOMER);
@@ -90,18 +100,29 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
           CLOUSING_KEY.CUSTOMER
         );
       }
-      /*     updateTotal(
-        customers.total.totalPhysical,
-        data.id,
-        CLOUSING_KEY.CUSTOMER
-      );  */
 
-      const items = customers?.lines?.slice(startRange, endRange);
+      const items = customers?.lines?.slice(startRange, endRange);      
       setVisibleItems(items);
     }
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    async function fetchCustomers() {
+      const customersList = await getCustomers();
+
+      if (customersList) {
+        setCustomers(createListCollection<selectOption>({items: customersList}));
+        
+      } else {
+        setCustomers(createListCollection<selectOption>({ items: [] }));
+      }
+
+    }
+    fetchCustomers();
+  }, []);
+  
 
   useEffect(() => {
     setPage(page);
@@ -112,12 +133,11 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   const openDialog = () => {
     onOpen();
   };
-
+  
   return (
     <>
       <Box>
-        {/* <Toaster /> */}
-        <Button mb={2} onClick={() => openDialog()}>
+        <Button mb={2} onClick={() => openDialog()} disabled={data?.closingConfirmation}>
           Agregar cliente
         </Button>
         <Table.ScrollArea rounded="md" borderWidth="1px">
@@ -146,10 +166,28 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {visibleItems?.map((item: CustomerLines) => (
+              {visibleItems?.map((item: CustomerLines, index: number) => (
                 <Table.Row key={item.id}>
                   <Table.Cell textAlign="center">
-                    <Text>{item.nameClient}</Text>
+                    <SelectRoot
+                      collection={customers || createListCollection<selectOption>({ items: [] })}
+                      onValueChange={(e) => handleChangeCustomer(e, item.id)}
+                      disabled={data?.closingConfirmation}
+                    >
+                      <SelectTrigger>
+                        <SelectValueText
+                          placeholder={item.nameClient || "Seleccionar cliente"}
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {customers && 
+                          customers.items.map((item) => (
+                          <SelectItem key={item.value} item={item}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
@@ -168,7 +206,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                     <SelectRoot
                       collection={
                         currenciesForSelect ||
-                        createListCollection({ items: [] })
+                        createListCollection<CurrencyModel>({ items: [] })
                       }
                       onValueChange={(e) =>
                         selectCurrency(e.value, item.id, currencies)
@@ -254,7 +292,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
           </HStack>
         </PaginationRoot>
         {customerLoading && (
-          <Box position="fixed" top="50%" left="50%" zIndex="1">
+          <Box position="fixed" top="50%" left="50%" zIndex={1000}>
             <Loading />
           </Box>
         )}

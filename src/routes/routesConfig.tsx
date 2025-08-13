@@ -25,6 +25,16 @@ const routesConfig = [
         </HomeProvider>
       ),
     },
+        {
+      path: '/homeV3',
+      element: lazy(() => import('../Pages/Home/Home_v3')),
+      roles: ['admin', 'user'],
+      wrapper: (Component: React.ComponentType) => (
+        <HomeProvider>
+          <Component />
+        </HomeProvider>
+      ),
+    },
     {
       path: '/lotClosure',
       element: lazy(() => import('../Pages/LotClosure/LotClosure')),

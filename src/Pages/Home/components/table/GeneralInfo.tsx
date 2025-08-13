@@ -18,7 +18,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                 >
                     <Group>
                         <InputAddon>Subsidiaria</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                             <Input
                                 placeholder="No seleccionada"
                                 value={subsidiary?.name}
@@ -27,8 +27,8 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                         </Skeleton>
                     </Group>
                     <Group>
-                        <InputAddon>Restaurante</InputAddon>
-                        <Skeleton loading={loading}>
+                        <InputAddon>CDC</InputAddon>
+                        <Skeleton loading={loading} width={"100%"}>
                             <Input
                                 placeholder="No seleccionada"
                                 value={store?.name}
@@ -40,7 +40,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
 
                     <Group>
                         <InputAddon>Fecha</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                         <Input
                             disabled
                             placeholder="No seleccionada"
@@ -50,7 +50,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     </Group>
                     <Group>
                         <InputAddon>Hora</InputAddon>
-                        <Skeleton loading={loading}>
+                        <Skeleton loading={loading} width={"100%"}>
                         <Input
                             disabled
                             placeholder="No seleccionada"
@@ -60,12 +60,12 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     </Group>
 
                     <CurrencyInput
-                        name={"Total Ventas"}
+                        name={"Total POS"}
                         value={header.totalPOS}
                         loading={loading}
                     />
                     <CurrencyInput
-                        name={"Total Ventas Registradas"}
+                        name={"Total Físico"}
                         value={header.totalPhysical}
                         loading={loading}
                     />
@@ -86,12 +86,12 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                     mb={4}
                 >
                     <CurrencyInput
-                        name={"Total Ventas"}
+                        name={"Total POS"}
                         value={totals?.totalPOS}
                         loading={loading}
                     />
                     <CurrencyInput
-                        name={"Total Ventas Registradas"}
+                        name={"Total Físico"}
                         value={totals?.totalPhysical}
                         loading={loading}
                     />

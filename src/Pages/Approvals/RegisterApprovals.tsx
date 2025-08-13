@@ -1,9 +1,8 @@
-import React, { memo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { NativeSelectField, NativeSelectRoot, Separator, Text, Textarea, useDisclosure } from "@chakra-ui/react";
+import React, { memo, useEffect, useState } from "react";
+import { createListCollection, ListCollection, Separator, Text, Textarea, useDisclosure, Field } from "@chakra-ui/react";
+import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { Field } from "@components/ui/field";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
@@ -11,29 +10,52 @@ import { approvalsServices } from "@services/approvalsServices";
 import { getStores, getSubsidiaries } from "@services/catalogService";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { useApi } from "@hooks/useApi";
+import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
+import { selectOption } from "@models/common.model";
+import { fetchAndSetData } from "../../utils/selectManagement";
+import { ApprovalsReasons } from "@models/constants.model";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 
   const [hasCancelled, setHasCancelled] = useState(false);
-  const [reasonsListFilter, setReasonsListFilter] = useState([]);
-  const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<RequestOpeningForm>();
   const { open, onOpen: onOpenConfir, onClose: onCloseConfir } = useDisclosure();
   const { triggerRefresh } = useApprovalsList();
-  const { data: subsidiariesList } = useApi(getSubsidiaries);
-  const { data: reasonsList } = useApi(approvalsServices.getReasonsList);
+  
+  const [type, setType] = useState<number>(0);
+  const [ idCDC, setIdCDC ] = useState<number>(0);
+  const [ idClousing, setIdClousing ] = useState<number>(0);
+  const [reason, setReason] = useState<number>(0);
+  const [ date, setDate ] = useState<string>('');
+  const [textareaValue, setTextareaValue] = useState<string>('');
+  const initialDate = new Date();
+  
+  const [subsidiaries, setSubsidiaries] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
+  const [cdc, setCDC] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
+  const [closingList, setClosingList] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
+  const [reasonsListFilter, setReasonsListFilter] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
 
-  const { data: consumerCentersList, refetch: fetchConsumerCenters, setData: setConsumerCenters } = useApi((id: number) => getStores(id), {
-    autoFetch: false,
-  });
+  useEffect(() => {
+    async function fetchData() {
 
-  const { data: closingList, refetch: fetchClousingList, setData: setClosingList } = useApi((id: number) => approvalsServices.getClosingList(id), {
-    autoFetch: false
-  });
+      await fetchAndSetData(getSubsidiaries, setSubsidiaries)
+      
+    }
 
+    fetchData();
+  }, []);
+  
   //hook encargado de realizar el guardado de la informacion
   const { refetch, isLoading } = useApi(
     () => {
-      const formData = getValues();
+      const formData: RequestOpeningForm = {
+        id: idClousing.toString(),
+        reason: reason,
+        comment: textareaValue
+      };
       return approvalsServices.saveDataRequest(formData);
     },
     {
@@ -43,7 +65,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         if (data == 'create') {
 
           onClose();
-          reset();
+          handleCancel(false);
           triggerRefresh();
 
           toaster.create({ title: `Se guardaron los datos correctamente`, type: 'success' });
@@ -51,53 +73,42 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
       },
       onError: (data) => {
-        reset();
+        handleCancel(false);
         onClose();
         toaster.create({ title: `No se guardaron los datos correctamente`, type: 'error' });
       },
     }
   );
 
+  useEffect(() => {
+    async function fetchClousingList() {
+      if (idCDC !== 0 && date.length > 0  && type !== 0) {      
+
+        await fetchAndSetData(() => approvalsServices.getClosingList(idCDC, date, type), setClosingList)
+
+        await fetchAndSetData(() => approvalsServices.getReasonsList(type), setReasonsListFilter)
+      }
+    }
+    fetchClousingList();
+  }, [idCDC, date, type])
+  
+
   const onSubmitForm = () => onOpenConfir();
 
   const handleConfirm = () => refetch();
 
-  const handleGetConsumerCenter = (data: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const idSubsidary: number = Number(data.target.value);
-
-    fetchConsumerCenters(idSubsidary); // disparas la petición
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTextareaValue(e.target.value);
   };
 
-  const handleGetCashClousing = (data: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const idConsumerCenter: number = Number(data.target.value);
-
-    fetchClousingList(idConsumerCenter);
-  }
-
-  const handleGetReasonList = (data: React.ChangeEvent<HTMLSelectElement>) => {
-
-    const noValid = [undefined, null, ''];
-
-    if (noValid.includes(data.target.value)) {
-      setReasonsListFilter([]);
-      return
-    }
-
-    const clousingId: number = Number(data.target.value);
-    const closing: any = closingList.find((item: any) => item.id == clousingId);
-    const typeClousing: string = closing.date.toUpperCase().includes('Corte de caja'.toUpperCase()) ? 'CASH_CLOSURE' : 'LOTE';
-    const filteredReasons: any = reasonsList.items.filter((item: any) => item.type === typeClousing);
-
-    setReasonsListFilter(filteredReasons);
-  }
-
-  const handleCancel = () => {
-    reset();
-    setHasCancelled(true);
-    setClosingList(undefined);
-    setConsumerCenters(undefined);
+  const handleCancel = (flag: boolean) => {
+    setHasCancelled(flag);
+    setType(0);
+    setIdCDC(0);
+    setIdClousing(0);
+    setReason(0);
+    setDate('');
+    setTextareaValue('');
   }
 
   return (
@@ -127,87 +138,150 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
           <DialogBody pb="4">
 
-            <form onSubmit={handleSubmit(onSubmitForm)}>
+            <SelectRoot
+                collection={subsidiaries}
+                onValueChange={(event) => {
+                    const selectedCountries = event.items.map((item: selectOption) => ({
+                        value: item.value,
+                        label: item.label,
+                    }));
 
-              {/* Listado de Subsidiarias. */}
-              <Field label="Subsidiarias">
-                <NativeSelectRoot size="md">
-                  <NativeSelectField placeholder="Seleccione una opcion" onChange={(event) => handleGetConsumerCenter(event)}>
-                    {
-                      subsidiariesList &&
-                      subsidiariesList.map((item: any) => (<option key={item.id} value={item.id}>{item.name}</option>))
-                    }
-                  </NativeSelectField>
-                </NativeSelectRoot>
-              </Field>
+                    fetchAndSetData(() => getStores(selectedCountries[0].value), setCDC);
+                }}
+            >
+                <SelectLabel fontFamily="heading">
+                Subsidiarias
+                </SelectLabel>
+                <SelectTrigger>
+                <SelectValueText placeholder="Seleccione una opcion" />
+                </SelectTrigger>
+                <SelectContent>
+                {subsidiaries.items.length > 0 && subsidiaries.items.map((item: selectOption) => (
+                    <SelectItem item={item} key={item.value}>
+                    {item.label}
+                    </SelectItem>
+                ))}
+                </SelectContent>
+            </SelectRoot>
 
-              {/* Lista de Centros de Consumo  */}
+            <SelectRoot
+              collection={ApprovalsReasons}
+              onValueChange={(event) => {
+                setType(event.items[0].value);
+              }}
+            >
+              <SelectLabel fontFamily="heading">
+                Tipo de reapertura
+                </SelectLabel>
+                <SelectTrigger>
+                <SelectValueText placeholder="Seleccione una opcion" />
+                </SelectTrigger>
+                <SelectContent>
+                {ApprovalsReasons.items.length > 0 && ApprovalsReasons.items.map((item: selectOption) => (
+                    <SelectItem item={item} key={item.value}>
+                    {item.label}
+                    </SelectItem>
+                ))}
+              </SelectContent>
 
-              <Field label="Centros de Consumo">
-                <NativeSelectRoot size="md">
-                  <NativeSelectField placeholder="Seleccione una opción" onChange={(event) => handleGetCashClousing(event)}>
-                    {
-                      consumerCentersList &&
-                      consumerCentersList.map((item: any) => (
-                        <option key={item.id} value={item.id}>{item.name}</option>
-                      ))
-                    }
-                  </NativeSelectField>
-                </NativeSelectRoot>
-              </Field>
+            </SelectRoot>
+            
+
+            <SelectRoot
+                mb={18}
+                collection={cdc}
+                onValueChange={(event) => {
+                  setIdCDC(event.items[0].value);
+
+                }}
+            >
+                <SelectLabel fontFamily="heading">
+                Centros de Consumo
+                </SelectLabel>
+                <SelectTrigger>
+                <SelectValueText placeholder="Seleccione una opcion" />
+                </SelectTrigger>
+                <SelectContent>
+                {cdc.items.length > 0 && cdc.items.map((item: selectOption) => (
+                    <SelectItem item={item} key={item.value}>
+                    {item.label}
+                    </SelectItem>
+                ))}
+                </SelectContent>
+            </SelectRoot>
+
+            <Field.Root>
+                <SimpleDatePicker onDateChange={setDate} initialDate={initialDate}></SimpleDatePicker>
+            </Field.Root>
+
 
               {
-                closingList && closingList.length !== 0 && !hasCancelled &&
+                closingList && closingList.items.length !== 0 && !hasCancelled &&
                 (
                   <>
                     <Separator />
 
-                    {/* Listado de cierres de lotes y cajas */}
-                    <Field label="Lista de cierre de cajas / cierre de lotes*">
-                      <NativeSelectRoot size="md">
-                        <NativeSelectField placeholder="Seleccione una opcion" {...register('id', { required: 'Este campo es requerido' })}
-                          onChange={(event) => handleGetReasonList(event)}>
-                          {
-                            closingList != undefined &&
-                            closingList.map((item: any) => (<option key={item.id} value={item.id}>{item.date}</option>))
-                          }
-                        </NativeSelectField>
-                      </NativeSelectRoot>
+                    <SelectRoot
+                        collection={closingList}
+                        onValueChange={(event) => {
+                          setIdClousing(event.items[0].value);
+                        }}
+                    >
+                        <SelectLabel fontFamily="heading">
+                        Lista de cierre de cajas / cierre de lotes
+                        </SelectLabel>
+                        <SelectTrigger>
+                        <SelectValueText placeholder="Seleccione una opcion" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {closingList.items.length > 0 && closingList.items.map((item: selectOption) => (
+                            <SelectItem item={item} key={item.value}>
+                            {item.label}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </SelectRoot>
 
-                      {errors.id && <Text color="red" textStyle='xs'>{errors.id?.message}</Text>}
-                    </Field>
+                    <SelectRoot
+                        collection={reasonsListFilter}
+                        onValueChange={(event) => {
+                          setReason(event.items[0].value);
+                        }}
+                    >
+                        <SelectLabel fontFamily="heading">
+                        Motivo
+                        </SelectLabel>
+                        <SelectTrigger>
+                        <SelectValueText placeholder="Seleccione una opcion" />
+                        </SelectTrigger>
+                        <SelectContent>
+                        {reasonsListFilter.items.length > 0 && reasonsListFilter.items.map((item: selectOption) => (
+                            <SelectItem item={item} key={item.value}>
+                            {item.label}
+                            </SelectItem>
+                        ))}
+                        </SelectContent>
+                    </SelectRoot>
 
-                    {/* Listado motivos */}
-                    <Field label="Motivo*">
-                      <NativeSelectRoot size="md">
-                        <NativeSelectField placeholder="Seleccione una opcion" {...register('reason', { required: 'Este campo es requerido' })}>
-                          {
-                            reasonsListFilter.map((item: any) => (<option key={item.id} value={item.id}>{item.reason}</option>))
-                          }
-                        </NativeSelectField>
-                      </NativeSelectRoot>
-                      {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
-                    </Field>
-
-                    <Field label="Comentario*">
-                      <Textarea variant="outline" {...register('comment', { required: 'Este campo es requerido' })} />
-                      {errors.reason && <Text color="red" textStyle='xs'>{errors.reason?.message}</Text>}
-                    </Field>
+                    <Field.Root required>
+                      <Field.Label>Comentario</Field.Label>
+                      <Textarea variant="outline" value={textareaValue} onChange={handleChange} />
+                    </Field.Root>
                   </>
                 )
               }
-            </form>
+
           </DialogBody>
 
           <DialogFooter>
 
             <DialogActionTrigger asChild>
-              <Button colorPalette="meraError" onClick={() => handleCancel()} disabled={isLoading}>Cancelar</Button>
+              <Button colorPalette="meraError" onClick={() => handleCancel(true)} disabled={isLoading}>Cancelar</Button>
             </DialogActionTrigger>
 
             {
-              closingList && closingList.length !== 0 && !hasCancelled && (
-                <Button  colorPalette="meraPrimary" loading={isLoading} disabled={isLoading} onClick={handleSubmit(onSubmitForm)}>
+              closingList && closingList.items.length !== 0 && !hasCancelled && (
+                <Button  colorPalette="meraPrimary" loading={isLoading} disabled={isLoading} onClick={() => onSubmitForm()}>
                   Guardar
                 </Button>
               )

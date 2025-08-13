@@ -47,7 +47,7 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
       try {
         const data = await getPrepaidClousing(clousingId, dateClousing);
-
+        
         const updatePrepaid = {
           ...prepaidRef.current,
           [clousingId]: data,

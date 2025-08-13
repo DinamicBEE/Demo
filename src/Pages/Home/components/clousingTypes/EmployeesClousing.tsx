@@ -129,7 +129,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} data={editEmployee}/>
 
       {employeeLoading && (
-        <Box position="fixed" top="50%" left="50%" zIndex="1">
+        <Box position="fixed" top="50%" left="50%" zIndex={1000}>
           <Loading />
         </Box>
       )}

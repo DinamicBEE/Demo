@@ -1,21 +1,8 @@
 import { Suspense, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  FormatNumber,
-  Grid,
-  HStack,
-  Skeleton,
-  Table,
-  Tag,
-  Text,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { Box, Button, FormatNumber, Grid, HStack, Skeleton,
+  Table, Tag, Text } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
+  PaginationRoot } from "@components/ui/pagination";
 import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/status.model";
@@ -26,9 +13,8 @@ import { getStatusColor } from "../../utils/getStatusColor";
 
 const pageSize = 10;
 function TableOfLotClosure({
-  company,
-  location,
-  dateRange,
+  locations,
+  date,
   showTable,
 }: TableLotsClosureProps) {
   const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
@@ -41,7 +27,7 @@ function TableOfLotClosure({
 
   useEffect(() => {
     setPage(page);
-    const items = lotsClosure.slice(startRange, endRange);
+    const items = lotsClosure.slice(startRange, endRange);    
     setVisibleItems(items);
   }, [page, lotsClosure]);
 
@@ -55,7 +41,6 @@ function TableOfLotClosure({
         heders: [
           { label: "Ubicación", key: "location" },
           { label: "Empresa", key: "company" },
-          //{ label: "Numero de lote", key: "lotNumber" },
           { label: "Estado", key: "status" },
           { label: "Total POS", key: "totalPOS" },
           { label: "Total Lote", key: "totalLot" },
@@ -65,12 +50,11 @@ function TableOfLotClosure({
         data: lotsClosure.map((item) => ({
           location: item.consumerCenter,
           company: item.subsidiary,
-          //  lotNumber: item.lotNumber,
           status: item.status,
           totalPOS: item.totalPos,
           totalLot: item.totalLote,
           difference: item.difference,
-          employe: item.employeeName,
+          employe: item.employeeCreator === null ? " --- " : item.employeeCreator,
         })),
       },
       "lotes-cierre"
@@ -82,14 +66,15 @@ function TableOfLotClosure({
     setIsDialogOpen(true);
   };
 
-  const closeDialog = () => {
+  const closeDialog = (isRefresh:boolean) => {
+    isRefresh ? fetchLotClosureData(date, locations, true) : null;
     setSelectedLot({} as LotClosure);
     setIsDialogOpen(false);
   };
 
   return (
     <>
-      {/*  {loading && <Loading />} */}
+
       {showTable && (
         <Box>
           <Box>
@@ -112,7 +97,7 @@ function TableOfLotClosure({
               <Button
                 colorPalette="meraInfo"
                 onClick={() => {
-                  fetchLotClosureData(dateRange, location.id, company.id, true);
+                  fetchLotClosureData(date, locations, true);
                 }}
                 disabled={loading}
               >
@@ -127,14 +112,11 @@ function TableOfLotClosure({
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">
-                      Ubicación
+                      CDC
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       Empresa
                     </Table.ColumnHeader>
-                    {/*      <Table.ColumnHeader textAlign="center">
-                      Numero de lote
-                    </Table.ColumnHeader> */}
                     <Table.ColumnHeader textAlign="center">
                       Estado
                     </Table.ColumnHeader>
@@ -193,9 +175,6 @@ function TableOfLotClosure({
                     visibleItems.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
-                          <Text>{item.consumerCenter}</Text>
-                        </Table.Cell>
-                        <Table.Cell textAlign="center">
                           <Text
                             as="span"
                             cursor="pointer"
@@ -203,12 +182,14 @@ function TableOfLotClosure({
                             color="blue.500"
                             onClick={() => openDialog(item)}
                           >
+                            {item.consumerCenter}
+                          </Text>
+                        </Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Text>
                             {item.subsidiary}
                           </Text>
                         </Table.Cell>
-                        {/*   <Table.Cell textAlign="center">
-                          <Text>{item.lotNumber}</Text>
-                        </Table.Cell> */}
                         <Table.Cell textAlign="center">
                           <Tag.Root colorPalette={statusColor(item.status)}>
                             <Tag.Label>{item.status}</Tag.Label>
@@ -235,11 +216,6 @@ function TableOfLotClosure({
                         <Table.Cell textAlign="center">
                           <Text>
                             <FormatNumber
-                              /*  value={
-                                item.status === STATUS.OPEN
-                                  ? 0
-                                  : item.totalPOS - item.totalLot
-                              } */
                               value={item.difference}
                               style="currency"
                               currency="USD"
@@ -247,7 +223,7 @@ function TableOfLotClosure({
                           </Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
-                          <Text>{item.employeeName}</Text>
+                          <Text>{item.employeeCreator === null ? " --- " : item.employeeCreator}</Text>
                         </Table.Cell>
                       </Table.Row>
                     ))}
@@ -274,8 +250,7 @@ function TableOfLotClosure({
           isOpen={isDialogOpen}
           lot={selectedLot}
           onClose={closeDialog}
-          location={location}
-          company={company}
+          date={date}
         />
       </Suspense>
     </>

@@ -416,11 +416,7 @@ export const resetFilters = async (): Promise<Row[]> => {
   return []; // Cambiar por el respaldo real
 };
 
-// TODO
-/* ========================================= REPORTES 2.0 ========================================= */
-
-
-export const getGeneralReports = async (cdcids:number[], date:string): Promise<ReportClousingLinesModel[]> => {
+export const getGeneralReports = async (cdcids:number[], date:string, status:string[]): Promise<ReportClousingLinesModel[]> => {
   try {
     
     const response = await api.post(GET_REPORT,
@@ -430,7 +426,7 @@ export const getGeneralReports = async (cdcids:number[], date:string): Promise<R
       }
     );
     
-    const dataReport = response.data.totalSummaryResponses.map((item: ReportClousingLinesModel, index: number) => ({
+    const dataReport: ReportClousingLinesModel[] = response.data.totalSummaryResponses.map((item: ReportClousingLinesModel, index: number) => ({
       ...item,
       id: index + 1,
       ubicacion: item.ubicacion || "",
@@ -439,6 +435,9 @@ export const getGeneralReports = async (cdcids:number[], date:string): Promise<R
       
     })); 
 
+    if(status.length > 0) {
+      return dataReport.filter((item) => status.includes(item.status));
+    }
     
     return dataReport;
   } catch (error) {

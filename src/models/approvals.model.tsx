@@ -30,13 +30,12 @@ export interface RequestUpdateDetails {
 
 export interface AprovalsReason {
   id: number;
-  reason: string;
-  type: string
+  name: string;
 }
 
-export interface AprovalsClousureCash {
+export interface AprovalsClousureList {
   id: number;
-  date: string;
+  name: string;
 }
 
 export interface EditRequestForm {

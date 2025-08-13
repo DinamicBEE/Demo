@@ -1,0 +1,26 @@
+diff --git a/node_modules/@zag-js/select/dist/index.d.mts b/node_modules/@zag-js/select/dist/index.d.mts
+index 37d7c9d..f25f246 100644
+--- a/node_modules/@zag-js/select/dist/index.d.mts
++++ b/node_modules/@zag-js/select/dist/index.d.mts
+@@ -103,7 +103,7 @@ interface SelectProps<T extends CollectionItem = CollectionItem> extends Directi
+     /**
+      * The controlled keys of the selected items
+      */
+-    value?: string[] | undefined;
++    value?: number[] | string[];
+     /**
+      * The initial default value of the select when rendered.
+      * Use when you don't need to control the value of the select.
+diff --git a/node_modules/@zag-js/select/dist/index.d.ts b/node_modules/@zag-js/select/dist/index.d.ts
+index 37d7c9d..f25f246 100644
+--- a/node_modules/@zag-js/select/dist/index.d.ts
++++ b/node_modules/@zag-js/select/dist/index.d.ts
+@@ -103,7 +103,7 @@ interface SelectProps<T extends CollectionItem = CollectionItem> extends Directi
+     /**
+      * The controlled keys of the selected items
+      */
+-    value?: string[] | undefined;
++    value?: number[] | string[];
+     /**
+      * The initial default value of the select when rendered.
+      * Use when you don't need to control the value of the select.
