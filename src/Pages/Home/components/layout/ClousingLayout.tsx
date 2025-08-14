@@ -63,12 +63,13 @@ function ClousingLayout({
   }, [isOpen]);
 
   useLayoutEffect(() => {
-    if (isOpen) {
+    if (isOpen && !employee?.closingConfirmation) {
       getCustomerData(employee?.id ?? 0);
       getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency);
       getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? "");
       getTDCData(employee?.id ?? 0, subsidiary.idCurrency);
       getIntercompanyData(employee?.id ?? 0);
+      
     }
   }, [isOpen])
   
