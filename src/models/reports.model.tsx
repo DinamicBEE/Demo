@@ -19,7 +19,7 @@ export interface TablePropsModel {
 
 export interface ReporGeneralRequesttModel {
   report: number;
-  filterOpction?: ReportFilterModel;
+  filterOpction: AppliedFilters;
 }
 
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
@@ -152,3 +152,14 @@ export type ReportTypeMap = {
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
 };
+
+export interface FilterParams {
+  [key: number]: {
+    params: Params[]
+  };
+}
+
+export interface Params {
+  paramsKey: string, 
+  filterKey: string
+}

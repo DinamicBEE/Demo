@@ -165,8 +165,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   })
     const request: ReporGeneralRequesttModel = {
           report: currentReport,
-          //TODO: Se rompe el tipado
-          //filterOpction: allFilters
+          filterOpction: allFilters
       }
     await getReportData(request)
     console.log("Filtros aplicados:", allFilters);

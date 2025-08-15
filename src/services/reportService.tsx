@@ -450,6 +450,16 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
  
   let response: any[];
   console.log("Request:", request);
+  const date = request.filterOpction.date;
+  const dateString = date ? date.toString() : "";
+  const divisionOfDates = dateString.split(" - ");
+  const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
+  const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
+  const filterConfig: { [key: string]: any } = request.filterOpction || {};
+  filterConfig["date_1"] = date_1;
+  filterConfig["date_2"] = date_2;
+  console.log("Filter Config:", filterConfig);
+
   const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
 
   try {
