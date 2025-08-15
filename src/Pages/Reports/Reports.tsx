@@ -1,15 +1,22 @@
 import { Box, Heading, HStack, VStack } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import LateralMenu from "./layouts/LateralMenu";
 import Filters from "./layouts/Filters";
 import ReportTable from "./layouts/ReportTable";
+import { REPORT_KEY } from "@models/reportsConstansts.model";
 
 function Reports() {
   const [open, setOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState<number | null>(null);
   const [reportName, setReportName] = useState<string>('Reporte no seleccionado')
+
+  //Reporte de apretura
+  useEffect(() => {
+    handleReportChange(REPORT_KEY.REPDES_01);
   
 
+  }, [])
+  
   // Función para manejar el cambio de reporte
   const handleReportChange = (reportCode: number) => {
     setCurrentReport(reportCode);

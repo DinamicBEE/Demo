@@ -423,7 +423,7 @@ export const MENU_CONFIG = [
     subCategories: null,
     reportCode: REPORT_KEY.REPDES_01,
   },
-  {
+ /*  {
     id: 2,
     categoryName: REPORT_NAME.REPMIX_00,
     subCategories: [
@@ -431,19 +431,19 @@ export const MENU_CONFIG = [
       { id: 2, name: REPORT_NAME.REPMIX_02, reportCode: REPORT_KEY.REPMIX_02 },
     ],
     reportCode: null,
-  },
+  }, */
   {
     id: 3,
     categoryName: REPORT_NAME.REPVEN_00,
     subCategories: [
       { id: 1, name: REPORT_NAME.REPVEN_01, reportCode: REPORT_KEY.REPVEN_01 },
-      { id: 2, name: REPORT_NAME.REPVEN_02, reportCode: REPORT_KEY.REPVEN_02 },
+      /* { id: 2, name: REPORT_NAME.REPVEN_02, reportCode: REPORT_KEY.REPVEN_02 },
       { id: 3, name: REPORT_NAME.REPVEN_03, reportCode: REPORT_KEY.REPVEN_03 },
-      { id: 4, name: REPORT_NAME.REPVEN_04, reportCode: REPORT_KEY.REPVEN_04 },
+      { id: 4, name: REPORT_NAME.REPVEN_04, reportCode: REPORT_KEY.REPVEN_04 }, */
     ],
     reportCode: null,
   },
-  {
+  /* {
     id: 4,
     categoryName: REPORT_NAME.REPVOI_01,
     subCategories: null,
@@ -454,13 +454,13 @@ export const MENU_CONFIG = [
     categoryName: REPORT_NAME.REPCUP_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPCUP_01,
-  },
+  }, */
 ];
 
 export const FILTER_LABELS = {
   date: 'Rango de fechas',
   subsidiary: 'Sucursal',
-  cdc: 'Centro de costo',
+  cdc: 'Centro de consumo',
   employees: 'Empleados',
   approver: 'Aprobador',
   categories: 'Categorías',
