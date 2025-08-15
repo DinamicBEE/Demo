@@ -1,6 +1,7 @@
 
 import { reportHandlers } from "@services/reportHandlers";
 import * as SETTINGS from "@services/settings";
+import { FilterParams } from "./reports.model";
 
 export enum REPORT_KEY {
   REPDES_01 = 1,
@@ -359,59 +360,69 @@ export const TABLE_CONFIG = [
   },
 ];
 
+export const KEYSPARAMS_CONFIG: FilterParams = {
+  [REPORT_KEY.REPDES_01]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "cdc" },
+      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
+};
+
 export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPDES_01,
     url: SETTINGS.REPORT_DESCOUNTS,
-    bodyRequest: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPDES_01].params,
     handleData: reportHandlers.handleDiscountData,
   },
   {
     report: REPORT_KEY.REPMIX_01,
     url: SETTINGS.REPORT_MIXGEN,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPMIX_02,
     url: SETTINGS.REPORT_MIXEMP,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPVEN_01,
     url: SETTINGS.REPORT_VENEMP,
-    bodyRequest: null,
+    keysParams: null,
     handleData: reportHandlers.handleEmployeeSalesData,
   },
   {
     report: REPORT_KEY.REPVEN_02,
     url: SETTINGS.REPORT_VENCATFAM,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPVEN_03,
     url: SETTINGS.REPORT_VENMETPAY,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPVEN_04,
     url: SETTINGS.REPORT_VENDES,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPVOI_01,
     url: SETTINGS.REPORT_VOIC,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
   {
     report: REPORT_KEY.REPCUP_01,
     url: SETTINGS.REPORT_CUP,
-    bodyRequest: null,
+    keysParams: null,
     handleData: null,
   },
 ];
