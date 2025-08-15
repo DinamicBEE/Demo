@@ -158,16 +158,20 @@ export const getCustomerClousing = async (
       };
     });
 
+    const newTotalFisico = lines.reduce(
+      (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
+      0
+    );
+    const newDifference = newTotalFisico - (response.data.totalPos ?? 0);
     const data: CustomerModel = {
       id: clousingId,
       total: {
-        difference: response.data.difference,//response.data.totalPhysical - response.data.totalPos,
+        difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
       },
       lines: [...lines],
     };
-
     const responseData: ResponseModel = {
       success: true,
       data: data,

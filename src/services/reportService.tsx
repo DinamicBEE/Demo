@@ -449,6 +449,7 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
  
   let response: any[];
+  console.log("Request:", request);
   const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
 
   try {

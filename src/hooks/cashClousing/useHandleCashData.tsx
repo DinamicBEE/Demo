@@ -64,7 +64,7 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
       total: { 
         totalPhysical: newTotalPhysical,
         totalPOS: cashData.total?.totalPOS ?? 0,
-        difference: cashData.total?.difference ?? 0,
+        difference: newTotalPhysical - (cashData.total?.totalPOS ?? 0),
       } 
     }
 

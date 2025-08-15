@@ -7,6 +7,7 @@ const CRC_BASE = `/crc/cash-register-closure`;
 const API_BASE = `${CRC_BASE}/api`;
 const CRCPROC_BASE = `${CRC_BASE}/crcproc`;
 const BATCH_BASE = `${CRC_BASE}/batchclosure`;
+const REPORT_BASE = `${CRC_BASE}/api/report`;
 const AUTH_BASE = `/auth/authentication/api`;
 
 /* LOGIN */
@@ -63,10 +64,10 @@ export const GET_SUBCATEGORIES = ``;
 export const GET_FAMILIES = ``;
 export const GET_ITEMS = ``;
 
-export const REPORT_DESCOUNTS = ``;
+export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
 export const REPORT_MIXGEN = ``;
 export const REPORT_MIXEMP = ``;
-export const REPORT_VENEMP = ``;
+export const REPORT_VENEMP = `${REPORT_BASE}/saleEmploye`;
 export const REPORT_VENCATFAM = ``;
 export const REPORT_VENMETPAY = ``;
 export const REPORT_VENDES = ``;
