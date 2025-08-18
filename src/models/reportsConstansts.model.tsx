@@ -368,6 +368,13 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
+  [REPORT_KEY.REPVEN_01]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "cdc" },
+      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
 };
 
 export const REPORTSERVICE_CONFIG = [
@@ -392,7 +399,7 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_01,
     url: SETTINGS.REPORT_VENEMP,
-    keysParams: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPVEN_01].params,
     handleData: reportHandlers.handleEmployeeSalesData,
   },
   {

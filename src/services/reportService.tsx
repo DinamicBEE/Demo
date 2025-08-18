@@ -1,7 +1,7 @@
 import { ReportClousingLinesModel } from "@models/common.clousing.model";
 import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
-import { GET_REPORT } from "./settings";
+import { GET_REPORT, REPORT_DESCOUNTS } from "./settings";
 import { DescountDummyData, PMIXEmployeeDummyData, PMIXGeneralDummyData, VENCatFamDummyData, VENEmployeeDummyData, VENPaymentDummyData } from "@models/reportFakeData.model";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
 import { REPORT_CONFIG, REPORTSERVICE_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
@@ -449,102 +449,38 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
  
   let response: any[];
-  console.log("Request:", request);
   const date = request.filterOpction.date;
   const dateString = date ? date.toString() : "";
   const divisionOfDates = dateString.split(" - ");
   const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
   const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
+  const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
   const filterConfig: { [key: string]: any } = request.filterOpction || {};
   filterConfig["date_1"] = date_1;
   filterConfig["date_2"] = date_2;
-  console.log("Filter Config:", filterConfig);
+  filterConfig["cdc"] = cdcString;
 
   const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
+  const paramsConfig = reportConfig?.keysParams;
 
   try {
-    
-    switch (request.report) {
-        case 1:
-  
-            response = reportConfig?.handleData
-              ? reportConfig.handleData(DescountDummyData.discounts)
-              : []
-  
-            break;
-    
-        case 2:
-  
-            response = PMIXGeneralDummyData.pmixGeneral
-  
-            break;
-  
-        case 3:
-  
-            response = PMIXEmployeeDummyData.pmixEmployee
-            
-            break;      
-        
-        case 4:
-  
-            response = reportConfig?.handleData
-              ? reportConfig.handleData(VENEmployeeDummyData.venEmployee)
-              : []
-  
-            break;
-    
-        case 5:
-  
-            response = VENCatFamDummyData.venCatFam
-  
-            break;
-  
-        case 6:
-  
-            response = VENPaymentDummyData.venPayment
-            
-            break;
-  
-        case 7:
-  
-            response = [];
-  
-            break;
-    
-        case 8:
-  
-            response = [];
-  
-            break;
-  
-        case 9:
-  
-            response = [];
-            
-            break;      
-        
-        case 10:
-  
-            response = [];
-  
-            break;
-    
-        case 11:
-  
-            response = [];
-  
-            break;
-  
-        case 12:
-  
-            response = [];
-            
-            break;
-  
-        default:
-            response = [];
-            break;
+
+    if (!reportConfig?.url) {
+      throw new Error("Report URL is undefined");
     }
+    const responseData = await api.get(reportConfig.url, {
+      params: paramsConfig
+        ? paramsConfig.reduce((acc: any, param: any) => {
+            acc[param.paramsKey] = filterConfig[param.filterKey];
+            return acc;
+          }, {})
+        : {}
+    })
+
+    response = reportConfig?.handleData
+      ? reportConfig.handleData(responseData.data)
+      : []
+      
     await new Promise((resolve) => setTimeout(resolve, 500)); 
     return response
   
