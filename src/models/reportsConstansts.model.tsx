@@ -85,7 +85,7 @@ export const REPORT_CONFIG = [
     date: true,
     subsidiary: true,
     cdc: true,
-    employees: true,
+    employees: false, //Verificar si se necesita luego
     approver: false,
     categories: false,
     subcategories: false,

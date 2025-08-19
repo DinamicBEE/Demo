@@ -1,30 +1,41 @@
-import { Box, Stack, Text, Button, createListCollection, Field, Grid } from "@chakra-ui/react";
-import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText,
-} from "@components/ui/select";
-import { AppliedFilters, FilterConfigModel, FilterData, FilterPropsModel, ReportFilterModel,
-ReporGeneralRequesttModel } from "@models/reports.model";
+import { Box, Stack, Text, Button, createListCollection, Field, Grid, ListCollection } from "@chakra-ui/react";
+import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
+import { AppliedFilters, FilterConfigModel, FilterData, FilterPropsModel, ReportFilterModel, ReporGeneralRequesttModel } from "@models/reports.model";
 import { FILTER_LABELS, FilterKey, REPORT_CONFIG } from "@models/reportsConstansts.model";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useCallback, useState } from "react";
 import { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
-import { getFilterOptions } from "@services/catalogService";
-
+import { getFilterOptions, getLocations } from "@services/catalogService";
 import { generateReportCSV_V2 } from "@services/reportService";
 import { useReportsContext } from "@context/reports/reportsContext";
+import { selectOption } from "@models/common.model";
+import { fetchAndSetData, handleMultiSelectChange, renderMultiSelectWithControls } from "../../../utils/selectManagement";
+
 registerLocale("es", es);
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
-  const [filterConfig, setFilterConfig] = useState<FilterConfigModel | null>({} as FilterConfigModel);
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [startDate, endDate] = dateRange;
   const [selectedValues, setSelectedValues] = useState<ReportFilterModel>({} as ReportFilterModel);
   const [filterData, setFilterData] = useState<FilterData>({});
   const [loadingFilters, setLoadingFilters] = useState<Record<string, boolean>>({});
+  const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
+  const [selectedSubsidiaries, setSelectedSubsidiaries] = useState<selectOption[]>([]);
+  const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
+  const [selectedCDCOptions, setSelectedCDCOptions] = useState<selectOption[]>([]);
+  const [cdc, setCDC] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
+
 
   const { getReportData, reportData } = useReportsContext();
 
-  const reset: ReportFilterModel = {
+  const filterConfig = useMemo(() => {
+    return currentReport 
+      ? REPORT_CONFIG.find((item) => item.report === currentReport) || null
+      : null;
+  }, [currentReport]);
+
+  const resetValues = useMemo((): ReportFilterModel => ({
     approver: null,
     categories: null,
     cdc: [],
@@ -35,37 +46,73 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     items: null,
     paymentMethod: null,
     subcategories: null,
-    subsidiary: null,
+    subsidiary: [],
     exchangeRate: null
-  }
+  }), []);
+
+  const subsidiaries = useMemo(() => 
+    createListCollection<selectOption>({ 
+      items: (filterData.subsidiary || []).map((item: any) => ({
+        ...item,
+        value: Number(item.value),
+      }))
+    }), [filterData.subsidiary]);
+
 
   useEffect(() => {
+    if (!currentReport) return;
 
-    const loadInitialData = async() =>{
-      setSelectedValues(reset);
-      reportName("");
-      const filters = REPORT_CONFIG.find((item) => item.report === currentReport);
-      setFilterConfig(filters || null);
-      reportName(filters?.name || "");
-  
-      if (filters) {
-          const activeFilters = (Object.keys(filters) as FilterKey[])
-            .filter(key => filters[key] === true && key !== "date");
-  
-          await Promise.all(activeFilters.map((filterKey) => {
-            if (filterKey !== "cdc") {
-              loadFilterData(filterKey);
-            }
-          }));
-      }
+    const loadInitialData = async () => {
+      setSelectedValues(resetValues);
+      reportName(filterConfig?.name || "");
+
+      if (!filterConfig) return;
+
+      const activeFilters = (Object.keys(filterConfig) as FilterKey[])
+        .filter(key => filterConfig[key] === true && key !== "date");
+
+      await Promise.all(activeFilters.map((filterKey) => {
+        if (filterKey !== "cdc") {
+          return loadFilterData(filterKey);
+        }
+        return Promise.resolve();
+      }));
+    };
+
+    loadInitialData(); 
+  }, [currentReport, filterConfig, resetValues, reportName]);
+
+  useEffect(() => {
+    if (selectedSubIds.length > 0) {
+      fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+    } else {
+      setCDC(createListCollection<selectOption>({ items: [] }));
     }
+  }, [selectedSubIds]);
 
-    loadInitialData();
-    // console.log("selectedValues", selectedValues);
-    
-  }, [currentReport]);
+  useEffect(() => {
+    handleSelectChange("cdc", selectedCDC);
+  }, [selectedCDC]);
 
-  const loadFilterData = async (filterKey: FilterKey, parentValue?: number) => {
+  const handleSubsidiariesChange = useCallback((event: { items: selectOption[] }) => {      
+    handleMultiSelectChange({
+      newItems: event.items,
+      currentSelected: selectedSubsidiaries,
+      setSelectedOptions: setSelectedSubsidiaries,
+      setSelectedIds: setSelectedSubIds
+    });
+  }, [selectedSubsidiaries]);
+
+  const handleCDCChange = useCallback((event: { items: selectOption[] }) => {
+    handleMultiSelectChange({
+      newItems: event.items,
+      currentSelected: selectedCDCOptions,
+      setSelectedOptions: setSelectedCDCOptions,
+      setSelectedIds: setSelectedCDC,
+    });
+  }, [selectedCDCOptions]);
+
+  const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: number) => {
     setLoadingFilters(prev => ({ ...prev, [filterKey]: true }));
     
     try {
@@ -76,7 +123,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           [filterKey]: data
         }));
       }
-      
     } catch (error) {
       console.error(`Error loading ${filterKey} options:`, error);
       setFilterData(prev => ({
@@ -86,14 +132,64 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     } finally {
       setLoadingFilters(prev => ({ ...prev, [filterKey]: false }));
     }
-  };
+  }, []);
 
-  useEffect(() => {      
-    if (selectedValues.subsidiary && filterConfig?.cdc) {      
-      loadFilterData("cdc", Number(selectedValues.subsidiary));
-      setSelectedValues(prev => ({ ...prev, cdc: [] })); // Resetear CDCs al cambiar subsidiary
+  const handleSelectChange = useCallback((filterKey: FilterKey, value: any) => {
+    setSelectedValues(prev => {
+      const newValues = {
+        ...prev,
+        [filterKey]: value,
+      };
+      
+      if (filterKey === "subsidiary") {
+        newValues.cdc = resetValues.cdc;
+        setSelectedCDC([]);
+        setSelectedCDCOptions([]);
+      }
+      
+      return newValues;
+    });
+  }, [resetValues.cdc]);
+
+  const applyFilters = useCallback(async () => {
+    if (!filterConfig) return;
+    
+    const allFilters: AppliedFilters = {};
+    
+    Object.keys(FILTER_LABELS).forEach((key) => {
+      const filterKey = key as FilterKey;
+
+      if (filterKey === "cdc") {
+        allFilters.cdc = selectedCDC;
+      } else if (filterKey === "date") {
+        allFilters.date = startDate && endDate 
+          ? `${startDate.toISOString()} - ${endDate.toISOString()}`
+          : null;
+      } else {
+        allFilters[filterKey] = selectedValues[filterKey] || null;
+      }
+    });
+    
+    const request: ReporGeneralRequesttModel = {
+      report: currentReport ?? 0,
+      filterOpction: allFilters
+    };
+    
+    await getReportData(request);
+  }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData]);
+
+  const exportCSV = useCallback(() => {
+    if (typeof currentReport === "number") {
+      generateReportCSV_V2(currentReport, reportData);
     }
-  }, [selectedValues.subsidiary]);
+  }, [currentReport, reportData]);
+
+  const activeFilters = useMemo(() => {
+    if (!filterConfig) return [];
+    
+    return (Object.keys(filterConfig) as (keyof FilterConfigModel)[])
+      .filter((key) => filterConfig[key] === true) as FilterKey[];
+  }, [filterConfig]);
 
   if (!currentReport) {
     return (
@@ -111,24 +207,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     );
   }
 
-  const handleSelectChange = (filterKey: FilterKey, value: any) => {
-    
-    
-   const newValues = {
-    ...selectedValues,
-    [filterKey]: value,
-   };
-    if (filterKey === "subsidiary") {
-      newValues.cdc = reset.cdc;
-    }    
-
-    setSelectedValues(newValues);
-  };
-
-  const activeFilters = (
-    Object.keys(filterConfig) as (keyof FilterConfigModel)[]
-  ).filter((key) => filterConfig[key] === true) as FilterKey[];
-
   if (activeFilters.length === 0) {
     return (
       <Box p={4} textAlign="center">
@@ -137,48 +215,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     );
   }
 
-  /* const handleDateChange = (range: [Date | null, Date | null]) => {
-    console.log("Rango", range);
-    
-    const [startDate, endDate] = range;
-    setStartDate(startDate);
-    setEndDate(endDate);
-  }; */
-
-  const applyFilters = async () => {
-
-    if (!filterConfig) return;
-    
-    const allFilters: AppliedFilters = {};
-    
-    Object.keys(FILTER_LABELS).forEach((key) => {
-    const filterKey = key as FilterKey;
-    
-    if (filterKey === "date") {
-      allFilters.date = startDate && endDate 
-        ? `${startDate.toISOString()} - ${endDate.toISOString()}`
-        : null;
-      return;
-    }
-    
-    allFilters[filterKey] = selectedValues[filterKey] || null;
-  })
-    const request: ReporGeneralRequesttModel = {
-          report: currentReport,
-          filterOpction: allFilters
-      }
-    await getReportData(request)
-    console.log("Filtros aplicados:", allFilters);
-  };
-
   return (
     <Box p={4} mb={4}>
-      {/* <Text fontWeight="bold" mb={4}>
-        {filterConfig.name}
-      </Text> */}
-
       <Grid
-        templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+        templateColumns={{ base: "1fr", md: "repeat(3, 2fr)" }}
         gap={4}
         mb={4}
       >
@@ -195,42 +235,24 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                   />
                 </Field.Root>
               </Stack>
+            ) : filterKey === "subsidiary" ? (
+              renderMultiSelectWithControls(
+                subsidiaries,
+                handleSubsidiariesChange,
+                "Subsidiaria",
+                "Selecciona una Subsidiaria",
+                selectedSubsidiaries,
+                loadingFilters.subsidiary
+              )
             ) : filterKey === "cdc" ? (
-              <SelectRoot
-                multiple={true}
-                collection={createListCollection({ items: filterData.cdc || [] })}
-                onValueChange={(ev) => handleSelectChange(filterKey, ev.value)}
-                disabled={!selectedValues.subsidiary || loadingFilters.cdc}
-                value={selectedValues[filterKey].map(String) || [null]}
-              >
-                <SelectLabel fontFamily="heading">
-                  {FILTER_LABELS[filterKey]}
-                  {loadingFilters.cdc && " (Cargando...)"}
-                </SelectLabel>
-                <SelectTrigger>
-                  <SelectValueText
-                    placeholder={
-                      loadingFilters.cdc
-                        ? "Cargando opciones..."
-                        : selectedValues[filterKey]?.length > 0
-                          ? `${selectedValues.cdc.length} seleccionados`
-                          : selectedValues.subsidiary
-                            ? `Selecciona ${FILTER_LABELS[filterKey]}`
-                            : "Primero selecciona una subsidiaria"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {(filterData.cdc || []).map((option) => (
-                    <SelectItem
-                      key={option.value}
-                      item={option}
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
+              renderMultiSelectWithControls(
+                cdc,
+                handleCDCChange,
+                "Centro de consumo",
+                "Selecciona un centro de consumo",
+                selectedCDCOptions,
+                selectedSubsidiaries.length === 0 || loadingFilters.cdc
+              )
             ) : (
               <SelectRoot
                 collection={createListCollection({ items: filterData[filterKey] || [] })}
@@ -241,7 +263,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                   selectedValues[filterKey] === undefined || selectedValues[filterKey] === null 
                     ? [] 
                     : [selectedValues[filterKey].toString()]
-                  }
+                }
                 disabled={loadingFilters[filterKey]}
               >
                 <SelectLabel fontFamily="heading">
@@ -252,7 +274,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
                     placeholder={
                       loadingFilters[filterKey]
                         ? "Cargando opciones..."
-                        : `Selecciona ${FILTER_LABELS[filterKey]}`}
+                        : `Selecciona ${FILTER_LABELS[filterKey]}`
+                    }
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -268,18 +291,26 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         ))}
       </Grid>
 
-      <Button mt={4} colorScheme="green.400" width="full" onClick={applyFilters}>
-        Aplicar Filtros
-      </Button>
+      <Stack direction="row" gap={4} mt={4}>
+        <Button 
+          colorPalette="blue" 
+          width="full" 
+          onClick={applyFilters}
+          flex="1"
+        >
+          Aplicar Filtros
+        </Button>
 
-      {/* Revisar la validacion de disable, se requeire una variable del componente */}
-      <Button colorPalette="meraPrimary" disabled={reportData.length === 0} onClick={()=>{
-        generateReportCSV_V2(currentReport, reportData)
-      }}>
-        Exportar CSV
-      </Button>
+        <Button 
+          colorPalette="green" 
+          disabled={reportData.length === 0} 
+          onClick={exportCSV}
+          flex="1"
+        >
+          Exportar CSV
+        </Button>
+      </Stack>
     </Box>
-
   );
 }
 
