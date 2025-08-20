@@ -1,8 +1,7 @@
 import { ReportClousingLinesModel } from "@models/common.clousing.model";
 import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
-import { GET_REPORT, REPORT_DESCOUNTS } from "./settings";
-import { DescountDummyData, PMIXEmployeeDummyData, PMIXGeneralDummyData, VENCatFamDummyData, VENEmployeeDummyData, VENPaymentDummyData } from "@models/reportFakeData.model";
+import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
 import { REPORT_CONFIG, REPORTSERVICE_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
 
@@ -447,39 +446,39 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 }
 
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
- 
-  let response: any[];
-  const date = request.filterOpction.date;
-  const dateString = date ? date.toString() : "";
-  const divisionOfDates = dateString.split(" - ");
-  const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
-  const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
-  const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
-  const filterConfig: { [key: string]: any } = request.filterOpction || {};
-  filterConfig["date_1"] = date_1;
-  filterConfig["date_2"] = date_2;
-  filterConfig["cdc"] = cdcString;
-
-  const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
-  const paramsConfig = reportConfig?.keysParams;
-
+   
   try {
 
-    if (!reportConfig?.url) {
-      throw new Error("Report URL is undefined");
-    }
-    const responseData = await api.get(reportConfig.url, {
+    let response: any[];
+    const date = request.filterOpction.date;
+    const dateString = date ? date.toString() : "";
+    const divisionOfDates = dateString.split(" - ");
+    const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
+    const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
+    const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
+    const filterConfig: { [key: string]: any } = request.filterOpction || {};
+    filterConfig["date_1"] = date_1;
+    filterConfig["date_2"] = date_2;
+    filterConfig["cdc"] = cdcString;
+  
+    const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
+    if(!reportConfig){
+      throw new Error("Report configuration is undefined");
+    } 
+    const paramsConfig = reportConfig.keysParams;
+
+    const responseData = paramsConfig != null ? await api.get(reportConfig.url, {
       params: paramsConfig
         ? paramsConfig.reduce((acc: any, param: any) => {
             acc[param.paramsKey] = filterConfig[param.filterKey];
             return acc;
           }, {})
         : {}
-    })
+    }) : await api.get(reportConfig.url)
 
-    response = reportConfig?.handleData
+    response = reportConfig.handleData != null
       ? reportConfig.handleData(responseData.data)
-      : []
+      : responseData.data
       
     await new Promise((resolve) => setTimeout(resolve, 500)); 
     return response

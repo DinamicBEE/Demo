@@ -4,6 +4,7 @@ import * as SETTINGS from "@services/settings";
 import { FilterParams } from "./reports.model";
 
 export enum REPORT_KEY {
+  REPSYNC_ERRORS = 0,
   REPDES_01 = 1,
   REPMIX_01 = 2,
   REPMIX_02 = 3,
@@ -17,6 +18,7 @@ export enum REPORT_KEY {
   REPBAN_02 = 11,
 }
 export enum REPORT_NAME {
+  REPSYNC_ERRORS = "Errores de sincronización ",
   REPDES_01 = "Descuentos",
   REPMIX_00 = "P-MIX",
   REPMIX_01 = "General",
@@ -34,6 +36,21 @@ export enum REPORT_NAME {
 }
 //TODO: Falta agregar los reportes de bancos
 export const REPORT_CONFIG = [
+    {
+    report: REPORT_KEY.REPSYNC_ERRORS,
+    name: REPORT_NAME.REPSYNC_ERRORS,
+    date: false,
+    subsidiary: false,
+    cdc: false,
+    employees: false,
+    approver: false,
+    categories: false,
+    subcategories: false,
+    family: false,
+    items: false,
+    paymentMethod: false,
+    currency: false,
+  },
   {
     report: REPORT_KEY.REPDES_01,
     name: REPORT_NAME.REPDES_01,
@@ -174,6 +191,22 @@ export const REPORT_CONFIG = [
 ];
 //TODO: Falta agregar los reportes de bancos
 export const TABLE_CONFIG = [
+    {
+    report: REPORT_KEY.REPSYNC_ERRORS,
+    headers: [
+      { label: "ID", key: "id" },
+      { label: "ID Transacción", key: "transactionID" },
+      { label: "Estado", key: "status" },
+      { label: "Intentos", key: "attempts" },
+      { label: "Tipo", key: "type" },
+      { label: "Mensaje de error", key: "errorMsg" },
+      { label: "Centro de Consumo", key: "onCDC" },
+      { label: "Proceso de Error", key: "proccessOfError" },
+      { label: "Atendido", key: "Attended" },
+      { label: "Fecha/Hora Transacción", key: "creationDate" },
+      { label: "Fecha/Hora de ultimo intento", key: "lastAttempDate" },
+    ],
+  },
   {
     report: REPORT_KEY.REPDES_01,
     headers: [
@@ -379,6 +412,12 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
 
 export const REPORTSERVICE_CONFIG = [
   {
+    report: REPORT_KEY.REPSYNC_ERRORS,
+    url: SETTINGS.REPORT_SYNCERRORS,
+    keysParams: null,
+    handleData: null,
+  },
+  {
     report: REPORT_KEY.REPDES_01,
     url: SETTINGS.REPORT_DESCOUNTS,
     keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPDES_01].params,
@@ -435,6 +474,12 @@ export const REPORTSERVICE_CONFIG = [
 ];
 //TODO: Falta agregar los reportes de bancos
 export const MENU_CONFIG = [
+  {
+    id: 0,
+    categoryName: REPORT_NAME.REPSYNC_ERRORS,
+    subCategories: null,
+    reportCode: REPORT_KEY.REPSYNC_ERRORS,
+  },
   {
     id: 1,
     categoryName: REPORT_NAME.REPDES_01,
