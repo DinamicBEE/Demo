@@ -450,16 +450,20 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
   try {
 
     let response: any[];
-    const date = request.filterOpction.date;
-    const dateString = date ? date.toString() : "";
-    const divisionOfDates = dateString.split(" - ");
-    const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
-    const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
-    const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
-    const filterConfig: { [key: string]: any } = request.filterOpction || {};
-    filterConfig["date_1"] = date_1;
-    filterConfig["date_2"] = date_2;
-    filterConfig["cdc"] = cdcString;
+    let filterConfig: { [key: string]: any } = request.filterOpction || {};
+    if (request.filterOpction.date) {
+
+      const date = request.filterOpction.date;
+      const dateString = date ? date.toString() : "";
+      const divisionOfDates = dateString.split(" - ");
+      const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
+      const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
+      const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
+      const filterConfig: { [key: string]: any } = request.filterOpction || {};
+      filterConfig["date_1"] = date_1;
+      filterConfig["date_2"] = date_2;
+      filterConfig["cdc"] = cdcString;
+    }
   
     const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
     if(!reportConfig){

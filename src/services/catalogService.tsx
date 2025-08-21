@@ -16,12 +16,12 @@ export const getFilterOptions = async (key: string, optional?: number): Promise<
         value: item.id.toString(),
         label: item.name
       }));
-    case "cdc":
-      const stores = await getStores(optional!);      
-      return stores.map(item => ({
-        value: item.id.toString(),
-        label: item.name
-      }));
+    // case "cdc":
+    //   const stores = await getStores(optional!);      
+    //   return stores.map(item => ({
+    //     value: item.id.toString(),
+    //     label: item.name
+    //   }));
   
     default:
       return [];

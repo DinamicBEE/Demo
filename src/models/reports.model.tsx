@@ -25,7 +25,7 @@ export interface ReporGeneralRequesttModel {
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
   date: string | null,
-  subsidiary: number | null,
+  subsidiary: number[] | [],
   cdc: number[] | [],
   employees: number | null,
   approver: number | null,

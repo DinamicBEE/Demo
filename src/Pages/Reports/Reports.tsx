@@ -7,20 +7,12 @@ import { REPORT_KEY } from "@models/reportsConstansts.model";
 
 function Reports() {
   const [open, setOpen] = useState(false);
-  const [currentReport, setCurrentReport] = useState<number | null>(null);
+  const [currentReport, setCurrentReport] = useState<number | null>(REPORT_KEY.REPDES_01);
   const [reportName, setReportName] = useState<string>('Reporte no seleccionado')
-
-  //Reporte de apretura
-  useEffect(() => {
-    handleReportChange(REPORT_KEY.REPDES_01);
-  
-
-  }, [])
   
   // Función para manejar el cambio de reporte
   const handleReportChange = (reportCode: number) => {
     setCurrentReport(reportCode);
-    // Aquí puedes agregar lógica adicional cuando cambia el reporte
   };
 
   const handleReportNameChange = (name: string) => {
