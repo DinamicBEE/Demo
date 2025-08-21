@@ -199,21 +199,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     );
   }
 
-  if (!filterConfig) {
-    return (
-      <Box p={4} textAlign="center">
-        <Text>No se encontró configuración de filtros para este reporte</Text>
-      </Box>
-    );
-  }
-
-  if (activeFilters.length === 0) {
-    return (
-      <Box p={4} textAlign="center">
-        <Text>Este reporte no tiene filtros configurados</Text>
-      </Box>
-    );
-  }
 
   return (
     <Box p={4} mb={4}>
