@@ -8,7 +8,7 @@ const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../Pages/Home/Home')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -18,7 +18,7 @@ const routesConfig = [
     {
       path: '/homeV2',
       element: lazy(() => import('../Pages/Home/Home_v2')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -28,7 +28,7 @@ const routesConfig = [
         {
       path: '/homeV3',
       element: lazy(() => import('../Pages/Home/Home_v3')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -38,7 +38,7 @@ const routesConfig = [
     {
       path: '/lotClosure',
       element: lazy(() => import('../Pages/LotClosure/LotClosure')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <ClosureProvider>
           <Component />
@@ -48,7 +48,7 @@ const routesConfig = [
     {
       path: '/approvals',
       element: lazy(() => import('../Pages/Approvals/Approvals')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
@@ -58,7 +58,7 @@ const routesConfig = [
     {
       path: '/reportviewer',
       element: lazy(() => import('../Pages/ReportViewer/ReportViewer')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />
@@ -68,12 +68,12 @@ const routesConfig = [
     {
       path: '/currencymanagement',
       element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
     },
     {
       path: '/reports',
       element: lazy(() => import('../Pages/Reports/Reports')),
-      roles: ['admin', 'USER'],
+      roles: ['ADMIN', 'USER'],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />

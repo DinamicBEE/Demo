@@ -32,12 +32,12 @@ export enum CLOUSING_KEY {
 
 export const menuItems = [
   //{ name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['admin', 'USER'] },
-  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['admin', 'USER'] },
+  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['ADMIN', 'USER'] },
+  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['ADMIN', 'USER'] },
   { name: 'Solicitud de ajuste', path: '/approvals', icon:<LuClipboardCheck />, roles: ['USER'] },
-  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['admin'] },
-  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['admin', 'USER'] },
-  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['admin', 'USER'] },
+  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['ADMIN'] },
+  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER'] },
+  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
 ];
 

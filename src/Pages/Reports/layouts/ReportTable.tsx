@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { Box, FormatNumber, HStack, Table, TableCell, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, HStack, IconButton, Table, TableCell, Text } from "@chakra-ui/react";
 import { TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { HeaderReportModel, ReportTypeMap } from "@models/reports.model";
+import { HeaderReportModel, ReportTypeMap, SyncErrorsModel } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import { changeStatus } from "@services/reportService";
 
 const pageSize = 10;
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
     const [headers, setHeaders] = useState<HeaderReportModel<ReportTypeMap[K]>[]>([]);
     const [visibleItems, setVisibleItems] = useState<ReportTypeMap[K][]>([]);
+    const [countTable, setCountTable] = useState<number>(0)
     const { reportData, loading } = useReportsContext();
 
     const [page, setPage] = useState<number>(1);
@@ -38,8 +40,9 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
         }
     }, [page, reportData]);
 
-    function renderCellContent(key: keyof ReportTypeMap[K], value: any) {
-        if (key === 'quantity') {
+    function renderCellContent(key: keyof ReportTypeMap[K], value: any, index:number) {
+        const numberExceptions = ['quantity', 'id', 'transactionID', 'attempts']
+        if (numberExceptions.includes(key.toString().toLocaleLowerCase())) {
             return <Text>{value}</Text>;
         }
         
@@ -49,6 +52,18 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
         
         if (typeof value === 'number') {
             return <FormatNumber value={value} style="currency" currency="USD" />;
+        }
+
+        if(key === 'especialStatus') {
+            let item = visibleItems as ReportTypeMap[K][]
+            const {nextStatus, nextStatusTool} = item[index] as SyncErrorsModel;
+            return (
+                <Text> 
+                    <IconButton onClick={() => changeStatus(nextStatus )}>
+                        {value}
+                    </IconButton> 
+                </Text>
+            )
         }
         
         return <Text>{String(value)}</Text>;
@@ -79,7 +94,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                                 <Table.Row key={index}>
                                     {headers.map((header) => (
                                         <TableCell key={String(header.key)}>
-                                            {renderCellContent(header.key, row[header.key])}
+                                            {renderCellContent(header.key, row[header.key], index)}
                                         </TableCell>
                                     ))}
                                 </Table.Row>
@@ -95,7 +110,8 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                     setPage(e.page);
                     }}
                 >
-                    <HStack>
+                    <HStack justify="end">
+                        hola mundo
                         <PaginationPrevTrigger />
                         <PaginationItems />
                         <PaginationNextTrigger />

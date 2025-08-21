@@ -196,15 +196,15 @@ export const TABLE_CONFIG = [
     headers: [
       { label: "ID", key: "id" },
       { label: "ID Transacción", key: "transactionID" },
-      { label: "Estado", key: "status" },
+      { label: "Estado", key: "especialStatus" },
       { label: "Intentos", key: "attempts" },
       { label: "Tipo", key: "type" },
       { label: "Mensaje de error", key: "errorMsg" },
       { label: "Centro de Consumo", key: "onCDC" },
-      { label: "Proceso de Error", key: "proccessOfError" },
-      { label: "Atendido", key: "Attended" },
+      { label: "Proceso de Error", key: "processOfError" },
+      { label: "Atendido", key: "attended" },
       { label: "Fecha/Hora Transacción", key: "creationDate" },
-      { label: "Fecha/Hora de ultimo intento", key: "lastAttempDate" },
+      { label: "Fecha/Hora de ultimo intento", key: "lastAttemptDate" },
     ],
   },
   {
@@ -415,7 +415,7 @@ export const REPORTSERVICE_CONFIG = [
     report: REPORT_KEY.REPSYNC_ERRORS,
     url: SETTINGS.REPORT_SYNCERRORS,
     keysParams: null,
-    handleData: null,
+    handleData: reportHandlers.handleSyncErrorsData,
   },
   {
     report: REPORT_KEY.REPDES_01,
@@ -535,3 +535,18 @@ export const FILTER_LABELS = {
   exchangeRate: 'Tipo de cambio'
 };
 export type FilterKey = keyof Omit<typeof REPORT_CONFIG[0], 'report' | 'name'>;
+
+export enum ESTATUS {
+  REPSYNC_ERRORS = 100,
+  REPDES_01 = 1,
+  REPMIX_01 = 2,
+  REPMIX_02 = 3,
+  REPVEN_01 = 4,
+  REPVEN_02 = 5,
+  REPVEN_03 = 6,
+  REPVEN_04 = 7,
+  REPVOI_01 = 8,
+  REPCUP_01 = 9,
+  REPBAN_01 = 10,
+  REPBAN_02 = 11,
+}
