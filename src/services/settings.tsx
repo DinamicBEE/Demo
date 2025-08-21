@@ -64,7 +64,7 @@ export const GET_SUBCATEGORIES = ``;
 export const GET_FAMILIES = ``;
 export const GET_ITEMS = ``;
 
-export const REPORT_SYNCERRORS = ``;
+export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
 export const REPORT_MIXGEN = ``;
 export const REPORT_MIXEMP = ``;

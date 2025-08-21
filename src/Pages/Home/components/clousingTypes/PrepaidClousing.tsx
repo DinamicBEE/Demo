@@ -250,6 +250,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       item.id === findClient.id
         ? {
             ...findClient,
+            client: couponModel.clientCustom,
             quantity: quantity,
             physical: newTotalFisico,
             difference: newDifference,

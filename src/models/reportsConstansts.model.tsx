@@ -4,7 +4,7 @@ import * as SETTINGS from "@services/settings";
 import { FilterParams } from "./reports.model";
 
 export enum REPORT_KEY {
-  REPSYNC_ERRORS = 0,
+  REPSYNC_ERRORS = 100,
   REPDES_01 = 1,
   REPMIX_01 = 2,
   REPMIX_02 = 3,
@@ -191,7 +191,7 @@ export const REPORT_CONFIG = [
 ];
 //TODO: Falta agregar los reportes de bancos
 export const TABLE_CONFIG = [
-    {
+  {
     report: REPORT_KEY.REPSYNC_ERRORS,
     headers: [
       { label: "ID", key: "id" },
@@ -475,7 +475,7 @@ export const REPORTSERVICE_CONFIG = [
 //TODO: Falta agregar los reportes de bancos
 export const MENU_CONFIG = [
   {
-    id: 0,
+    id: 100,
     categoryName: REPORT_NAME.REPSYNC_ERRORS,
     subCategories: null,
     reportCode: REPORT_KEY.REPSYNC_ERRORS,
