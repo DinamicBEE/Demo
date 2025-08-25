@@ -32,12 +32,12 @@ export enum CLOUSING_KEY {
 
 export const menuItems = [
   //{ name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
-  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['admin', 'user'] },
-  { name: 'Solicitud de ajuste', path: '/approvals', icon:<LuClipboardCheck />, roles: ['user'] },
-  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['admin'] },
-  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['admin', 'user'] },
-  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['admin', 'user'] },
+  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Solicitud de ajuste', path: '/approvals', icon:<LuClipboardCheck />, roles: ['USER', 'user'] },
+  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['ADMIN', 'admin'] },
+  { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
 ];
 
@@ -45,5 +45,14 @@ export const ApprovalsReasons = createListCollection({
   items: [
     {label: "Corte de caja", value: 1},
     {label: "Cierre de lote", value: 2},
+  ]
+})
+
+export const PaginatorSize = createListCollection({
+  items: [
+    {label: "10", value: 10},
+    {label: "25", value: 25},
+    {label: "50", value: 50},
+    {label: "100", value: 100},
   ]
 })

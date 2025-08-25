@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
-import { Box, FormatNumber, HStack, Table, TableCell, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, HStack, IconButton, Table, TableCell, Text } from "@chakra-ui/react";
+import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { HeaderReportModel, ReportTypeMap } from "@models/reports.model";
+import { HeaderReportModel, ReportTypeMap, SyncErrorsModel } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import { changeStatus } from "@services/reportService";
+import { PaginatorSize } from "@models/constants.model";
+import { selectOption } from "@models/common.model";
 
-const pageSize = 10;
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
     const [headers, setHeaders] = useState<HeaderReportModel<ReportTypeMap[K]>[]>([]);
     const [visibleItems, setVisibleItems] = useState<ReportTypeMap[K][]>([]);
+    const [countTable, setCountTable] = useState<number>(0)
+    const [pageSize, setPageSize] = useState<number>(100)
     const { reportData, loading } = useReportsContext();
 
     const [page, setPage] = useState<number>(1);
@@ -23,6 +28,8 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             if (reportHeader) {
                 setHeaders(reportHeader.headers as HeaderReportModel<ReportTypeMap[K]>[]);
                 setVisibleItems([]);
+                setCountTable(0);
+                setPage(1);
             } else {
                 setHeaders([]);
             }
@@ -35,11 +42,13 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             setPage(page);
             const items = reportData?.slice(startRange, endRange);
             setVisibleItems(items);
+            setCountTable(reportData?.length);
         }
-    }, [page, reportData]);
+    }, [page, reportData, pageSize]);
 
-    function renderCellContent(key: keyof ReportTypeMap[K], value: any) {
-        if (key === 'quantity') {
+    function renderCellContent(key: keyof ReportTypeMap[K], value: any, index:number) {
+        const numberExceptions = ['quantity', 'id', 'transactionID', 'attempts']
+        if (numberExceptions.includes(key.toString().toLocaleLowerCase())) {
             return <Text>{value}</Text>;
         }
         
@@ -50,21 +59,33 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
         if (typeof value === 'number') {
             return <FormatNumber value={value} style="currency" currency="USD" />;
         }
+
+        if(key === 'especialStatus') {
+            let item = visibleItems as ReportTypeMap[K][]
+            const {nextStatus, nextStatusTool} = item[index] as SyncErrorsModel;
+            return (
+                <Text> 
+                    <IconButton onClick={() => changeStatus(nextStatus )}>
+                        {value}
+                    </IconButton> 
+                </Text>
+            )
+        }
         
         return <Text>{String(value)}</Text>;
 
     }
 
     return (
-        <>
+        <Box  display="flex" flexDirection="column" height="100%">
             {loading && (
                 <Box position="fixed" top="50%" left="50%" zIndex="1">
                     <Loading />
                 </Box>
             )}
 
-            <Box>
-                <Table.ScrollArea rounded="md" borderWidth="1px">
+            <Box flex="1" display="flex" flexDirection="column" minHeight="0" overflowY="visible">
+                <Table.ScrollArea rounded="md" borderWidth="1px" overflowY="visible">
                     <Table.Root size="sm" variant="outline">
                         <Table.Header>
                           <Table.Row>
@@ -79,7 +100,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                                 <Table.Row key={index}>
                                     {headers.map((header) => (
                                         <TableCell key={String(header.key)}>
-                                            {renderCellContent(header.key, row[header.key])}
+                                            {renderCellContent(header.key, row[header.key], index)}
                                         </TableCell>
                                     ))}
                                 </Table.Row>
@@ -87,22 +108,41 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                         </Table.Body>
                     </Table.Root>
                 </Table.ScrollArea>
-                <PaginationRoot
-                    count={reportData?.length ?? 0}
-                    pageSize={pageSize}
-                    page={page}
-                    onPageChange={(e) => {
-                    setPage(e.page);
-                    }}
-                >
-                    <HStack>
-                        <PaginationPrevTrigger />
-                        <PaginationItems />
-                        <PaginationNextTrigger />
-                    </HStack>
-                </PaginationRoot>
+                <Box mt="auto" pt={4} bg="white" position="sticky" bottom="0" zIndex="10">
+                    <PaginationRoot
+                        count={countTable}
+                        pageSize={pageSize}
+                        page={page}
+                        onPageChange={(e) => {
+                        setPage(e.page);
+                        }}
+                    >
+                        <HStack justify="end">
+                            <SelectRoot width="200px"
+                                collection={PaginatorSize}
+                                onValueChange={(event) => {
+                                    setPageSize(event.items[0].value);
+                                }}
+                            >
+                                <SelectTrigger>
+                                <SelectValueText placeholder="Seleccione una opcion" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                {PaginatorSize.items.length > 0 && PaginatorSize.items.map((item: selectOption) => (
+                                    <SelectItem item={item} key={item.value}>
+                                    {item.label}
+                                    </SelectItem>
+                                ))}
+                                </SelectContent>
+                            </SelectRoot>
+                            <PaginationPrevTrigger />
+                            <PaginationItems />
+                            <PaginationNextTrigger />
+                        </HStack>
+                    </PaginationRoot>
+                </Box>
             </Box>
-        </>
+        </Box>
     );
 }
 

@@ -524,3 +524,8 @@ export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);  
 };
+
+export function changeStatus(nextStatusId: number){
+    console.log(nextStatusId)
+
+}

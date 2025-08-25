@@ -1,8 +1,9 @@
-import { DiscountReportModel, EmployeeSalesModel } from "@models/reports.model";
+import { DiscountReportModel, EmployeeSalesModel, SyncErrorsModel } from "@models/reports.model";
+import { FcProcess, FcCheckmark  } from "react-icons/fc";
 
-export const handleDiscountData = (rawData: any[]): DiscountReportModel[] => {
+export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
 
-  return rawData.map(item =>{
+  return rowData.map(item =>{
     
     const discountAmount = parseFloat(item.s || '0');
     const totalSale = parseFloat(item.ventaTotal || '0');
@@ -24,9 +25,9 @@ export const handleDiscountData = (rawData: any[]): DiscountReportModel[] => {
   });
 }
 
-export const handleEmployeeSalesData = (rawData: any[]): EmployeeSalesModel[] => {
+export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] => {
 
-  return rawData.map(item => {
+  return rowData.map(item => {
     const totalSale = parseFloat(item.ventaTotal || '0');
     const voids = parseFloat(item.voids || '0');
     const discounts = parseFloat(item.descuentos || '0');
@@ -56,7 +57,50 @@ export const handleEmployeeSalesData = (rawData: any[]): EmployeeSalesModel[] =>
   });
 }
 
+export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
+  const exceptionsStatus = ["PRODUCTO NO REGISTRADO", "TENDER MEDIA NO REGISTRADO", "DESCUENTO NO REGISTRADO"]
+  
+  return rowData.map(item => {
+    const isException = exceptionsStatus.includes(item.type.toUpperCase());
+
+     
+    let statusID = 0;
+    let textTool = ""
+    
+    if (isException) {
+      const lowerStatus = item.status.toLowerCase();
+      
+      if (lowerStatus === "pendiente") {
+        statusID = 1;
+        textTool = "En proceso"
+      } else if (lowerStatus === "en proceso") {
+        statusID = 2;
+        textTool = "Sincronizado"
+      }
+    }
+    
+    return {
+      id: item.id,
+      transactionID: item.transactionID,
+      especialStatus: item.status,
+      attempts: item.attempts,
+      type: item.type,
+      errorMsg: item.errorMsg,
+      onCDC: item.onCDC,
+      processOfError: item.processOfError,
+      attended: !item.attended ? "Sin atender" : "Atendido",
+      creationDate: item.creationDate,
+      lastAttemptDate: item.lastAttemptDate,
+      isException: exceptionsStatus.includes(item.type.toUpperCase()),
+      nextStatus: statusID,
+      nextStatusTool: textTool
+    }
+  })
+  
+}
+
 export const reportHandlers = {
   handleDiscountData,
-  handleEmployeeSalesData
+  handleEmployeeSalesData,
+  handleSyncErrorsData
 };

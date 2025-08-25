@@ -1,3 +1,4 @@
+import { JSX } from "react";
 import { FilterKey } from "./reportsConstansts.model";
 
 export interface ReportsPropsModel {
@@ -145,13 +146,31 @@ export interface EmployeeSalesModel {
      unclassified: number;
 }
 
-export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | EmployeeSalesModel;
+export interface SyncErrorsModel {
+  id: number;
+  transactionID: number;
+  especialStatus: string;
+  attempts: number;
+  type: string;
+  errorMsg: string;
+  onCDC: string;
+  processOfError: string;
+  attended: string;
+  creationDate: string;
+  lastAttemptDate: string;
+  isException: boolean;
+  nextStatus: number;
+  nextStatusTool: string;
+}
+
+export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | EmployeeSalesModel | SyncErrorsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
   2: PMixGeneralReportModel;
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
+  100: SyncErrorsModel;
 };
 
 export interface FilterParams {
