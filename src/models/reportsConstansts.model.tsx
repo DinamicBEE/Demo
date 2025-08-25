@@ -4,7 +4,6 @@ import * as SETTINGS from "@services/settings";
 import { FilterParams } from "./reports.model";
 
 export enum REPORT_KEY {
-  REPSYNC_ERRORS = 100,
   REPDES_01 = 1,
   REPMIX_01 = 2,
   REPMIX_02 = 3,
@@ -16,6 +15,7 @@ export enum REPORT_KEY {
   REPCUP_01 = 9,
   REPBAN_01 = 10,
   REPBAN_02 = 11,
+  REPSYNC_ERRORS = 100,
 }
 export enum REPORT_NAME {
   REPSYNC_ERRORS = "Errores de sincronización ",
@@ -36,12 +36,12 @@ export enum REPORT_NAME {
 }
 //TODO: Falta agregar los reportes de bancos
 export const REPORT_CONFIG = [
-    {
+  {
     report: REPORT_KEY.REPSYNC_ERRORS,
     name: REPORT_NAME.REPSYNC_ERRORS,
     date: false,
-    subsidiary: false,
-    cdc: false,
+    subsidiary: true,
+    cdc: true,
     employees: false,
     approver: false,
     categories: false,
@@ -50,6 +50,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPDES_01,
@@ -65,6 +66,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPMIX_01,
@@ -80,6 +82,7 @@ export const REPORT_CONFIG = [
     items: true,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPMIX_02,
@@ -95,6 +98,7 @@ export const REPORT_CONFIG = [
     items: true,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_01,
@@ -110,6 +114,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_02,
@@ -125,6 +130,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_03,
@@ -140,6 +146,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: true,
     currency: true,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_04,
@@ -155,6 +162,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVOI_01,
@@ -394,6 +402,13 @@ export const TABLE_CONFIG = [
 ];
 
 export const KEYSPARAMS_CONFIG: FilterParams = {
+  [REPORT_KEY.REPSYNC_ERRORS]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "cdc" },
+      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
   [REPORT_KEY.REPDES_01]: {
     params: [
       { paramsKey: "consumerCenter", filterKey: "cdc" },
@@ -414,7 +429,7 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPSYNC_ERRORS,
     url: SETTINGS.REPORT_SYNCERRORS,
-    keysParams: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPSYNC_ERRORS].params,
     handleData: null,
   },
   {
