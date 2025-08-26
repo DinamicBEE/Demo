@@ -94,7 +94,7 @@ export interface PMixGeneralReportModel {
   subsidiary: string;
   cdc: string;
   category: string;
-  subcategory: string;
+  //subcategory: string;
   family: string;
   key: string;
   item: string;

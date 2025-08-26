@@ -66,7 +66,7 @@ export const GET_ITEMS = ``;
 
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
-export const REPORT_MIXGEN = ``;
+export const REPORT_MIXGEN = `${CRC_BASE}/PMIX/GenerateReportByCdcAndDate`;
 export const REPORT_MIXEMP = ``;
 export const REPORT_VENEMP = `${REPORT_BASE}/saleEmploye`;
 export const REPORT_VENCATFAM = ``;

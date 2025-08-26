@@ -1,5 +1,4 @@
-import { DiscountReportModel, EmployeeSalesModel, SyncErrorsModel } from "@models/reports.model";
-import { FcProcess, FcCheckmark  } from "react-icons/fc";
+import { DiscountReportModel, EmployeeSalesModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
 
 export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
 
@@ -57,6 +56,30 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
   });
 }
 
+export const handlePMIXGeneralData = (rowData: any[]): PMixGeneralReportModel[] => {
+  return rowData.map(item => {
+    return {
+      date: item.salesDate,
+      subsidiary: item.subsidiaries,
+      cdc: item.consumerCenter,
+      category: item.category,
+      family: item.family,
+      key: item.code,
+      item: item.product,
+      quantity: item.itemNumber,
+      totalSale: item.totalSale,
+      voids: item.totalVoids,
+      discounts: item.totalDiscount,
+      netSales: item. netSales,
+      categoryPercentage: item.categorySale,
+      familyPercentage: item.familySale,
+      cost: item.cost,
+      costPercentage: item.costSale
+    }
+  })
+
+}
+
 export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
   const exceptionsStatus = ["PRODUCTO NO REGISTRADO", "TENDER MEDIA NO REGISTRADO", "DESCUENTO NO REGISTRADO"]
   
@@ -102,5 +125,6 @@ export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
 export const reportHandlers = {
   handleDiscountData,
   handleEmployeeSalesData,
+  handlePMIXGeneralData,
   handleSyncErrorsData
 };

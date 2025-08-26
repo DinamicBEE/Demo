@@ -525,6 +525,14 @@ export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
   URL.revokeObjectURL(url);  
 };
 
+export const generateBanckReportCSV =(currentReport: number, rows: any[]) => {
+  const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
+  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
+  const date = new Date(Date.now());
+  const formattedDate = date.toISOString().split('T')[0];
+
+}
+
 export function changeStatus(nextStatusId: number){
     console.log(nextStatusId)
 
