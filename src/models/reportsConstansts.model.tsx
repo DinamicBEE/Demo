@@ -1,5 +1,4 @@
 export enum REPORT_KEY {
-  REPSYNC_ERRORS = 100,
   REPDES_01 = 1,
   REPMIX_01 = 2,
   REPMIX_02 = 3,
@@ -11,6 +10,7 @@ export enum REPORT_KEY {
   REPCUP_01 = 9,
   REPBAN_01 = 10,
   REPBAN_02 = 11,
+  REPSYNC_ERRORS = 100,
 }
 export enum REPORT_NAME {
   REPSYNC_ERRORS = "Errores de sincronización ",
@@ -35,8 +35,8 @@ export const REPORT_CONFIG = [
     report: REPORT_KEY.REPSYNC_ERRORS,
     name: REPORT_NAME.REPSYNC_ERRORS,
     date: false,
-    subsidiary: false,
-    cdc: false,
+    subsidiary: true,
+    cdc: true,
     employees: false,
     approver: false,
     categories: false,
@@ -45,6 +45,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPDES_01,
@@ -60,6 +61,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPMIX_01,
@@ -75,6 +77,7 @@ export const REPORT_CONFIG = [
     items: true,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPMIX_02,
@@ -90,6 +93,7 @@ export const REPORT_CONFIG = [
     items: true,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_01,
@@ -105,6 +109,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_02,
@@ -120,6 +125,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_03,
@@ -135,6 +141,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: true,
     currency: true,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVEN_04,
@@ -150,6 +157,7 @@ export const REPORT_CONFIG = [
     items: false,
     paymentMethod: false,
     currency: false,
+    exchangeRate: false,
   },
   {
     report: REPORT_KEY.REPVOI_01,

@@ -72,6 +72,7 @@ export interface FilterConfigModel {
     items: boolean,
     paymentMethod: boolean,
     currency: boolean,
+    exchangeRate: boolean
   }
   
 export type AppliedFilters = {
