@@ -24,10 +24,7 @@ import {
   ReportFilterModel,
   ReporGeneralRequesttModel
 } from "@models/reports.model";
-import {
-  FILTER_LABELS,
-  FilterKey,
-  REPORT_CONFIG
+import { FILTER_LABELS, FilterKey, REPORT_CONFIG
 } from "@models/reportsConstansts.model";
 import { useEffect, useMemo, useCallback, useState } from "react";
 import { registerLocale } from "react-datepicker";
@@ -174,14 +171,21 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       const filterKey = key as FilterKey;
       if (filterKey === "cdc") {
         allFilters.cdc = selectedCDC;
+      } else if (filterKey === "dateRange") {
+        allFilters.dateRange = startDate && endDate
+          ? `${startDate.toISOString().split("T")[0]},${endDate.toISOString().split("T")[0]}`
+          : null;
       } else if (filterKey === "date") {
-        allFilters.date = startDate && endDate
-          ? `${startDate.toISOString()} - ${endDate.toISOString()}`
+        allFilters.date = formattedDate
+          ? `${new Date(formattedDate).toISOString().split("T")[0]}`
           : null;
       } else {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
     });
+
+    console.log("filtros", allFilters);
+    
 
     await getReportData({
       report: currentReport ?? 0,

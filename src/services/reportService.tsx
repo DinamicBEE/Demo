@@ -452,13 +452,13 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
 
     let response: any[];
     let filterConfig: { [key: string]: any } = request.filterOpction || {};
-    if (request.filterOpction.date) {
+    if (request.filterOpction.dateRange) {
 
-      const date = request.filterOpction.date;
+      const date = request.filterOpction.dateRange;
       const dateString = date ? date.toString() : "";
-      const divisionOfDates = dateString.split(" - ");
-      const date_1 = divisionOfDates ? divisionOfDates[0].split("T")[0] : null;
-      const date_2 = divisionOfDates ? divisionOfDates[1].split("T")[0] : null;
+      const divisionOfDates = dateString.split(",");
+      const date_1 = divisionOfDates[0];
+      const date_2 = divisionOfDates[1];
       const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
       const filterConfig: { [key: string]: any } = request.filterOpction || {};
       filterConfig["date_1"] = date_1;
