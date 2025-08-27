@@ -99,7 +99,7 @@ export interface PMixGeneralReportModel {
   subsidiary: string;
   cdc: string;
   category: string;
-  subcategory: string;
+  //subcategory: string;
   family: string;
   key: string;
   item: string;
@@ -167,13 +167,71 @@ export interface SyncErrorsModel {
   nextStatusTool: string;
 }
 
-export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | EmployeeSalesModel | SyncErrorsModel;
+export interface BanamexModel {
+  guide: BanamexGuideModel[];
+  summary: BanamexSummaryModel[];
+  employees: BanamexEmployeesModel[];
+  commerce: BanamexCommerceModel[];
+}
+
+export interface BanamexSummaryModel {
+  cdc: string;
+  cdcId: number;
+  usdAmount: number;
+  exchangeRate: number;
+  realAmount: number;
+  meraAmount: number;
+  difference: number;
+}
+
+export interface BanamexGuideModel {
+  columnNumber: number;
+  columnName: string;
+  columnDescription: string;
+  columnType: string;
+  example: string;
+  notes: string;
+}
+
+export interface BanamexEmployeesModel {
+  employeeName: string;
+  cdc:string;
+  mxnCurrency: number;
+  usdCurrency: number;
+  sumAmountChange: number;
+  difference: number;
+}
+
+export interface BanamexCommerceModel {
+  day: string;
+  month: string;
+  year: string;
+  typeOperation: string;
+  usdReceived: number;
+  usdOperation: number;
+  exchangeRate: number;
+  usdChange: number;
+  nationalChange: number;
+  employeeId: string;
+  recordSales: string;
+  cdcId: string;
+  cdc: number;
+  depositedAmount: number;
+  verification1: number;
+  verification2: number;
+  verification3: number;
+  verification4: number;
+  paymenthSaleID: number;
+}
+
+export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | EmployeeSalesModel | BanamexModel | SyncErrorsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
   2: PMixGeneralReportModel;
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
+  10: BanamexModel;
   100: SyncErrorsModel;
 };
 

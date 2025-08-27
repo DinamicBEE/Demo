@@ -3,7 +3,8 @@ import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
-import { REPORT_CONFIG, REPORTSERVICE_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORT_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORTSERVICE_CONFIG } from "@models/reportsConstService.model";
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -465,6 +466,7 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
       filterConfig["cdc"] = cdcString;
     }
   
+    //TODO if para fecha unica, No rangos
     const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
     if(!reportConfig){
       throw new Error("Report configuration is undefined");
@@ -524,6 +526,14 @@ export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);  
 };
+
+export const generateBanckReportCSV =(currentReport: number, rows: any[]) => {
+  const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
+  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
+  const date = new Date(Date.now());
+  const formattedDate = date.toISOString().split('T')[0];
+
+}
 
 export function changeStatus(nextStatusId: number){
     console.log(nextStatusId)

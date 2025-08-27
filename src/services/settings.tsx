@@ -66,7 +66,7 @@ export const GET_ITEMS = ``;
 
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
-export const REPORT_MIXGEN = ``;
+export const REPORT_MIXGEN = `${CRC_BASE}/PMIX/GenerateReportByCdcAndDate`;
 export const REPORT_MIXEMP = ``;
 export const REPORT_VENEMP = `${REPORT_BASE}/saleEmploye`;
 export const REPORT_VENCATFAM = ``;
@@ -74,6 +74,8 @@ export const REPORT_VENMETPAY = ``;
 export const REPORT_VENDES = ``;
 export const REPORT_VOIC = ``;
 export const REPORT_CUP = ``;
+
+export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;
