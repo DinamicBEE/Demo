@@ -18,6 +18,13 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
+  [REPORT_KEY.REPVEN_03]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
   [REPORT_KEY.REPMIX_01]: {
     params: [
       { paramsKey: "cdcId", filterKey: "cdc" },
@@ -73,8 +80,8 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_03,
     url: SETTINGS.REPORT_VENMETPAY,
-    keysParams: null,
-    handleData: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPVEN_03].params,
+    handleData: reportHandlers.handlePaymentMethod,
   },
   {
     report: REPORT_KEY.REPVEN_04,

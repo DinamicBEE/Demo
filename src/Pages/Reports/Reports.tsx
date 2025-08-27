@@ -7,7 +7,7 @@ import { REPORT_KEY } from "@models/reportsConstansts.model";
 
 function Reports() {
   const [open, setOpen] = useState(false);
-  const [currentReport, setCurrentReport] = useState<number | null>(REPORT_KEY.REPDES_01);
+  const [currentReport, setCurrentReport] = useState<number | null>(REPORT_KEY.REPMIX_01);
   const [reportName, setReportName] = useState<string>('Reporte no seleccionado')
   
   // Función para manejar el cambio de reporte

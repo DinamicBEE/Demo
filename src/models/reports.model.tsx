@@ -94,6 +94,20 @@ export interface DiscountReportModel {
   approver: string;
 }
 
+export interface PaymentMethodModel {
+  date: string | Date;
+  location: string;
+  cdc: string;
+  paymentMethod: string;
+  currency: string;
+  exchangeRate: number;
+  ticketNumber: string;
+  amount: number;
+  netSales: number;
+  netSalesWithVAT: number;
+  comments: string;
+}
+
 export interface PMixGeneralReportModel {
   date: string | Date;
   subsidiary: string;
@@ -224,13 +238,14 @@ export interface BanamexCommerceModel {
   paymenthSaleID: number;
 }
 
-export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | EmployeeSalesModel | BanamexModel | SyncErrorsModel;
+export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | EmployeeSalesModel | BanamexModel | SyncErrorsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
   2: PMixGeneralReportModel;
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
+  5: PaymentMethodModel;
   10: BanamexModel;
   100: SyncErrorsModel;
 };

@@ -1,4 +1,4 @@
-import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, DiscountReportModel, EmployeeSalesModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
+import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, DiscountReportModel, EmployeeSalesModel, PaymentMethodModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
 import { GUIDE_TO_BANKING_BANAMEX } from "@models/reportsConstService.model";
 
 export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
@@ -64,6 +64,32 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
       boutique: parseFloat(item.boutique || '0'),
       photos: parseFloat(item.fotos || '0'),
       unclassified: parseFloat(item.noClasificada || '0')
+    }
+  });
+}
+
+export const handlePaymentMethod = (rowData: any[]): PaymentMethodModel[] => {
+
+  return rowData.map(item =>{
+    
+    const formatDate = item.fechaVenta.split('T')[0]
+    const date = new Date(`${formatDate}`);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
+    return {
+      date: `${day}/${month}/${year}`,
+      location: item.ubicacion,
+      cdc: item.centroDeConsumo,
+      paymentMethod: item.formaPago,
+      currency: item.moneda,
+      exchangeRate: item.tipoCambio,
+      ticketNumber: item.ticket,
+      amount: item.importe,
+      netSales: item.ventasNetas,
+      netSalesWithVAT: item.ventasNetasIva,
+      comments: item.comentarios
     }
   });
 }
@@ -219,6 +245,7 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
 export const reportHandlers = {
   handleDiscountData,
   handleEmployeeSalesData,
+  handlePaymentMethod,
   handlePMIXGeneralData,
   handleSyncErrorsData,
   handleBanamexData
