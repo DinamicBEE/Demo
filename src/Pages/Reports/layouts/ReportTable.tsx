@@ -79,7 +79,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     return (
         <Box  display="flex" flexDirection="column" height="100%">
             {loading && (
-                <Box position="fixed" top="50%" left="50%" zIndex="1">
+                <Box position="fixed" top="50%" left="50%">
                     <Loading />
                 </Box>
             )}
@@ -108,7 +108,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                         </Table.Body>
                     </Table.Root>
                 </Table.ScrollArea>
-                <Box mt="auto" pt={4} bg="white" position="sticky" bottom="0" zIndex="10">
+                <Box mt="auto" pt={4} bg="white" position="sticky" bottom="0">
                     <PaginationRoot
                         count={countTable}
                         pageSize={pageSize}

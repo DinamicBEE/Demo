@@ -28,7 +28,7 @@ export interface ReportFilterModel {
   date: string | null,
   dateRange: string | null,
   subsidiary: number[] | [],
-  cdc: number | null,
+  cdc: number[] | [],
   multicdc: number[] | [],
   employees: number | null,
   approver: number | null,
@@ -64,8 +64,10 @@ export interface FilterConfigModel {
     report: number,
     name: string,
     date: boolean,
+    dateRange: boolean,
     subsidiary: boolean,
     cdc: boolean,
+    multicdc: boolean,
     employees: boolean,
     approver: boolean,
     categories: boolean,
@@ -94,10 +96,8 @@ export interface DiscountReportModel {
 
 export interface PMixGeneralReportModel {
   date: string | Date;
-  dateRange: string | Date;
   subsidiary: string;
   cdc: string;
-  multicdc: string[];
   category: string;
   subcategory: string;
   family: string;
