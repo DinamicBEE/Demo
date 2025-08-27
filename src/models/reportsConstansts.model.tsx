@@ -108,9 +108,9 @@ export const REPORT_CONFIG = [
     name: `${REPORT_NAME.REPVEN_00}: ${REPORT_NAME.REPVEN_01}`,
     date: false,
     dateRange: true,
-    multicdc: false,
     subsidiary: true,
-    cdc: true,
+    multicdc: true,
+    cdc: false,
     employees: false, //Verificar si se necesita luego
     approver: false,
     categories: false,

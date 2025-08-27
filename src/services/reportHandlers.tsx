@@ -40,8 +40,14 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
     const pax = parseFloat(item.pax || '0');
     const salePer = (item.venta || '0');
 
+    const formatDate = item.fechaDeVenta.split(' ')[0]
+    const date = new Date(`${formatDate}T00:00:00`);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
     return {
-      date: item.fechaDeVenta.split(' ')[0],
+      date: `${day}/${month}/${year}`,
       location: item.ubicacion,
       cdc: item.centroDeConsumo,
       employee: item.empleado,
@@ -64,8 +70,14 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
 
 export const handlePMIXGeneralData = (rowData: any[]): PMixGeneralReportModel[] => {
   return rowData.map(item => {
+    const formatDate = item.salesDate.split('T')[0]
+    const date = new Date(`${formatDate}T00:00:00`);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+
     return {
-      date: item.salesDate.split('T')[0],
+      date: `${day}/${month}/${year}`,
       subsidiary: item.subsidiaries,
       cdc: item.consumerCenter,
       category: item.category,
