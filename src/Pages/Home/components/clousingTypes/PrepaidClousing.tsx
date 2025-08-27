@@ -69,6 +69,8 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
           cdc,
           data?.closingStartDate
         );
+        console.log(couponsList);
+        
         const customersApi = await getCustomersPrepaid();
         setPrepaid(prepaid);
         setCoupons(couponsList);
@@ -179,26 +181,34 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (coupon.length < 1) return;
     setLoadingAdded(true);
 
-    const couponModel = coupons.find((item) => item.barCode === coupon);
-
+    const couponModel: CouponCatalogModel|undefined = coupons.find((item) => item.barCode === coupon);
+    console.log("encontró?", couponModel);
+    
     if (couponModel === undefined) {
       toastContoller(couponModel);
       return;
     }
 
-    const findClient = prepaid.lines.find(
+        console.log("prepaid.lines", prepaid.lines);
+
+    let findClient: PrepaidLineModel|undefined = prepaid.lines.find(
       (item: PrepaidLineModel) =>
         item.client?.toLowerCase() === couponModel.clientCustom.toLowerCase()
-    );
+    ) || undefined;
 
     if (findClient === undefined) {
-      toastContoller("client not found");
-      return;
+      findClient = {
+        ...prepaid.lines[0],
+        unitPrice: couponModel.amount,
+        client: couponModel.clientCustom
+      };
+      //toastContoller("client not found");
+      //return;
     }
 
     // Initialize coupons array if it doesn't exist
     if (!findClient.coupons) {
-      findClient.coupons = [];
+      findClient.coupons ??= [];
     }
 
     // Check if the coupon already exists in the client's coupons array
@@ -230,12 +240,12 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     // Calculate supplement physical value
     const supplementPhysicalValue =
-      findClient.supplementsQuantity * findClient.unitPrice || 0;
+      findClient.supplementsQuantity || 0 * (findClient.unitPrice || 0);
 
     // Calculate total physical value (coupons + supplements)
-    const newTotalFisico = couponPhysicalValue + supplementPhysicalValue;
+    const newTotalFisico = (couponPhysicalValue || 0) + supplementPhysicalValue;
 
-    const newDifference = findClient.totalPOS - newTotalFisico;
+    const newDifference = (findClient.totalPOS || 0) - newTotalFisico;
 
     const hasCouponExpired = findClient.coupons.some(
       (coupon) => coupon.isExpired
@@ -244,7 +254,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     const quantity = findClient.coupons.filter(
       (coupon) => coupon.isExpired === false
     ).length;
-
+    
     // Create a new prepaid lines array with the updated client
     const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
       item.id === findClient.id

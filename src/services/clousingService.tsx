@@ -279,6 +279,8 @@ export const getPrepaidClousing = async (
     const response = await api.get(GET_PREPAID, {
       params: { idCashRegisterClosure: clousingId },
     });
+    console.log("reponse", response.data);
+    
     
     const updateLines = await response.data.prepagoResponse.map(
       (item: PrepaidLineModel) => {

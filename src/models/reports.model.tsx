@@ -26,8 +26,10 @@ export interface ReporGeneralRequesttModel {
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
   date: string | null,
+  dateRange: string | null,
   subsidiary: number[] | [],
-  cdc: number[] | [],
+  cdc: number | null,
+  multicdc: number[] | [],
   employees: number | null,
   approver: number | null,
   categories: number | null,
@@ -92,8 +94,10 @@ export interface DiscountReportModel {
 
 export interface PMixGeneralReportModel {
   date: string | Date;
+  dateRange: string | Date;
   subsidiary: string;
   cdc: string;
+  multicdc: string[];
   category: string;
   subcategory: string;
   family: string;

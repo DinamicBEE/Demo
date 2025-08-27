@@ -11,6 +11,7 @@ import { generateReportCSV_V2 } from "@services/reportService";
 import { useReportsContext } from "@context/reports/reportsContext";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData, handleMultiSelectChange, renderMultiSelectWithControls } from "../../../utils/selectManagement";
+import SimpleDatePicker from "Pages/LotClosure/components/SimpleDatePicker";
 
 registerLocale("es", es);
 
@@ -25,15 +26,19 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
   const [selectedCDCOptions, setSelectedCDCOptions] = useState<selectOption[]>([]);
   const [cdc, setCDC] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
+  const [formattedDate, setFormattedDate] = useState<string>('');
+  const initialDate = new Date();
 
   const { getReportData, reportData } = useReportsContext();
 
   const resetValues = useMemo((): ReportFilterModel => ({
     approver: null,
     categories: null,
-    cdc: [],
+    cdc: null,
+    multicdc: [],
     currency: null,
     date: null,
+    dateRange: null,
     employees: null,
     family: null,
     items: null,
@@ -190,7 +195,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   }, [currentReport, reportData]);
 
   const renderFilter = (filterKey: FilterKey) => {
-    if (filterKey === "date") {
+    if (filterKey === "dateRange") {
       return (
         <Stack gap={3}>
           <Field.Root w="100%">
@@ -199,6 +204,19 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
               onChange={setDateRange}
               startDate={startDate}
               endDate={endDate}
+            />
+          </Field.Root>
+        </Stack>
+      );
+    }
+    if (filterKey === "date") {
+      return (
+        <Stack gap={3}>
+          <Field.Root w="100%">
+            <Field.Label>{FILTER_LABELS[filterKey]}</Field.Label>
+            <SimpleDatePicker
+              onDateChange={setFormattedDate}
+              initialDate={initialDate}
             />
           </Field.Root>
         </Stack>
