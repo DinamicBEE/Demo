@@ -3,7 +3,8 @@ import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
-import { REPORT_CONFIG, REPORTSERVICE_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORT_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORTSERVICE_CONFIG } from "@models/reportsConstService.model";
 
 
 export const generateReportCSV = (rows: Row[]) => {
