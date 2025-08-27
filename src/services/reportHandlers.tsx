@@ -11,9 +11,14 @@ export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
     const discountPercentage = totalSale > 0 
       ? (discountAmount / totalSale) * 100 
       : 0;
+    const formatDate = item.venta.split(' ')[0]
+    const date = new Date(`${formatDate}T00:00:00`);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
 
     return {
-      date: item.venta.split(' ')[0],
+      date: `${day}/${month}/${year}`,
       cdc: item.centroDeConsumo,
       discountType: item.descuento,
       discountAmount: discountAmount,
@@ -60,7 +65,7 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
 export const handlePMIXGeneralData = (rowData: any[]): PMixGeneralReportModel[] => {
   return rowData.map(item => {
     return {
-      date: item.salesDate,
+      date: item.salesDate.split('T')[0],
       subsidiary: item.subsidiaries,
       cdc: item.consumerCenter,
       category: item.category,
@@ -163,21 +168,21 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
 
   const preSummary: BanamexSummaryModel[] = backingData.resumenBanamexResponses.map( (item:any) => {
     return {
-      cdc: item.mes,
-      cdcId: item.anio,
-      usdAmount: item.tipoOperacion,
-      exchangeRate: item.recibidoDolares,
-      realAmount: item.operacionDolares,
-      meraAmount: item.tipoCambio,
-      difference: item.cambioDolares,
+      cdc: item.cdc,
+      cdcId: item.cdcNum,
+      usdAmount: item.montoDolares,
+      exchangeRate: item.cambioDolares,
+      realAmount: item.montoReal,
+      meraAmount: item.montoCC,
+      difference: item.diferencia,
     }
   });
 
-  const totalUsdAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { usdAmount: number })=> acc + (curr.usdAmount), 0);
-  const totalExchangeRate: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { exchangeRate: number })=> acc + (curr.exchangeRate), 0);
-  const totalRealAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { realAmount: number })=> acc + (curr.realAmount), 0);
-  const totalMeraAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { meraAmount: number })=> acc + (curr.meraAmount), 0);
-  const totalDifference: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { difference: number })=> acc + (curr.difference), 0);
+  const totalUsdAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoDolares: number })=> acc + (curr.montoDolares), 0);
+  const totalExchangeRate: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { cambioDolares: number })=> acc + (curr.cambioDolares), 0);
+  const totalRealAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoReal: number })=> acc + (curr.montoReal), 0);
+  const totalMeraAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoCC: number })=> acc + (curr.montoCC), 0);
+  const totalDifference: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { diferencia: number })=> acc + (curr.diferencia), 0);
 
   preSummary.push({
     cdc: "Total",

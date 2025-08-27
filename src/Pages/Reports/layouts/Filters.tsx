@@ -174,7 +174,9 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     Object.keys(FILTER_LABELS).forEach((key) => {
       const filterKey = key as FilterKey;
       if (filterKey === "cdc") {
-        allFilters.cdc = selectedCDC;
+        allFilters.cdc = selectedCDC[0];
+      }  else if (filterKey === "multicdc") {
+        allFilters.multicdc = selectedCDC;
       } else if (filterKey === "dateRange") {
         allFilters.dateRange = startDate && endDate
           ? `${startDate.toISOString().split("T")[0]},${endDate.toISOString().split("T")[0]}`

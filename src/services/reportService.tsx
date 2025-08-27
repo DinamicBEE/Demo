@@ -449,6 +449,7 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
    
   try {
+    //console.log("paramsselect", request)
 
     let response: any[];
     let filterConfig: { [key: string]: any } = request.filterOpction || {};
@@ -459,20 +460,20 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
       const divisionOfDates = dateString.split(",");
       const date_1 = divisionOfDates[0];
       const date_2 = divisionOfDates[1];
-      const cdcString = request.filterOpction.cdc ? request.filterOpction.cdc.toString() : "";
+      const cdcString = request.filterOpction.multicdc ? request.filterOpction.multicdc.toString() : "";
       const filterConfig: { [key: string]: any } = request.filterOpction || {};
       filterConfig["date_1"] = date_1;
       filterConfig["date_2"] = date_2;
-      filterConfig["cdc"] = cdcString;
+      filterConfig["multicdc"] = cdcString;
     }
   
-    //TODO if para fecha unica, No rangos
     const reportConfig = REPORTSERVICE_CONFIG.find(report => report.report === request.report)
     if(!reportConfig){
       throw new Error("Report configuration is undefined");
     } 
     const paramsConfig = reportConfig.keysParams;
-
+    //console.log("paramns",paramsConfig)
+    //console.log("paramsselect", filterConfig)
     const responseData = paramsConfig != null ? await api.get(reportConfig.url, {
       params: paramsConfig
         ? paramsConfig.reduce((acc: any, param: any) => {

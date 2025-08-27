@@ -70,17 +70,17 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPMIX_01,
     name: `${REPORT_NAME.REPMIX_00}: ${REPORT_NAME.REPMIX_01}`,
-    date: false,
-    dateRange: true,
+    date: true,
+    dateRange: false,
     subsidiary: true,
-    multicdc: true,
-    cdc: false,
+    multicdc: false,
+    cdc: true,
     employees: false,
     approver: false,
-    categories: true,
-    subcategories: true,
-    family: true,
-    items: true,
+    categories: false,
+    subcategories: false,
+    family: false,
+    items: false,
     paymentMethod: false,
     currency: false,
     exchangeRate: false,
@@ -106,8 +106,8 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_01,
     name: `${REPORT_NAME.REPVEN_00}: ${REPORT_NAME.REPVEN_01}`,
-    date: true,
-    dateRange: false,
+    date: false,
+    dateRange: true,
     multicdc: false,
     subsidiary: true,
     cdc: true,
@@ -201,6 +201,24 @@ export const REPORT_CONFIG = [
     multicdc: false,
     subsidiary: true,
     cdc: true,
+    employees: false,
+    approver: false,
+    categories: false,
+    subcategories: false,
+    family: false,
+    items: false,
+    paymentMethod: false,
+    currency: false,
+    exchangeRate: false,
+  },
+    {
+    report: REPORT_KEY.REPBAN_01,
+    name: REPORT_NAME.REPBAN_01,
+    date: false,
+    dateRange: true,
+    subsidiary: true,
+    cdc: false,
+    multicdc: true,
     employees: false,
     approver: false,
     categories: false,
@@ -502,3 +520,15 @@ export const FILTER_LABELS = {
   exchangeRate: 'Tipo de cambio'
 };
 export type FilterKey = keyof Omit<typeof REPORT_CONFIG[0], 'report' | 'name'>;
+
+//TODO Banking constant for report CSV
+
+export const BANKING_TITLEHEADERS = [
+  {
+    report: REPORT_KEY.REPBAN_01,
+    summary: [],
+    employee: [],
+    commerce: [],
+    guide:[]
+  }
+]

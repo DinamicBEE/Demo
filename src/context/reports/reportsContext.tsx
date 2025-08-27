@@ -1,4 +1,5 @@
 import { ReporGeneralRequesttModel, ReportContextType } from "@models/reports.model";
+import { REPORT_EXECPTION } from "@models/reportsConstService.model";
 import { getReports } from "@services/reportService";
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
@@ -17,17 +18,23 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
         try {
           //TODO: validar logica
           setLoading(true)
+          const isException = REPORT_EXECPTION.includes(reportRequest.report);
           const response = await getReports(reportRequest);
-          const newResponse = response.map((item: any) => {
-            const date = new Date(`${item.date}T00:00:00`);
-            const day = date.getDate().toString().padStart(2, "0");
-            const month = (date.getMonth() + 1).toString().padStart(2, "0");
-            const year = date.getFullYear();
-            return {
-              ...item,
-              date: `${day}/${month}/${year}`,
-            };
-          })
+          let newResponse: any;
+          //if(isException){
+            newResponse = response;
+          // } else {
+          //   newResponse = response.map((item: any) => {
+          //     const date = new Date(`${item.date}T00:00:00`);
+          //     const day = date.getDate().toString().padStart(2, "0");
+          //     const month = (date.getMonth() + 1).toString().padStart(2, "0");
+          //     const year = date.getFullYear();
+          //     return {
+          //       ...item,
+          //       date: `${day}/${month}/${year}`,
+          //     };
+          //   })
+          // }
           console.log(newResponse);
           
           setReportData(newResponse);
