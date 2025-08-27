@@ -142,19 +142,19 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_03,
     name: `${REPORT_NAME.REPVEN_00}: ${REPORT_NAME.REPVEN_03}`,
-    date: true,
-    dateRange: false,
-    multicdc: false,
+    date: false,
+    dateRange: true,
     subsidiary: true,
-    cdc: true,
+    multicdc: true,
+    cdc: false,
     employees: false,
     approver: false,
     categories: false,
     subcategories: false,
     family: false,
     items: false,
-    paymentMethod: true,
-    currency: true,
+    paymentMethod: false,
+    currency: false,
     exchangeRate: false,
   },
   {
@@ -449,19 +449,7 @@ export const TABLE_CONFIG = [
 //TODO: Falta agregar los reportes de bancos
 export const MENU_CONFIG = [
   {
-    id: 100,
-    categoryName: REPORT_NAME.REPSYNC_ERRORS,
-    subCategories: null,
-    reportCode: REPORT_KEY.REPSYNC_ERRORS,
-  },
-  {
     id: 1,
-    categoryName: REPORT_NAME.REPDES_01,
-    subCategories: null,
-    reportCode: REPORT_KEY.REPDES_01,
-  },
-  {
-    id: 2,
     categoryName: REPORT_NAME.REPMIX_00,
     subCategories: [
       { id: 1, name: REPORT_NAME.REPMIX_01, reportCode: REPORT_KEY.REPMIX_01 },
@@ -470,13 +458,19 @@ export const MENU_CONFIG = [
     reportCode: null,
   },
   {
+    id: 2,
+    categoryName: REPORT_NAME.REPDES_01,
+    subCategories: null,
+    reportCode: REPORT_KEY.REPDES_01,
+  },
+  {
     id: 3,
     categoryName: REPORT_NAME.REPVEN_00,
     subCategories: [
       { id: 1, name: REPORT_NAME.REPVEN_01, reportCode: REPORT_KEY.REPVEN_01 },
-      /* { id: 2, name: REPORT_NAME.REPVEN_02, reportCode: REPORT_KEY.REPVEN_02 },
+      //{ id: 2, name: REPORT_NAME.REPVEN_02, reportCode: REPORT_KEY.REPVEN_02 },
       { id: 3, name: REPORT_NAME.REPVEN_03, reportCode: REPORT_KEY.REPVEN_03 },
-      { id: 4, name: REPORT_NAME.REPVEN_04, reportCode: REPORT_KEY.REPVEN_04 }, */
+      //{ id: 4, name: REPORT_NAME.REPVEN_04, reportCode: REPORT_KEY.REPVEN_04 },
     ],
     reportCode: null,
   },
@@ -499,6 +493,12 @@ export const MENU_CONFIG = [
       { id: 1, name: REPORT_NAME.REPBAN_01, reportCode: REPORT_KEY.REPBAN_01 },
     ],
     reportCode: null
+  },
+  {
+    id: 100,
+    categoryName: REPORT_NAME.REPSYNC_ERRORS,
+    subCategories: null,
+    reportCode: REPORT_KEY.REPSYNC_ERRORS,
   },
 
 ];

@@ -54,7 +54,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     }, [page, reportData, pageSize]);
 
     function renderCellContent(key: keyof ReportTypeMap[K], value: any, index:number) {
-        const numberExceptions = ['quantity', 'id', 'transactionID', 'attempts']
+        const numberExceptions = ['quantity', 'id', 'transactionID', 'attempts', 'key']
         if (numberExceptions.includes(key.toString().toLocaleLowerCase())) {
             return <Text>{value}</Text>;
         }
