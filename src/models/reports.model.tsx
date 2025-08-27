@@ -26,8 +26,10 @@ export interface ReporGeneralRequesttModel {
 //TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
   date: string | null,
+  dateRange: string | null,
   subsidiary: number[] | [],
   cdc: number[] | [],
+  multicdc: number[] | [],
   employees: number | null,
   approver: number | null,
   categories: number | null,
@@ -62,8 +64,10 @@ export interface FilterConfigModel {
     report: number,
     name: string,
     date: boolean,
+    dateRange: boolean,
     subsidiary: boolean,
     cdc: boolean,
+    multicdc: boolean,
     employees: boolean,
     approver: boolean,
     categories: boolean,

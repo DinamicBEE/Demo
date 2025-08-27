@@ -6,14 +6,14 @@ import { FilterParams } from "./reports.model";
 export const KEYSPARAMS_CONFIG: FilterParams = {
   [REPORT_KEY.REPDES_01]: {
     params: [
-      { paramsKey: "consumerCenter", filterKey: "cdc" },
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
       { paramsKey: "startDate", filterKey: "date_1" },
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
   [REPORT_KEY.REPVEN_01]: {
     params: [
-      { paramsKey: "consumerCenter", filterKey: "cdc" },
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
       { paramsKey: "startDate", filterKey: "date_1" },
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
@@ -21,13 +21,13 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
   [REPORT_KEY.REPMIX_01]: {
     params: [
       { paramsKey: "cdcId", filterKey: "cdc" },
-      { paramsKey: "dateOdReport", filterKey: "date" },
+      { paramsKey: "dateOfReport", filterKey: "date" },
     ],
   },
     [REPORT_KEY.REPBAN_01]: {
     params: [
-      { paramsKey: "consumerCenter", filterKey: "cdc" },
-      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
