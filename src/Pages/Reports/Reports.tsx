@@ -24,7 +24,7 @@ function Reports() {
       <VStack align={"start"} gap={1}>
         <LateralMenu 
           open={open} 
-          setOpen={setOpen} 
+          setOpen={setOpen}
           currentReport={currentReport}
           onReportClick={handleReportChange} // Pasamos el manejador como prop
         />

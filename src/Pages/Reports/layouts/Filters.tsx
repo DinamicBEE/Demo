@@ -1,12 +1,11 @@
 import {
   Box,
-  Stack,
   Button,
   createListCollection,
   Field,
   Grid,
   ListCollection,
-  HStack
+  HStack,
 } from "@chakra-ui/react";
 import {
   SelectContent,
@@ -52,6 +51,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   const initialDate = new Date();
   const { getReportData, reportData } = useReportsContext();
+
+  const [actualReport, setActualReport] = useState<number>();
 
   const resetValues = useMemo<ReportFilterModel>(() => ({
     approver: null,
@@ -111,7 +112,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   // Cargar datos iniciales
   useEffect(() => {
+    if (actualReport === currentReport) return;
     if (!currentReport) return;
+    setSelectedCDC([]);
+    setSelectedSubIds([]);
     setSelectedValues(resetValues);
     reportName(filterConfig.name || "");
 
@@ -122,7 +126,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     };
 
     loadData();
-  }, [currentReport, filterConfig, resetValues, reportName]);
+    setActualReport(currentReport);
+  }, [currentReport, reportName]);
 
   // Cargar CDC cuando cambian las subsidiarias
   useEffect(() => {
@@ -137,8 +142,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const handleSubsidiariesChange = useCallback((ev: { value: string[] }) => {
     
     const ids = ev.value.map(Number);
-    console.log("entramos", ids);
-    setSelectedSubIds(ev.value.map(Number));
+    setSelectedSubIds(ids);
     // setSelectedValues(prev => ({ ...prev, subsidiary: ids }));
   }, []);
 
@@ -182,10 +186,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       } else {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
-    });
-
-    console.log("filtros", allFilters);
-    
+    });    
 
     await getReportData({
       report: currentReport ?? 0,
@@ -223,17 +224,17 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (filterKey === "subsidiary") {
       return (
         <SelectRoot
-          multiple
+          multiple={true}
           collection={subsidiaries}
           onValueChange={handleSubsidiariesChange}
           value={selectedSubIds}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
-          <SelectTrigger>
+          <SelectTrigger clearable={true}>
             <SelectValueText placeholder="Selecciona una o más" />
           </SelectTrigger>
           <SelectContent>
-            {(filterData.subsidiary || []).map((option) => (
+            {(subsidiaries.items || []).map((option) => (
               <SelectItem key={option.value} item={option}>
                 {option.label}
               </SelectItem>
@@ -253,7 +254,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           disabled={selectedSubIds.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
-          <SelectTrigger>
+          <SelectTrigger clearable={true}>
             <SelectValueText placeholder={cdc.items.length === 0 ? "Sin datos" : "Selecciona"} />
           </SelectTrigger>
           <SelectContent>
@@ -298,7 +299,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
               {renderFilter(filterKey)}
             </Box>
           ))
-          : <Box minWidth="200px">No hay filtros disponibles</Box>}
+          : <Box minWidth="200px"></Box>}
       </Grid>
 
       <HStack gap={4} mt={4}>
