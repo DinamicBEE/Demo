@@ -265,7 +265,7 @@ export const TABLE_CONFIG = [
     report: REPORT_KEY.REPMIX_01,
     headers: [
       { label: "Fecha de Venta", key: "date" },
-      { label: "Subsidiaria", key: "subsidiary" },
+      { label: "Ubicación", key: "subsidiary" },
       { label: "Centro de consumo", key: "cdc" },
       { label: "Categoria", key: "category" },
       //{ label: "Subcategoria", key: "subcategory" },

@@ -116,6 +116,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (!currentReport) return;
     setSelectedCDC([]);
     setSelectedSubIds([]);
+    setDateRange([null, null]);
+    setFormattedDate('');
     setSelectedValues(resetValues);
     reportName(filterConfig.name || "");
 
@@ -207,7 +209,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const renderFilter = (filterKey: FilterKey) => {
     if (filterKey === "dateRange") {
       return (
-        <Field.Root w="100%" zIndex={100}>
+        <Field.Root w="100%">
           <Field.Label>{FILTER_LABELS[filterKey]}</Field.Label>
           <DatePicker onChange={setDateRange} startDate={startDate} endDate={endDate} />
         </Field.Root>
@@ -216,7 +218,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
     if (filterKey === "date") {
       return (
-        <Field.Root w="100%" zIndex={100}>
+        <Field.Root w="100%">
           <Field.Label>{FILTER_LABELS[filterKey]}</Field.Label>
           <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate} />
         </Field.Root>
