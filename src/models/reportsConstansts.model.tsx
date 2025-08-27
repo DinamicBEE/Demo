@@ -480,3 +480,15 @@ export const FILTER_LABELS = {
   exchangeRate: 'Tipo de cambio'
 };
 export type FilterKey = keyof Omit<typeof REPORT_CONFIG[0], 'report' | 'name'>;
+
+//TODO Banking constant for report CSV
+
+export const BANKING_TITLEHEADERS = [
+  {
+    report: REPORT_KEY.REPBAN_01,
+    summary: [],
+    employee: [],
+    commerce: [],
+    guide:[]
+  }
+]

@@ -7,14 +7,14 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
   [REPORT_KEY.REPDES_01]: {
     params: [
       { paramsKey: "consumerCenter", filterKey: "cdc" },
-      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "startDate", filterKey: "date_1" },
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
   [REPORT_KEY.REPVEN_01]: {
     params: [
       { paramsKey: "consumerCenter", filterKey: "cdc" },
-      { paramsKey: "starDate", filterKey: "date_1" },
+      { paramsKey: "startDate", filterKey: "date_1" },
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
@@ -117,6 +117,8 @@ export enum ESTTATUS {
   REPBAN_01 = 10,
   REPBAN_02 = 11,
 }
+
+export const REPORT_EXECPTION = [REPORT_KEY.REPBAN_01, REPORT_KEY.REPBAN_02]
 
 export const GUIDE_TO_BANKING_BANAMEX = [
   {

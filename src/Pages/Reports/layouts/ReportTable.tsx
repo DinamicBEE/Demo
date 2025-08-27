@@ -9,6 +9,7 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginati
 import { changeStatus } from "@services/reportService";
 import { PaginatorSize } from "@models/constants.model";
 import { selectOption } from "@models/common.model";
+import { REPORT_EXECPTION } from "@models/reportsConstService.model";
 
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
@@ -40,7 +41,13 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     useEffect(() => {
         if(reportData){
             setPage(page);
-            const items = reportData?.slice(startRange, endRange);
+            const isException = REPORT_EXECPTION.includes(currentReport);
+            let items: any;
+            if(isException){
+                items = reportData?.summary.slice(startRange, endRange);
+            } else {
+                items = reportData?.slice(startRange, endRange);
+            }
             setVisibleItems(items);
             setCountTable(reportData?.length);
         }
