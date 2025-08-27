@@ -20,7 +20,7 @@ function Reports() {
   }
 
   return (
-    <Box p={6} boxShadow="xl" borderRadius="lg" bg="white" overflowY="hidden">
+    <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align={"start"} gap={1}>
         <LateralMenu 
           open={open} 

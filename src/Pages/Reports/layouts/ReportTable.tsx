@@ -115,7 +115,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                         </Table.Body>
                     </Table.Root>
                 </Table.ScrollArea>
-                <Box mt="auto" pt={4} bg="white" position="sticky" bottom="0">
+                <Box mt="auto" pt={4} bg="white" bottom="0">
                     <PaginationRoot
                         count={countTable}
                         pageSize={pageSize}
