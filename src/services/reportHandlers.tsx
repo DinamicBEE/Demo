@@ -1,4 +1,5 @@
-import { DiscountReportModel, EmployeeSalesModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
+import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, DiscountReportModel, EmployeeSalesModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
+import { GUIDE_TO_BANKING_BANAMEX } from "@models/reportsConstService.model";
 
 export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
 
@@ -122,9 +123,86 @@ export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
   
 }
 
+export const handleBanamexData = (backingData: any): BanamexModel => {
+  const preGuide: BanamexGuideModel[] = GUIDE_TO_BANKING_BANAMEX
+
+  const preEmployees: BanamexEmployeesModel[] = backingData.difColaboradorResponses.map( (item:any) => {
+    return {
+      employeeName: item.empleado,
+      cdc: item.cdc,
+      mxnCurrency: item.pesos,
+      usdCurrency: item.dolares,
+      sumAmountChange: item.montoCambio,
+      difference: item.diferencia,
+    }
+  })
+
+  const preCommerce: BanamexCommerceModel[] = backingData.comercioBanamexResponses.map( (item:any) => {
+    return {
+      day: item.dia,
+      month: item.mes,
+      year: item.anio,
+      typeOperation: item.tipoOperacion,
+      usdReceived: item.recibidoDolares,
+      usdOperation: item.operacionDolares,
+      exchangeRate: item.tipoCambio,
+      usdChange: item.cambioDolares,
+      nationalChange: item.cambioNacional,
+      employeeId: item.identificadorCajero,
+      recordSales: item.registroVenta,
+      cdcId: item.numeroEstablecimiento,
+      cdc: item.cdc,
+      depositedAmount: item.montoDepositar,
+      verification1: item.comprobacionUno,
+      verification2: item.comprobacionDos,
+      verification3: item.comprobacionTres,
+      verification4: item.comprobacionCuatro,
+      paymenthSaleID: item.paymenthSaleID,
+    }
+  })
+
+  const preSummary: BanamexSummaryModel[] = backingData.resumenBanamexResponses.map( (item:any) => {
+    return {
+      cdc: item.mes,
+      cdcId: item.anio,
+      usdAmount: item.tipoOperacion,
+      exchangeRate: item.recibidoDolares,
+      realAmount: item.operacionDolares,
+      meraAmount: item.tipoCambio,
+      difference: item.cambioDolares,
+    }
+  });
+
+  const totalUsdAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { usdAmount: number })=> acc + (curr.usdAmount), 0);
+  const totalExchangeRate: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { exchangeRate: number })=> acc + (curr.exchangeRate), 0);
+  const totalRealAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { realAmount: number })=> acc + (curr.realAmount), 0);
+  const totalMeraAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { meraAmount: number })=> acc + (curr.meraAmount), 0);
+  const totalDifference: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { difference: number })=> acc + (curr.difference), 0);
+
+  preSummary.push({
+    cdc: "Total",
+    cdcId: 0,
+    usdAmount: totalUsdAmount,
+    exchangeRate: totalExchangeRate,
+    realAmount: totalRealAmount,
+    meraAmount: totalMeraAmount,
+    difference: totalDifference
+  });
+
+
+  return {
+    guide: preGuide,
+    employees: preEmployees,
+    commerce: preCommerce,
+    summary: preSummary
+  };
+
+}
+
 export const reportHandlers = {
   handleDiscountData,
   handleEmployeeSalesData,
   handlePMIXGeneralData,
-  handleSyncErrorsData
+  handleSyncErrorsData,
+  handleBanamexData
 };
