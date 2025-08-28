@@ -486,14 +486,14 @@ export const MENU_CONFIG = [
     subCategories: null,
     reportCode: REPORT_KEY.REPCUP_01,
   }, */
-  {
-    id: 6,
-    categoryName: REPORT_NAME.REPBAN_00,
-    subCategories:[
-      { id: 1, name: REPORT_NAME.REPBAN_01, reportCode: REPORT_KEY.REPBAN_01 },
-    ],
-    reportCode: null
-  },
+  // {
+  //   id: 6,
+  //   categoryName: REPORT_NAME.REPBAN_00,
+  //   subCategories:[
+  //     { id: 1, name: REPORT_NAME.REPBAN_01, reportCode: REPORT_KEY.REPBAN_01 },
+  //   ],
+  //   reportCode: null
+  // },
   {
     id: 100,
     categoryName: REPORT_NAME.REPSYNC_ERRORS,
