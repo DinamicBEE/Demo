@@ -69,7 +69,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
           cdc,
           data?.closingStartDate
         );
-        console.log(couponsList);
         
         const customersApi = await getCustomersPrepaid();
         setPrepaid(prepaid);
@@ -80,7 +79,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         } */
 
         setCustomers(customersApi);
-        // console.log(prepaid.total);
 
         if (prepaid?.total)
           setFooterData(prepaid.total, data.id, CLOUSING_KEY.PREPAID);
@@ -182,14 +180,12 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     setLoadingAdded(true);
 
     const couponModel: CouponCatalogModel|undefined = coupons.find((item) => item.barCode === coupon);
-    console.log("encontró?", couponModel);
     
     if (couponModel === undefined) {
       toastContoller(couponModel);
       return;
     }
 
-        console.log("prepaid.lines", prepaid.lines);
 
     let findClient: PrepaidLineModel|undefined = prepaid.lines.find(
       (item: PrepaidLineModel) =>
@@ -279,7 +275,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     // Update the data with the new prepaid lines
     updateData(updatePrepaid);
     setLoadingAdded(false);
-    // console.log(updatePrepaid);
   }
 
   function handleInputTextData(

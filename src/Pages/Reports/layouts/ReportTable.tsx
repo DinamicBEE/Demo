@@ -91,8 +91,8 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                 </Box>
             )}
 
-            <Box flex="1" display="flex" flexDirection="column" minHeight="0" overflowY="visible">
-                <Table.ScrollArea rounded="md" borderWidth="1px" overflowY="visible">
+            <Box flex="1" display="flex" flexDirection="column" minHeight="0" overflowY={'hidden'}>
+                <Table.ScrollArea rounded="md" borderWidth="1px">
                     <Table.Root size="sm" variant="outline">
                         <Table.Header>
                           <Table.Row>
