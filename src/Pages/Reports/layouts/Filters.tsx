@@ -30,11 +30,12 @@ import { registerLocale } from "react-datepicker";
 import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
 import { getFilterOptions, getLocations } from "@services/catalogService";
-import { generateReportCSV_V2 } from "@services/reportService";
+import { generateBanckReportCSV, generateReportCSV_V2 } from "@services/reportService";
 import { useReportsContext } from "@context/reports/reportsContext";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
+import { REPORT_EXECPTION } from "@models/reportsConstService.model";
 
 registerLocale("es", es);
 
@@ -201,7 +202,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   // Exportar CSV
   const exportCSV = useCallback(() => {
     if (typeof currentReport === "number") {
-      generateReportCSV_V2(currentReport, reportData);
+      const isException = REPORT_EXECPTION.includes(currentReport);
+      !isException ? generateReportCSV_V2(currentReport, reportData) : generateBanckReportCSV(currentReport, reportData);
     }
   }, [currentReport, reportData]);
 

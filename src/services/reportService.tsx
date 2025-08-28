@@ -487,7 +487,7 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
       ? reportConfig.handleData(responseData.data)
       : responseData.data
       
-    await new Promise((resolve) => setTimeout(resolve, 500)); 
+    //await new Promise((resolve) => setTimeout(resolve, 500)); 
     return response
   
   } catch (error) {
@@ -528,7 +528,8 @@ export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
   URL.revokeObjectURL(url);  
 };
 
-export const generateBanckReportCSV =(currentReport: number, rows: any[]) => {
+export const generateBanckReportCSV =(currentReport: number, reportData: any) => {
+  
   const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
   const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
   const date = new Date(Date.now());

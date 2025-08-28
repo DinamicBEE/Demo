@@ -113,8 +113,6 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
-    //const cash = await getCashData(clousingId, idCurrency);
-    console.log("Sending ",  cashRef.current[clousingId])
 
     const isUSD = cashRef.current[clousingId].currencies.some((line) => line.currency === "USD");
 

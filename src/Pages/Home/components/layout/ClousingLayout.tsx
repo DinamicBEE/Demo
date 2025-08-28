@@ -43,7 +43,7 @@ function ClousingLayout({
   const { cashRef } = useCashClousing();
   const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
-  const { setEmployee, employeeRef } = useEmployeeContext();
+  const { setEmployee, employeeRef, getEmployeetData } = useEmployeeContext();
   const { getPrepaidData, prepaidRef,setCoupons } = usePrepaidContext();
   const { getTDCData, tdcRef } = useTDCContext();
   const { getIntercompanyData, setIntercompany, intercompanyRef } = useIntercompanyContext();
@@ -69,6 +69,7 @@ function ClousingLayout({
       getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? "");
       getTDCData(employee?.id ?? 0, subsidiary.idCurrency);
       getIntercompanyData(employee?.id ?? 0);
+      getEmployeetData(employee?.id ?? 0);
       
     }
   }, [isOpen])

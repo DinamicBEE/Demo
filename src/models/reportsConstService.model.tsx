@@ -126,6 +126,7 @@ export enum ESTTATUS {
 }
 
 export const REPORT_EXECPTION = [REPORT_KEY.REPBAN_01, REPORT_KEY.REPBAN_02]
+export const NUMBERTYPE_EXECPTION = ['quantity', 'id', 'transactionID', 'attempts', 'key']
 
 export const GUIDE_TO_BANKING_BANAMEX = [
   {
@@ -243,3 +244,60 @@ export const GUIDE_TO_BANKING_BANAMEX = [
       '*No se permiten espacios.\n*No se permiten letras.\n*No se permiten caracteres especiales\n\n()$ # "" ! ? ¿ ¡ % = \\ º { } [ ] + - * / & , .',
   },
 ];
+
+export const BANCKS_TITLES =[
+  {
+    report: REPORT_KEY.REPBAN_01,
+    reportSheets:[
+      {
+        datakey: 'guide',
+        sheetTitle: 'Guia de Reporte',
+        headers:[
+          { label: "Número de columna", key: "id" },
+          { label: "Nombre de la Columna", key: "transactionID" },
+          { label: "Descripción de la Columna", key: "especialStatus" },
+          { label: "Tipo de Columna", key: "attempts" },
+          { label: "Ejemplo:", key: "type" },
+          { label: "Observaciones", key: "errorMsg" },
+        ]
+      },
+      {
+        datakey: 'commerce',
+        sheetTitle: 'Registro de Datos "Comercio"',
+        headers:[
+          { label: "Empleado", key: "id" },
+          { label: "CDC", key: "transactionID" },
+          { label: "Pesos", key: "especialStatus" },
+          { label: "Dolares", key: "attempts" },
+          { label: "Suma Monto + Cambio", key: "type" },
+          { label: "Diferencia", key: "errorMsg" },
+        ]
+      },
+      {
+        datakey: 'summary',
+        sheetTitle: 'Resumen',
+        headers:[
+          { label: "CDC", key: "id" },
+          { label: "CDC Num", key: "transactionID" },
+          { label: "Monto Recibido en Dolares", key: "especialStatus" },
+          { label: "Cambio en Dolares", key: "attempts" },
+          { label: "Monto Real", key: "type" },
+          { label: "Monto Corte de Caja", key: "errorMsg" },
+          { label: "Diferencia", key: "onCDC" },
+        ]
+      },
+      {
+        datakey: 'employees',
+        sheetTitle: 'Dif Colaborador Corte de Caja',
+        headers:[
+          { label: "Empleado", key: "id" },
+          { label: "CDC", key: "transactionID" },
+          { label: "Pesos", key: "especialStatus" },
+          { label: "Dolares", key: "attempts" },
+          { label: "Suma Monto + Cambio", key: "type" },
+          { label: "Diferencia", key: "errorMsg" },
+        ]
+      }
+    ]
+  }
+]

@@ -9,7 +9,7 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginati
 import { changeStatus } from "@services/reportService";
 import { PaginatorSize } from "@models/constants.model";
 import { selectOption } from "@models/common.model";
-import { REPORT_EXECPTION } from "@models/reportsConstService.model";
+import { NUMBERTYPE_EXECPTION, REPORT_EXECPTION } from "@models/reportsConstService.model";
 
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
@@ -54,8 +54,8 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     }, [page, reportData, pageSize]);
 
     function renderCellContent(key: keyof ReportTypeMap[K], value: any, index:number) {
-        const numberExceptions = ['quantity', 'id', 'transactionID', 'attempts', 'key']
-        if (numberExceptions.includes(key.toString().toLocaleLowerCase())) {
+        const isNumberExceptions = NUMBERTYPE_EXECPTION.includes(key.toString().toLocaleLowerCase())
+        if (isNumberExceptions) {
             return <Text>{value}</Text>;
         }
         
