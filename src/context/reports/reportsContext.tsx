@@ -34,9 +34,7 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
           //       date: `${day}/${month}/${year}`,
           //     };
           //   })
-          // }
-          console.log(newResponse);
-          
+          // }          
           setReportData(newResponse);
 
           return response;
