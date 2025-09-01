@@ -10,6 +10,8 @@ import { changeStatus } from "@services/reportService";
 import { PaginatorSize } from "@models/constants.model";
 import { selectOption } from "@models/common.model";
 import { NUMBERTYPE_EXECPTION, REPORT_EXECPTION } from "@models/reportsConstService.model";
+import { IoPlay } from "react-icons/io5";
+import { Tooltip } from "@components/ui/tooltip"
 
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
@@ -71,11 +73,24 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             let item = visibleItems as ReportTypeMap[K][]
             const {nextStatus, nextStatusTool} = item[index] as SyncErrorsModel;
             return (
-                <Text> 
-                    <IconButton onClick={() => changeStatus(nextStatus )}>
-                        {value}
-                    </IconButton> 
-                </Text>
+                <HStack alignItems={'center'}>
+                  <Text 
+                    fontWeight={500}
+                    color={nextStatus === 1 ? 'gray.700': nextStatus === 2 ? 'blue.600': 'teal.600'}
+                  >
+                    {value.charAt(0).toUpperCase() + value.slice(1)}
+                  </Text>
+                  <Tooltip showArrow content={'Oprimir para cambiar estado a:  ' + (nextStatus === 1 ? 'En proceso': 'Completado')}>
+                    <IconButton 
+                      rounded="full"
+                      color={'gray.600'}
+                      onClick={() => changeStatus(nextStatus )} variant={'ghost'}
+                      fontSize={'small'}
+                    >
+                      <IoPlay />
+                    </IconButton>
+                  </Tooltip>
+                </HStack>
             )
         }
         
