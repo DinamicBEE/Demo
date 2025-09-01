@@ -1,4 +1,4 @@
-import { REPORT_KEY } from "./reportsConstansts.model";
+import { REPORT_KEY, REPORT_NAME } from "./reportsConstansts.model";
 import { reportHandlers } from "@services/reportHandlers";
 import * as SETTINGS from "@services/settings";
 import { FilterParams } from "./reports.model";
@@ -126,7 +126,7 @@ export enum ESTTATUS {
 }
 
 export const REPORT_EXECPTION = [REPORT_KEY.REPBAN_01, REPORT_KEY.REPBAN_02]
-export const NUMBERTYPE_EXECPTION = ['quantity', 'id', 'transactionID', 'attempts', 'key']
+export const NUMBERTYPE_EXECPTION = ['quantity', 'id', 'cdcid', 'transactionid', 'attempts', 'key']
 
 export const GUIDE_TO_BANKING_BANAMEX = [
   {
@@ -248,54 +248,67 @@ export const GUIDE_TO_BANKING_BANAMEX = [
 export const BANCKS_TITLES =[
   {
     report: REPORT_KEY.REPBAN_01,
+    name: REPORT_NAME.REPBAN_01,
     reportSheets:[
       {
         datakey: 'guide',
         sheetTitle: 'Guia de Reporte',
         headers:[
-          { label: "Número de columna", key: "id" },
-          { label: "Nombre de la Columna", key: "transactionID" },
-          { label: "Descripción de la Columna", key: "especialStatus" },
-          { label: "Tipo de Columna", key: "attempts" },
-          { label: "Ejemplo:", key: "type" },
-          { label: "Observaciones", key: "errorMsg" },
+          { label: "Número de columna", key: "columnNumber" },
+          { label: "Nombre de la Columna", key: "columnName" },
+          { label: "Descripción de la Columna", key: "columnDescription" },
+          { label: "Tipo de Columna", key: "columnType" },
+          { label: "Ejemplo:", key: "example" },
+          { label: "Observaciones", key: "notes" },
         ]
       },
       {
         datakey: 'commerce',
         sheetTitle: 'Registro de Datos "Comercio"',
         headers:[
-          { label: "Empleado", key: "id" },
-          { label: "CDC", key: "transactionID" },
-          { label: "Pesos", key: "especialStatus" },
-          { label: "Dolares", key: "attempts" },
-          { label: "Suma Monto + Cambio", key: "type" },
-          { label: "Diferencia", key: "errorMsg" },
+          { label: "Dia", key: "day" },
+          { label: "Mes", key: "month" },
+          { label: "Año", key: "year" },
+          { label: "Tipo de Operación", key: "typeOperation" },
+          { label: "Monto recibido en dolares", key: "usdReceived" },
+          { label: "Monto operación en dolares", key: "usdOperation" },
+          { label: "Tipo Cambio", key: "exchangeRate" },
+          { label: "Cambio en dolares", key: "usdChange" },
+          { label: "Cambio  en moneda nacional", key: "nationalChange" },
+          { label: "Identificacdor  Cajero", key: "employeeId" },
+          { label: "Registro de Venta", key: "recordSales" },
+          { label: "Número Establecimiento", key: "cdcId" },
+          { label: "cdc", key: "cdc" },
+          { label: "monto a depositar", key: "depositedAmount" },
+          { label: "comprobacion", key: "verification1" },
+          { label: "comprobacion", key: "verification2" },
+          { label: "comprobacion", key: "verification3" },
+          { label: "comprobacion", key: "verification4" },
         ]
       },
       {
         datakey: 'summary',
         sheetTitle: 'Resumen',
         headers:[
-          { label: "CDC", key: "id" },
-          { label: "CDC Num", key: "transactionID" },
-          { label: "Monto Recibido en Dolares", key: "especialStatus" },
-          { label: "Cambio en Dolares", key: "attempts" },
-          { label: "Monto Real", key: "type" },
-          { label: "Monto Corte de Caja", key: "errorMsg" },
-          { label: "Diferencia", key: "onCDC" },
+          { label: "CDC", key: "cdc" },
+          { label: "CDC Num", key: "cdcId" },
+          { label: "Monto Recibido en Dolares", key: "usdAmount" },
+          { label: "Cambio en Dolares", key: "exchangeRate" },
+          { label: "Monto Real", key: "realAmount" },
+          { label: "Monto Corte de Caja", key: "meraAmount" },
+          { label: "Diferencia", key: "difference" },
         ]
       },
       {
         datakey: 'employees',
         sheetTitle: 'Dif Colaborador Corte de Caja',
         headers:[
-          { label: "Empleado", key: "id" },
-          { label: "CDC", key: "transactionID" },
-          { label: "Pesos", key: "especialStatus" },
-          { label: "Dolares", key: "attempts" },
-          { label: "Suma Monto + Cambio", key: "type" },
-          { label: "Diferencia", key: "errorMsg" },
+          { label: "Empleado", key: "employeeName" },
+          { label: "CDC", key: "cdc" },
+          { label: "Pesos", key: "mxnCurrency" },
+          { label: "Dolares", key: "usdCurrency" },
+          { label: "Suma Monto + Cambio", key: "sumAmountChange" },
+          { label: "Diferencia", key: "difference" },
         ]
       }
     ]

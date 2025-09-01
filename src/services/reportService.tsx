@@ -4,7 +4,8 @@ import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
 import { REPORT_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { REPORTSERVICE_CONFIG } from "@models/reportsConstService.model";
+import { BANCKS_TITLES, REPORTSERVICE_CONFIG } from "@models/reportsConstService.model";
+import ExcelJS from 'exceljs';
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -449,12 +450,10 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
    
   try {
-    //console.log("paramsselect", request)
 
     let response: any[];
     let filterConfig: { [key: string]: any } = request.filterOpction || {};
     if (request.filterOpction.dateRange) {
-
       const date = request.filterOpction.dateRange;
       const dateString = date ? date.toString() : "";
       const divisionOfDates = dateString.split(",");
@@ -472,8 +471,6 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
       throw new Error("Report configuration is undefined");
     } 
     const paramsConfig = reportConfig.keysParams;
-    //console.log("paramns",paramsConfig)
-    //console.log("paramsselect", filterConfig)
     const responseData = paramsConfig != null ? await api.get(reportConfig.url, {
       params: paramsConfig
         ? paramsConfig.reduce((acc: any, param: any) => {
@@ -486,8 +483,6 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
     response = reportConfig.handleData != null
       ? reportConfig.handleData(responseData.data)
       : responseData.data
-      
-    //await new Promise((resolve) => setTimeout(resolve, 500)); 
     return response
   
   } catch (error) {
@@ -499,42 +494,137 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
 
 }
 
-export const generateReportCSV_V2 = (currentReport: number, rows: any[]) => {
+export const generateReportCSV_V2 = async (currentReport: number, rows: any[]) => {
 
+  const workbook = new ExcelJS.Workbook();
   const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
-  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
+  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/[\s*?:\\\/[\]]+/g, '_');
   const date = new Date(Date.now());
   const formattedDate = date.toISOString().split('T')[0];
 
-  const csvString = [
-    (reportHeader ?? []).map((header) => header.label),
-    ...rows.map((row) => [
-      (reportHeader ?? []).map((header) => row[header.key])
-    ])
-  ]
-  .map((row) => Array.isArray(row) ? row.join(",") : row)
-  .join("\n");
+  const worksheet = workbook.addWorksheet(title || 'Hoja');
 
-  const bom = "\uFEFF";
-  const blob = new Blob([bom + csvString], {type: 'text/csv;charset=utf-8;'});
+  if (!reportHeader) {
+    throw new Error("Report header is undefined for the selected report.");
+  }
+  
+  const headerRow = worksheet.addRow(reportHeader.map(header => header.label));
+
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true };
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' }
+    };
+    cell.alignment = { 
+      vertical: 'middle', 
+      horizontal: 'center' 
+    };
+  })
+
+  rows.map((row:any) => {
+      const dataRow = worksheet.addRow(reportHeader.map(header => row[header.key] ?? ''));
+
+      dataRow.eachCell((cell) => {
+        cell.alignment = { 
+          vertical: 'top', 
+          wrapText: true
+        };
+      });
+
+
+    worksheet.columns.forEach(column => {
+      let maxLength = 0;
+      if (typeof column.eachCell === 'function') {
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.value ? cell.value.toString().length : 10;
+          if (columnLength > maxLength) {
+            maxLength = columnLength;
+          }
+        });
+      }
+      column.width = Math.min(maxLength + 2, 50);
+    });
+  })
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `${title}_${formattedDate}`;
-  document.body.appendChild(link)
+  link.download = `${title}_${formattedDate}.xlsx`;
+  document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);  
+  URL.revokeObjectURL(url); 
 };
 
-export const generateBanckReportCSV =(currentReport: number, reportData: any) => {
-  
-  const reportHeader = TABLE_CONFIG.find(report => report.report === currentReport)?.headers;
-  const title = REPORT_CONFIG.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_');
+export const generateBanckReportCSV =async (currentReport: number, reportData: any) => {
+
+  const workbook = new ExcelJS.Workbook();
+
+  const reportConst = BANCKS_TITLES.find(report => report.report === currentReport)?.reportSheets;
+  const mainTitle = BANCKS_TITLES.find(report => report.report === currentReport)?.name.replace(/\s+/g, '_') || 'reporte';
   const date = new Date(Date.now());
   const formattedDate = date.toISOString().split('T')[0];
 
+  reportConst?.map(sheet => {
+    const headers = sheet.headers;
+    const worksheet = workbook.addWorksheet(sheet.sheetTitle || 'Hoja');
+    
+    const headerRow = worksheet.addRow(headers.map(header => header.label));
+
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' }
+      };
+      cell.alignment = { 
+        vertical: 'middle', 
+        horizontal: 'center' 
+      };
+    })
+
+    reportData[sheet.datakey].map((row:any) => {
+      const dataRow = worksheet.addRow(headers.map(header => row[header.key] ?? ''));
+
+      dataRow.eachCell((cell) => {
+        cell.alignment = { 
+          vertical: 'top', 
+          wrapText: true
+        };
+      });
+    })
+
+    worksheet.columns.forEach(column => {
+      let maxLength = 0;
+      if (typeof column.eachCell === 'function') {
+        column.eachCell({ includeEmpty: true }, (cell) => {
+          const columnLength = cell.value ? cell.value.toString().length : 10;
+          if (columnLength > maxLength) {
+            maxLength = columnLength;
+          }
+        });
+      }
+      column.width = Math.min(maxLength + 2, 50);
+    });
+  })
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${mainTitle}_${formattedDate}.xlsx`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 export function changeStatus(nextStatusId: number){

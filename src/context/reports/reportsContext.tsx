@@ -1,5 +1,4 @@
 import { ReporGeneralRequesttModel, ReportContextType } from "@models/reports.model";
-import { REPORT_EXECPTION } from "@models/reportsConstService.model";
 import { getReports } from "@services/reportService";
 import { createContext, ReactNode, useCallback, useContext, useMemo, useState } from "react";
 
@@ -19,9 +18,6 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
 
           setLoading(true)
           const response = await getReports(reportRequest);
-          //let newResponse: any;
-          //newResponse = response;
-          console.log(response);
           
           setReportData(response);
 
