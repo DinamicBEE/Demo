@@ -293,7 +293,7 @@ export const getPrepaidClousing = async (
         totalPhysical: response.data.totalPhysical ?? 0,
         difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
-      lines: updateLines,
+      lines: [] as PrepaidLineModel[],
     };
 
     return data;
@@ -322,10 +322,8 @@ export const getCouponCatalog = async (
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_COUPONS, {
       params: { consumer: clousingId },
-    });
-    if (response.data.length >= 0) {
-      response.data[0].validityDate = "2025-01-01T00:00:00";
-    }
+    });    
+
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
@@ -342,7 +340,14 @@ export const getCouponCatalog = async (
       ),
     }));
 
-    return transformedData;
+    const newData = transformedData.map((items: any) => {
+      return {
+        ...items,
+        isExpired: items.id === 1 ? true : items.isExpired
+      }
+    })
+
+    return newData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as CouponCatalogModel[];
