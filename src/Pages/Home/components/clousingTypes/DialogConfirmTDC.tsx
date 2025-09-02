@@ -55,25 +55,6 @@ function DialogConfirmTDC({
               <p>¿Estas seguro que deseas aprobar el cierre de {nameBank}?</p>
             </Flex>
           )}
-          {/*  {detailsLineId?.length !== detailsLocal?.details?.length ? (
-            <Flex
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              gap={2}
-            >
-              <p>La cantidad de voucher no coincide</p>
-            </Flex>
-          ) : (
-            <Flex
-              direction="column"
-              justifyContent="center"
-              alignItems="center"
-              gap={2}
-            >
-              <p>¿Estas seguro que deseas aprobar el cierre de {nameBank}?</p>
-            </Flex>
-          )} */}
         </DialogBody>
 
         <DialogFooter>

@@ -22,7 +22,7 @@ import { FileError } from "@zag-js/file-utils";
 import { useState } from "react";
 import { LuUpload } from "react-icons/lu";
 
-function DialogFiles({ isOpen, onClose, subsidiary, location }: DialogFilesProps) {
+function DialogFiles({ isOpen, onClose }: DialogFilesProps) {
   const { fetchProcessFiles } = useTDCAdyenContext();
   const fileUpload = useFileUpload({
     maxFiles: 20,
@@ -48,7 +48,7 @@ function DialogFiles({ isOpen, onClose, subsidiary, location }: DialogFilesProps
     setLoading(true);
    
     
-    const data = await fetchProcessFiles(files, subsidiary.name, location.name);
+    const data = await fetchProcessFiles(files);
 
 
     if (data && data.success === true) {

@@ -19,12 +19,6 @@ export const getGeneralInfo = async (
   endDate: Date
 ): Promise<ClousingModel> => {
   try {
-    //const response = await axios.get(`${API_HOME}/5266be06-3fe2-4f6f-9263-0f315eaeab9b`);
-    //TODO: agregrar propiedad closingConfirmation EN ESTE SERVICIO!!!!
-    //2025-04-02
-    // 2025-05-05T06:00:00.000Z
-
-    console.log();
     
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
@@ -72,11 +66,6 @@ export const getGeneralInfo = async (
         difference: line.totalPhysical - line.totalPOS,
         status: getStatus(line.status),
         extra: line.exta,
-        // mxm: line.generalTotal || 0,
-        // usd: line.usd,
-        // eur: line.eur,
-        // lib: line.lib,
-        // can: line.can,
         customer: line.customer,
         specialCustomer: line.specialCustomer,
         prepaid: line.prepaid,
@@ -126,11 +115,6 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: 
       "Diferencia",
       "Estatus",
       "Extras",
-      // "MXN",
-      // "USD",
-      // "EUR",
-      // "LIB",
-      // "CAN",
       currHeader.map((item) => item.symbol).join(","),
       "Clientes General",
       "Clientes Especiales",
@@ -147,12 +131,6 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: 
       Number(item.difference).toFixed(2),
       item.status,
       item.extra,
-      // item.mxm,
-      // item.mxm,
-      // item.usd,
-      // item.eur,
-      // item.lib,
-      // item.can,
       ...currHeader.map((currency)=> {
         const currItem = item.currencies.find(
           (itemCurr: Currency) => itemCurr.symbol === currency.symbol
@@ -198,11 +176,6 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
           acc.totalPhysical += curr.totalPhysical || 0;
           acc.difference += curr.difference || 0;
           acc.extra += curr.extra || 0;
-      /*  acc.mxm += curr.mxm || 0;
-          acc.usd += curr.usd || 0;
-          acc.eur += curr.eur || 0;
-          acc.lib += curr.lib || 0;
-          acc.can += curr.can || 0; */
           acc.customer += curr.customer || 0;
           acc.specialCustomer += curr.specialCustomer || 0;
           acc.prepaid += curr.prepaid || 0;

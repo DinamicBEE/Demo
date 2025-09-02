@@ -27,9 +27,7 @@ export interface TDCAdyenContextType {
   dataFilesProcess: ProcessResult;
   setDataFilesProcess: (data: ProcessResult) => void;
   fetchProcessFiles: (
-    Files: File[],
-    store: string,
-    location: string
+    Files: File[]
   ) => Promise<ProcessResult | undefined>;
 }
 
@@ -111,16 +109,12 @@ export interface DetailsProp {
   isOpen: boolean;
   onClose: () => void;
   closingConfirmation: boolean;
-  location: location;
-  subsidiary: SubsidiaryModal;
   bankDetails: BankLineModel;
 }
 
 export interface DialogFilesProps {
   isOpen: boolean;
   onClose: () => void;
-  subsidiary: SubsidiaryModal;
-  location: location;
 }
 
 export interface DialogConfirmTDCProps {
@@ -135,9 +129,7 @@ export interface DialogConfirmTDCProps {
 
 export interface VoucherFilter {
   vouchers: Voucher[];
-  label: boolean;
   itemId?: number | string;
-  voucherSelect?: string;
   onSelect: (voucher: any, itemId?: number | string) => void;
   disabled: boolean;
 }

@@ -236,7 +236,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     // Calculate supplement physical value
     const supplementPhysicalValue =
-      findClient.supplementsQuantity || 0 * (findClient.unitPrice || 0);
+      (findClient.supplementsQuantity || 0) * (findClient.unitPrice || 0);
 
     // Calculate total physical value (coupons + supplements)
     const newTotalFisico = (couponPhysicalValue || 0) + supplementPhysicalValue;

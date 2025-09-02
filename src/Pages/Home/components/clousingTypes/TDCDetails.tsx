@@ -1,29 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Flex,
-  FormatNumber,
-  Table,
-  Text,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { Box, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogFooter,
-} from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
@@ -37,20 +17,9 @@ import FilterVoucher from "@components/FilterVouchers";
 import { TiDelete } from "react-icons/ti";
 import { Tooltip } from "@components/ui/tooltip"
 
-
-
 const pageSize = 10;
 
-function TDCDetails({
-  clousingId,
-  lineId,
-  isOpen,
-  onClose,
-  closingConfirmation,
-  location,
-  subsidiary,
-  bankDetails,
-}: DetailsProp) {
+function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, bankDetails}: DetailsProp) {
   const [detailsLocal, setDetailsLocal] = useState<BankLineModel | undefined>(
     {} as BankLineModel
   );
@@ -60,18 +29,14 @@ function TDCDetails({
   const { updateLocalBanksAdyen } = useHandleTDCAdyen();
   const [isOpenDialogSave, setIsOpenDialogSave] = useState<boolean>(false);
   const [page, setPage] = useState(1);
-  const [chequeValue, setChequeValue] = useState("");
   const [visibleItems, setVisibleItems] = useState<Voucher[]>([]);
   const [localAmount, setLocalAmount] = useState<number>(0);
   const [vouchersSelected, setVouchersSelected] = useState(0);
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
-  const { updateLineClousing, handleInputData } = useHandleTDC(
-    clousingId,
-    lineId ?? 0
-  );
-  const { detailsLoading, setDetails } = useTDCContext();
+  const { updateLineClousing } = useHandleTDC( clousingId, lineId ?? 0 );
+  const { detailsLoading } = useTDCContext();
 
   useEffect(() => {
     async function fetchData() {
@@ -123,35 +88,6 @@ function TDCDetails({
     );
   }, [dataFilesProcess.consolidatedData]);
 
-  const isCheckValid = (
-    check: boolean | undefined,
-    vouchers:
-      | {
-          date: string | null;
-          check: string | null;
-          amount: string | null;
-          general: string | null;
-        }
-      | undefined
-  ) => {
-    if (check === undefined) return "";
-
-    if (check && !vouchers) return "bg.success";
-
-    if (!vouchers) return "red.200";
-
-    const hasDifferences =
-      vouchers.date || vouchers.check || vouchers.amount || vouchers.general;
-
-    if (check && !hasDifferences) {
-      return "bg.success";
-    }
-    if (check && hasDifferences) {
-      return "bg.warning";
-    }
-    return "red.200";
-  };
-
   async function saveDetails() {
     if (closingConfirmation) return;
 
@@ -170,7 +106,7 @@ function TDCDetails({
       voucher.idCustom === item.idCustom && voucher.amount === item.amount
         ? {
             ...voucher,
-            status: true, // Convert boolean to string
+            status: true, 
           }
         : voucher
     );
@@ -291,16 +227,13 @@ function TDCDetails({
             <Flex mb={4} mt={4} width="100%">
 
               <FilterVoucher
-                label={true}
                 disabled={closingConfirmation}
                 onSelect={onSelect}
                 vouchers={
                   detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
                 }
-                voucherSelect={chequeValue}
               />
             </Flex>
-            {/*    )} */}
 
             <Table.ScrollArea borderWidth="1px" rounded="md">
               <Table.Root size="sm" variant="outline">
@@ -406,13 +339,8 @@ function TDCDetails({
 
               <Button
                 colorPalette="meraPrimary"
-                //   onClick={() => saveDetails()}
                 onClick={() => setIsOpenDialogSave(true)}
-                disabled={
-                  closingConfirmation /* ||
-                  (detailsLocal?.bank === "TPV ADYEN" &&
-                    !(dataFilesProcess && dataFilesProcess.consolidatedData)) */
-                }
+                disabled={ closingConfirmation }
               >
                 Guardar
               </Button>
@@ -424,8 +352,6 @@ function TDCDetails({
       </DialogRoot>
       <DialogFiles
         isOpen={isOpenDialogFiles}
-        location={location}
-        subsidiary={subsidiary}
         onClose={() => setIsOpenDialogFiles(false)}
       />
       <DialogConfirmTDC

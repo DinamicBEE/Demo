@@ -33,15 +33,6 @@ export interface PrepaidModel {
 }
 
 export interface PrepaidLineModel {
-  /*   id: number | string;
-  client: string;
-  quantity: number;
-  supplementsQuantity: number;
-  unitPrice: number;
-  totalPOS: number;
-  physical: number;
-  difference: number;
-  isEdit?: boolean; */
   id: number | string;
   client: string | null;
   quantity: number;

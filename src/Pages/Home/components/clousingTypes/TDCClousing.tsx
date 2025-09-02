@@ -1,19 +1,7 @@
 import { useEffect, useState } from "react";
 import { LuEye } from "react-icons/lu";
-import {
-  Box,
-  Table,
-  Text,
-  FormatNumber,
-  IconButton,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  PaginationItems,
-  PaginationNextTrigger,
-  PaginationPrevTrigger,
-  PaginationRoot,
-} from "@components/ui/pagination";
+import { Box, Table, Text, FormatNumber, IconButton, HStack } from "@chakra-ui/react";
+import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
@@ -24,11 +12,10 @@ import { useHeaders } from "@context/home/headerContext";
 
 const pageSize = 5;
 
-function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
+function TDCClousing({ data, idCurrency }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null | string>(null);
   const [details, setDetails] = useState<boolean>(false);
-  const [voucher, setVoucher] = useState<Voucher[]>([]);
   const [bankSelected, setBankSelected] = useState<BankLineModel>(
     {} as BankLineModel
   );
@@ -84,14 +71,12 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
       ...data,
       vouchers: newData,
     });
-    setVoucher(newData);
     setLineSeleted(id);
     setDetails(true);
   };
 
   const closeDiaolog = () => {
     setLineSeleted(null);
-    setVoucher([]);
     setBankSelected({} as BankLineModel);
     setDetails(false);
   };
@@ -99,7 +84,6 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
   return (
     <>
       <Box>
-        {/* <Toaster /> */}
 
         <Table.ScrollArea rounded="md" borderWidth="1px">
           <Table.Root size="sm" variant="outline">
@@ -197,8 +181,6 @@ function TDCClousing({ data, location, subsidiary, idCurrency }: any) {
       </Box>
 
       <TDCDetails
-        location={location}
-        subsidiary={subsidiary}
         clousingId={data?.id}
         lineId={lineSelected}
         isOpen={details}

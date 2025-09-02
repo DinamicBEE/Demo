@@ -16,16 +16,9 @@ export const getFilterOptions = async (key: string, optional?: number): Promise<
         value: item.id.toString(),
         label: item.name
       }));
-    // case "cdc":
-    //   const stores = await getStores(optional!);      
-    //   return stores.map(item => ({
-    //     value: item.id.toString(),
-    //     label: item.name
-    //   }));
   
     default:
       return [];
-      //throw new Error(`Método ${key} no implementado`);
       
   }
 }
@@ -205,7 +198,7 @@ export const getTicketListClousing = async (
     return [] as unknown as TicketModel[];
   }
 };
-
+//!REVISAR RESPUESTA DE LA API
 export const employeeDelete = async (employeeDelId: number): Promise<boolean> => {
   try {
     if (employeeDelId === null) throw new Error("Error al eliminar el empleado");
@@ -245,21 +238,6 @@ export const getSubsidiariesByCountry = async (country: string): Promise<locatio
     });
    
     return response.data;
-  } catch (error) {
-    console.error("Error al obtener las zonas:", error);
-    return [];
-  }
-}
-
-export const getZones = async (): Promise<location[]> => {
-  try {
-    // const response = await api.get("/crc/cash-register-closure/api/zones");
-    // const zones = response.data.map((zone: any) => ({
-    //   value: zone.id,
-    //   label: zone.name,
-    // }));
-    
-    return zones;
   } catch (error) {
     console.error("Error al obtener las zonas:", error);
     return [];
@@ -314,18 +292,3 @@ export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
   }
 }
 
-
-const zones = [
-  {
-    id: 1, name: "ABT1"
-  },
-  {
-    id: 2, name: "ABT2"
-  },
-  {
-    id: 3, name: "ABT3"
-  },
-  {
-    id: 4, name: "Aeropuerto Bajio"
-  }
-]

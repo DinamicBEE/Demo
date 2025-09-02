@@ -26,13 +26,9 @@ export function TDCAdyenClousingProvider({
   );
 
   const fetchProcessFiles = useCallback(
-    async (Files: File[], store: string, location: string) => {
+    async (Files: File[]) => {
 
-      if (!store || !location) {
-        return;
-      }
-
-      const data = await processFiles(Files, store, location);
+      const data = await processFiles(Files);
       setDataFilesProcess(data);
       return data;
     },

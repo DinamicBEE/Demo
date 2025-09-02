@@ -1,33 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
-import {
-  EXPECTED_COLUMNS,
-  FIELD_MAPPING,
-  FileResult,
-  ProcessResult,
-} from "@models/adyen.model";
+import { EXPECTED_COLUMNS, FIELD_MAPPING, FileResult, ProcessResult } from "@models/adyen.model";
 import { CashLines, CashModel } from "@models/cash.model";
 import { DataServiceModel, ResponseModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { EmployeeLine, EmployeeModel } from "@models/employee.model";
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
-import {
-  CouponCatalogModel,
-  PrepaidLineModel,
-  PrepaidModel,
-} from "@models/prepaid.model";
+import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
-import {
-  CASH,
-  TDC,
-  CLIENTS,
-  EMPLOYEE_INSERT,
-  INTERCOMPANY,
-  SP_CLIENTS,
-  GET_COUPONS,
-  GET_PREPAID,
-  SENDCASHCLOUSING,
-} from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -212,11 +193,8 @@ export const getSpecialCustomerClousing = async (
     });
 
     const lines = response.data.specialClientResponses.map(
-      (line: any, index: number) => ({
-        // ! Eliminar INDEX
+      (line: any) => ({
         ...line,
-
-        // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
         couponPrice: 0,
       })
@@ -413,11 +391,6 @@ export const getEmployeeClousing = async (
       ...response,
     };
 
-    /*  return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(data);
-      }, 1000);
-    }); */
     return data;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
@@ -681,8 +654,6 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
  */
 export const processFiles = async (
   files: File[],
-  storeName: string,
-  location: string
 ): Promise<ProcessResult> => {
   // Validación inicial de archivos
   if (!files?.length) {

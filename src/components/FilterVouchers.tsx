@@ -1,24 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  createListCollection,
-  ListCollection,
-  Portal,
-  Select,
-  Span,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, createListCollection, ListCollection, Portal, Select, Span, Stack } from "@chakra-ui/react";
 import { VoucherFilter, voucherSelectOption } from "@models/tdc.model";
 
-function FilterVoucher({
-  vouchers,
-  label,
-  itemId,
-  voucherSelect,
-  onSelect,
-  disabled,
-}: VoucherFilter) {
-  //
+function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) {
 
   const [searchQuery, setSearchQuery] = useState<string>("Selecciona ticket");
   const [filteredVouchers, setFilteredVouchers] = useState<ListCollection<voucherSelectOption>>(
@@ -101,7 +85,6 @@ function FilterVoucher({
   }
 
   function handleSelect(event: any) {
-    const selectedId = Number(event.value[0]);
     const selectedValue = event.value[0].split(" - ")[0];
     const selectedAmount = event.value[0].split(" - ")[1];
 
@@ -124,26 +107,6 @@ function FilterVoucher({
 
   return (
     <Box width="100%">
-      {/* <SelectRoot
-        collection={filteredCustomer}
-        onKeyUp={(e) => handleSearch(e.key)}
-        onValueChange={(event) => handleSelect(event)}
-        disabled={disabled || false}
-        value={[]}
-      >
-        {label && <SelectLabel>Cliente</SelectLabel>}
-        <SelectTrigger>
-          <SelectValueText placeholder={customerSelect || searchQuery} />
-        </SelectTrigger>
-
-        <SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
-          {filteredCustomer.items.map((movie) => (
-            <SelectItem item={movie} key={movie.value}>
-              {movie.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </SelectRoot> */}
       <Select.Root
         collection={filteredVouchers}
         closeOnSelect={false}

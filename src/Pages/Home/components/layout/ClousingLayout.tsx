@@ -249,8 +249,6 @@ function ClousingLayout({
                   <Suspense fallback={<div>Cargando TDC...</div>}>
                     <TDCClousing
                       data={employee}
-                      location={location}
-                      subsidiary={subsidiary}
                       idCurrency={subsidiary.idCurrency}
                     />
                   </Suspense>

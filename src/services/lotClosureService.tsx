@@ -43,11 +43,6 @@ export const getCompanies = async () => {
     });
 
     return Promise.resolve(response.data);
-    /* return new Promise<Company[]>((resolve) => {
-      setTimeout(() => {
-        resolve(response);
-      }, 2000);
-    }); */
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];
@@ -61,13 +56,6 @@ export const getLocations = async (
     const response = await api.get(LOCATIONS, {
       params: { subsidiaria: companyId },
     });
-    /* return new Promise<Location[]>((resolve) => {
-      setTimeout(() => {
-        resolve(
-          response.filter((location) => location.company.id === companyId)
-        );
-      }, 2000);
-    }); */
     return Promise.resolve(response.data);
   } catch (error) {
     console.error("Error al obtener las ubicaciones: ", error);
