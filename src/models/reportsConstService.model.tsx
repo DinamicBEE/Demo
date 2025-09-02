@@ -31,7 +31,15 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "dateOfReport", filterKey: "date" },
     ],
   },
-    [REPORT_KEY.REPBAN_01]: {
+  [REPORT_KEY.REPCUP_01]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+      { paramsKey: "idClient", filterKey: "customer" }
+    ],
+  },
+  [REPORT_KEY.REPBAN_01]: {
     params: [
       { paramsKey: "consumerCenter", filterKey: "multicdc" },
       { paramsKey: "startDate", filterKey: "date_1" },
@@ -98,8 +106,8 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPCUP_01,
     url: SETTINGS.REPORT_CUP,
-    keysParams: null,
-    handleData: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPCUP_01].params,
+    handleData: reportHandlers.handleCuoponsData,
   },
     {
     report: REPORT_KEY.REPBAN_01,
