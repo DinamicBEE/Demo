@@ -25,7 +25,7 @@ export enum REPORT_NAME {
   REPVEN_04 = "Ventas vs Descuentos",
   REPVOI_01 = "Voids",
   REPCUP_01 = "Cupones",
-  REPBAN_00 = "Bancos",
+  REPBAN_00 = "Corresponsal Bancario",
   REPBAN_01 = "Banamex",
   //REPBAN_02 = "Detalle",
 }
@@ -506,7 +506,7 @@ export const MENU_CONFIG = [
 export const FILTER_LABELS = {
   date: 'Fecha',
   dateRange: 'Rango de fechas',
-  subsidiary: 'Sucursal',
+  subsidiary: 'Subsidiaria',
   cdc: 'Centro de consumo',
   multicdc: 'Centros de consumo',
   employees: 'Empleados',

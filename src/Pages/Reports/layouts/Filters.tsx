@@ -191,13 +191,13 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       } else {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
-    });    
+    });
 
     await getReportData({
       report: currentReport ?? 0,
       filterOpction: allFilters
     });
-  }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData]);
+  }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);
 
   // Exportar CSV
   const exportCSV = useCallback(() => {
@@ -310,7 +310,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
       <HStack gap={4} mt={4}>
         <Button colorPalette="blue" width={"50%"} onClick={applyFilters}>
-          {currentReport === 100 ? "Cargar" : "Aplicar filtros"}
+          {currentReport === 100 ? "Cargar" : "Buscar por filtros"}
         </Button>
         <Button colorPalette="green" width={"50%"} disabled={reportData.length === 0} onClick={exportCSV}>
           Exportar CSV
