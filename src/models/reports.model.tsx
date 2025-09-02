@@ -181,6 +181,22 @@ export interface SyncErrorsModel {
   nextStatusTool: string;
 }
 
+export interface CouponsModel {
+  check: string;
+  consumption: number;
+  pricePerConsumption: number;
+  difference: number;
+  exchangeRateClient: number;
+  clients: string;
+  pax: number;
+  folioCouponsMXN: string;
+  folioCouponsUSD: string;
+  valueMXN: number;
+  valueUSD: number;
+  flight: string;
+  passengerName: string;
+}
+
 export interface BanamexModel {
   guide: BanamexGuideModel[];
   summary: BanamexSummaryModel[];
@@ -238,7 +254,8 @@ export interface BanamexCommerceModel {
   paymenthSaleID: number;
 }
 
-export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | EmployeeSalesModel | BanamexModel | SyncErrorsModel;
+export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | 
+EmployeeSalesModel | BanamexModel | SyncErrorsModel | CouponsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
@@ -246,6 +263,7 @@ export type ReportTypeMap = {
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
   5: PaymentMethodModel;
+  9: CouponsModel;
   10: BanamexModel;
   100: SyncErrorsModel;
 };

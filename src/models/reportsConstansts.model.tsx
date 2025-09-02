@@ -196,11 +196,11 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPCUP_01,
     name: REPORT_NAME.REPCUP_01,
-    date: true,
-    dateRange: false,
-    multicdc: false,
+    date: false,
+    dateRange: true,
     subsidiary: true,
-    cdc: true,
+    cdc: false,
+    multicdc: true,
     employees: false,
     approver: false,
     categories: false,
@@ -211,7 +211,7 @@ export const REPORT_CONFIG = [
     currency: false,
     exchangeRate: false,
   },
-    {
+  {
     report: REPORT_KEY.REPBAN_01,
     name: REPORT_NAME.REPBAN_01,
     date: false,
@@ -479,13 +479,13 @@ export const MENU_CONFIG = [
     categoryName: REPORT_NAME.REPVOI_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPVOI_01,
-  },
+  }, */
   {
     id: 5,
     categoryName: REPORT_NAME.REPCUP_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPCUP_01,
-  }, */
+  },
   {
     id: 6,
     categoryName: REPORT_NAME.REPBAN_00,
