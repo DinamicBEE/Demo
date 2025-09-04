@@ -1,6 +1,5 @@
 import { ProcessResult } from "./adyen.model";
 import { TotalModel } from "./common.clousing.model";
-import { location, SubsidiaryModal } from "./common.model";
 
 export interface TDCContextType {
   tdc: TDCContext;
@@ -11,10 +10,6 @@ export interface TDCContextType {
   detailsError: string;
   getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
-  /*   getDetails: (
-    clousingId: number,
-    lineId: number | null | string,
-  ) => Promise<Voucher>; */
   setDetails: (
     details: BankLineModel,
     clousingId: number,
@@ -59,22 +54,6 @@ export interface TDCModel {
   lines: BankLineModel[];
 }
 
-/* export interface BankLineDetails {
-  id: number;
-  date: string;
-  check: string;
-  amount: number;
-  success?: boolean;
-  message?: string;
-  vouchers?: {
-    date: string | null;
-    check: string | null;
-    amount: string | null;
-    general: string | null;
-  };
-  successAdyen?: boolean;
-} */
-
 export interface Voucher {
   id: number;
   idCustom: number;
@@ -87,21 +66,7 @@ export interface Voucher {
   status: boolean;
   message?: string;
   dateDisplay?: string;
-  /*  difference?: {
-    date: string | null;
-    check: string | null;
-    amount: string | null;
-    general: string | null;
-  };
-  successAdyen?: boolean; */
 }
-
-/* export interface BankDetails {
-  id: number;
-  bankName: string;
-  total: number;
-  details: BankLineDetails[];
-} */
 
 export interface DetailsProp {
   clousingId: number;
