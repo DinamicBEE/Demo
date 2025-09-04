@@ -5,7 +5,19 @@
     <link rel="icon" type="image/webp" href="/mera-logo.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mera Corte de caja</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Precargar la fuente específica -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+    
+    <!-- Cargar la fuente con display=swap para no bloquear renderizado -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" media="print" onload="this.media='all'">
+    
+    <!-- Fallback para navegadores sin JavaScript -->
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

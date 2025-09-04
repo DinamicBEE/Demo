@@ -6,10 +6,10 @@ import { Toaster } from "@components/ui/toaster"
 import { system } from './theme/index';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <>
     <ChakraProvider value={system}>
       <App />
       <Toaster />
     </ChakraProvider>
-  </React.StrictMode>
+  </>
 );

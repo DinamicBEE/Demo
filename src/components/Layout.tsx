@@ -28,7 +28,7 @@ function Layout() {
             alignContent="center"
           >
             <HStack className="links-container">
-              <Image src={image} className="header-img" />
+              <Image src={image} className="header-img" alt="logo Mera"/>
               <HStack>
                 {menuItems
                   .filter(

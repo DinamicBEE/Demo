@@ -1,5 +1,6 @@
 import { LuClipboardCheck, LuClipboardList, LuContainer } from "react-icons/lu";
 import { PiCashRegisterLight } from "react-icons/pi";
+import { SiStarbucks } from "react-icons/si";
 import { VscGraph } from "react-icons/vsc";
 import { createListCollection } from "@chakra-ui/react";
 
@@ -38,6 +39,7 @@ export const menuItems = [
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
+  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
 ];
 
 export const ApprovalsReasons = createListCollection({

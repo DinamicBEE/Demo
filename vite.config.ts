@@ -8,18 +8,25 @@ export default defineConfig({
   plugins: [
     react(),
     compression({
-      algorithms:["gzip", "br"]
+      algorithms:['gzip', 'brotliCompress'],
+      exclude: [/\.(br)$/, /\.(gz)$/, /\.(png|jpg|jpeg|webp|gif|svg)$/],
+      threshold: 1024,
     })
   ],
   define: { global: 'window',},
   build: {
     outDir: 'dist',
+    minify: 'terser',
+        target: 'esnext',
+    sourcemap: false,
     rollupOptions: {
       input: 'index.html'
     },
     terserOptions:{
       compress: {
         drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'],
       }
     },
   },
