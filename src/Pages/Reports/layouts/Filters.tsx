@@ -21,13 +21,10 @@ import {
   FilterData,
   FilterPropsModel,
   ReportFilterModel,
-  ReporGeneralRequesttModel
 } from "@models/reports.model";
 import { FILTER_LABELS, FilterKey, REPORT_CONFIG
 } from "@models/reportsConstansts.model";
 import { useEffect, useMemo, useCallback, useState } from "react";
-import { registerLocale } from "react-datepicker";
-import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
 import { getFilterOptions, getLocations } from "@services/catalogService";
 import { generateBanckReportCSV, generateReportCSV_V2 } from "@services/reportService";
@@ -35,9 +32,7 @@ import { useReportsContext } from "@context/reports/reportsContext";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
-import { REPORT_EXECPTION } from "@models/reportsConstService.model";
-
-registerLocale("es", es);
+import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -56,21 +51,13 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [actualReport, setActualReport] = useState<number>();
 
   const resetValues = useMemo<ReportFilterModel>(() => ({
-    approver: null,
     categories: null,
     cdc: [],
     multicdc: [],
-    customer: [],
-    currency: null,
+    customer: null,
     date: null,
     dateRange: null,
-    employees: null,
-    family: null,
-    items: null,
-    paymentMethod: null,
-    subcategories: null,
     subsidiary: [],
-    exchangeRate: null
   }), []);
 
   const subsidiaries = useMemo(() =>
@@ -90,16 +77,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     subsidiary: false,
     cdc: false,
     multicdc: false,
-    employees: false,
     customer: false,
-    approver: false,
-    categories: false,
-    subcategories: false,
-    family: false,
-    items: false,
-    paymentMethod: false,
-    currency: false,
-    exchangeRate: false
   };
 
   const filterConfig = useMemo(
@@ -279,7 +257,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     return (
       <SelectRoot
         collection={createListCollection({ items: filterData[filterKey] || [] })}
-        onValueChange={(ev) => setSelectedValues(prev => ({ ...prev, [filterKey]: Number(ev.value[0]) }))}
+        onValueChange={(ev) => setSelectedValues(prev => ({ ...prev, [filterKey]: Number(ev.value) }))}
         value={selectedValues[filterKey] == null ? [] : [selectedValues[filterKey].toString()]}
         disabled={loadingFilters[filterKey]}
       >

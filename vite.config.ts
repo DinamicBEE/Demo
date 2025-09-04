@@ -16,8 +16,12 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: 'index.html'
-    }
-
+    },
+    terserOptions:{
+      compress: {
+        drop_console: true,
+      }
+    },
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],

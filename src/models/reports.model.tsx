@@ -1,4 +1,3 @@
-import { JSX } from "react";
 import { FilterKey } from "./reportsConstansts.model";
 
 export interface ReportsPropsModel {
@@ -23,23 +22,22 @@ export interface ReporGeneralRequesttModel {
   filterOpction: AppliedFilters;
 }
 
-//TODO: validar con Manu la combinación de ReportFilterModel y FilterConfigModel
 export interface ReportFilterModel {
   date: string | null,
   dateRange: string | null,
   subsidiary: number[] | [],
   cdc: number[] | [],
   multicdc: number[] | [],
-  customer: number[] | [],
-  employees: number | null,
-  approver: number | null,
-  categories: number | null,
-  subcategories: number | null,
-  family: number | null,
-  items: number | null,
-  paymentMethod: number | null,
-  currency: number | null,
-  exchangeRate?: number | null,
+  customer: number | null,
+  // employees: number | null,
+  // approver: number | null,
+  // categories: number | null,
+  // subcategories: number | null,
+  // family: number | null,
+  // items: number | null,
+  // paymentMethod: number | null,
+  // currency: number | null,
+  // exchangeRate?: number | null,
 };
   
   export interface ReportContextType {
@@ -70,15 +68,15 @@ export interface FilterConfigModel {
     cdc: boolean,
     multicdc: boolean,
     customer: boolean,
-    employees: boolean,
-    approver: boolean,
-    categories: boolean,
-    subcategories: boolean,
-    family: boolean,
-    items: boolean,
-    paymentMethod: boolean,
-    currency: boolean,
-    exchangeRate: boolean
+    //employees: boolean,
+    // approver: boolean,
+    // categories: boolean,
+    // subcategories: boolean,
+    // family: boolean,
+    // items: boolean,
+    // paymentMethod: boolean,
+    // currency: boolean,
+    // exchangeRate: boolean
   }
   
 export type AppliedFilters = {

@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Layout.css";
 import { menuItems } from "@models/constants.model";
 import { Tooltip } from "./ui/tooltip";
-import image from "../assets/meraLogo.png";
+import image from "../assets/meraLogo.webp";
 function Layout() {
   const { logOut, user } = useAuth();
 
