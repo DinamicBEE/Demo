@@ -10,7 +10,6 @@ import {
 import "./DatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from "date-fns/locale/es";
-import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
 import { DatePickerProps } from "@models/lotClosure.model";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";

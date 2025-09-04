@@ -6,9 +6,6 @@ import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { getYear, getMonth } from "date-fns";
 import "./DatePicker.css";
 import "react-datepicker/dist/react-datepicker.css";
-import { MiddlewareReturn } from '@floating-ui/core';
-import { MiddlewareState } from '@floating-ui/dom';
-import { zIndex } from '../../../theme/tokens/z-index';
 interface DatePickerProps {
   onDateChange: (formattedDate: string) => void;
   initialDate?: Date;

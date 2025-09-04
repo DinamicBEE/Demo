@@ -32,7 +32,7 @@ import { useReportsContext } from "@context/reports/reportsContext";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
-import { REPORT_EXECPTION } from "@models/reportsConstService.model";
+import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -51,21 +51,13 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [actualReport, setActualReport] = useState<number>();
 
   const resetValues = useMemo<ReportFilterModel>(() => ({
-    approver: null,
     categories: null,
     cdc: [],
     multicdc: [],
     customer: null,
-    currency: null,
     date: null,
     dateRange: null,
-    employees: null,
-    family: null,
-    items: null,
-    paymentMethod: null,
-    subcategories: null,
     subsidiary: [],
-    exchangeRate: null
   }), []);
 
   const subsidiaries = useMemo(() =>
@@ -85,16 +77,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     subsidiary: false,
     cdc: false,
     multicdc: false,
-    employees: false,
     customer: false,
-    approver: false,
-    categories: false,
-    subcategories: false,
-    family: false,
-    items: false,
-    paymentMethod: false,
-    currency: false,
-    exchangeRate: false
   };
 
   const filterConfig = useMemo(

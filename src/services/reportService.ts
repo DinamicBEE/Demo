@@ -4,8 +4,9 @@ import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
 import { REPORT_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
-import { BANCKS_TITLES, REPORTSERVICE_CONFIG } from "@models/reportsConstService.model";
+import { REPORTSERVICE_CONFIG } from "@models/const/reportsService.const";
 import ExcelJS from 'exceljs';
+import { BANCKS_TITLES } from "@models/const/reportBanck.const";
 
 
 export const generateReportCSV = (rows: Row[]) => {

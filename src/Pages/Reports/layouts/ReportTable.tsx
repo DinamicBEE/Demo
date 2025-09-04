@@ -9,7 +9,7 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginati
 import { changeStatus } from "@services/reportService";
 import { PaginatorSize } from "@models/constants.model";
 import { selectOption } from "@models/common.model";
-import { NUMBERTYPE_EXECPTION, REPORT_EXECPTION } from "@models/reportsConstService.model";
+import { NUMBERTYPE_EXECPTION, REPORT_EXECPTION } from "@models/const/reportsService.const";
 import { IoPlay } from "react-icons/io5";
 import { Tooltip } from "@components/ui/tooltip"
 
