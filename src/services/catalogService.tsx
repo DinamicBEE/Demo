@@ -8,7 +8,8 @@ import Cookies from "js-cookie";
 import api from "../api/index";
 
 
-export const getFilterOptions = async (key: string, optional?: number): Promise<FilterOption[]> =>{
+export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
+  // <<optional: any>> para las consultas que requieran parámetros adicionales
   switch (key) {
     case "subsidiary":
       const subsidiaries = await getSubsidiaries();
@@ -16,6 +17,8 @@ export const getFilterOptions = async (key: string, optional?: number): Promise<
         value: item.id.toString(),
         label: item.name
       }));
+    case "customer":
+      return await getCustomers();
   
     default:
       return [];
@@ -101,8 +104,7 @@ export const getCustomers = async () => {
         label: customer.client,
       };
     });
-    
-    
+        
     return transformedData;
   } catch (error) {
     return [];

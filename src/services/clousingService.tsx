@@ -340,14 +340,8 @@ export const getCouponCatalog = async (
       ),
     }));
 
-    const newData = transformedData.map((items: any) => {
-      return {
-        ...items,
-        isExpired: items.id === 1 ? true : items.isExpired
-      }
-    })
-
-    return newData;
+    
+    return transformedData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as CouponCatalogModel[];

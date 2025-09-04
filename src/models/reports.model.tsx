@@ -30,7 +30,7 @@ export interface ReportFilterModel {
   subsidiary: number[] | [],
   cdc: number[] | [],
   multicdc: number[] | [],
-  customer: number[] | [],
+  customer: number | null,
   employees: number | null,
   approver: number | null,
   categories: number | null,

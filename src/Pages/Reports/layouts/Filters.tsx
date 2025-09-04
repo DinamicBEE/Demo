@@ -21,13 +21,10 @@ import {
   FilterData,
   FilterPropsModel,
   ReportFilterModel,
-  ReporGeneralRequesttModel
 } from "@models/reports.model";
 import { FILTER_LABELS, FilterKey, REPORT_CONFIG
 } from "@models/reportsConstansts.model";
 import { useEffect, useMemo, useCallback, useState } from "react";
-import { registerLocale } from "react-datepicker";
-import { es } from "date-fns/locale/es";
 import DatePicker from "../../LotClosure/components/DatePicker";
 import { getFilterOptions, getLocations } from "@services/catalogService";
 import { generateBanckReportCSV, generateReportCSV_V2 } from "@services/reportService";
@@ -36,8 +33,6 @@ import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
 import { REPORT_EXECPTION } from "@models/reportsConstService.model";
-
-registerLocale("es", es);
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -60,7 +55,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     categories: null,
     cdc: [],
     multicdc: [],
-    customer: [],
+    customer: null,
     currency: null,
     date: null,
     dateRange: null,
@@ -119,6 +114,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (!currentReport) return;
     setSelectedCDC([]);
     setSelectedSubIds([]);
+    setSelectedValues(resetValues);
     setDateRange([null, null]);
     setFormattedDate('');
     setSelectedValues(resetValues);
@@ -145,7 +141,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   // Manejo de selects
   const handleSubsidiariesChange = useCallback((ev: { value: string[] }) => {
-    
     const ids = ev.value.map(Number);
     setSelectedSubIds(ids);
     // setSelectedValues(prev => ({ ...prev, subsidiary: ids }));
@@ -157,8 +152,20 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
 
+  /* // Este useEffect será para cuando el filtro requiera cargar data por medio del
+  // CDC, agregar las llamadas correspondientes :D
+  useEffect(() => {
+    if (activeFilters.includes("customer")) {
+      loadFilterData("customer", selectedCDC);
+    }
+    console.log(activeFilters);
+    
+  }, [selectedCDC]) */
+  
+
+
   // Cargar opciones de filtros
-  const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: number) => {
+  const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: any) => {
     setLoadingFilters(prev => ({ ...prev, [filterKey]: true }));
     try {
       if (currentReport === 100) return;
@@ -194,6 +201,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
     });
+
 
     await getReportData({
       report: currentReport ?? 0,
@@ -279,8 +287,14 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     return (
       <SelectRoot
         collection={createListCollection({ items: filterData[filterKey] || [] })}
-        onValueChange={(ev) => setSelectedValues(prev => ({ ...prev, [filterKey]: Number(ev.value[0]) }))}
-        value={selectedValues[filterKey] == null ? [] : [selectedValues[filterKey].toString()]}
+        onValueChange={(ev) => setSelectedValues(prev => ({ ...prev, [filterKey]: Number(ev.value) }))}
+        value={
+          selectedValues[filterKey] == null
+            ? []
+            : Array.isArray(selectedValues[filterKey])
+              ? selectedValues[filterKey].map(String)
+              : [String(selectedValues[filterKey])]
+        }
         disabled={loadingFilters[filterKey]}
       >
         <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -321,5 +335,5 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     </Box>
   );
 }
-
+//idClient
 export default Filters;
