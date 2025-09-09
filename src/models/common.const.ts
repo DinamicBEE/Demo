@@ -1,6 +1,13 @@
 
 import { createListCollection } from "@chakra-ui/react";
 
+
+export const COOKIE_NAMES = {
+  USERNAME: "username",
+  ACCESS_TOKEN: "accessToken",
+  REFRESH_TOKEN: "refreshToken"
+} as const;
+
 export const ALERTCLOUSING_MODEL = {
     SUCCESS: { title: 'Envio exitoso', description: 'Corte de caja enviado correctamente', type: 'success' },
     ERROR: { title: 'Error al enviar el corte de caja', type: 'error' },

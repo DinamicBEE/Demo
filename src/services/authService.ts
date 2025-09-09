@@ -2,32 +2,35 @@ import { IRole, Tokens } from "@models/auth.model";
 import api from "../api/index";
 import Cookies from "js-cookie";
 import { GETROLE, REFRESH, SIGNIN } from "./settings";
+import { COOKIE_NAMES } from "@models/common.const";
 
-//const BASE_URL = "https://reqres.in/api";
+const handleServiceError = (error: unknown, defaultMessage: string): never => {
+  if (error instanceof Error) {
+    throw error;
+  }
+  
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const apiError = error as { response?: { data?: { error?: string } } };
+    throw new Error(apiError.response?.data?.error || defaultMessage);
+  }
+  
+  throw new Error(defaultMessage);
+};
 
-/**
- *
- * @param {String} email
- * @param {String} password
- * @returns {Promise<Object>}
- */
 export const loginUser = async (
   login: string,
   password: string
 ): Promise<Tokens> => {
   try {
-    const response = await api.post(SIGNIN, {
-      login,
-      password,
-    });
+    const response = await api.post(SIGNIN, { login, password });
 
     const loginInfo = JSON.parse(response.config.data);
 
-    Cookies.set("username", loginInfo.login);
+    Cookies.set(COOKIE_NAMES.USERNAME, loginInfo.login);
 
     return response.data;
-  } catch (error: any) {
-    throw new Error(error);
+  } catch (error: unknown) {
+    return handleServiceError(error, "Error durante el inicio de sesión");
   }
 };
 
@@ -35,16 +38,12 @@ export const refreshAuthToken = async (
   refreshToken: string
 ) => {
   try {
-    const response = await api.post(
-      REFRESH,
-      {
-        refreshToken,
-      }
-    );
+    const response = await api.post( REFRESH, { refreshToken } );
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.error || "Error al intentar refrescar el token"
+  } catch (error: unknown) {
+     return handleServiceError(
+      error, 
+      "Error al intentar refrescar el token"
     );
   }
 };
@@ -55,7 +54,10 @@ export const getUserRol = async (): Promise<IRole> => {
     const result = response;
 
     return result.data;
-  } catch (error: any) {
-    throw new Error(error || "Error al intentar refrescar el token");
+  } catch (error: unknown) {
+    return handleServiceError(
+      error, 
+      "Error al obtener el rol del usuario"
+    );
   }
 };

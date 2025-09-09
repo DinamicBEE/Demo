@@ -20,4 +20,9 @@ export interface IRole{
     userRole: string;
 }
 
-
+export interface AuthState {
+  isAuthenticated: boolean;
+  error: string | null;
+  user: IUser | null;
+  isLoading: boolean;
+}
