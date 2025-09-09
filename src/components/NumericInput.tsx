@@ -63,9 +63,9 @@ function TableInput({ value, id, currency, keyValue, onChange, disabled }: Table
             textAlign="end"
             decimalScale={currency ? 2 : 0} fixedDecimalScale
             value={value || 0}
-            onChange={(event) => {
+            onValueChange={(event) => {
                 if (onChange) {
-                    const eventValue = event.target.value;
+                    const eventValue = event.value;
                     onChange(id, eventValue, keyValue);
                 }
             }

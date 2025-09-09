@@ -42,8 +42,6 @@ function DialogCoupons({
     }
   }, [coupons, page]);
 
-
-
   return (
     <DialogRoot
       open={isOpen}
@@ -102,9 +100,7 @@ function DialogCoupons({
             </Table.Root>
           </Table.ScrollArea>
           <PaginationRoot
-            count={
-              coupons.length
-            }
+            count={coupons.length}
             pageSize={pageSize}
             page={page}
             onPageChange={(e) => setPage(e.page)}
