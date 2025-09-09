@@ -5,7 +5,7 @@ import { EmployeeClousingProps, EmployeeLine, EmployeeModel } from "@models/empl
 import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useFooter } from "@context/home/footerClousingContext";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 

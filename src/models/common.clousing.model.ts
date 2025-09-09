@@ -1,6 +1,6 @@
 import { CashModel } from "./cash.model";
 import { location, selectOption, SubsidiaryModal } from "./common.model";
-import { CLOUSING_KEY } from "./constants.model";
+import { CLOUSING_KEY } from "./common.const";
 import { CustomerModel } from "./customer.model";
 import { EmployeeModel } from "./employee.model";
 import { IntercompanyModel } from "./intercompany.model";

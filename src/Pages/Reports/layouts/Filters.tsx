@@ -23,7 +23,7 @@ import {
   ReportFilterModel,
 } from "@models/reports.model";
 import { FILTER_LABELS, FilterKey, REPORT_CONFIG
-} from "@models/reportsConstansts.model";
+} from "@models/const/reportFilter.const";
 import { useEffect, useMemo, useCallback, useState } from "react";
 import DatePicker from "../../LotClosure/components/DatePicker";
 import { getFilterOptions, getLocations } from "@services/catalogService";

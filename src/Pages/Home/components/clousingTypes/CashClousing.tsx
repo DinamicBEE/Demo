@@ -6,7 +6,7 @@ import { CurrencyInput, EditableCurrencyInput, TableInput, } from "@components/N
 import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import { CashLines, CashModel } from "@models/cash.model";

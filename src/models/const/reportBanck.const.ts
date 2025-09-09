@@ -1,5 +1,4 @@
-import { REPORT_KEY, REPORT_NAME } from "@models/reportsConstansts.model";
-
+import { REPORT_KEY, REPORT_NAME } from "@models/const/reports.const";
 
 export const BANCKS_TITLES =[
   {
@@ -70,7 +69,6 @@ export const BANCKS_TITLES =[
     ]
   }
 ]
-
 
 export const GUIDE_TO_BANKING_BANAMEX = [
   {

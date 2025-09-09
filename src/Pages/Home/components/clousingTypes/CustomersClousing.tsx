@@ -33,7 +33,7 @@ import {
   CustomerModel,
   CustomersClousingProps,
 } from "@models/customer.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";

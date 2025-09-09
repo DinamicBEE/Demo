@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { toaster } from "@components/ui/toaster";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext"
 import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";

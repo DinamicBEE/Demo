@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { Box, FormatNumber, HStack, IconButton, Table, TableCell, Text } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
-import { TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { NUMBERTYPE_EXECPTION, TABLE_CONFIG } from "@models/const/reportTable.const";
 import { HeaderReportModel, ReportTypeMap, SyncErrorsModel } from "@models/reports.model";
 import { useReportsContext } from "@context/reports/reportsContext";
 import Loading from "@components/Loading";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { changeStatus } from "@services/reportService";
-import { PaginatorSize } from "@models/constants.model";
+import { PaginatorSize } from "@models/common.const";
 import { selectOption } from "@models/common.model";
-import { NUMBERTYPE_EXECPTION, REPORT_EXECPTION } from "@models/const/reportsService.const";
+import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import { IoPlay } from "react-icons/io5";
 import { Tooltip } from "@components/ui/tooltip"
 

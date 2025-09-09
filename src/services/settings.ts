@@ -76,6 +76,7 @@ export const REPORT_VOIC = ``;
 export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
+export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;

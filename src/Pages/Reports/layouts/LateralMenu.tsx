@@ -1,7 +1,7 @@
 import { Box, Drawer, Heading, HStack, Portal, Separator, Text, VStack } from "@chakra-ui/react"
 import { useColorModeValue } from "@components/ui/color-mode";
 import { ReportsPropsModel } from "@models/reports.model";
-import { MENU_CONFIG } from "@models/reportsConstansts.model";
+import { MENU_CONFIG } from "@models/const/reports.const";
 import { MdChevronRight } from "react-icons/md";
 import { RiMenuUnfold3Line, RiCloseLargeFill } from "react-icons/ri";
 

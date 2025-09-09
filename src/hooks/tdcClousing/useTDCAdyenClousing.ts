@@ -1,5 +1,4 @@
 import { ProcessResult } from "@models/adyen.model";
-import { Bank, LotClosure } from "@models/lotClosure.model";
 import { BankLineModel, Voucher } from "@models/tdc.model";
 import { toast } from "../../utils/index";
 import React from "react";

@@ -1,4 +1,4 @@
-import { FilterKey } from "./reportsConstansts.model";
+import { FilterKey } from "./const/reportFilter.const";
 
 export interface ReportsPropsModel {
   open: boolean;
@@ -236,8 +236,27 @@ export interface BanamexCommerceModel {
   paymenthSaleID: number;
 }
 
+export interface SantanderModel {
+    operationType: number;
+    dateTime: string;
+    commerceCode: string;
+    cashier: string;
+    id: number;
+    currencyReceivedType: number;
+    amountReceived: number;
+    purchaseAmount: number;
+    exchangeRate: number;
+    currencyAmount: number;
+    transactionId: number;
+    exchangeRateMXN: number;
+    exchangeRateUSD: number;
+    cdc: number;
+    operator: string;
+    chequeNumber: number;
+}
+
 export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | 
-EmployeeSalesModel | BanamexModel | SyncErrorsModel | CouponsModel;
+EmployeeSalesModel | BanamexModel | SantanderModel | SyncErrorsModel | CouponsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
@@ -247,6 +266,7 @@ export type ReportTypeMap = {
   5: PaymentMethodModel;
   9: CouponsModel;
   10: BanamexModel;
+  11: SantanderModel;
   100: SyncErrorsModel;
 };
 

@@ -21,7 +21,7 @@ import {
   SpecialCustomerLines,
   SpecialCustomerModel,
 } from "@models/specialCustome.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterCustomer from "@components/FilterCustomer";

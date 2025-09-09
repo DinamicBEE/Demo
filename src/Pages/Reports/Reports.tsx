@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import LateralMenu from "./layouts/LateralMenu";
 import Filters from "./layouts/Filters";
 import ReportTable from "./layouts/ReportTable";
-import { REPORT_KEY } from "@models/reportsConstansts.model";
+import { REPORT_KEY } from "@models/const/reports.const";
 
 function Reports() {
   const [open, setOpen] = useState(false);

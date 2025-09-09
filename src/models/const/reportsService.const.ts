@@ -1,4 +1,4 @@
-import { REPORT_KEY } from "../reportsConstansts.model";
+import { REPORT_KEY } from "./reports.const";
 import { reportHandlers } from "@services/reportHandlers";
 import * as SETTINGS from "@services/settings";
 import { FilterParams } from "../reports.model";
@@ -40,6 +40,13 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
     ],
   },
   [REPORT_KEY.REPBAN_01]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
+  [REPORT_KEY.REPBAN_02]: {
     params: [
       { paramsKey: "consumerCenter", filterKey: "multicdc" },
       { paramsKey: "startDate", filterKey: "date_1" },
@@ -109,11 +116,17 @@ export const REPORTSERVICE_CONFIG = [
     keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPCUP_01].params,
     handleData: reportHandlers.handleCuoponsData,
   },
-    {
+  {
     report: REPORT_KEY.REPBAN_01,
     url: SETTINGS.REPORT_BANCK_BANAMEX,
     keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPBAN_01].params,
     handleData: reportHandlers.handleBanamexData,
+  },
+  {
+    report: REPORT_KEY.REPBAN_02,
+    url: SETTINGS.REPORT_BANCK_SANTANDER,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPBAN_02].params,
+    handleData: reportHandlers.handleSantanderData,
   },
 ];
 
@@ -134,4 +147,3 @@ export enum ESTTATUS {
 }
 
 export const REPORT_EXECPTION = [REPORT_KEY.REPBAN_01]
-export const NUMBERTYPE_EXECPTION = ['quantity', 'id', 'cdcid', 'transactionid', 'attempts', 'key']

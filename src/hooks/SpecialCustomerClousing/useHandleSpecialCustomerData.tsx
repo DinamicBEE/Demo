@@ -4,7 +4,7 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { TotalModel } from "@models/common.clousing.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 
 export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerModel, setSpecialCustomer: any, clousingId: number) =>{
 

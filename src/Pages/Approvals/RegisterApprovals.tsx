@@ -13,7 +13,7 @@ import { useApi } from "@hooks/useApi";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../utils/selectManagement";
-import { ApprovalsReasons } from "@models/constants.model";
+import { ApprovalsReasons } from "@models/common.const";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
 

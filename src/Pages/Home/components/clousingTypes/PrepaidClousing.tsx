@@ -25,7 +25,7 @@ import {
   PrepaidLineModel,
   PrepaidModel,
 } from "@models/prepaid.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { TotalModel } from "@models/common.clousing.model";
 import { getCustomersPrepaid } from "@services/catalogService";
 import { TableInput } from "@components/NumericInput";

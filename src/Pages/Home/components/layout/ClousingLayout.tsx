@@ -14,7 +14,7 @@ import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing";
 import { lazy, useState, Suspense, useEffect, useLayoutEffect } from "react";
 import FooterClousing from "./FooterClousing";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { ClousingLayoutProps } from "@models/common.clousing.model";
 import IntercompanyClousing from "../clousingTypes/IntercompanyClousing";
 import SpecialCustomersClousing from "../clousingTypes/SpecialCustomers";

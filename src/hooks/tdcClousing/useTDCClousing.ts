@@ -2,7 +2,7 @@ import { useHeaders } from "@context/home/headerContext";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { Voucher, BankLineModel, TDCModel } from "@models/tdc.model";
 import { TotalModel } from "@models/common.clousing.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 
 export const useHandleTDC = (clousingId: number, lineId: number | string) => {
   const { updateTotal } = useHeaders();

@@ -6,9 +6,11 @@ import TDCDetails from "./TDCDetails";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
 import { useFooter } from "@context/home/footerClousingContext";
 import { Voucher, BankLineModel, TDCModel } from "@models/tdc.model";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import Loading from "@components/Loading";
 import { useHeaders } from "@context/home/headerContext";
+import { CurrencyInputNumber } from "@components/NumericInput";
+import { useTDC } from "@hooks/tdcClousing/useTDC";
 
 const pageSize = 5;
 
@@ -25,6 +27,8 @@ function TDCClousing({ data, idCurrency }: any) {
   const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<BankLineModel[]>([]);
+
+  const { updatedPhysicalAmount } = useTDC(data?.id);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -123,11 +127,22 @@ function TDCClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                      <FormatNumber
-                        value={item.physical}
-                        style="currency"
-                        currency="USD"
-                      />
+                    { item.bank.toLowerCase() != "starbucks" ? (        
+                        <FormatNumber
+                          value={item.physical}
+                          style="currency"
+                          currency="USD"
+                        />
+                      ) : (
+                        <CurrencyInputNumber 
+                          loading={false}
+                          value={item.physical}
+                          currency={true}
+                          onChange={(event) => updatedPhysicalAmount(item.id, event?.toString() || "0")}
+                          allowDecimals={true}
+                        />
+                      )
+                    }
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">

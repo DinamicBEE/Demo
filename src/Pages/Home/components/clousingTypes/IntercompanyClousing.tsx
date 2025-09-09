@@ -9,7 +9,7 @@ import { IntercompanyClousingProps, IntercompanyLine,
   IntercompanyModel } from "@models/intercompany.model";
 import { useIntercompanyContext } from "@context/clousing/intercompanyContext";
 import { useFooter } from "@context/home/footerClousingContext";
-import { CLOUSING_KEY } from "@models/constants.model";
+import { CLOUSING_KEY } from "@models/common.const";
 import { Employee } from "@models/employee.model";
 import { TableInput } from "@components/NumericInput";
 //import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";

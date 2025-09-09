@@ -10,7 +10,7 @@ import {
 import { LuLogOut } from "react-icons/lu";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Layout.css";
-import { menuItems } from "@models/constants.model";
+import { menuItems } from "@models/const/menu.consts";
 import { Tooltip } from "./ui/tooltip";
 import image from "../assets/meraLogo.webp";
 function Layout() {

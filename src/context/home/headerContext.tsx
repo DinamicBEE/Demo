@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { ClousingLinesModel, ExtraInfo, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
-import { CLOUSING_KEY } from '@models/constants.model';
+import { CLOUSING_KEY } from '@models/common.const';
 import { getExtraInfo } from '@services/catalogService';
 
 const headersContext = createContext<HeaderContextType>({} as HeaderContextType);

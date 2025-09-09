@@ -1,4 +1,4 @@
-import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, CouponsModel, DiscountReportModel, EmployeeSalesModel, PaymentMethodModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
+import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, CouponsModel, DiscountReportModel, EmployeeSalesModel, PaymentMethodModel, PMixGeneralReportModel, SantanderModel, SyncErrorsModel } from "@models/reports.model";
 import { GUIDE_TO_BANKING_BANAMEX } from "@models/const/reportBanck.const";
 
 export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
@@ -242,6 +242,29 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
 
 }
 
+export const handleSantanderData = (backingData: any[]): SantanderModel[] => {
+  return backingData.map( (item:any) => {
+    return {
+      operationType: item.tipoOperacion,
+      dateTime: item.fechaYhora,
+      commerceCode: item.codigoComercio,
+      cashier: item.cajero,
+      id: item.id,
+      currencyReceivedType: item.tipoMonedaRecibida,
+      amountReceived: item.cantidadRecibida,
+      purchaseAmount: item.importeCompra,
+      exchangeRate: item.tipoCambio,
+      currencyAmount: item.monedaDelImporte,
+      transactionId: item.idTransaccion,
+      exchangeRateMXN: item.cambioMxp,
+      exchangeRateUSD: item.cambioUsd,
+      cdc: item.cdc,
+      operator: item.operador,
+      chequeNumber: item.numeroCheque,
+    }
+  });
+}
+
 export const handleCuoponsData = (rowData: any[]): CouponsModel[] => {
   return rowData.map(item => {
     return {
@@ -269,5 +292,6 @@ export const reportHandlers = {
   handleCuoponsData,
   handlePMIXGeneralData,
   handleSyncErrorsData,
-  handleBanamexData
+  handleBanamexData,
+  handleSantanderData
 };

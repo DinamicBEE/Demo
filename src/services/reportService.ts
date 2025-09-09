@@ -3,10 +3,11 @@ import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
 import { GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
-import { REPORT_CONFIG, TABLE_CONFIG } from "@models/reportsConstansts.model";
+import { REPORT_CONFIG } from "@models/const/reportFilter.const";
 import { REPORTSERVICE_CONFIG } from "@models/const/reportsService.const";
 import ExcelJS from 'exceljs';
 import { BANCKS_TITLES } from "@models/const/reportBanck.const";
+import { TABLE_CONFIG } from "@models/const/reportTable.const";
 
 
 export const generateReportCSV = (rows: Row[]) => {
