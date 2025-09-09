@@ -5,7 +5,6 @@ import ProtectedRoute, { PublicRoute } from "./components/ProtectedRoutes";
 import Layout from "./components/Layout";
 import routesConfig from "./routes/routesConfig";
 import Loading from "./components/Loading";
-import ErrorDialog from "@components/ErrorDialog";
 const Login = lazy(() => import("./Pages/Login/Login.tsx"));
 
 function App() {
@@ -48,7 +47,6 @@ function App() {
           </Routes>
         </Router>
       </Suspense>
-      <ErrorDialog />
     </ContextProvider>
   );
 }

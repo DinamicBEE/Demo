@@ -115,45 +115,41 @@ function TDCClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                    <Text>
                       <FormatNumber
                         value={item.pos}
                         style="currency"
                         currency="USD"
                       />
-                    </Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                    <Text>
                       <FormatNumber
                         value={item.physical}
                         style="currency"
                         currency="USD"
                       />
-                    </Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
-                    <Text>
                       <FormatNumber value={item.voucherAmount} />
-                    </Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
-                    <Text>
                       <FormatNumber value={item.voucherAmountDisplay} />
-                    </Text>
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
-                    <IconButton
-                      rounded="full"
-                      variant={"ghost"}
-                      onClick={() => openDiaolog(item.id, item)}
-                    >
-                      <LuEye />
-                    </IconButton>
+                    { item.bank.toLowerCase() != "starbucks" ? (
+                      
+                      <IconButton
+                        rounded="full"
+                        variant={"ghost"}
+                        onClick={() => openDiaolog(item.id, item)}
+                      >
+                        <LuEye />
+                      </IconButton>
+                    ) : null
+                    }
                   </Table.Cell>
                 </Table.Row>
               ))}

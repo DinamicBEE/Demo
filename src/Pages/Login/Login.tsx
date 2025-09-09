@@ -5,7 +5,7 @@ import { Field } from "@components/ui/field";
 import { PasswordInput } from "@components/ui/password-input";
 import { Button } from "@components/ui/button";
 import { useAuth } from "@context/AuthContext";
-import image from "../../assets/meraClean.png";
+import image from "../../assets/meraClean.webp";
 import "./login.css";
 
 function Login() {

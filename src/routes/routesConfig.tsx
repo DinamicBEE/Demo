@@ -79,6 +79,11 @@ const routesConfig = [
           <Component />
         </ReportsProvider>
       )
+    },
+    {
+      path: '/starbucks',
+      element: lazy(() => import('../Pages/starbucksClosure/Closure')),
+      roles: ['ADMIN', 'USER', 'admin', 'user'],
     }
   ];
   

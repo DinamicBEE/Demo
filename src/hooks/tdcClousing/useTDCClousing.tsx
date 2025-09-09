@@ -49,14 +49,6 @@ export const useHandleTDC = (clousingId: number, lineId: number | string) => {
       (item: Voucher) => item.status
     ).length;
 
- /*    const successCountAdyen = detailsValidated.vouchers.filter(
-      (item: Voucher) => item.successAdyen
-    ); */
-
-   /*  const newPhysicalAdyen = successCountAdyen
-      .map((item: Voucher) => item.amount)
-      .reduce((acc: number, curr: number) => acc + curr, 0); */
-
     const updateLines = tdcData?.lines?.map((item: BankLineModel) =>
       lineId === item.id
         ? {

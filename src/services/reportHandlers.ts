@@ -1,5 +1,5 @@
 import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, CouponsModel, DiscountReportModel, EmployeeSalesModel, PaymentMethodModel, PMixGeneralReportModel, SyncErrorsModel } from "@models/reports.model";
-import { GUIDE_TO_BANKING_BANAMEX } from "@models/reportsConstService.model";
+import { GUIDE_TO_BANKING_BANAMEX } from "@models/const/reportBanck.const";
 
 export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
 
