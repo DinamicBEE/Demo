@@ -6,7 +6,6 @@ import { loadData } from "../indexedDB/localDB";
 import { COOKIE_NAMES } from "@models/common.const";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
-
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -35,16 +34,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       sameSite: "Strict",
       secure: true,
     });
-
     Cookies.set(COOKIE_NAMES.REFRESH_TOKEN, refreshToken, {
       expires: 7,
       sameSite: "Strict",
       secure: true,
     });
-
     setAuthState({ isAuthenticated: true, error: null });
-
-  }, [setAuthState]);
+  }, []);
 
   const setUserWithRole = useCallback(async (username: string) => {
     try {
@@ -52,7 +48,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const user = { first_name: username, role: userRole };
       
       setAuthState({ user });
-
       try {
         await loadData.userData.put({ key: "userRole", value: userRole });
       } catch (dbError) {
@@ -61,11 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       setAuthState({ error: "Error al obtener el rol del usuario" });
     }
-  }, [setAuthState]);
+  }, []);
 
   const handleLogin = useCallback(async (username: string, password: string) => {
       setAuthState({ error: null });
-
       try {
         const tokens = await loginUser(username, password);
         Cookies.set(COOKIE_NAMES.USERNAME, username);
@@ -77,20 +71,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         : "Error durante el inicio de sesión";
 
          setAuthState({ isAuthenticated: false, error: errorMessage, user: null });
-
       } finally {
         setAuthState({ isLoading: false });
       }
-    }, [setAuthState, setTokens, setUserWithRole]
+    },
+    []
   );
 
   const logOut = useCallback(async () => {
-    setState(initialState);
+    setState({...initialState, isLoading: false});
 
     Object.values(COOKIE_NAMES).forEach(cookieName => {
       Cookies.remove(cookieName);
     });
-
     try {
       await loadData.userData.delete("userRole");
     } catch (error) {
@@ -118,20 +111,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [logOut, setTokens]);
 
-
   useEffect(() => {
     const initializeAuth = async () => {
       setAuthState({ isLoading: true });
 
       const username = Cookies.get(COOKIE_NAMES.USERNAME);
-      
+
       if (!username) {
         logOut();
         return;
       }
-      
-      await checkAndRefreshToken();
-      
+
+      //await checkAndRefreshToken();
+
       const accessToken = Cookies.get(COOKIE_NAMES.ACCESS_TOKEN);
       const refreshToken = Cookies.get(COOKIE_NAMES.REFRESH_TOKEN);
 
@@ -147,14 +139,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           logOut();
         }
       }
-
-      setAuthState({ isLoading: false });
+      setState((prev) => ({ ...prev, isLoading: false }));
     };
 
     initializeAuth();
-  }, [checkAndRefreshToken, logOut, setAuthState, setUserWithRole]);
+  }, []);
 
-  const contextValue = useMemo(() => ({
+const contextValue = useMemo(() => ({
     isAuthenticated: state.isAuthenticated,
     error: state.error,
     user: state.user,
