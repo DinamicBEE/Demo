@@ -83,7 +83,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       0
     );
     const newDifference =
-      prepaid.total.totalPOS - (newTotalFisico + newTotalComp);
+      (newTotalFisico + newTotalComp) - prepaid.total.totalPOS;
     const newTotal: TotalModel = {
       totalPOS: prepaid.total.totalPOS,
       totalPhysical: newTotalFisico + newTotalComp,
@@ -206,7 +206,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
             totalPOS:
               clientLine!.coupons.filter((c) => !c.isExpired).length *
               (clientLine?.totalPOS || 0),
-            difference: (clientLine!.totalPOS || 0) - newTotalFisico,
+            difference:  newTotalFisico - (clientLine!.totalPOS || 0),
             edit:
               clientLine!.coupons.some((c) => c.isExpired) ||
               (clientLine!.supplementsQuantity ?? 0) > 0,
