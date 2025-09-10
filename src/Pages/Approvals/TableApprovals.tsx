@@ -94,9 +94,9 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
               <Table.ColumnHeader textAlign="center">Fecha</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Tipo de Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo de Solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">{role === 'admin' ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">{role?.toLocaleLowerCase() === 'admin' ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Estatus</Table.ColumnHeader>
-              {role === 'admin' && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
+              {role?.toLocaleLowerCase() === 'admin' && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -107,13 +107,13 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                 <Table.Cell textAlign="center">{item.date}</Table.Cell>
                 <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
-                <Table.Cell textAlign="center">{role === 'admin' ? item.comment : item.commentSupervisor}</Table.Cell>
+                <Table.Cell textAlign="center">{role?.toLocaleLowerCase() === 'admin' ? item.comment : item.commentSupervisor}</Table.Cell>
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
                     {statusLabels[item.status]}
                   </Badge>
                 </Table.Cell>
-                {role === 'admin' && (
+                {role?.toLocaleLowerCase() === 'admin' && (
                   <Table.Cell textAlign="center">
                     {item.status === 3 && (
                       <>

@@ -56,6 +56,16 @@ const routesConfig = [
       ),
     },
     {
+      path: '/requests',
+      element: lazy(() => import('../Pages/Approvals/requests')),
+      roles: ['USER', 'user', 'ADMIN', 'admin'],
+      wrapper: (Component: React.ComponentType) => (
+        <ApprovalsProvider>
+          <Component />
+        </ApprovalsProvider>
+      ),
+    },
+    {
       path: '/reportviewer',
       element: lazy(() => import('../Pages/ReportViewer/ReportViewer')),
       roles: ['ADMIN', 'USER', 'admin', 'user'],
