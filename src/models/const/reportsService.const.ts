@@ -114,7 +114,7 @@ export const REPORTSERVICE_CONFIG = [
     report: REPORT_KEY.REPVOI_01,
     url: SETTINGS.REPORT_VOIC,
     keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPVOI_01].params,
-    handleData: null,
+    handleData: reportHandlers.handleVoidsData,
   },
   {
     report: REPORT_KEY.REPCUP_01,

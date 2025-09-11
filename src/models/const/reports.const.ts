@@ -57,12 +57,12 @@ export const MENU_CONFIG = [
     ],
     reportCode: null,
   },
-  /* {
+  {
     id: 4,
     categoryName: REPORT_NAME.REPVOI_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPVOI_01,
-  }, */
+  },
   {
     id: 5,
     categoryName: REPORT_NAME.REPCUP_01,

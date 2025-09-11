@@ -1,7 +1,7 @@
-import { BanamexCommerceModel, BanamexEmployeesModel, BanamexGuideModel, BanamexModel, BanamexSummaryModel, CouponsModel, DiscountReportModel, EmployeeSalesModel, PaymentMethodModel, PMixGeneralReportModel, SantanderModel, SyncErrorsModel } from "@models/reports.model";
+import * as ReportsModels from "@models/reports.model";
 import { GUIDE_TO_BANKING_BANAMEX } from "@models/const/reportBanck.const";
 
-export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
+export const handleDiscountData = (rowData: any[]): ReportsModels.DiscountReportModel[] => {
 
   return rowData.map(item =>{
     
@@ -30,7 +30,7 @@ export const handleDiscountData = (rowData: any[]): DiscountReportModel[] => {
   });
 }
 
-export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] => {
+export const handleEmployeeSalesData = (rowData: any[]): ReportsModels.EmployeeSalesModel[] => {
 
   return rowData.map(item => {
     const totalSale = parseFloat(item.ventaTotal || '0');
@@ -68,7 +68,7 @@ export const handleEmployeeSalesData = (rowData: any[]): EmployeeSalesModel[] =>
   });
 }
 
-export const handlePaymentMethod = (rowData: any[]): PaymentMethodModel[] => {
+export const handlePaymentMethod = (rowData: any[]): ReportsModels.PaymentMethodModel[] => {
 
   return rowData.map(item =>{
     
@@ -94,7 +94,7 @@ export const handlePaymentMethod = (rowData: any[]): PaymentMethodModel[] => {
   });
 }
 
-export const handlePMIXGeneralData = (rowData: any[]): PMixGeneralReportModel[] => {
+export const handlePMIXGeneralData = (rowData: any[]): ReportsModels.PMixGeneralReportModel[] => {
   return rowData.map(item => {
     const formatDate = item.salesDate.split('T')[0]
     const date = new Date(`${formatDate}T00:00:00`);
@@ -124,7 +124,7 @@ export const handlePMIXGeneralData = (rowData: any[]): PMixGeneralReportModel[] 
 
 }
 
-export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
+export const handleSyncErrorsData = (rowData: any[]): ReportsModels.SyncErrorsModel[] => {
   const exceptionsStatus = ["PRODUCTO NO REGISTRADO", "TENDER MEDIA NO REGISTRADO", "DESCUENTO NO REGISTRADO"]
   
   return rowData.map(item => {
@@ -166,10 +166,10 @@ export const handleSyncErrorsData = (rowData: any[]): SyncErrorsModel[] => {
   
 }
 
-export const handleBanamexData = (backingData: any): BanamexModel => {
-  const preGuide: BanamexGuideModel[] = GUIDE_TO_BANKING_BANAMEX
+export const handleBanamexData = (backingData: any): ReportsModels.BanamexModel => {
+  const preGuide: ReportsModels.BanamexGuideModel[] = GUIDE_TO_BANKING_BANAMEX
 
-  const preEmployees: BanamexEmployeesModel[] = backingData.difColaboradorResponses.map( (item:any) => {
+  const preEmployees: ReportsModels.BanamexEmployeesModel[] = backingData.difColaboradorResponses.map( (item:any) => {
     return {
       employeeName: item.empleado,
       cdc: item.cdc,
@@ -180,7 +180,7 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
     }
   })
 
-  const preCommerce: BanamexCommerceModel[] = backingData.comercioBanamexResponses.map( (item:any) => {
+  const preCommerce: ReportsModels.BanamexCommerceModel[] = backingData.comercioBanamexResponses.map( (item:any) => {
     return {
       day: item.dia,
       month: item.mes,
@@ -204,7 +204,7 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
     }
   })
 
-  const preSummary: BanamexSummaryModel[] = backingData.resumenBanamexResponses.map( (item:any) => {
+  const preSummary: ReportsModels.BanamexSummaryModel[] = backingData.resumenBanamexResponses.map( (item:any) => {
     return {
       cdc: item.cdc,
       cdcId: item.cdcNum,
@@ -242,7 +242,7 @@ export const handleBanamexData = (backingData: any): BanamexModel => {
 
 }
 
-export const handleSantanderData = (backingData: any[]): SantanderModel[] => {
+export const handleSantanderData = (backingData: any[]): ReportsModels.SantanderModel[] => {
   return backingData.map( (item:any) => {
     return {
       operationType: item.tipoOperacion,
@@ -265,7 +265,7 @@ export const handleSantanderData = (backingData: any[]): SantanderModel[] => {
   });
 }
 
-export const handleCuoponsData = (rowData: any[]): CouponsModel[] => {
+export const handleCuoponsData = (rowData: any[]): ReportsModels.CouponsModel[] => {
   return rowData.map(item => {
     return {
       check: item.ticket,
@@ -285,6 +285,32 @@ export const handleCuoponsData = (rowData: any[]): CouponsModel[] => {
   })
 }
 
+export const handleVoidsData = (rowData: any[]): ReportsModels.VoidsModel[] => {
+  return rowData.map(item => {
+    const formatDate = item.saleDate.split(' ')[0]
+    const date = new Date(`${formatDate}T00:00:00`);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    return {
+      date: `${day}/${month}/${year}`,
+      cdc: item.consumerCenter,
+      ticketNumber: item.ticketNumber,
+      product: item.productName,
+      voidDescription: item.voidDescription,
+      voidAmount: item.voids,
+      totalSale: item.totalTicket,
+      discounts: item.discounts,
+      netSales: item.netSale,
+      voidPercentage:item.voidSalePercentage,
+      employee: item.employeeName,
+      approvedBy: item.approverName,
+      openTime: item.openTicketHour,
+      closeTime: item.closeTicketHour,
+    }
+  })
+}
+
 export const reportHandlers = {
   handleDiscountData,
   handleEmployeeSalesData,
@@ -293,5 +319,6 @@ export const reportHandlers = {
   handlePMIXGeneralData,
   handleSyncErrorsData,
   handleBanamexData,
-  handleSantanderData
+  handleSantanderData,
+  handleVoidsData
 };
