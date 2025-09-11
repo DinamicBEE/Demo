@@ -62,7 +62,7 @@ function PrepaidNewCustomer({
       totalPOS: 0,
       physical: 0,
       difference: 0,
-      edit: true,
+      isEdit: true,
       coupons: [],
       ticketId: 0,
     };

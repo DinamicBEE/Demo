@@ -1,7 +1,9 @@
+import { selectOption } from "./common.model";
 import { STATUS } from "./status.model";
 import { ListCollection } from "@chakra-ui/react";
+
 export interface LotClosure {
-  id: number | string; //
+  id: number | string;
   subId: number;
   consumerCenterId: number;
   statusId: number;
@@ -12,21 +14,8 @@ export interface LotClosure {
   totalPos: number;
   totalLote: number;
   difference: number;
-  statusSolicitud: number
+  statusSolicitud: number;
   batchDate: string;
-}
-
-export interface Bank {
-  totalCrc: number;
-  bankTerminalId: number;
-  bankTerminalName: string;
-  batchClosureId: number;
-  batchDetailsId: number;
-  difference: number;
-  totalBatch: number;
-  totalPos: number;
-  affiliationList: Afilation[]; //
-  lines?: Afilation[];
 }
 
 export interface Afilation {
@@ -36,6 +25,18 @@ export interface Afilation {
   amount: number;
 }
 
+export interface Bank {
+  totalCrc: number;
+  bankTerminalId: number;
+  bankTerminalName: string;
+  batchClosureId: number;
+  batchDetailsId: number | null;
+  difference: number;
+  totalBatch: number;
+  totalPos: number;
+  affiliationList: Afilation[];
+  lines?: Afilation[];
+}
 
 export interface Company {
   id: number;
@@ -49,63 +50,59 @@ export interface Location {
 }
 
 export interface TableLotsClosureProps {
-  locations: number[];
+  locations: Array<number>;
   date: string;
   showTable: boolean;
 }
 
 export interface DatePickerProps {
   isClearable?: boolean;
-  onChange: (dates: [Date | null, Date | null]) => void;
-  endDate: Date | null;
-  startDate: Date | null;
   showPopperArrow?: boolean;
+  startDate: Date | null;
+  endDate: Date | null;
+  onChange: (dates: [Date | null, Date | null]) => void;
 }
 
 export interface LotClosureDialogProps {
-  date:string;
+  date: string;
   isOpen: boolean;
-  onClose: (isRefresh:boolean) => void;
   lot: LotClosure;
+  onClose: (isRefresh: boolean) => void;
 }
 
 export interface LotClosureContextType {
   lotsClosure: LotClosure[];
-  setLotsClosure: (lots: LotClosure[]) => void;
-  lotClosureCache: { [key: number]: LotClosure[] };
+  lotClosureCache: Record<number, LotClosure[]>;
   banks: Bank[];
-  setBanks: (banks: Bank[]) => void;
-  bankCache: { [key: number]: Bank[] };
+  bankCache: Record<number, Bank[]>;
   error: string;
   loading: boolean;
   loadingBanks: boolean;
   updateBankLoading: boolean;
+  setLotsClosure: (lots: LotClosure[]) => void;
+  setBanks: (banks: Bank[]) => void;
   fetchLotClosureData: (
     dateRange: string,
-    locationId: number[],
+    locationId: Array<number>,
     isRefresh?: boolean
   ) => Promise<void>;
-  fetchBanks: (cdcId: number, date:string) => Promise<Bank[]>;
-  updateBank: (lotId: number, bank: Bank[], lot: LotClosure) => Promise<void>;
+  fetchBanks: (cdcId: number, date: string) => Promise<Bank[]>;
+  updateBank: (banks: Bank[], lot: LotClosure) => Promise<void>;
 }
 
 export interface LotCatalogContextType {
-  comapanies: ListCollection<{ value: number; label: string }>;
-  locations: ListCollection<{ value: number; label: string }>;
+  comapanies: ListCollection<selectOption>;
+  locations: ListCollection<selectOption>;
   loading: boolean;
   error: boolean;
-  setLocations: (
-    locations: ListCollection<{ value: number; label: string }>
-  ) => void;
+  setLocations: (locations: ListCollection<selectOption>) => void;
   fetchCompanies: () => Promise<void>;
   fetchLocations: (companyId: number) => Promise<void>;
 }
 
-export interface LotsClosureContext {
-  [key:string]: LotClosure[]
-}
+export type LotsClosureContext = Record<string, LotClosure[]>;
 
-export interface BankUpdateRequest extends LotClosure {
-  totalCrc: number;
+export interface BankUpdateRequest extends Pick<LotClosure, "id" | "subId" | "consumerCenterId" | "statusId" | "batchDate"> {
+  batchClosureId: number | null;
   batchDetailsRequest: Bank[];
 }

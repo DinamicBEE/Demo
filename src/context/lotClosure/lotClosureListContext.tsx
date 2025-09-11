@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState,
   useMemo, useCallback, useRef } from "react";
 import { getBanks, getLotsClosure, updateBankService } from "@services/lotClosureService";
-import { LotClosureContextType, LotClosure, Bank, LotsClosureContext } from "@models/lotClosure.model";
+import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest } from "@models/lotClosure.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -66,11 +66,11 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const updateBank = useCallback(
-    async (lotId: number, localBank: Bank[], localLotClosure: LotClosure) => {
+    async (localBank: Bank[], localLotClosure: LotClosure) => {
       setError("");
       setUpdateBankLoading(true);
       try {
-        const body = {
+        const body: BankUpdateRequest = {
           ...localLotClosure,
           batchClosureId: typeof localLotClosure.id === "number" ? localLotClosure.id : null,
           batchDetailsRequest: localBank.map((bank) => ({
