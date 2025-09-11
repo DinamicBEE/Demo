@@ -179,6 +179,23 @@ export interface CouponsModel {
   passengerName: string;
 }
 
+export interface VoidsModel {
+  date: string;
+  cdc: string;
+  ticketNumber: string;
+  product: string;
+  voidDescription: string;
+  voidAmount: number;
+  totalSale: number;
+  discounts: number;
+  netSales: number;
+  voidPercentage: number;
+  employee: string;
+  approvedBy: string;
+  openTime: string;
+  closeTime: string;
+}
+
 export interface BanamexModel {
   guide: BanamexGuideModel[];
   summary: BanamexSummaryModel[];
@@ -256,7 +273,7 @@ export interface SantanderModel {
 }
 
 export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | 
-EmployeeSalesModel | BanamexModel | SantanderModel | SyncErrorsModel | CouponsModel;
+EmployeeSalesModel  | VoidsModel | BanamexModel | SantanderModel | SyncErrorsModel | CouponsModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
@@ -264,6 +281,7 @@ export type ReportTypeMap = {
   3: PMixEmployeeReportModel;
   4: EmployeeSalesModel;
   5: PaymentMethodModel;
+  8: VoidsModel
   9: CouponsModel;
   10: BanamexModel;
   11: SantanderModel;

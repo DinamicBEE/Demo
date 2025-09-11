@@ -72,7 +72,7 @@ export const REPORT_VENEMP = `${REPORT_BASE}/saleEmploye`;
 export const REPORT_VENCATFAM = ``;
 export const REPORT_VENMETPAY = `${REPORT_BASE}/forma`;
 export const REPORT_VENDES = ``;
-export const REPORT_VOIC = ``;
+export const REPORT_VOIC = `${REPORT_BASE}/getVoidReport`;
 export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;

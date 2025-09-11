@@ -53,6 +53,12 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
+  [REPORT_KEY.REPVOI_01]: {
+    params: [
+      { paramsKey: "cdcId", filterKey: "cdc" },
+      { paramsKey: "dateOfReport", filterKey: "date" },
+    ],
+  },
 };
 
 export const REPORTSERVICE_CONFIG = [
@@ -107,7 +113,7 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPVOI_01,
     url: SETTINGS.REPORT_VOIC,
-    keysParams: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPVOI_01].params,
     handleData: null,
   },
   {
