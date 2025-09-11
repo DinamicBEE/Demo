@@ -150,8 +150,8 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (!coupon) return;
     setLoadingAdded(true);
 
-    const couponModel = coupons.find((c) => c.barCode === coupon);
-    if (!couponModel) return handleToast("Cupón inválido", "error");
+    const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
+    if (!couponModel) return handleToast("Cupón inválido o vencido", "error");
 
     let clientLine = prepaid.lines.find(
       (l) =>
@@ -159,7 +159,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         l.isEdit === false
     );
 
-    if (!clientLine) {
+    if (!clientLine) {      
       clientLine = {
         id: uuidv4(),
         quantity: 1,

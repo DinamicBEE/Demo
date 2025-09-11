@@ -121,7 +121,7 @@ interface PrepaidLine extends LineBase {
   totalPOS: number;
   physical: number;
   difference: number;
-  edit: boolean;
+  isEdit: boolean;
   coupons: Omit<CouponCatalogModel, "validityDateCustom" | "folioCustom" | "clientCustom">[];
   ticketId: number;
 
