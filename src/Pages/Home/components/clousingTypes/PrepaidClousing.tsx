@@ -156,7 +156,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     let clientLine = prepaid.lines.find(
       (l) =>
         l.client?.toLowerCase() === couponModel.clientCustom.toLowerCase() &&
-        l.edit === false
+        l.isEdit === false
     );
 
     if (!clientLine) {
@@ -170,7 +170,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         totalPOS: couponModel.amount * 1,
         difference: 0,
         coupons: [],
-        edit: false,
+        isEdit: false,
         ticketId: couponModel.id,
       };
       prepaid.lines.push(clientLine);
@@ -309,7 +309,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                 {/* Cliente */}
                 <Table.Cell textAlign="center">
                   <Text>
-                    {item.client} {item.edit && "(Complementario)"}{" "}
+                    {item.client} {item.isEdit && "(Complementario)"}{" "}
                   </Text>
                 </Table.Cell>
 
@@ -338,7 +338,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
                 {/* Complementos */}
                 <Table.Cell textAlign="center">
-                  {!item.edit ? (
+                  {!item.isEdit ? (
                     <FormatNumber value={item.supplementsQuantity} />
                   ) : (
                     <TableInput

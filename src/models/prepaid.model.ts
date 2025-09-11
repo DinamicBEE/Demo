@@ -41,7 +41,7 @@ export interface PrepaidLineModel {
   totalPOS: number;
   physical: number;
   difference: number;
-  edit: boolean;
+  isEdit: boolean; // TODO isEdit
   coupons: CouponCatalogModel[];
   ticketId: number;
 }

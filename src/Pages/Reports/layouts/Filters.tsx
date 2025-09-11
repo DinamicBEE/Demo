@@ -134,16 +134,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     setSelectedCDC(ids);
     // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
-
-  /* // Este useEffect será para cuando el filtro requiera cargar data por medio del
-  // CDC, agregar las llamadas correspondientes :D
-  useEffect(() => {
-    if (activeFilters.includes("customer")) {
-      loadFilterData("customer", selectedCDC);
-    }
-    console.log(activeFilters);
-    
-  }, [selectedCDC]) */
   
 
 
