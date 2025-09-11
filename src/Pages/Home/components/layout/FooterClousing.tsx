@@ -147,14 +147,14 @@ function FooterClousing({
     }
 
     const allHaveCoupons = ref != undefined ? ref.lines.every(
-      (line) => line.coupons.length > 0
+      (line) => line.coupons.length > 0 || line.isEdit
     ) : false;
 
     if (!allHaveCoupons && isConfirm === false && ref != undefined && ref.lines.length > 0) {
       showToast({
         title: "Error",
         description:
-          "Todos los clientes de prepago deben tener al menos un cupón",
+          "Todos los clientes no complementarios de prepago deben tener al menos un cupón",
         type: "error",
       });
       return;
