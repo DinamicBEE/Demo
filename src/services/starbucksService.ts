@@ -520,19 +520,19 @@ export const denominationsData = [
     id: 2,
     idDenomination: 2,
     denomination: "500.00",
-    amount: 5,
+    amount: 0,
   },
   {
     id: 3,
     idDenomination: 3,
     denomination: "200.00",
-    amount: 1,
+    amount: 0,
   },
   {
     id: 4,
     idDenomination: 4,
     denomination: "100.00",
-    amount: 1,
+    amount: 0,
   },
   {
     id: 5,
@@ -544,13 +544,13 @@ export const denominationsData = [
     id: 6,
     idDenomination: 6,
     denomination: "20.00",
-    amount: 1,
+    amount: 0,
   },
   {
     id: 7,
     idDenomination: 7,
     denomination: "Cambio",
-    amount: 15,
+    amount: 0,
   }
 ];
 
