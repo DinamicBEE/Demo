@@ -9,6 +9,7 @@ import { getDetailStarbucks } from "@services/starbucksService";
 import { CiSquarePlus } from "react-icons/ci";
 import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
+import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 
 function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
 
@@ -20,6 +21,8 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [openDialogExit, setOpenDialogExit] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false);
   
   useEffect(() => {
     async function fetchData() {
@@ -170,6 +173,11 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
       setCxcRows(newCxcRows);
     }
 
+  }
+
+  async function sendClousing(isConfirm: boolean) {
+    onClose();
+    setButtonLoading(false);
   }
   
   return (
@@ -511,8 +519,15 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
 
                 <DialogFooter>
                     
-                    <Button colorPalette="meraWarning" onClick={()=> onClose()}>Guardar</Button>
-                    <Button colorPalette="meraPrimary">Guardar</Button>
+                    <Button colorPalette="meraWarning" onClick={()=> {
+                      setButtonLoading(true);
+                      setIsConfirm(true);
+                    }}>Guardar Corte</Button>
+
+                    <Button colorPalette="meraPrimary" onClick={()=> {
+                      setButtonLoading(true);
+                      setIsConfirm(false);
+                    }}>Confirmar Corte</Button>
 
                 </DialogFooter>
 
@@ -538,6 +553,13 @@ function DialogDetails({isOpen, onClose}: StarbucksDetailsProps) {
             isOpen={openDialogExit}
         >
         </ExitDialog>
+
+        <ConfirmDialog
+          isOpen={buttonLoading}
+          closeDialog={() => setButtonLoading(false)}
+          sendData={sendClousing}
+          isConfirm={isConfirm}
+        />
     </Box>
   );
 }
