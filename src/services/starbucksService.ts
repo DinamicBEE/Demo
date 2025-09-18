@@ -59,7 +59,7 @@ export const getDetailStarbucks = async (id: number): Promise<StarbucksTableRow>
     let cashDataDummy = [...cashData];
     cashDataDummy.push({
       id: 6,
-      currency: "Total",
+      currency: "Total (MXN)",
       total: cashTotal,
       exchangeRate: 0,  
       originalCurrency: 0,
@@ -77,7 +77,7 @@ export const getDetailStarbucks = async (id: number): Promise<StarbucksTableRow>
     let creditCardDataDummy = [...creditCardData];
     creditCardDataDummy.push({
       id: 6,
-      nameBank: "Total",
+      nameBank: "Total (MXN)",
       total: 0,
       exchangeRate: 0,
       originalCurrency: creditCardTotal,
@@ -86,7 +86,7 @@ export const getDetailStarbucks = async (id: number): Promise<StarbucksTableRow>
     let cxcDataDummy = [...cxcData];
     cxcDataDummy.push({
       id: 3,
-      currency: "Total",
+      currency: "Total (MXN)",
       total: 0,
       exchangeRate: 0,
       originalCurrency: cxcTotal,

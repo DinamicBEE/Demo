@@ -1,4 +1,5 @@
 import { Currency, TDC } from "./common.clousing.model";
+import { STATUS } from "./status.model";
 
 export interface SortableHeaderProps {
   columnKey: string;
@@ -11,7 +12,7 @@ export interface SortableHeaderProps {
 export interface StarbucksTableModel {
     id: number;
     employee: string;
-    status: string;
+    status: STATUS;
     date: string;
     total: number;
     currencies: Currency[];

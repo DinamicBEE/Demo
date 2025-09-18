@@ -1,4 +1,4 @@
-import { Box, FormatNumber, Table, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, Table, Tag, Text } from "@chakra-ui/react";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
 import { getHeadersStarbucks, getStarbucksData } from "@services/starbucksService";
@@ -6,6 +6,8 @@ import { SortableHeader } from "../../../../utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
 import Loading from "@components/Loading";
+import { STATUS } from "@models/status.model";
+import { getStatusColor } from "../../../../utils/getStatusColor";
 
 
 
@@ -18,7 +20,6 @@ function StarbucksTable() {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-
         const fetchData = async () => {
           setLoading(true);
             const data = await getStarbucksData()
@@ -38,6 +39,10 @@ function StarbucksTable() {
     const closeDialog = () => {
         setIsDialogOpen(false);
     };
+
+    function statusColor(status: STATUS) {
+        return getStatusColor(status);
+    }
 
     return (
         <>
@@ -83,7 +88,11 @@ function StarbucksTable() {
                                             {item.employee}
                                         </Text>
                                     </Table.Cell>
-                                    <Table.Cell textAlign="center">{item.status}</Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <Tag.Root colorPalette={statusColor(item.status)}>
+                                        <Tag.Label>{item.status}</Tag.Label>
+                                      </Tag.Root>
+                                    </Table.Cell>
                                     <Table.Cell textAlign="center">{item.date}</Table.Cell>
                                     <Table.Cell textAlign="center">{item.total}</Table.Cell>
                                     {

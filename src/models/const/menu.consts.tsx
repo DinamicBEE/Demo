@@ -8,7 +8,7 @@ export const menuItems = [
   { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Solicitud de ajuste', path: '/requests', icon:<LuClipboardCheck />, roles: ['USER', 'user', 'ADMIN', 'admin'] },
-  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['ADMIN', 'admin'] },
+  // { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['ADMIN', 'admin'] },
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },

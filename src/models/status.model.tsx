@@ -4,4 +4,6 @@ export enum STATUS {
     WITH_DIFFERENCE = 'Con Diferencia',
     Open = 'Abierto',
     RECLOSED = "Re-cerrado",
+    ACTIVE = "Activo",
+    INACTIVE = "Inactivo"
 }
