@@ -135,8 +135,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
   
-
-
   // Cargar opciones de filtros
   const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: any) => {
     setLoadingFilters(prev => ({ ...prev, [filterKey]: true }));
@@ -256,7 +254,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         </SelectRoot>
       );
     }
-
+    // Otros filtros
     return (
       <SelectRoot
         collection={createListCollection({ items: filterData[filterKey] || [] })}
@@ -266,7 +264,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
             ? []
             : Array.isArray(selectedValues[filterKey])
               ? selectedValues[filterKey].map(String)
-              : [String(selectedValues[filterKey])]
+              : [Number(selectedValues[filterKey])]
         }
         disabled={loadingFilters[filterKey]}
       >
