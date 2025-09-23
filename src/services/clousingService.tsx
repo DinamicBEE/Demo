@@ -257,33 +257,29 @@ export const getPrepaidClousing = async (
     const response = await api.get(GET_PREPAID, {
       params: { idCashRegisterClosure: clousingId },
     });
+
+    const validLines = response.data.prepagoResponse.filter(
+      (line: PrepaidLineModel) => typeof line.id === "number" && line.id !== 0
+    );
     
     
-    const updateLines = await response.data.prepagoResponse.map(
-      (item: PrepaidLineModel) => {
-        return {
+    const updateLines = validLines.length
+      ? validLines.map((item: PrepaidLineModel) => ({
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
-          edit: item.supplementsQuantity > 0 ? true : false,
-          coupons: item.coupons != null
-            ? item.coupons.map((coupon: CouponCatalogModel) => ({
-                ...coupon,
-                // Generate new UUID for null IDs, otherwise keep existing ID
-                folioCustom: coupon.folio.split("_")[1], // Eliminar números al inicio
-                validityDateCustom: format(
-                  new Date(coupon.validityDate),
-                  "dd/MM/yyyy"
-                ),
-                isExpired: isBefore(
-                  // Compare only the date part by setting both dates to start of day
-                  startOfDay(new Date(coupon.validityDate)),
-                  startOfDay(new Date(dateClousing))
-                ),
-              }))
-            : [],
-        };
-      }
-    );
+          edit: item.supplementsQuantity > 0,
+          coupons:
+            item.coupons?.map((coupon: CouponCatalogModel) => ({
+              ...coupon,
+              folioCustom: coupon.folio.split("_")[1],
+              validityDateCustom: format(new Date(coupon.validityDate), "dd/MM/yyyy"),
+              isExpired: isBefore(
+                startOfDay(new Date(coupon.validityDate)),
+                startOfDay(new Date(dateClousing))
+              ),
+            })) ?? [],
+        }))
+      : [];
 
     const data: PrepaidModel = {
       employeeId: clousingId,
@@ -293,7 +289,7 @@ export const getPrepaidClousing = async (
         totalPhysical: response.data.totalPhysical ?? 0,
         difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
-      lines: [] as PrepaidLineModel[],
+      lines: updateLines,
     };
 
     return data;

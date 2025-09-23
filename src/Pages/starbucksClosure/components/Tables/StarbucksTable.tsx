@@ -31,7 +31,7 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
         };
 
         fetchData();
-    }, []);
+    }, [headers, lines]);
 
     const openDialog = (item:StarbucksTableModel) => {
         setIsDialogOpen(true);

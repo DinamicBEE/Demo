@@ -79,8 +79,8 @@ export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
 // * Starbucks
-export const GET_STARBUCKSCDC = `${CRC_BASE}/starbucks/filters/cdc`;
-export const GET_STARBUCKSCLOUSING = `${CRC_BASE}/registerclosure/starbucks/search`;
+export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
+export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/search`;
 
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;

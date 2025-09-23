@@ -7,7 +7,7 @@ import { fetchAndSetData } from "../../utils/selectManagement";
 import { getCDCStarbucks, getStarbucksData } from "@services/starbucksService";
 import Loading from "@components/Loading";
 import StarbucksTable from "./components/Tables/StarbucksTable";
-import { StarbucksTableDataModel } from "@models/starbucks.model";
+import { StarbucksTableDataModel, StarbucksTableHeader } from "@models/starbucks.model";
 
 
 function StarbucksClosure() {
@@ -100,10 +100,23 @@ function StarbucksClosure() {
                             colorPalette="meraInfo"
                             alignSelf={"flex-end"}
                             onClick={async () => {
+                                setLoading(true)
                                 console.log("Searching with CDC:", selectedCDC, "Start Date:", startDate, "End Date:", endDate);
-                                const allData = await getStarbucksData()
-                                setData(allData);
-                                setShowTable(true);
+                                if(startDate == null || endDate == null) return
+                                const allData = await getStarbucksData(selectedCDC, startDate, endDate)
+                                console.log(allData)
+                                if(allData.lines &&  allData.lines.length>0) 
+                                {
+                                    setData(allData);
+                                    setShowTable(true);
+                                } 
+                                else {
+                                    setData({
+                                        headers: {} as StarbucksTableHeader,
+                                        lines: []
+                                    })
+                                }
+                                setLoading(false)
                             }}
                             disabled={
                                 selectedCDC !== 0 &&

@@ -1,52 +1,49 @@
 import { location } from "@models/common.model";
 import { StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
+import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
+import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING } from "./settings";
+import { formatToYYYYMMDD } from "@utils/dateFormatter";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
     // Simulate an API call to fetch Starbucks data
-    const response = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(cdcDummy);
-      }, 1000);
-    });
+    const response = await api.get(GET_STARBUCKSCDC);
 
-    return response as location[];
+    return response.data;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
     throw error;
   }
 }
 
-// export const getHeadersStarbucks = async (): Promise<StarbucksTableHeader> => {
-//   try {
-//     // Simulate an API call to fetch headers data
-//     const response = await new Promise((resolve) => {
-//       setTimeout(() => {
-//         resolve(headersDummy);
-//       }, 1000);
-//     });
-
-//     return response as StarbucksTableHeader;
-//   } catch (error) {
-//     console.error("Error fetching headers data:", error);
-//     throw error;
-//   };
-// };
-
-export const getStarbucksData = async (): Promise<StarbucksTableDataModel> => {
+export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: Date): Promise<StarbucksTableDataModel> => {
   try {
-    // Simulate an API call to fetch Starbucks data
+    const startFormatDate = formatToYYYYMMDD(startDate)
+    const endFormatDate = formatToYYYYMMDD(endDate)
     
-    const handleLines = dataDummy.map(line=> {
+    const response = await api.get(GET_STARBUCKSCLOUSING, {
+      params: {
+        consumeCenter:cdcId,
+        startDate: startFormatDate,
+        endDate: endFormatDate
+      }
+    })
+
+    console.log(response)
+    if(response.data.registerClosure<=0){
+      return {} as StarbucksTableDataModel
+    }
+
+    const handleLines = response.data.registerClosure.map((line:any)=> {
       return{
         id:line.id,
-        employee: line.employee,
+        employee: line.employe,
         status: getStatus(line.status),
-        date: line.date,
-        total: line.total,
+        date: line.creationDate,
+        total: line.totalPhysical,
         currencies: line.currencies,
-        creditCards: line.creditCards,
+        creditCards: line.tdc,
         cxc: line.cxc
       }
     })
@@ -54,17 +51,12 @@ export const getStarbucksData = async (): Promise<StarbucksTableDataModel> => {
     const allData:StarbucksTableDataModel = {
       lines:handleLines,
       headers:{
-        currencies: handleLines[0].currencies,
-        creditCards: handleLines[0].creditCards
+        currencies: handleLines[0].currencies || [],
+        creditCards: handleLines[0].creditCards || []
       }
     }
-    const response = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(allData);
-      }, 1000);
-    });
 
-    return response as StarbucksTableDataModel;
+    return allData as StarbucksTableDataModel;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
     throw error;
