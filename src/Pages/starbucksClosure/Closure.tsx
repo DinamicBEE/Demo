@@ -23,6 +23,7 @@ function StarbucksClosure() {
     const [startDate, endDate] = dateRange;
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [infoCDC, setInfoCDC] = useState<selectOption>({value: 0, label: ""})
   
     useEffect(() => {
         async function fetchData() {
@@ -42,6 +43,35 @@ function StarbucksClosure() {
         fetchData();
     }, 
     []);
+
+    async function getTableData() {
+      setLoading(true)
+      const cdcName = getCDCDetails(selectedCDC)
+      if(startDate == null || endDate == null) return
+      const allData = await getStarbucksData(selectedCDC, startDate, endDate)
+
+      if(allData.lines &&  allData.lines.length>0) 
+      {
+        const newLines = allData.lines.map( lines => {
+          return {...lines, cdc: cdcName}
+        });
+          allData.lines = newLines;
+          setData(allData);
+          setShowTable(true);
+      } 
+      else {
+          setData({
+              headers: {} as StarbucksTableHeader,
+              lines: []
+          })
+      }
+      setLoading(false)
+    }
+
+    function getCDCDetails(id: number) {
+        const foundItem = cdc.items.find((item) => item.value === id);
+        return foundItem ? foundItem.label : "";
+    }
 
     return (
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
@@ -99,25 +129,7 @@ function StarbucksClosure() {
                         <Button
                             colorPalette="meraInfo"
                             alignSelf={"flex-end"}
-                            onClick={async () => {
-                                setLoading(true)
-
-                                if(startDate == null || endDate == null) return
-                                const allData = await getStarbucksData(selectedCDC, startDate, endDate)
-
-                                if(allData.lines &&  allData.lines.length>0) 
-                                {
-                                    setData(allData);
-                                    setShowTable(true);
-                                } 
-                                else {
-                                    setData({
-                                        headers: {} as StarbucksTableHeader,
-                                        lines: []
-                                    })
-                                }
-                                setLoading(false)
-                            }}
+                            onClick={getTableData}
                             disabled={
                                 selectedCDC !== 0 &&
                                 startDate !== null &&

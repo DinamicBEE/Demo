@@ -17,6 +17,7 @@ export interface StarbucksTableDataModel {
 export interface StarbucksTableModel {
     id: number;
     employee: string;
+    cdc: string;
     status: STATUS;
     date: string;
     total: number;
