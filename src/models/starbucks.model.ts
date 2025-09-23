@@ -9,6 +9,11 @@ export interface SortableHeaderProps {
   textAlign?: "left" | "center" | "right";
 }
 
+export interface StarbucksTableDataModel {
+  headers: StarbucksTableHeader;
+  lines: StarbucksTableModel[];
+}
+
 export interface StarbucksTableModel {
     id: number;
     employee: string;

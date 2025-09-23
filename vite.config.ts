@@ -40,7 +40,7 @@ export default defineConfig({
       '@styles': path.resolve(__dirname, './src/styles'),
       '@hooks': path.resolve(__dirname, './src/hooks'),
       '@models': path.resolve(__dirname, './src/models'),
-      "@utils": path.resolve(__dirname, "./src/utils/*"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
     },
   },
 });

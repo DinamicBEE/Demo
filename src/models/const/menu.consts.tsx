@@ -12,5 +12,5 @@ export const menuItems = [
   { name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
-  //{ name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
 ];

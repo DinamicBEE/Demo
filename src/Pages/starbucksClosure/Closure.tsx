@@ -4,9 +4,10 @@ import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, Sele
 import { selectOption } from "@models/common.model";
 import DatePicker from "../LotClosure/components/DatePicker";
 import { fetchAndSetData } from "../../utils/selectManagement";
-import { getCDCStarbucks } from "@services/starbucksService";
+import { getCDCStarbucks, getStarbucksData } from "@services/starbucksService";
 import Loading from "@components/Loading";
 import StarbucksTable from "./components/Tables/StarbucksTable";
+import { StarbucksTableDataModel } from "@models/starbucks.model";
 
 
 function StarbucksClosure() {
@@ -18,6 +19,7 @@ function StarbucksClosure() {
         null,
         null,
     ]);
+    const [data, setData] = useState<StarbucksTableDataModel>({} as StarbucksTableDataModel)
     const [startDate, endDate] = dateRange;
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -97,11 +99,11 @@ function StarbucksClosure() {
                         <Button
                             colorPalette="meraInfo"
                             alignSelf={"flex-end"}
-                            onClick={() => {
-                                setLoading(true);
+                            onClick={async () => {
                                 console.log("Searching with CDC:", selectedCDC, "Start Date:", startDate, "End Date:", endDate);
+                                const allData = await getStarbucksData()
+                                setData(allData);
                                 setShowTable(true);
-                                setLoading(false);
                             }}
                             disabled={
                                 selectedCDC !== 0 &&
@@ -131,7 +133,7 @@ function StarbucksClosure() {
                 
                 <>
                 
-                    <StarbucksTable></StarbucksTable>
+                    <StarbucksTable headers={data.headers} lines={data.lines}></StarbucksTable>
             
                 </>
 

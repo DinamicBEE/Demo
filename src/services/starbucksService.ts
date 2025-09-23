@@ -1,5 +1,6 @@
 import { location } from "@models/common.model";
-import { StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
+import { StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
+import { getStatus } from "@utils/getStatus";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -17,32 +18,53 @@ export const getCDCStarbucks = async (): Promise<location[]> => {
   }
 }
 
-export const getHeadersStarbucks = async (): Promise<StarbucksTableHeader> => {
-  try {
-    // Simulate an API call to fetch headers data
-    const response = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(headersDummy);
-      }, 1000);
-    });
+// export const getHeadersStarbucks = async (): Promise<StarbucksTableHeader> => {
+//   try {
+//     // Simulate an API call to fetch headers data
+//     const response = await new Promise((resolve) => {
+//       setTimeout(() => {
+//         resolve(headersDummy);
+//       }, 1000);
+//     });
 
-    return response as StarbucksTableHeader;
-  } catch (error) {
-    console.error("Error fetching headers data:", error);
-    throw error;
-  };
-};
+//     return response as StarbucksTableHeader;
+//   } catch (error) {
+//     console.error("Error fetching headers data:", error);
+//     throw error;
+//   };
+// };
 
-export const getStarbucksData = async (): Promise<StarbucksTableModel[]> => {
+export const getStarbucksData = async (): Promise<StarbucksTableDataModel> => {
   try {
     // Simulate an API call to fetch Starbucks data
+    
+    const handleLines = dataDummy.map(line=> {
+      return{
+        id:line.id,
+        employee: line.employee,
+        status: getStatus(line.status),
+        date: line.date,
+        total: line.total,
+        currencies: line.currencies,
+        creditCards: line.creditCards,
+        cxc: line.cxc
+      }
+    })
+        
+    const allData:StarbucksTableDataModel = {
+      lines:handleLines,
+      headers:{
+        currencies: handleLines[0].currencies,
+        creditCards: handleLines[0].creditCards
+      }
+    }
     const response = await new Promise((resolve) => {
       setTimeout(() => {
-        resolve(dataDummy);
+        resolve(allData);
       }, 1000);
     });
 
-    return response as StarbucksTableModel[];
+    return response as StarbucksTableDataModel;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
     throw error;

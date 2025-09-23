@@ -10,12 +10,12 @@ const BATCH_BASE = `${CRC_BASE}/batchclosure`;
 const REPORT_BASE = `${CRC_BASE}/api/report`;
 const AUTH_BASE = `/auth/authentication/api`;
 
-/* LOGIN */
+// * LOGIN
 export const SIGNIN =  `${AUTH_BASE}/v1/auth/signin`;
 export const GETROLE = `${AUTH_BASE}/test/echo-role`;
 export const REFRESH = `${AUTH_BASE}/v1/auth/refresh`;
 
-/* CORTE DE CAJA */
+// * CORTE DE CAJA
 export const CLIENTSLIST = `${API_BASE}/clients/list`;
 export const CLIENTSPREPAY = `${API_BASE}/clients/clientPrepago`;
 export const GET_INTERCOMP_EMP_LIST = `/crc/cash-register-closure/crcproc/employees/employeeListInter`;
@@ -23,7 +23,7 @@ export const GET_SUBS_LIST = `${API_BASE}/subsidiaria/subEmploye`;
 export const SENDCASHCLOUSING = `${API_BASE}/closure/save`;
 //Cierrre de Lote
 export const ASSEMBLIESCONTROLLER_NS = `${API_BASE}/ns/assemblies`;
-/* Solicitudes de apertura */
+// * Solicitudes de apertura
 export const GETLISTAPPROVALS = `${API_BASE}/request`;
 export const SAVE_REQUEST = `${API_BASE}/reason/save`;
 export const UPDATE_REQUEST = `${API_BASE}/supervisor/request`;
@@ -50,7 +50,7 @@ export const GET_CLOUSINGS = `${API_BASE}/registerclosure/search`;
 export const GET_COUPONS = `${API_BASE}/prepaid/coupons`;
 export const GET_PREPAID = `${API_BASE}/prepaid/get`;
 export const GET_EXTRAINFO = `${API_BASE}/registerclosure/info-colum` // Descuentos y taxes de CRC
-//Cierrre de Lote
+// * Cierrre de Lote
 export const GET_BATCH = `${BATCH_BASE}/getBatchByDates`;
 export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchDetails`;
 export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatchClosure`;
@@ -77,6 +77,10 @@ export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
+
+// * Starbucks
+export const GET_STARBUCKSCDC = `${CRC_BASE}/starbucks/filters/cdc`;
+export const GET_STARBUCKSCLOUSING = `${CRC_BASE}/registerclosure/starbucks/search`;
 
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;
