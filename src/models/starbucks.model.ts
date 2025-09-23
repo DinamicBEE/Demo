@@ -36,6 +36,7 @@ export interface HeaderDetailsInfoModel {
   date: string;
   cdc: string;
   total: number;
+  totalPOS: number;
 }
 export interface CashStarbucksModel {
   id: number;
