@@ -101,10 +101,10 @@ function StarbucksClosure() {
                             alignSelf={"flex-end"}
                             onClick={async () => {
                                 setLoading(true)
-                                console.log("Searching with CDC:", selectedCDC, "Start Date:", startDate, "End Date:", endDate);
+
                                 if(startDate == null || endDate == null) return
                                 const allData = await getStarbucksData(selectedCDC, startDate, endDate)
-                                console.log(allData)
+
                                 if(allData.lines &&  allData.lines.length>0) 
                                 {
                                     setData(allData);

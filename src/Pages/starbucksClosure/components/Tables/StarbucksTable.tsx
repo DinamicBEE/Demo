@@ -1,7 +1,6 @@
 import { Box, FormatNumber, Table, Tag, Text } from "@chakra-ui/react";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
-import { getStarbucksData } from "@services/starbucksService";
 import { SortableHeader } from "../../../../utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
@@ -22,9 +21,8 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
     useEffect(() => {
         const fetchData = async () => {
           setLoading(true);
-            //const allData = await getStarbucksData()
-            const data = lines//allData.lines;
-            const header = headers//allData.headers;
+            const data = lines;
+            const header = headers;
             setTableHeaders(header);
             setStarbucksData(data);
           setLoading(false)
