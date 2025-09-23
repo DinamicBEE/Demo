@@ -1,16 +1,14 @@
 import { location } from "@models/common.model";
 import { StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
+import api from "../api/index";
+import { CDC_STARBUCKS } from "./settings";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
     // Simulate an API call to fetch Starbucks data
-    const response = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(cdcDummy);
-      }, 1000);
-    });
+    const response = await api.get(CDC_STARBUCKS);
 
-    return response as location[];
+    return response.data;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
     throw error;

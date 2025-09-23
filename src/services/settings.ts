@@ -78,5 +78,8 @@ export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
+/* STARBUCKS */
+export const CDC_STARBUCKS = `${API_BASE}/starbucks/filters/cdc`
+
 export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 export const MODE = import.meta.env.VITE_MODE;
