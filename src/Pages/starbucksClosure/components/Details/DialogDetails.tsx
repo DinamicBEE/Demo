@@ -36,7 +36,7 @@ import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 
-function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
+function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
   const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
@@ -55,7 +55,7 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
     async function fetchData() {
       setLoading(true);
 
-      const data = await getDetailStarbucks(1);
+      const data = await getDetailStarbucks(line);
       console.log(data);
       
       setGeneralData(data.data);
@@ -67,7 +67,7 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
     }
 
     fetchData();
-  }, []);
+  }, [line]);
 
   function openDialog(id: number, item: CashStarbucksModel) {
     setSelectedDenominatio({
@@ -327,8 +327,8 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
 
                     <Table.Body>
                       {cashRows.length > 0 &&
-                        cashRows.map((row: CashStarbucksModel) => (
-                          <Table.Row key={row.id}>
+                        cashRows.map((row: CashStarbucksModel, index:number) => (
+                          <Table.Row key={index}>
                             <Table.Cell textAlign="center">
                               <Text>{row.currency}</Text>
                             </Table.Cell>
@@ -419,8 +419,8 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
 
                     <Table.Body>
                       {tdcRows.length > 0 &&
-                        tdcRows.map((row: TDCStarbucksModel) => (
-                          <Table.Row key={row.id}>
+                        tdcRows.map((row: TDCStarbucksModel, index:number) => (
+                          <Table.Row key={index}>
                             <Table.Cell textAlign="center">
                               <Text>{row.nameBank}</Text>
                             </Table.Cell>
@@ -502,8 +502,8 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
 
                     <Table.Body>
                       {cxcRows.length > 0 &&
-                        cxcRows.map((row: CXCModel) => (
-                          <Table.Row key={row.id}>
+                        cxcRows.map((row: CXCModel, index:number) => (
+                          <Table.Row key={index}>
                             <Table.Cell textAlign="center">
                               <Text>
                                 {row.currency != "Total (MXN)"

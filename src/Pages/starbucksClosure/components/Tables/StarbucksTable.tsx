@@ -16,6 +16,7 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
     const [starbucksData, setStarbucksData] = useState<StarbucksTableModel[]>([]); 
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
     const { sortedData, handleSort, getSortIcon } = useSortableTable<StarbucksTableModel>(starbucksData);
+    const [selectedLine, setSelectedLine] = useState<StarbucksTableModel>({} as StarbucksTableModel)
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -32,12 +33,14 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
         fetchData();
     }, [headers, lines]);
 
-    const openDialog = (item:StarbucksTableModel) => {
+    const openDialog = (selectedLine:StarbucksTableModel) => {
+        setSelectedLine(selectedLine);
         setIsDialogOpen(true);
     };
 
     const closeDialog = () => {
         setIsDialogOpen(false);
+        setSelectedLine({} as StarbucksTableModel)
     };
 
     function statusColor(status: STATUS) {
@@ -147,11 +150,14 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
 
             </Box>
 
-            <DialogDetails
-                isOpen={isDialogOpen} 
-                onClose={closeDialog}
-            >
-            </DialogDetails>
+            {isDialogOpen  && 
+                (<DialogDetails
+                    isOpen={isDialogOpen} 
+                    line={selectedLine}
+                    onClose={closeDialog}
+                >
+                </DialogDetails>)
+            }
         </>
     );
 }

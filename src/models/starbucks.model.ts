@@ -37,6 +37,7 @@ export interface HeaderDetailsInfoModel {
   date: string;
   cdc: string;
   total: number;
+  totalPOS: number;
 }
 export interface CashStarbucksModel {
   id: number;
@@ -64,6 +65,7 @@ export interface StarbucksTableHeader {
 
 export interface StarbucksDetailsProps {
   isOpen: boolean;
+  line: StarbucksTableModel;
   onClose: () => void;
 }
 
