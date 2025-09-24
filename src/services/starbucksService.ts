@@ -1,5 +1,5 @@
 import { location } from "@models/common.model";
-import { CashStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow } from "@models/starbucks.model";
+import { CashStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
 import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL } from "./settings";
@@ -70,15 +70,16 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
         crcId: item.id
       }
     })
-
+    console.log(response)
     const cashTotal = response.data.cash.lines.reduce((acc:number, curr:any) => acc + curr.totalFisico, 0);
     const creditCardTotal = response.data.tdc.lines.reduce((acc:number, curr:any) => acc + curr.physical, 0);
+    
     const cxcTotal = cxcData.reduce((acc, curr) => acc + curr.originalCurrency, 0); // TODO DATA FALTANTE
     const total =  cashTotal + creditCardTotal + cxcTotal;
 
-    let cashDataDummy: CashStarbucksModel[] = response.data.cash.lines.map((item:any)=> {
+    let cashDataDummy: CashStarbucksModel[] = response.data.cash.lines.map((item:any) => {
       return {
-        id: item.id, //TODO validar si es null
+        id: item.id,
         currency: item.currency,
         total: item.totalFisico,
         exchangeRate: item.exchangeRate,
@@ -92,7 +93,7 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       }
     });
     cashDataDummy.push({
-      id: 6,
+      id: cashDataDummy.length + 1,
       currency: "Total (MXN)",
       total: cashTotal,
       exchangeRate: 0,  
@@ -100,17 +101,17 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       denominations: []
     });
 
-    // const cashDataPipe = cashDataDummy.map((item) => ({
-    //   ...item,
-    //   denominations: item.denominations.map((denomination) => ({
-    //     ...denomination,
-    //     subtotal: denomination.denomination.toLowerCase() === "cambio" ? denomination.amount : denomination.amount * parseFloat(denomination.denomination),
-    //   }))
-    // }))
-
-    let creditCardDataDummy = [...creditCardData];
+    let creditCardDataDummy: TDCStarbucksModel[] = response.data.tdc.lines.map((item:any) => {
+      return {
+        id: item.id,
+        nameBank: item.bank,
+        total: item.physical,
+        exchangeRate: item.exchangeRate,
+        originalCurrency: item.total * item.exchangeRate
+      }
+    });
     creditCardDataDummy.push({
-      id: 6,
+      id: creditCardDataDummy.length + 1,
       nameBank: "Total (MXN)",
       total: 0,
       exchangeRate: 0,
@@ -126,8 +127,8 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       originalCurrency: cxcTotal,
     });
     const header: HeaderDetailsInfoModel = {
-      date: "2024-04-01",
-      cdc: "Sucursal A",
+      date: item.date,
+      cdc: item.cdc,
       total: total,
       totalPOS: response.data.total,
     }

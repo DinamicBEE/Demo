@@ -36,7 +36,7 @@ import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 
-function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
+function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
   const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
@@ -55,7 +55,7 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
     async function fetchData() {
       setLoading(true);
 
-      const data = await getDetailStarbucks(1);
+      const data = await getDetailStarbucks(line);
       console.log(data);
       
       setGeneralData(data.data);
@@ -67,7 +67,7 @@ function DialogDetails({ isOpen, onClose }: StarbucksDetailsProps) {
     }
 
     fetchData();
-  }, []);
+  }, [line]);
 
   function openDialog(id: number, item: CashStarbucksModel) {
     setSelectedDenominatio({

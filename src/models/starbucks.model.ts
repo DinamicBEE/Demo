@@ -17,6 +17,7 @@ export interface StarbucksTableDataModel {
 export interface StarbucksTableModel {
     id: number;
     employee: string;
+    cdc: string;
     status: STATUS;
     date: string;
     total: number;
@@ -64,6 +65,7 @@ export interface StarbucksTableHeader {
 
 export interface StarbucksDetailsProps {
   isOpen: boolean;
+  line: StarbucksTableModel;
   onClose: () => void;
 }
 
