@@ -7,6 +7,7 @@ import DialogDetails from "../Details/DialogDetails";
 import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../../utils/getStatusColor";
+import { formatToDDMMYYYY } from "@utils/dateFormatter";
 
 
 
@@ -92,8 +93,15 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
                                         <Tag.Label>{item.status}</Tag.Label>
                                       </Tag.Root>
                                     </Table.Cell>
-                                    <Table.Cell textAlign="center">{item.date}</Table.Cell>
-                                    <Table.Cell textAlign="center">{item.total}</Table.Cell>
+                                    <Table.Cell textAlign="center">{formatToDDMMYYYY(new Date(item.date))}</Table.Cell>
+                                    <Table.Cell textAlign="center">
+                                      <FormatNumber 
+                                        value={item.total}
+                                        style="currency"
+                                        currency="USD"
+                                      />
+                                      
+                                    </Table.Cell>
                                     {
                                         tableHeaders.currencies.length > 0 &&
                                         item.currencies.length > 0 &&
