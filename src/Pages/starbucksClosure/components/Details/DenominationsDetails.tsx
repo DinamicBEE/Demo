@@ -11,7 +11,8 @@ function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: Denomina
     const [denominationsRef, setDenominationsRef] = useState<DenominationsModel[]>([] as DenominationsModel[]); 
 
     useEffect(() => {
-
+      console.log(denominations);
+      
         setDenominationsRef(denominations.denominations);
 
     }, []);
@@ -21,23 +22,24 @@ function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: Denomina
             currencyId: denominations.currencyId,
             denominations: denominationsRef
         }
-
+        
         onSave(newDenominations);
         onClose();
     }
 
     const handleChangeAmount = (index: number, value:number) => {
 
-        const updated = denominationsRef.map((denomination:DenominationsModel) => {
-            return denomination.id === index ?
+        const updated = denominationsRef.map((denomination:DenominationsModel, i) => {
+            return i === index ?
                 { 
                     ...denomination, 
                     amount: value, 
-                    subtotal: denomination.denomination.toLowerCase() === "cambio" ? value :  Number(denomination.denomination) * value  
+                    subtotal: denomination.denomination.toLowerCase() === "cambio"
+                      ? value
+                      :  Number(denomination.denomination) * value  
                 }
                 : denomination;
-        });
-
+        });                
         setDenominationsRef(updated);
 
     }
@@ -72,14 +74,14 @@ function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: Denomina
                             </Table.Header>
 
                             <Table.Body>
-                                {denominationsRef?.map((denomination) => (
-                                    <Table.Row key={denomination.id}>
+                                {denominationsRef?.map((denomination, index) => (
+                                    <Table.Row key={index}>
                                         <Table.Cell>{denomination.denomination}</Table.Cell>
                                         <Table.Cell>
                                             <CurrencyInputNumber 
                                                 loading={false}
                                                 value={denomination.amount}
-                                                onChange={(value) => handleChangeAmount(denomination.id, parseFloat(String(value ?? "0")))}
+                                                onChange={(value) => handleChangeAmount(index, parseFloat(String(value ?? "0")))}
                                                 allowDecimals={denomination.denomination === 'Cambio' ? true : false}
                                             />
                                         </Table.Cell>

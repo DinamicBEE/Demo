@@ -83,6 +83,7 @@ export interface DenominationsPropModel{
 
 export interface DenominationsModel {
   id: number;
+  idDenomination: number;
   denomination: string;
   amount: number;
   subtotal: number;

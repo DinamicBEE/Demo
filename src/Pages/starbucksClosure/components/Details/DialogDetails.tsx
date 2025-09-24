@@ -83,8 +83,9 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   }
 
   function onSaveDenominations(denominations: DenominationsPropModel) {
-    const updatedCashRows = cashRows.map((row: CashStarbucksModel) => {
-      if (row.id === denominations.currencyId) {
+    
+    const updatedCashRows = cashRows.map((row: CashStarbucksModel, index: number) => {
+      if (index === denominations.currencyId) {
         const newTotal = denominations.denominations.reduce(
           (acc, denom) => acc + denom.subtotal,
           0
@@ -97,16 +98,15 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
             row.currency === "MXN" ? newTotal : newTotal * row.exchangeRate,
           originalCurrency: newTotal,
         };
-      }
+      }      
       return row;
     });
-
     const totalCash = updatedCashRows.reduce(
-      (acc, row) => (row.currency != "Total" ? acc + row.total : acc),
+      (acc, row) => (row.currency != "Total (MXN)" ? acc + row.total : acc),
       0
     );
     const newChashRows = updatedCashRows.map((row) =>
-      row.currency != "Total"
+      row.currency != "Total (MXN)"
         ? row
         : {
             ...row,
@@ -114,7 +114,6 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
             total: totalCash,
           }
     );
-
     setCashRows(newChashRows);
     onCloseDenominations();
   }
@@ -127,6 +126,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
       ),
     [cashRows]
   );
+ 
 
   const totalTDC = useMemo(
     () =>
@@ -292,7 +292,21 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
               <GridItem colSpan={1}>
                 <CurrencyInput
                   value={generalData.total | 0}
-                  name={"Total"}
+                  name={"Total Físico"}
+                  loading={false}
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <CurrencyInput
+                  value={generalData.totalPOS | 0}
+                  name={"Total POS"}
+                  loading={false}
+                />
+              </GridItem>
+              <GridItem colSpan={1}>
+                <CurrencyInput
+                  value={(generalData.total | 0) - (generalData.totalPOS | 0)}
+                  name={"Diferencia"}
                   loading={false}
                 />
               </GridItem>
@@ -349,7 +363,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                                   </Text>
 
                                   <Button
-                                    onClick={() => openDialog(row.id, row)}
+                                    onClick={() => openDialog(index, row)}
                                   >
                                     <CiSquarePlus />
                                   </Button>

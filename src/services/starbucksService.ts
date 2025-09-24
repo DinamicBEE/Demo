@@ -107,7 +107,7 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
         nameBank: item.bank,
         total: item.physical,
         exchangeRate: item.exchangeRate,
-        originalCurrency: item.total * item.exchangeRate
+        originalCurrency: item.physical * item.exchangeRate
       }
     });
     creditCardDataDummy.push({
