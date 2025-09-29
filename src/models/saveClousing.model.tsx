@@ -21,7 +21,7 @@ interface CashLine extends LineBase {
   exchangeRate: number;
   originalCurrency: number;
   idCurrency: number;
-  denomination: denomination[];
+  denominations: denomination[];
 }
 
 interface denomination {

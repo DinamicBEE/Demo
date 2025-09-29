@@ -2,8 +2,9 @@ import { location } from "@models/common.model";
 import { CashStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL } from "./settings";
+import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
+import { ClousingSave } from "@models/saveClousing.model";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -39,7 +40,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         id:line.crcId,
         employee: line.employe,
         status: getStatus(line.status),
-        date: line.creationDate,
+        date: line.closingStartDate,
         total: line.totalPhysical,
         currencies: line.currencies,
         creditCards: line.tdc,
@@ -62,12 +63,12 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
   }
 }
 
-export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<StarbucksTableRow> => {
+export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<StarbucksTableRow> => {
   try {
 
     const response = await api.get(GET_STARBUCKSDETAIL, {
       params: {
-        crcId: item.id
+        crcId: line.id
       }
     })
     console.log(response)
@@ -81,9 +82,11 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       return {
         id: item.id,
         currency: item.currency,
+        idCurrency: item.idCurrency,
         total: item.totalFisico,
         exchangeRate: item.exchangeRate,
         originalCurrency: item.originalCurrency,
+        isOpen: line.status === "Abierto" ? true : false,
         denominations: item.denominations.map((denomination:any) =>{
           return {
             ...denomination,
@@ -96,8 +99,10 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       id: cashDataDummy.length + 1,
       currency: "Total (MXN)",
       total: cashTotal,
+      idCurrency: 0,
       exchangeRate: 0,  
       originalCurrency: 0,
+      isOpen: line.status === "Abierto" ? true : false,
       denominations: []
     });
 
@@ -105,17 +110,23 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       return {
         id: item.id,
         nameBank: item.bank,
+        idBank: item.idBank,
         total: item.physical,
         exchangeRate: item.exchangeRate,
-        originalCurrency: item.physical * item.exchangeRate
+        isOpen: line.status === "Abierto" ? true : false,
+        originalCurrency: item.physical * item.exchangeRate,
+        voucher: item.vouchers
       }
     });
     creditCardDataDummy.push({
       id: creditCardDataDummy.length + 1,
       nameBank: "Total (MXN)",
+      idBank: 0,
       total: 0,
       exchangeRate: 0,
+      isOpen: line.status === "Abierto" ? true : false,
       originalCurrency: creditCardTotal,
+      voucher: []
     });
 
     let cxcDataDummy = [...cxcData];
@@ -124,11 +135,12 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
       currency: "Total (MXN)",
       total: 0,
       exchangeRate: 0,
+      isOpen: line.status === "Abierto" ? true : false,
       originalCurrency: cxcTotal,
     });
     const header: HeaderDetailsInfoModel = {
-      date: item.date,
-      cdc: item.cdc,
+      date: line.date,
+      cdc: line.cdc,
       total: total,
       totalPOS: response.data.total,
     }
@@ -148,386 +160,110 @@ export const getDetailStarbucks = async (item: StarbucksTableModel): Promise<Sta
 
 }
 
-// export const dataDummy = [
-//   {
-//     id: 1,
-//     employee: "Juan Pérez",
-//     status: "Activo",
-//     date: "2023-05-15",
-//     total: 12500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 8500 },
-//       { id: 2, symbol: "USD", total: 2000 },
-//       { id: 3, symbol: "EUR", total: 1500 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 3000 },
-//       { nameBank: "Santander", total: 2500 },
-//       { nameBank: "Bancomer", total: 4000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 2,
-//     employee: "María García",
-//     status: "Inactivo",
-//     date: "2023-06-20",
-//     total: 18000,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 12000 },
-//       { id: 2, symbol: "USD", total: 3000 },
-//       { id: 3, symbol: "EUR", total: 2000 },
-//       { id: 4, symbol: "LIB", total: 1000 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 5000 },
-//       { nameBank: "Santander", total: 4000 },
-//       { nameBank: "Bancomer", total: 6000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 3,
-//     employee: "Carlos López",
-//     status: "Activo",
-//     date: "2023-07-10",
-//     total: 9500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 6500 },
-//       { id: 2, symbol: "USD", total: 1500 },
-//       { id: 3, symbol: "EUR", total: 1000 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 2000 },
-//       { nameBank: "Santander", total: 2000 },
-//       { nameBank: "Bancomer", total: 3000 },
-//       { nameBank: "Banamex", total: 2500 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 4,
-//     employee: "Ana Martínez",
-//     status: "Activo",
-//     date: "2023-08-05",
-//     total: 21000,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 15000 },
-//       { id: 2, symbol: "USD", total: 3000 },
-//       { id: 3, symbol: "EUR", total: 2000 },
-//       { id: 4, symbol: "LIB", total: 1000 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 6000 },
-//       { nameBank: "Santander", total: 5000 },
-//       { nameBank: "Bancomer", total: 7000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 5,
-//     employee: "Luis Rodríguez",
-//     status: "Inactivo",
-//     date: "2023-09-12",
-//     total: 7500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 5000 },
-//       { id: 2, symbol: "USD", total: 1200 },
-//       { id: 3, symbol: "EUR", total: 800 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 1500 },
-//       { nameBank: "Santander", total: 1500 },
-//       { nameBank: "Bancomer", total: 2500 },
-//       { nameBank: "Banamex", total: 2000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 6,
-//     employee: "Sofía Hernández",
-//     status: "Activo",
-//     date: "2023-10-18",
-//     total: 16000,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 11000 },
-//       { id: 2, symbol: "USD", total: 2500 },
-//       { id: 3, symbol: "EUR", total: 1500 },
-//       { id: 4, symbol: "LIB", total: 1000 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 4000 },
-//       { nameBank: "Santander", total: 3500 },
-//       { nameBank: "Bancomer", total: 5000 },
-//       { nameBank: "Banamex", total: 3500 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 7,
-//     employee: "Jorge González",
-//     status: "Activo",
-//     date: "2023-11-22",
-//     total: 13500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 9000 },
-//       { id: 2, symbol: "USD", total: 2200 },
-//       { id: 3, symbol: "EUR", total: 1500 },
-//       { id: 4, symbol: "LIB", total: 800 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 3500 },
-//       { nameBank: "Santander", total: 3000 },
-//       { nameBank: "Bancomer", total: 4000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 8,
-//     employee: "Patricia Díaz",
-//     status: "Inactivo",
-//     date: "2023-12-05",
-//     total: 11000,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 7500 },
-//       { id: 2, symbol: "USD", total: 1800 },
-//       { id: 3, symbol: "EUR", total: 1200 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 2500 },
-//       { nameBank: "Santander", total: 2000 },
-//       { nameBank: "Bancomer", total: 3500 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 9,
-//     employee: "Fernando Sánchez",
-//     status: "Activo",
-//     date: "2024-01-15",
-//     total: 19500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 13500 },
-//       { id: 2, symbol: "USD", total: 3000 },
-//       { id: 3, symbol: "EUR", total: 2000 },
-//       { id: 4, symbol: "LIB", total: 1000 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 5500 },
-//       { nameBank: "Santander", total: 4500 },
-//       { nameBank: "Bancomer", total: 6000 },
-//       { nameBank: "Banamex", total: 3500 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 10,
-//     employee: "Gabriela Ramírez",
-//     status: "Activo",
-//     date: "2024-02-20",
-//     total: 8200,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 5500 },
-//       { id: 2, symbol: "USD", total: 1300 },
-//       { id: 3, symbol: "EUR", total: 900 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 1800 },
-//       { nameBank: "Santander", total: 1700 },
-//       { nameBank: "Bancomer", total: 2500 },
-//       { nameBank: "Banamex", total: 2200 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 11,
-//     employee: "Roberto Morales",
-//     status: "Inactivo",
-//     date: "2024-03-10",
-//     total: 14700,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 10000 },
-//       { id: 2, symbol: "USD", total: 2400 },
-//       { id: 3, symbol: "EUR", total: 1600 },
-//       { id: 4, symbol: "LIB", total: 700 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 3800 },
-//       { nameBank: "Santander", total: 3200 },
-//       { nameBank: "Bancomer", total: 4500 },
-//       { nameBank: "Banamex", total: 3200 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 12,
-//     employee: "Lucía Vargas",
-//     status: "Activo",
-//     date: "2024-04-15",
-//     total: 23000,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 16000 },
-//       { id: 2, symbol: "USD", total: 3500 },
-//       { id: 3, symbol: "EUR", total: 2500 },
-//       { id: 4, symbol: "LIB", total: 1000 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 6500 },
-//       { nameBank: "Santander", total: 5500 },
-//       { nameBank: "Bancomer", total: 7500 },
-//       { nameBank: "Banamex", total: 3500 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 13,
-//     employee: "Miguel Torres",
-//     status: "Activo",
-//     date: "2024-05-18",
-//     total: 10200,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 7000 },
-//       { id: 2, symbol: "USD", total: 1600 },
-//       { id: 3, symbol: "EUR", total: 1100 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 2200 },
-//       { nameBank: "Santander", total: 2000 },
-//       { nameBank: "Bancomer", total: 3000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 14,
-//     employee: "Alejandra Cruz",
-//     status: "Inactivo",
-//     date: "2024-06-22",
-//     total: 17500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 12000 },
-//       { id: 2, symbol: "USD", total: 2800 },
-//       { id: 3, symbol: "EUR", total: 1900 },
-//       { id: 4, symbol: "LIB", total: 800 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 4500 },
-//       { nameBank: "Santander", total: 4000 },
-//       { nameBank: "Bancomer", total: 5500 },
-//       { nameBank: "Banamex", total: 3500 },
-//     ],
-//     cxc: 0,
-//   },
-//   {
-//     id: 15,
-//     employee: "Ricardo Ortega",
-//     status: "Activo",
-//     date: "2024-07-30",
-//     total: 12500,
-//     currencies: [
-//       { id: 1, symbol: "MXN", total: 8500 },
-//       { id: 2, symbol: "USD", total: 2000 },
-//       { id: 3, symbol: "EUR", total: 1500 },
-//       { id: 4, symbol: "LIB", total: 500 },
-//       { id: 5, symbol: "CAN", total: 0 },
-//     ],
-//     creditCards: [
-//       { nameBank: "Amexo", total: 3000 },
-//       { nameBank: "Santander", total: 2500 },
-//       { nameBank: "Bancomer", total: 4000 },
-//       { nameBank: "Banamex", total: 3000 },
-//     ],
-//     cxc: 0,
-//   },
-// ];
+export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{
 
+  const totals = {
+    totalPOS: 0,
+    totalPhysical: 0,
+    difference: 0,
+  }
 
-// export const cdcDummy = [
-//   { id: 1, name: "Sucursal A" },
-//   { id: 2, name: "Sucursal B" },
-//   { id: 3, name: "Sucursal C" },
-//   { id: 4, name: "Sucursal D" },
-//   { id: 5, name: "Sucursal E" },
-// ]
+  const body: ClousingSave ={
+    id: clousingId,
+    discountPhysical: 0,
+    prepaid: {
+      lines:[],
+      total: totals
+    },
+    employee: {
+      lines:[],
+      total: totals
+    },
+    specialCustomer: {
+      lines:[],
+      total: totals
+    },
+    intercompany: {
+      lines:[],
+      total: totals
+    },
+    customer: {
+      lines:[],
+      total: totals
+    },
+    cash: {
+      idCurrencySub: 5,
+      electronicTips: 0,
+      tips: 0,
+      total:{
+        totalPhysical: data.cash.reduce((acc, row) =>(acc+row.total),0),
+        totalPOS: data.cash.reduce((acc, row) =>(acc+row.total),0),
+        difference: 0
+      },
+      lines: data.cash.map(line => {
+        return {
+          id: line.id,
+          currency: line.currency,
+          exchangeRate: line.exchangeRate,
+          originalCurrency: line.originalCurrency,
+          denominations: line.denominations.map((d:any) => ({
+            id: d.id ?? 0,
+            idDenomination: d.idDenomination ?? 0,
+            denomination: isNaN(Number(d.denomination)) ? 0 : Number(d.denomination),
+            amount: d.amount,
+            //subtotal: d.subtotal
+          })),
+          idCurrency: 1,
+          totalFisico: line.total,
+          totalPOS: line.total,
+          difference: 0
+        }
+      })
+    },
+    tdc:{
+      idCurrencySub: 5,
+      total:{
+        totalPhysical: data.tdc.reduce((acc, row) =>(acc+row.total),0),
+        totalPOS: data.tdc.reduce((acc, row) =>(acc+row.total),0),
+        difference: 0
+      },
+      lines: data.tdc.map(line => {
+        return {
+          id: line.id,
+          bank: line.nameBank,
+          idBank: line.idBank,
+          POS: line.total,
+          physical: line.total,
+          voucherAmount: line.voucher.length,
+          vouchers: line.voucher
+        }
+      })
+    },
+    currencies: data.cash.map(line => ({
+      id: line.idCurrency,
+      symbol: line.currency,
+      total: line.total,
+    })),
+  }
 
-// export const headersDummy = {
-//   currencies:[
-//     { id: 1, symbol: "MXN", total: 0 },
-//     { id: 2, symbol: "USD", total: 0 },
-//     { id: 3, symbol: "EUR", total: 0 },
-//     { id: 4, symbol: "LIB", total: 0 },
-//     { id: 5, symbol: "CAN", total: 0 }
-//   ],
-//   creditCards: [
-//     { nameBank: "Amexo", total: 0 },
-//     { nameBank: "Santander", total: 0 },
-//     { nameBank: "Bancomer", total: 0 },
-//     { nameBank: "Banamex", total: 0 },
-//   ]
-// };
+  const response = await api.post(
+    SENDCASHCLOUSING,
+    body,
+    {
+      params: {
+        isPreguardado: isConfirm
+      }
+    }
+  );
 
-export const creditCardData = [
-  {
-    id: 1,
-    nameBank: "Amexo - MXN",
-    total: 0,
-    exchangeRate: 1,
-    originalCurrency: 0,
-  },
-  {
-    id: 2,
-    nameBank: "Santander - MXN",
-    total: 0,
-    exchangeRate: 1,
-    originalCurrency: 0,
-  },
-  {
-    id: 3,
-    nameBank: "Bancomer - USD",
-    total: 0,
-    exchangeRate: 18,
-    originalCurrency: 0,
-  },
-  {
-    id: 4,
-    nameBank: "Bancomer - MXN",
-    total: 0,
-    exchangeRate: 1,
-    originalCurrency: 0,
-  },
-  {
-    id: 5,
-    nameBank: "Banamex - MXN",
-    total: 0,
-    exchangeRate: 1,
-    originalCurrency: 0,
-  },
-]
+  // Simulate async response and ensure the function returns a Promise<string>
+  // return await new Promise<string>((resolve) => {
+  //   setTimeout(() => resolve("response"), 2000);
+  // });
+
+  return response.data;
+
+}
 
 export const cxcData = [
   {
@@ -535,6 +271,7 @@ export const cxcData = [
     currency: "MXN",
     total: 0,
     exchangeRate: 1,
+    isOpen: false,
     originalCurrency: 0,
   },
   {
@@ -542,59 +279,7 @@ export const cxcData = [
     currency: "USD",
     total: 0,
     exchangeRate: 18,
+    isOpen: false,
     originalCurrency: 0,
   }
 ]
-
-// export const denominationsData = [
-//   {
-//     id: 1,
-//     idDenomination: 1,
-//     denomination: "1000.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 2,
-//     idDenomination: 2,
-//     denomination: "500.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 3,
-//     idDenomination: 3,
-//     denomination: "200.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 4,
-//     idDenomination: 4,
-//     denomination: "100.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 5,
-//     idDenomination: 5,
-//     denomination: "50.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 6,
-//     idDenomination: 6,
-//     denomination: "20.00",
-//     amount: 0,
-//   },
-//   {
-//     id: 7,
-//     idDenomination: 7,
-//     denomination: "Cambio",
-//     amount: 0,
-//   }
-// ];
-
-// export const cashData =[
-//   {id:1, currency: "MXN", total: 0, exchangeRate: 1, originalCurrency: 0, denominations: denominationsData},
-//   {id:2, currency: "USD", total: 0, exchangeRate: 17, originalCurrency: 0, denominations: denominationsData},
-//   {id:3, currency: "EUR", total: 0, exchangeRate: 18, originalCurrency: 0, denominations: denominationsData},
-//   {id:4, currency: "LIB", total: 0, exchangeRate: 16.83, originalCurrency: 0, denominations: denominationsData},
-//   {id:5, currency: "CAN", total: 0, exchangeRate: 12, originalCurrency: 0, denominations: denominationsData},
-// ]

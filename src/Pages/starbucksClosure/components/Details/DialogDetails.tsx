@@ -15,6 +15,7 @@ import {
   DenominationsPropModel,
   HeaderDetailsInfoModel,
   StarbucksDetailsProps,
+  StarbucksTableRow,
   TDCStarbucksModel,
 } from "@models/starbucks.model";
 import {
@@ -30,11 +31,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
-import { getDetailStarbucks } from "@services/starbucksService";
+import { getDetailStarbucks, saveStarbucksClousing } from "@services/starbucksService";
 import { CiSquarePlus } from "react-icons/ci";
 import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
+import Loading from "@components/Loading";
 
 function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
@@ -46,14 +48,14 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   const [selectedDenomination, setSelectedDenominatio] =
     useState<DenominationsPropModel>({} as DenominationsPropModel);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [openDialogExit, setOpenDialogExit] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const [isConfirm, setIsConfirm] = useState(false);
+  const [openDialogExit, setOpenDialogExit] = useState<boolean>(false);
+  const [dialogLoading, setDialogLoading] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchData() {
-      setLoading(true);
+      setDialogLoading(true);
 
       const data = await getDetailStarbucks(line);
       console.log(data);
@@ -63,7 +65,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
       setTdcRows(data.tdc);
       setCxcRows(data.cxc);
 
-      setLoading(false);
+      setDialogLoading(false);
     }
 
     fetchData();
@@ -241,7 +243,28 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   }
 
   async function sendClousing(isConfirm: boolean) {
-    onClose();
+    setDialogLoading(true);
+
+    const cashTotalIndex = cashRows.findIndex(row => row.currency === "Total (MXN)");
+    const tdcTotalIndex = tdcRows.findIndex(row => row.nameBank === "Total (MXN)");
+    const cxcTotalIndex = cxcRows.findIndex(row => row.currency === "Total (MXN)");
+    
+    cashRows.splice(cashTotalIndex, 1);
+    tdcRows.splice(tdcTotalIndex, 1);
+    cxcRows.splice(cxcTotalIndex, 1);
+    
+    const body:StarbucksTableRow = {
+      data: generalData,
+      cash: cashRows,
+      tdc: tdcRows,
+      cxc: cxcRows
+    }
+    console.log(body);
+    const response = await saveStarbucksClousing(line.id, body, isConfirm);
+    if (response === "response") {
+      onClose(true);
+    }
+    setDialogLoading(false);
     setButtonLoading(false);
   }
 
@@ -362,7 +385,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                                     />
                                   </Text>
 
-                                  <Button
+                                  <Button disabled={!row.isOpen}
                                     onClick={() => openDialog(index, row)}
                                   >
                                     <CiSquarePlus />
@@ -442,6 +465,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                               <Text>
                                 {row.nameBank != "Total (MXN)" ? (
                                   <TableInput
+                                    disabled={!row.isOpen}
                                     value={row.total}
                                     id={row.id}
                                     currency={true}
@@ -470,6 +494,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                               <Text textAlign={row.nameBank != "Total (MXN)" ? "center": "right"}>
                                 {row.nameBank != "Total (MXN)" ? (
                                   <TableInput
+                                    disabled={!row.isOpen}
                                     value={row.originalCurrency}
                                     id={row.id}
                                     currency={true}
@@ -529,6 +554,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                               <Text>
                                 {row.currency != "Total (MXN)" ? (
                                   <TableInput
+                                    disabled={!row.isOpen}
                                     value={row.total}
                                     id={row.id}
                                     currency={true}
@@ -557,6 +583,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                               <Text textAlign={row.currency != "Total (MXN)" ? "center": "right"}>
                                 {row.currency != "Total (MXN)" ? (
                                   <TableInput
+                                    disabled={!row.isOpen}
                                     value={row.originalCurrency}
                                     id={row.id}
                                     currency={true}
@@ -631,7 +658,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
         }}
         closeOnExit={() => {
           setOpenDialogExit(false);
-          onClose();
+          onClose(false);
         }}
         isOpen={openDialogExit}
       ></ExitDialog>
@@ -642,6 +669,13 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
         sendData={sendClousing}
         isConfirm={isConfirm}
       />
+
+      {dialogLoading && (
+          <Box position="fixed" top="50%" left="50%" zIndex={1600}>
+              <Loading />
+          </Box>
+        )
+      }
     </Box>
   );
 }

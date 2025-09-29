@@ -1,6 +1,6 @@
 import { Box, FormatNumber, Table, Tag, Text } from "@chakra-ui/react";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
-import { StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
+import { PropDialogStarbucksTable, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
 import { SortableHeader } from "../../../../utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
@@ -11,7 +11,7 @@ import { formatToDDMMYYYY } from "@utils/dateFormatter";
 
 
 
-function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
+function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable) {
 
     const [starbucksData, setStarbucksData] = useState<StarbucksTableModel[]>([]); 
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
@@ -38,7 +38,10 @@ function StarbucksTable({headers, lines}:StarbucksTableDataModel) {
         setIsDialogOpen(true);
     };
 
-    const closeDialog = () => {
+    const closeDialog = (isConfirm:boolean) => {
+        if(isConfirm){
+            getTableData();
+        }
         setIsDialogOpen(false);
         setSelectedLine({} as StarbucksTableModel)
     };

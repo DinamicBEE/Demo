@@ -1,5 +1,6 @@
 import { Currency, TDC } from "./common.clousing.model";
 import { STATUS } from "./status.model";
+import { Voucher } from "./tdc.model";
 
 export interface SortableHeaderProps {
   columnKey: string;
@@ -12,6 +13,10 @@ export interface SortableHeaderProps {
 export interface StarbucksTableDataModel {
   headers: StarbucksTableHeader;
   lines: StarbucksTableModel[];
+}
+
+export interface PropDialogStarbucksTable extends StarbucksTableDataModel {
+  getTableData(): void;
 }
 
 export interface StarbucksTableModel {
@@ -42,21 +47,26 @@ export interface HeaderDetailsInfoModel {
 export interface CashStarbucksModel {
   id: number;
   currency: string;
+  idCurrency: number
   total: number;
   exchangeRate: number;
   originalCurrency: number;
+  isOpen: boolean;
   denominations: DenominationsModel[];
 }
 
 export interface TDCStarbucksModel {
   id: number;
   nameBank: string;
+  idBank: number;
   total: number;
   exchangeRate: number;
   originalCurrency: number;
+  isOpen: boolean;
+  voucher: Voucher[]
 }
 
-export interface CXCModel extends Omit<CashStarbucksModel, 'denominations'> {}
+export interface CXCModel extends Omit<CashStarbucksModel, 'denominations' | 'idCurrency'> {}
 
 export interface StarbucksTableHeader {
   currencies: Currency[];
@@ -66,7 +76,7 @@ export interface StarbucksTableHeader {
 export interface StarbucksDetailsProps {
   isOpen: boolean;
   line: StarbucksTableModel;
-  onClose: () => void;
+  onClose: (isConfirm:boolean) => void;
 }
 
 export interface DenominationsDetaislProps {
