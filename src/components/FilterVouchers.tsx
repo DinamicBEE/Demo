@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { HtmlHTMLAttributes, useEffect, useRef, useState } from "react";
 import { Box, createListCollection, ListCollection, Portal, Select, Span, Stack } from "@chakra-ui/react";
 import { VoucherFilter, voucherSelectOption } from "@models/tdc.model";
 
@@ -32,23 +32,25 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
     setFilteredVouchers(voucherCollection);
   }, [vouchers]);
 
-  function handleSearch(event: string) {    
-    if (event.toLowerCase() === "enter" && searchRef.current.length >= 1) {
-      if (filteredVouchers.items.length > 0) {
+  function handleSearch(event: string) {     
+    const key = event.toLowerCase();
+
+    if (key === "enter" && searchRef.current.length >= 1) {
+      if (filteredVouchers.items.length > 0) {        
         const firstVoucher = filteredVouchers.items[0];
         const selectEvent = {
           value: [firstVoucher.value],
         };
-        handleSelect(selectEvent);
+        handleSelect(selectEvent.value[0]);
       }
       return;
     }
     
     let query: string = "";
-    if (event.toLowerCase() === "backspace") {
+    if (key === "backspace") {
       query = searchRef.current.slice(0, -1);
     } else if (event.length == 1) {
-      query = searchRef.current + event.toLowerCase();
+      query = searchRef.current + key;
     } else {
       query = searchRef.current;
     }
@@ -84,13 +86,13 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
     }).format(value);
   }
 
-  function handleSelect(event: any) {
-    const selectedValue = event.value[0].split(" - ")[0];
-    const selectedAmount = event.value[0].split(" - ")[1];
+  function handleSelect(event: string) {
+    const selectedValue = event.split(" - ")[0];
+    const selectedAmount = event.split(" - ")[1]
 
     const voucherSelect = vouchers.find(
       (voucher) =>
-        voucher.idCustom === selectedValue &&
+        voucher.idCustom.toString() === selectedValue &&
         voucher.amount === Number(selectedAmount)
     );
 
@@ -111,7 +113,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
         collection={filteredVouchers}
         closeOnSelect={false}
         onKeyUp={(e) => handleSearch(e.key)}
-        onValueChange={(event) => handleSelect(event)}
+        // onValueChange={(event) => handleSelect(event)}
         disabled={disabled || false}
         size="sm"
         width={"100%"}
@@ -136,6 +138,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
             <Select.Content>
               {filteredVouchers.items.map((voucher) => (
                 <Select.Item
+                onPointerDown={() => handleSelect(voucher.value)}
                   item={voucher}
                   key={voucher.value + voucher.description}
                 >
