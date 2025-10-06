@@ -35,7 +35,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
           </Box>
           <Box>
             <Text >
-            Abrir menú se reportes
+            Abrir menú de reportes
             </Text>
         </Box>
         </HStack>

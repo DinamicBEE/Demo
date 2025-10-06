@@ -473,6 +473,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         }) => ({
           ...rest,
           customers: rest.nameClient,
+          clientId: rest.idClient,
           valuePAX,
           id: typeof id === "number" ? id : null,
           currency: currencyId,
