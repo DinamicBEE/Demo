@@ -102,7 +102,7 @@ export interface LotCatalogContextType {
 
 export type LotsClosureContext = Record<string, LotClosure[]>;
 
-export interface BankUpdateRequest extends Pick<LotClosure, "id" | "subId" | "consumerCenterId" | "statusId" | "batchDate"> {
+export interface BankUpdateRequest extends Pick<LotClosure, "id" | "subId" | "consumerCenterId" | "statusId" | "batchDate" | "status"> {
   batchClosureId: number | null;
   batchDetailsRequest: Bank[];
 }
