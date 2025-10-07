@@ -35,7 +35,7 @@ function Layout() {
                     (item) =>
                       user &&
                       user.role &&
-                      item.roles.includes(user.role.toLowerCase() as string)
+                      item.roles.includes(user.role as string)
                   )
                   .map((item) => (
                     <Box key={item.name} className="menu-link">

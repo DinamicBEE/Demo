@@ -5,6 +5,7 @@ import ProtectedRoute, { PublicRoute } from "./components/ProtectedRoutes";
 import Layout from "./components/Layout";
 import routesConfig from "./routes/routesConfig";
 import Loading from "./components/Loading";
+import { ROLES } from "@models/const/menu.consts.tsx";
 const Login = lazy(() => import("./Pages/Login/Login.tsx"));
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
             <Route
               path="/*"
               element={
-                <ProtectedRoute allowedRoles={['ADMIN', 'USER','admin', 'user']}>
+                <ProtectedRoute allowedRoles={[ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER]}>
                   <Layout />
                 </ProtectedRoute>
               }
