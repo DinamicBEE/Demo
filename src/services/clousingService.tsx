@@ -3,12 +3,12 @@ import { EXPECTED_COLUMNS, FIELD_MAPPING, FileResult, ProcessResult } from "@mod
 import { CashLines, CashModel } from "@models/cash.model";
 import { DataServiceModel, ResponseModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
-import { EmployeeLine, EmployeeModel } from "@models/employee.model";
+import { EmployeeLine, EmployeeModel, PdfData, PdfRequestNSDto } from "@models/employee.model";
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -360,6 +360,8 @@ export const getEmployeeClousing = async (
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
       params: { crcId: clousingId },
     });
+    console.log("response",responseAxios.data);
+    
     const totalPhysical = responseAxios.data.reduce(
       (acc: number, curr: any) => acc + curr.amount,
       0
@@ -457,6 +459,53 @@ export const getIntercompanyClousing = async (
     };
   }
 };
+
+export const getPDF = async (obj: PdfRequestNSDto): Promise<PdfData | null> => {
+  try {
+    const response = await api.post(EMPLOYEEPAYROLLDISCOUNT, obj);
+    const data: PdfData = response.data;
+
+    if (!data) {
+      return null;
+    }
+
+    if (obj.pdf === false) {
+      return data;
+    }
+
+    if (obj.pdf && data.b64) {
+      const byteCharacters = atob(data.b64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: "application/pdf;charset=utf-8",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Descuento_${obj.firstname || "empleado"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      }, 1000);
+
+      return data;
+    }
+    return null;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean) => {
   try {

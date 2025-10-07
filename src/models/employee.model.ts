@@ -108,6 +108,13 @@ export interface AddEmployeeProp {
     onClose: () => void; 
 }
 
+export interface EmployeePayrollDiscountProps {
+  line: EmployeeLine;
+  subsidiaryId: number;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 // En caso de requerirse, agregar o cambiar
 // los métodos de pago respecto a la DB... que posiblemente pase
 // y ya
@@ -119,3 +126,30 @@ export const reasonPaymentMethods: Record<string, { methods: string[]; showTicke
   "DIFERENCIA EN INVENTARIO": { methods: ["CxcEmpleados"], showTickets: true },
   "MALA ELABORACIÓN DEL PRODUCTO": { methods: [], showTickets: false }
 };
+
+export interface PdfRequestNSDto {
+  idCxcEmployee: number;
+  pdf: boolean;
+  firstname?: string;
+  lastname?: string;
+  department?: string;
+  entityid?: string;
+  title?: string;
+  subsidiary?: string;
+  internalid?: string;          // ID interno (en formato string)
+  dia?: string;                 // Día (en formato string, e.g., "29")
+  mes?: string;                 // Mes (en formato string, e.g., "09")
+  anio?: string;                // Año (en formato string, e.g., "2025")
+  montoAdeudo?: number;         // Monto total del adeudo
+  motivos?: string;             // Motivo del adeudo
+  numQuincenas?: number;        // Número de quincenas para el descuento
+  importeDescuento?: number;    // Importe del descuento por quincena
+  delMes?: string;              // Mes de inicio del descuento (en formato string, e.g., "10")
+  delAnio?: string;             // Año de inicio del descuento (en formato string, e.g., "2025")
+  apartirQuincena?: string;     // Quincena de inicio del descuento (en formato string, e.g., "15" o podría ser "1" si fuera la primera)
+}
+
+export interface PdfData {
+  pdfRequestNSDto: PdfRequestNSDto; // Objeto con los detalles de la solicitud
+  b64?: string;                      // PDF codificado en Base64
+}
