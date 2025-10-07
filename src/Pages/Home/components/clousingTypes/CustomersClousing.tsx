@@ -110,7 +110,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
 
   useEffect(() => {
     async function fetchCustomers() {
-      const customersList = await getCustomers();
+      const customersList = await getCustomers(true);
 
       if (customersList) {
         setCustomers(createListCollection<selectOption>({items: customersList}));

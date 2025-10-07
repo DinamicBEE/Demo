@@ -18,7 +18,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
         label: item.name
       }));
     case "customer":
-      return await getCustomers();
+      return await getCustomers(true); //TODO: Validar funcionamiento del filtro
   
     default:
       return [];
@@ -95,9 +95,11 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async () => {
+export const getCustomers = async (isGeneral: boolean) => {
   try {
-    const reponse = await api.get(CLIENTSLIST);
+    const reponse = await api.get(CLIENTSPREPAY,
+      { params: { clientType: isGeneral ? "general" : "especial" } }
+    );
     const transformedData = reponse.data.map((customer: any) => {
       return {
         value: customer.id,

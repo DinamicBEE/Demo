@@ -27,6 +27,7 @@ export interface SpecialCustomerLines {
   difference: number;
   exchangeRate: number;
   client: string;
+  clientId: number;
   pax: number;
   couponFolio: string;
   couponFolioUSD: string;

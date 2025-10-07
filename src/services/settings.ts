@@ -16,7 +16,9 @@ export const GETROLE = `${AUTH_BASE}/test/echo-role`;
 export const REFRESH = `${AUTH_BASE}/v1/auth/refresh`;
 
 // * CORTE DE CAJA
+ //! DEPRECATED
 export const CLIENTSLIST = `${API_BASE}/clients/list`;
+
 export const CLIENTSPREPAY = `${API_BASE}/clients/clientPrepago`;
 export const GET_INTERCOMP_EMP_LIST = `/crc/cash-register-closure/crcproc/employees/employeeListInter`;
 export const GET_SUBS_LIST = `${API_BASE}/subsidiaria/subEmploye`;
@@ -52,9 +54,12 @@ export const GET_COUPONS = `${API_BASE}/prepaid/coupons`;
 export const GET_PREPAID = `${API_BASE}/prepaid/get`;
 export const GET_EXTRAINFO = `${API_BASE}/registerclosure/info-colum` // Descuentos y taxes de CRC
 // * Cierrre de Lote
-export const GET_BATCH = `${BATCH_BASE}/getBatchByDates`;
-export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchDetails`;
-export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatchClosure`;
+//export const GET_BATCH = `${BATCH_BASE}/getBatchByDates`;
+export const GET_BATCH = `${BATCH_BASE}/getBatchClosures`;
+//export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchDetails`;
+export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchClosureDetails`;
+//export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatchClosure`;
+export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatch`;
 
 export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;

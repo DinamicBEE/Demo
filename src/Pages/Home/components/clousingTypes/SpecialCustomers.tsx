@@ -57,7 +57,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
         data?.id,
         subsidiary.idCurrency
       );
-      const customersApi = await getCustomers();
+      const customersApi = await getCustomers(false);
       if (specialCustomer)
         setFooterData(
           specialCustomer.total,
@@ -193,7 +193,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       handleInputTextData(
                         customer.label,
                         item.id,
-                        "client"
+                        "client", 
+                        customer.value
                       );
                     }}
                     disabled={false}
