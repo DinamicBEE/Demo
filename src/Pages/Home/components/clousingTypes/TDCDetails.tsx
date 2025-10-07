@@ -251,9 +251,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                     <Table.ColumnHeader textAlign="end">
                       Importe convertido
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+                    {!closingConfirmation && <Table.ColumnHeader textAlign="center">
                       
-                    </Table.ColumnHeader>
+                    </Table.ColumnHeader>}
 
                   </Table.Row>
                 </Table.Header>
@@ -290,7 +290,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                           />
                         </Text>
                       </Table.Cell>
-                      <Table.Cell textAlign="center">
+                      {!closingConfirmation &&<Table.Cell textAlign="center">
                         <Text color="red.500" cursor="pointer" textStyle="lg" onClick={() => onDelete(item.idCustom)}>
                           
                           <Tooltip
@@ -301,7 +301,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                             
                           </Tooltip>
                         </Text>
-                      </Table.Cell>
+                      </Table.Cell>}
 
                     </Table.Row>
                   ))}
