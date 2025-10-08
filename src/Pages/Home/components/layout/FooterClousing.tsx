@@ -25,6 +25,7 @@ function FooterClousing({
   closeDialog,
   closingConfirmation,
   idCurrency,
+  isRoleEditable
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -198,7 +199,7 @@ function FooterClousing({
             onClick={async () => {
               handleDialogConfirm(true);
             }}
-            disabled={closingConfirmation}
+            disabled={closingConfirmation || (!isRoleEditable)}
           >
             Guardar Corte
           </Button>
@@ -209,7 +210,7 @@ function FooterClousing({
             onClick={async () => {
               handleDialogConfirm(false);
             }}
-            disabled={closingConfirmation}
+            disabled={closingConfirmation || (!isRoleEditable)}
           >
             Confirmar Corte
           </Button>

@@ -88,15 +88,16 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
             {visibleItems?.map((item: EmployeeLine) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  { data?.closingConfirmation 
-                    ? <Text
-                      > {item.employeeName} </Text>
-                    : <Text
-                        cursor="pointer"
-                        textDecoration="underline"
-                        color="blue.500"
-                        onClick={() => openDiaolog(true, item)}
-                      > {item.employeeName} </Text>
+                  { (!data?.closingConfirmation && employeeLocal?.isRoleEditable) 
+                    ? 
+                    <Text
+                    cursor="pointer"
+                    textDecoration="underline"
+                    color="blue.500"
+                    onClick={() => openDiaolog(true, item)}
+                    > {item.employeeName} </Text>
+                    : 
+                    <Text> {item.employeeName} </Text>
                   }
                 </Table.Cell>
 

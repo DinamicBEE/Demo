@@ -69,7 +69,6 @@ function ClousingLayout({
       getEmployeetData(employee?.id ?? 0);
       
     }
-    
   }, [isOpen]);
 
   return (
@@ -79,7 +78,7 @@ function ClousingLayout({
         size="full"
         open={isOpen}
         onOpenChange={() => setOpenDialogExit(
-          (employee?.status == "Abierto" || employee?.status == "Reabierto")
+          (employee?.status == "Abierto" || employee?.status == "Reabierto") && employee.isRoleEditable
             ? true
             : false)
           }
@@ -331,13 +330,13 @@ function ClousingLayout({
               closeDialog={onClose}
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
+              isRoleEditable={employee?.isRoleEditable}
             />
           </DialogFooter>
 
-          <DialogCloseTrigger onClick={() => employee?.closingConfirmation && onClose(false)}/>
+          <DialogCloseTrigger onClick={() => (employee?.closingConfirmation || !employee?.isRoleEditable) && onClose(false)}/>
         </DialogContent>
       </DialogRoot>
-      {/* {employee?.status == "Abierto" && ( */}
         <ExitDialog
         closeDialog={() => {
           setOpenDialogExit(false);
@@ -359,7 +358,6 @@ function ClousingLayout({
         }}
         isOpen={openDialogExit}
       ></ExitDialog>
-      {/* )} */}
     </>
   );
 }

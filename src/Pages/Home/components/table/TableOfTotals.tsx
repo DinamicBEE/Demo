@@ -24,7 +24,7 @@ function TableOfTotals({
     tdcHeader, currHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
-    useState<ClousingLinesModel | null>(null);
+    useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
 
@@ -74,7 +74,7 @@ function TableOfTotals({
   };
 
   const closeDialog = (isRefresh: boolean) => {
-    setSelectedEmployee(null);
+    setSelectedEmployee({} as ClousingLinesModel);
     setIsDialogOpen(false);
     //TODO:Validar que fue un cierre de caja
     if(isRefresh) {

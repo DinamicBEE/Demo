@@ -3,6 +3,8 @@ import { ClousingLinesModel, ClousingModel, ReportClousingLinesModel, ReportTota
 import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
+import { loadData } from "../indexedDB/localDB";
+import { ROLES } from "@models/const/menu.consts";
 
 /**
  * This function returns the list of selected
@@ -18,6 +20,7 @@ export const getGeneralInfo = async (
   startDate: Date,
   endDate: Date
 ): Promise<ClousingModel> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
     
     const startDateFormat = format(startDate, "yyyy-MM-dd");
@@ -78,7 +81,8 @@ export const getGeneralInfo = async (
         creationDate: format(line.creationDate, "dd/MM/yyyy"),
         closingStartDate: format(line.closingStartDate, "dd/MM/yyyy"),
         closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
-        tips: line.tips || 0
+        tips: line.tips || 0,
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       })),
     };
 
@@ -97,7 +101,7 @@ export const getGeneralInfo = async (
         totalPhysical: 0,
         difference: 0,
       },
-      clousingLines: [],
+      clousingLines: [] as ClousingLinesModel[],
       pagination: {
         totaRegistros: 0,
         totalPagina: 0,

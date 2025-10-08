@@ -55,6 +55,7 @@ export interface ClousingLinesModel {
   closingEndtDate: string;
   tdc: TDC[];
   tips: number;
+  isRoleEditable?: boolean;
 }
 
 export type ClousingLinesTotals =
@@ -207,6 +208,7 @@ export interface FooterClousing {
   closeDialog: (isRefresh: boolean) => void;
   closingConfirmation: boolean;
   idCurrency: number;
+  isRoleEditable?: boolean;
 }
 
 export interface TotalModel {
@@ -249,7 +251,7 @@ export interface ResponseModel {
 export interface ClousingLayoutProps {
   isOpen: boolean;
   onClose: (isRefresh:boolean) => void;
-  employee: ClousingLinesModel | null;
+  employee: ClousingLinesModel;
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
