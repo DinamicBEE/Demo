@@ -140,6 +140,7 @@ function TDCClousing({ data, idCurrency }: any) {
                           currency={true}
                           onChange={(event) => updatedPhysicalAmount(item.id, event?.toString() || "0")}
                           allowDecimals={true}
+                          disabled={data?.status === "Cerrado" || !tdcData?.isRoleEditable ? true : false}
                         />
                       )
                     }

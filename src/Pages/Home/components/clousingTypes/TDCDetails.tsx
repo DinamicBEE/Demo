@@ -218,6 +218,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                   size={"xs"}
                   width={"50% !important"}
                   onClick={() => setIsOpenDialogFiles(true)}
+                  disabled={closingConfirmation || !bankDetails?.isRoleEditable}
                 >
                   Subir archivos
                 </Button>
@@ -227,7 +228,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
             <Flex mb={4} mt={4} width="100%">
 
               <FilterVoucher
-                disabled={closingConfirmation}
+                disabled={closingConfirmation || !bankDetails?.isRoleEditable}
                 onSelect={onSelect}
                 vouchers={
                   detailsLocal?.vouchers?.filter((item) => !item.status) ?? []

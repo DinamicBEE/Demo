@@ -13,6 +13,8 @@ import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
 import { ClousingSave } from "@models/saveClousing.model";
+import { loadData } from "../indexedDB/localDB";
+import { ROLES } from "@models/const/menu.consts";
 
 /**
  * This function gets the information
@@ -31,9 +33,11 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });    
+    });
+    const userRole = await loadData.userData.get("userRole");    
     const cashDataCopy = {
       ...response.data,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
@@ -80,8 +84,10 @@ export const getTDCClousing = async (
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
     });   
+    const userRole = await loadData.userData.get("userRole");
     const newResponse = {
       ...response.data,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       lines: response.data.lines.map((line: any) => ({
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
@@ -93,6 +99,7 @@ export const getTDCClousing = async (
           idCustom: "voucher-" + uuidv4(),
           dateDisplay: format(new Date(v.date), "dd/MM/yyyy"),
         })),
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       })),
       total:{
         difference: response.data.total.totalPhysical - response.data.total.totalPOS,

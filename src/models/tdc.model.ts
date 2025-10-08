@@ -45,6 +45,7 @@ export interface BankLineModel {
   voucherAmount: number;
   voucherAmountDisplay: number;
   vouchers: Voucher[];
+  isRoleEditable?: boolean;
 }
 
 export interface TDCModel {
@@ -52,6 +53,7 @@ export interface TDCModel {
   employeId: number;
   total: TotalModel;
   lines: BankLineModel[];
+  isRoleEditable?: boolean;
 }
 
 export interface Voucher {

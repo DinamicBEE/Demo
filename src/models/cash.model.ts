@@ -23,7 +23,7 @@ export interface CashModel {
     tips?: number;
     currencies: CashLines[];
     total?: TotalModel;
-
+    isRoleEditable?: boolean;
 }
 
 export interface Denomination {
@@ -42,5 +42,19 @@ export interface CashLines {
     difference: number;
     exchangeRate: number;
     originalCurrency: number;
-    denominations: any
+    denominations: any;
+}
+
+export interface CashClousingDetailsProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (
+    currencyId: string,
+    total: number,
+    totalMXN: number,
+    updatedDenominations: any[]
+  ) => void;
+  currencyId: string;
+  data?: any;
+  isRoleEditable?: boolean;
 }
