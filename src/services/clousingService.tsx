@@ -124,6 +124,7 @@ export const getTDCClousing = async (
 export const getCustomerClousing = async (
   clousingId: number
 ): Promise<ResponseModel> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
@@ -153,6 +154,7 @@ export const getCustomerClousing = async (
     const newDifference = newTotalFisico - (response.data.totalPos ?? 0);
     const data: CustomerModel = {
       id: clousingId,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       total: {
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
@@ -178,6 +180,7 @@ export const getCustomerClousing = async (
           difference: 0,
         },
         lines: [],
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       } as CustomerModel,
     };
     return responseData;
@@ -194,11 +197,11 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
-
     const lines = response.data.specialClientResponses.map(
       (line: any) => ({
         ...line,
@@ -223,6 +226,7 @@ export const getSpecialCustomerClousing = async (
         difference: newDiff ?? 0,
       },
       lines: [...lines],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const responseData: ResponseModel = {
@@ -242,6 +246,7 @@ export const getSpecialCustomerClousing = async (
           difference: 0,
         },
         lines: [],
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       } as SpecialCustomerModel,
     };
     return responseData;

@@ -137,7 +137,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   return (
     <>
       <Box>
-        <Button mb={2} onClick={() => openDialog()} disabled={data?.closingConfirmation}>
+        <Button mb={2} onClick={() => openDialog()} disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}>
           Agregar cliente
         </Button>
         <Table.ScrollArea rounded="md" borderWidth="1px">
@@ -172,7 +172,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                     <SelectRoot
                       collection={customers || createListCollection<selectOption>({ items: [] })}
                       onValueChange={(e) => handleChangeCustomer(e, item.id)}
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}
                     >
                       <SelectTrigger>
                         <SelectValueText
@@ -197,7 +197,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                         id={item.id}
                         currency={false}
                         onChange={handleCoupons}
-                        disabled={data?.closingConfirmation}
+                        disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
                       />
                     </Text>
                   </Table.Cell>
@@ -211,7 +211,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                       onValueChange={(e) =>
                         selectCurrency(e.value, item.id, currencies)
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
                     >
                       <SelectTrigger>
                         <SelectValueText
@@ -239,7 +239,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                         id={item.id}
                         currency={false}
                         onChange={handleAmountPAX}
-                        disabled={data?.closingConfirmation}
+                        disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
                       />
                     </Text>
                   </Table.Cell>

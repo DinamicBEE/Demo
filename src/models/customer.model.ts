@@ -38,7 +38,8 @@ export interface CustomerModel {
     id: number;
     employeeId?: number;
     total: TotalModel;
-    lines: CustomerLines[]
+    lines: CustomerLines[];
+    isRoleEditable?: boolean;
 }
 
 export interface CustomerForm { 
