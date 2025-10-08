@@ -45,6 +45,7 @@ export const TDC = `${API_BASE}/crc-card/card`
 export const EMPLOYEE_INSERT = `${CRCPROC_BASE}/employees/cxcEmployeeList`;
 export const EMPLOYEELIST = `${CRCPROC_BASE}/employees/employeeListbySub`;
 export const EMPLOYEEDELETE = `${CRCPROC_BASE}/employees/employeeDel`;
+export const EMPLOYEEPAYROLLDISCOUNT = `${API_BASE}/ns/pdf`;
 export const REASONLIST = `${CRCPROC_BASE}/employees/reasonList`;
 export const TICKETS = `${CRCPROC_BASE}/employees/ticketList`
 export const INTERCOMPANY = `${API_BASE}/intercompany/get`;

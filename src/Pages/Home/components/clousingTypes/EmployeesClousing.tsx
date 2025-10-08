@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Table, Text, FormatNumber, Button, HStack } from "@chakra-ui/react";
+import { Box, Table, Text, FormatNumber, Button, HStack, MenuRoot, MenuTrigger, MenuContent, Portal, MenuPositioner, MenuItem, IconButton } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { EmployeeClousingProps, EmployeeLine, EmployeeModel } from "@models/employee.model";
 import AddEmployee from "./AddEmployee";
@@ -8,6 +8,9 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/common.const";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
+import { FiPrinter } from "react-icons/fi";
+import EmployeesPayrollDiscountForm from "./EmployeesPayrollDiscountForm";
+
 
 const pageSize = 10;
 
@@ -15,12 +18,13 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   const [employeeLocal, setEmployee] = useState<EmployeeModel>({} as EmployeeModel);
   const [dialog, setDialog] = useState<boolean>(false);
   const [ editEmployee, setEditEmployee ] = useState<EmployeeLine | null>(null);
-
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
   const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<EmployeeLine[]>([])
+  const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
+  const [empForm, setEmpForm] = useState<EmployeeLine>({} as EmployeeLine);
 
   const startRange = (page - 1) * pageSize
   const endRange = startRange + pageSize
@@ -28,8 +32,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   useEffect(() => {
     async function fetchData() {      
       if (!data) return;      
-      const employeeData: EmployeeModel = await getEmployeetData(data?.id);
-
+      const employeeData: EmployeeModel = await getEmployeetData(data?.id);      
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)
@@ -39,8 +42,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       setVisibleItems(items);
     }
 
-    fetchData()
-
+    fetchData()    
   }, [employee])
 
   useEffect(() => {
@@ -48,6 +50,11 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     const items = employeeLocal?.lines?.slice(startRange, endRange);
     setVisibleItems(items);
   }, [page])
+
+  const openForm = (employee: EmployeeLine) => {
+    setEmpForm(employee);
+    setIsOpenForm(true);
+  }
 
   const openDiaolog = (isEdited: boolean, employee: EmployeeLine) => {
     isEdited === true ? setEditEmployee(employee) : setEditEmployee(null);
@@ -74,6 +81,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
               <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Ticket</Table.ColumnHeader>
+              {data?.closingConfirmation && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -113,6 +121,11 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
                 <Table.Cell textAlign="center">
                   <Text> {item.ticketNumber ? item.ticketNumber : "---"} </Text>
                 </Table.Cell>
+                {data?.closingConfirmation &&<Table.Cell textAlign="center">
+                  <IconButton rounded={"full"}colorScheme={"blue"} onClick={() =>openForm(item)}>
+                    <FiPrinter />
+                  </IconButton>
+                </Table.Cell>}
               </Table.Row>
             ))}
           </Table.Body>
@@ -125,7 +138,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
           <PaginationNextTrigger />
         </HStack>
       </PaginationRoot>
-
+      <EmployeesPayrollDiscountForm isOpen={isOpenForm} onClose={() => setIsOpenForm(false)} line={empForm} subsidiaryId={subsidiaryId} />
       <AddEmployee clousingId={data?.id ?? 0} subsidiaryId={subsidiaryId} cdc={cdc} isOpen={dialog} onClose={closeDiaolog} data={editEmployee}/>
 
       {employeeLoading && (

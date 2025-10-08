@@ -7,6 +7,7 @@ import {
   DialogBody,
   DialogCloseTrigger,
   DialogFooter,
+  DialogActionTrigger,
 } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
 import FilterEmployee from "@components/FilterEmployee";
@@ -360,7 +361,7 @@ function AddEmployee({
           )}
         </DialogBody>
 
-        <DialogFooter display={"flex"} justifyContent={"space-between"} >
+        <DialogFooter  >
           <Box>
            {data != null && (
             <Button
@@ -371,6 +372,13 @@ function AddEmployee({
               Eliminar
             </Button>
           )}
+          {
+            data == null && (
+              <DialogActionTrigger asChild>
+                <Button colorPalette="meraError">Cancelar</Button>
+              </DialogActionTrigger>
+            )
+          }
           </Box> 
           <Button
             colorPalette="meraPrimary"
