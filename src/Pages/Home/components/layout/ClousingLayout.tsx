@@ -15,7 +15,7 @@ import HeaderClousing from "./HeaderClousing";
 import { lazy, useState, Suspense, useEffect, useLayoutEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/common.const";
-import { ClousingLayoutProps } from "@models/common.clousing.model";
+import { ClousingLayoutProps, ClousingLinesModel } from "@models/common.clousing.model";
 import IntercompanyClousing from "../clousingTypes/IntercompanyClousing";
 import SpecialCustomersClousing from "../clousingTypes/SpecialCustomers";
 import ExitDialog from "../notifications/ExitDialog";
@@ -60,9 +60,6 @@ function ClousingLayout({
     if (isOpen) {
       tabs.setValue(CLOUSING_KEY.CASH);
     }
-  }, [isOpen]);
-
-  useLayoutEffect(() => {
     if (isOpen && !employee?.closingConfirmation) {
       getCustomerData(employee?.id ?? 0);
       getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency);
@@ -72,8 +69,8 @@ function ClousingLayout({
       getEmployeetData(employee?.id ?? 0);
       
     }
-  }, [isOpen])
-  
+    
+  }, [isOpen]);
 
   return (
     <>
@@ -81,7 +78,11 @@ function ClousingLayout({
         scrollBehavior="inside"
         size="full"
         open={isOpen}
-        onOpenChange={() => setOpenDialogExit(true)}
+        onOpenChange={() => setOpenDialogExit(
+          (employee?.status == "Abierto" || employee?.status == "Reabierto")
+            ? true
+            : false)
+          }
         closeOnEscape={false}
         closeOnInteractOutside={false}
       >
@@ -336,7 +337,8 @@ function ClousingLayout({
           <DialogCloseTrigger onClick={() => employee?.closingConfirmation && onClose(false)}/>
         </DialogContent>
       </DialogRoot>
-      {employee?.closingConfirmation == false && (<ExitDialog
+      {/* {employee?.status == "Abierto" && ( */}
+        <ExitDialog
         closeDialog={() => {
           setOpenDialogExit(false);
         }}
@@ -349,14 +351,15 @@ function ClousingLayout({
             delete prepaidRef.current[employee.id];
             delete tdcRef.current[employee.id];
             delete headerRef.current[employee.id];
+            employee = {} as ClousingLinesModel;
             setCoupons({} as any);
             setEmployee({} as any);
             setIntercompany({} as any);
           }
-
         }}
         isOpen={openDialogExit}
-      ></ExitDialog>)}
+      ></ExitDialog>
+      {/* )} */}
     </>
   );
 }
