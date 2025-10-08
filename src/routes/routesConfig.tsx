@@ -9,7 +9,7 @@ const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../Pages/Home/Home')),
-      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -19,7 +19,7 @@ const routesConfig = [
     {
       path: '/homeV2',
       element: lazy(() => import('../Pages/Home/Home_v2')),
-      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -29,7 +29,7 @@ const routesConfig = [
         {
       path: '/homeV3',
       element: lazy(() => import('../Pages/Home/Home_v3')),
-      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -59,7 +59,7 @@ const routesConfig = [
     {
       path: '/requests',
       element: lazy(() => import('../Pages/Approvals/requests')),
-      roles: ['ADMINFRONT'],
+      roles: [ROLES.SUPERVISOR_CDC],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
@@ -84,7 +84,7 @@ const routesConfig = [
     {
       path: '/reports',
       element: lazy(() => import('../Pages/Reports/Reports')),
-      roles: ['ADMINFRONT'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />
