@@ -3,7 +3,7 @@ import { Box, Flex, FormatNumber, Table, Text, HStack } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { CurrencyInput } from "@components/NumericInput";
 import { useTDCContext } from "@context/clousing/tdcClousingContex";
-import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogCloseTrigger, DialogFooter, DialogActionTrigger } from "@components/ui/dialog";
 import { BankLineModel, Voucher, DetailsProp } from "@models/tdc.model";
 import { Button } from "@components/ui/button";
 import { useHandleTDC } from "@hooks/tdcClousing/useTDCClousing";
@@ -335,8 +335,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
           </DialogBody>
 
           <DialogFooter>
-            <Flex gap={4}>
-
+              <DialogActionTrigger asChild>
+                <Button colorPalette="meraError">Cancelar</Button>
+              </DialogActionTrigger>
               <Button
                 colorPalette="meraPrimary"
                 onClick={() => setIsOpenDialogSave(true)}
@@ -344,7 +345,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
               >
                 Guardar
               </Button>
-            </Flex>
+
           </DialogFooter>
 
           <DialogCloseTrigger />

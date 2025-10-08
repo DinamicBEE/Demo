@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle,
-  DialogBody, DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
+  DialogBody, DialogCloseTrigger, DialogFooter, 
+  DialogActionTrigger} from "@components/ui/dialog";
 import { SelectRoot, SelectTrigger, SelectValueText,
   SelectContent, SelectItem, SelectLabel } from "@components/ui/select";
 import { createListCollection, Group, Input, InputAddon, 
@@ -221,6 +222,9 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
         </DialogBody>
         
         <DialogFooter>
+          <DialogActionTrigger asChild>
+            <Button colorPalette="meraError">Cancelar</Button>
+          </DialogActionTrigger>
           <Button 
             colorPalette="meraPrimary"
             loading={loading}

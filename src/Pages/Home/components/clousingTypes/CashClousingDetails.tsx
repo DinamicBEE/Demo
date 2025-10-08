@@ -1,8 +1,8 @@
-import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent,
-  DialogFooter, DialogHeader, DialogRoot, DialogTitle, Flex,
-  FormatNumber, Table } from "@chakra-ui/react";
+import {  Flex, FormatNumber, Table } from "@chakra-ui/react";
 import { CurrencyInput, CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
+import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent,
+  DialogFooter, DialogHeader, DialogRoot, DialogTitle, DialogCloseTrigger } from "@components/ui/dialog";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import React, { useEffect, useState } from "react";
 
@@ -166,6 +166,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
             Guardar
           </Button>
         </DialogFooter>
+        <DialogCloseTrigger />
       </DialogContent>
     </DialogRoot>
   );

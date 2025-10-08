@@ -393,7 +393,7 @@ function EmployeesPayrollDiscountForm({
             </VStack>
           </DialogBody>
 
-          <DialogFooter display="flex" justifyContent="space-between">
+          <DialogFooter >
             <Button
               colorPalette="meraError"
               onClick={onClose}

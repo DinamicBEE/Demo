@@ -333,10 +333,10 @@ function ClousingLayout({
             />
           </DialogFooter>
 
-          <DialogCloseTrigger />
+          <DialogCloseTrigger onClick={() => employee?.closingConfirmation && onClose(false)}/>
         </DialogContent>
       </DialogRoot>
-      <ExitDialog
+      {employee?.closingConfirmation == false && (<ExitDialog
         closeDialog={() => {
           setOpenDialogExit(false);
         }}
@@ -356,7 +356,7 @@ function ClousingLayout({
 
         }}
         isOpen={openDialogExit}
-      ></ExitDialog>
+      ></ExitDialog>)}
     </>
   );
 }
