@@ -70,7 +70,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     <Box>
       {/* <Toaster /> */}
 
-      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog(false, {} as EmployeeLine)} disabled={data?.closingConfirmation}>Agregar</Button>
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog(false, {} as EmployeeLine)} disabled={data?.closingConfirmation || employeeLocal?.isRoleEditable === false}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
@@ -81,7 +81,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
               <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Ticket</Table.ColumnHeader>
-              {data?.closingConfirmation && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
+              {(!data?.closingConfirmation && employeeLocal?.isRoleEditable) && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -121,7 +121,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
                 <Table.Cell textAlign="center">
                   <Text> {item.ticketNumber ? item.ticketNumber : "---"} </Text>
                 </Table.Cell>
-                {data?.closingConfirmation &&<Table.Cell textAlign="center">
+                {(!data?.closingConfirmation && employeeLocal?.isRoleEditable) &&<Table.Cell textAlign="center">
                   <IconButton rounded={"full"}colorScheme={"blue"} onClick={() =>openForm(item)}>
                     <FiPrinter />
                   </IconButton>

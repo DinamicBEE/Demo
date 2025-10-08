@@ -264,7 +264,7 @@ export const getPrepaidClousing = async (
   dateClousing: string
 ): Promise<PrepaidModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(GET_PREPAID, {
       params: { idCashRegisterClosure: clousingId },
@@ -302,6 +302,7 @@ export const getPrepaidClousing = async (
         difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
       lines: updateLines,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     return data;
@@ -316,6 +317,7 @@ export const getPrepaidClousing = async (
         difference: 0,
       },
       lines: [],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     } as PrepaidModel;
   }
 };
@@ -366,7 +368,7 @@ export const getEmployeeClousing = async (
   clousingId: number
 ): Promise<EmployeeModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
@@ -392,6 +394,7 @@ export const getEmployeeClousing = async (
         ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const response = /* employeeDataCopy; */ employeeDataCopyAxios;
@@ -418,7 +421,7 @@ export const getIntercompanyClousing = async (
   clousingId: number
 ): Promise<IntercompanyModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(INTERCOMPANY, {
@@ -450,6 +453,7 @@ export const getIntercompanyClousing = async (
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
       })),
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const data = {
@@ -468,6 +472,7 @@ export const getIntercompanyClousing = async (
         difference: 0,
       },
       lines: [],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
   }
 };

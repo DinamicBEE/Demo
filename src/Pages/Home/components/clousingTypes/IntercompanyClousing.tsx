@@ -26,7 +26,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [subsidiariesByRow, setSubsidiariesByRow] = useState<{
-    [key: number | string]: ListCollection;
+    [key: number | string]: ListCollection<any>;
   }>({});
 
   const {
@@ -66,11 +66,11 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
 
       // Inicializar las subsidiarias por fila
       const initialSubsidiariesByRow: {
-        [key: number | string]: ListCollection;
+        [key: number | string]: ListCollection<any>;
       } = {};
 
       intercompanyData.lines.forEach((line) => {
-        initialSubsidiariesByRow[line.id] = createListCollection({
+        initialSubsidiariesByRow[line.id] = createListCollection<any>({
           items: [], // Inicialmente vacío
         });
       });
@@ -146,7 +146,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
 
     setSubsidiariesByRow(prev => ({
       ...prev,
-      [itemId]: createListCollection({
+      [itemId]: createListCollection<any>({
         items: subsidiaries.map(sub => ({
           value: sub.id,
           label: sub.name,
@@ -226,7 +226,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
   return (
     <Box>
 
-      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()} disabled={data?.closingConfirmation}>Agregar</Button>
+      <Button mb={2} colorPalette="meraPrimary" onClick={() => openDiaolog()} disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}>Agregar</Button>
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
@@ -258,7 +258,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                     label={false}
                     itemId={item.id}
                     onSelect={handleEmployeeData}
-                    disabled={data?.closingConfirmation ?? false}
+                    disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
                     employeeToEdit={null}
                   />
                 </Table.Cell>
@@ -268,7 +268,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                     collection={subsidiariesByRow[item.id]}
                     key={item.employeeId}
                     onValueChange={(event) => handleSubsidiary(event, item.id)}
-                    disabled={data?.closingConfirmation}
+                    disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
                   >
                     <SelectTrigger>
                       <SelectValueText
@@ -307,7 +307,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                     id={item.id}
                     currency={true}
                     onChange={handleAmount}
-                    disabled={data?.closingConfirmation}
+                    disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
                   />
                 </Table.Cell>
               </Table.Row>
