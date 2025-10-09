@@ -7,10 +7,13 @@ import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
+import { loadData } from "../indexedDB/localDB";
+import { ROLES } from "@models/const/menu.consts";
 
 export const getLotsClosure = async (
   date: string
 ): Promise<LotClosure[]> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
 
     const dateArray = date.split("-");
@@ -24,6 +27,7 @@ export const getLotsClosure = async (
     const transformedData = response.data.map((lot: any, index:number) => ({
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       status: getStatus(lot.status),
       difference: lot.totalLote - lot.totalPos
     }));    
@@ -31,7 +35,7 @@ export const getLotsClosure = async (
     return transformedData as LotClosure[];
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
-    return [];
+    return [] as LotClosure[];
   }
 };
 

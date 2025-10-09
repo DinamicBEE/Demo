@@ -9,6 +9,7 @@ import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
 import { selectOption } from "@models/common.model";
 import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
+import Loading from "@components/Loading";
 
 function LotClosure() {
 
@@ -67,17 +68,14 @@ function LotClosure() {
                 <SelectValueText placeholder="Selecciona una subsidiaria" />
               </SelectTrigger>
               <SelectContent>
-                {!loading ? (
-                  comapanies.items.map((company) => (
-                    <SelectItem item={company} key={company.value}>
-                      {company.label}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <Flex justify="center" w="100%" p={2}>
-                    <Spinner color={"#66BB6A"} />
-                  </Flex>
-                )}
+                {comapanies.items.length > 0 && comapanies.items.map((company) => (
+                  <SelectItem item={company} key={company.value}>
+                    {company.label}
+                  </SelectItem>
+                ))
+
+                }
+
               </SelectContent>
             </SelectRoot>
 
@@ -112,6 +110,12 @@ function LotClosure() {
         locations={locationId}
         date={formattedDate}
       />
+      { loading && (
+          <Box position="fixed" top="50%" left="50%" zIndex={1000}>
+              <Loading />
+          </Box>
+        )
+      }
     </Box>
   );
 }

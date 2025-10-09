@@ -10,7 +10,7 @@ export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
     // Simulate an API call to fetch Starbucks data
     const response = await api.get(GET_STARBUCKSCDC);
-
+    console.log(response)
     return response.data;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
@@ -30,6 +30,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         endDate: endFormatDate
       }
     })
+    console.log(response)
 
     if(response.data.registerClosure<=0){
       return {} as StarbucksTableDataModel

@@ -46,7 +46,7 @@ function StarbucksClosure() {
 
     async function getTableData() {
       setLoading(true)
-      console.log("Fetching data for CDC:", loading)
+      
       const cdcName = getCDCDetails(selectedCDC)
       if(startDate == null || endDate == null) return
       const allData = await getStarbucksData(selectedCDC, startDate, endDate)

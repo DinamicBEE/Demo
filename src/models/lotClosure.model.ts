@@ -4,6 +4,7 @@ import { ListCollection } from "@chakra-ui/react";
 
 export interface LotClosure {
   id: number | string;
+  isRoleEditable?: boolean;
   subId: number;
   consumerCenterId: number;
   statusId: number;

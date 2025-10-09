@@ -190,7 +190,8 @@ function LoteClosureDialog({
                                       currency={true}
                                       disabled={
                                         lot.status === STATUS.Close ||
-                                        lot.status === STATUS.WITH_DIFFERENCE
+                                        lot.status === STATUS.WITH_DIFFERENCE ||
+                                        localLot.isRoleEditable === false
                                       }
                                       keyValue={affiliation.affiliationId.toString()}
                                       key={affiliation.affiliationId}
@@ -265,20 +266,13 @@ function LoteClosureDialog({
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>
               <Button
-                hidden={
+                disabled={
                   lot.status === STATUS.Close ||
-                  lot.status === STATUS.WITH_DIFFERENCE
+                  lot.status === STATUS.WITH_DIFFERENCE ||
+                  localLot.isRoleEditable === false
                 }
                 onClick={() => handleOpenCloseLot()}
                 colorPalette="meraInfo"
-                /* disabled={
-                  localBanks.length === 0 ||
-                  localBanks.some((bank) => {
-                    return bank.affiliationList.some(
-                      (afiliation) => afiliation.amount === 0
-                    );
-                  })
-                } */
               >
                 Guardar
               </Button>
