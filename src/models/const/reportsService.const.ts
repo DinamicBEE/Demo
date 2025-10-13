@@ -25,6 +25,13 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
+  [REPORT_KEY.REPVEN_04]: {
+    params: [
+      { paramsKey: "consumerCenter", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
+    ],
+  },
   [REPORT_KEY.REPMIX_01]: {
     params: [
       { paramsKey: "cdcId", filterKey: "cdc" },
@@ -107,8 +114,8 @@ export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_04,
     url: SETTINGS.REPORT_VENDES,
-    keysParams: null,
-    handleData: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPVEN_04].params,
+    handleData: reportHandlers.handleSalesVsDiscountData,
   },
   {
     report: REPORT_KEY.REPVOI_01,

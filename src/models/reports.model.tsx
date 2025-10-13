@@ -272,8 +272,34 @@ export interface SantanderModel {
     chequeNumber: number;
 }
 
+export interface SalesVsDiscountModel {
+  date: string;
+  cdc: string;
+  totalSale: number;
+  voids: number;
+  discounts: number;
+  netSales: number;
+  budget: number;
+  budgetDifferencePercentage: number;
+  budgetDifferenceAmount: number;
+  lastYearSale: number;
+  lastYearDifferencePercentage: number;
+  pax: number;
+  salePerPax: number;
+  lastYearPax: number;
+  checksCount: number;
+  paxPerCheck: number;
+  averageCheckValue: number;
+  lastYearAverageCheckValue: number;
+  cost: number | null;
+  costPercentage: number | null;
+  realRPE: number | null;
+  budgetRPE: number | null;
+  rpeDifference: number | null;
+}
+
 export type ReportData = DiscountReportModel | PMixGeneralReportModel | PMixEmployeeReportModel | PaymentMethodModel | 
-EmployeeSalesModel  | VoidsModel | BanamexModel | SantanderModel | SyncErrorsModel | CouponsModel;
+EmployeeSalesModel  | VoidsModel | BanamexModel | SantanderModel | SyncErrorsModel | CouponsModel | SalesVsDiscountModel;
 
 export type ReportTypeMap = {
   1: DiscountReportModel;
@@ -285,6 +311,7 @@ export type ReportTypeMap = {
   9: CouponsModel;
   10: BanamexModel;
   11: SantanderModel;
+  12: SalesVsDiscountModel;
   100: SyncErrorsModel;
 };
 
