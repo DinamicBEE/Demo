@@ -89,7 +89,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
     const updatedCashRows = cashRows.map((row: CashStarbucksModel, index: number) => {
       if (index === denominations.currencyId) {
         const newTotal = denominations.denominations.reduce(
-          (acc, denom) => acc + denom.subtotal,
+          (acc, denom) => acc + (denom?.subtotal ?? 0),
           0
         );
 
@@ -260,12 +260,20 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
       cxc: cxcRows
     }
     console.log(body);
-    const response = await saveStarbucksClousing(line.id, body, isConfirm);
-    if (response === "response") {
-      onClose(true);
+    try {
+
+      const response = await saveStarbucksClousing(line.id, body, isConfirm);
+      if (response === "saved cash register closure starbucks") {
+        onClose(true);
+      }
+      setDialogLoading(false);
+      setButtonLoading(false);
+      
+    } catch (error) {
+      console.error("Error saving Starbucks closing:", error);
+      setDialogLoading(false);
+      setButtonLoading(false);
     }
-    setDialogLoading(false);
-    setButtonLoading(false);
   }
 
   return (

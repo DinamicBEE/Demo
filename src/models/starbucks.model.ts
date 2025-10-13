@@ -1,4 +1,4 @@
-import { Currency, TDC } from "./common.clousing.model";
+import { Currency, TDC, TotalModel } from "./common.clousing.model";
 import { STATUS } from "./status.model";
 import { Voucher } from "./tdc.model";
 
@@ -43,12 +43,16 @@ export interface HeaderDetailsInfoModel {
   cdc: string;
   total: number;
   totalPOS: number;
+  electronicTips: number;
+  tips: number;
+  idCurrencySub: number;
 }
 export interface CashStarbucksModel {
   id: number;
   currency: string;
   idCurrency: number
   total: number;
+  pos: number;
   exchangeRate: number;
   originalCurrency: number;
   isOpen: boolean;
@@ -60,13 +64,30 @@ export interface TDCStarbucksModel {
   nameBank: string;
   idBank: number;
   total: number;
+  pos: number;
+  currencyExternalId?: number;
   exchangeRate: number;
   originalCurrency: number;
   isOpen: boolean;
   voucher: Voucher[]
 }
 
-export interface CXCModel extends Omit<CashStarbucksModel, 'denominations' | 'idCurrency'> {}
+export interface CXCModel extends Omit<CashStarbucksModel, 'denominations' | 'idCurrency' | 'pos'> {}
+
+export interface CashToSend extends Omit<CashStarbucksModel, 'total' | 'isOpen' | 'pos'> {
+  totalPOS: number;
+  totalFisico: number;
+  difference: number;
+}
+
+export interface StarbucksToSend extends Omit<TDCStarbucksModel, 'total' | 'isOpen' | 'pos' | 'voucher' | 'nameBank' | 'originalCurrency'> {
+  bank: string;
+  POS: number;
+  physical: number;
+  voucherAmount: number;
+  totalPosOriginal: number;
+  vouchers: Voucher[];
+}
 
 export interface StarbucksTableHeader {
   currencies: Currency[];
@@ -96,5 +117,21 @@ export interface DenominationsModel {
   idDenomination: number;
   denomination: string;
   amount: number;
-  subtotal: number;
+  subtotal?: number;
+}
+
+export interface ClousingSaveStarbucksModel {
+  crcId: number;
+  cash: {
+    electronicTips: number;
+    tips: number;
+    idCurrencySub: number;
+    total: TotalModel;
+    lines: CashToSend[];
+  };
+  tdc: {
+    idCurrencySub: number;
+    total: TotalModel;
+    lines: StarbucksToSend[];
+  }
 }

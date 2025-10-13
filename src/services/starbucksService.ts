@@ -1,10 +1,9 @@
 import { location } from "@models/common.model";
-import { CashStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
+import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING } from "./settings";
+import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
-import { ClousingSave } from "@models/saveClousing.model";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -14,7 +13,7 @@ export const getCDCStarbucks = async (): Promise<location[]> => {
     return response.data;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
-    throw error;
+    return [];
   }
 }
 
@@ -60,7 +59,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
     return allData as StarbucksTableDataModel;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
-    throw error;
+    return {} as StarbucksTableDataModel;
   }
 }
 
@@ -85,6 +84,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
         currency: item.currency,
         idCurrency: item.idCurrency,
         total: item.totalFisico,
+        pos: item.totalPOS,
         exchangeRate: item.exchangeRate,
         originalCurrency: item.originalCurrency,
         isOpen: line.status === "Abierto" ? true : false,
@@ -99,6 +99,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
     cashDataDummy.push({
       id: cashDataDummy.length + 1,
       currency: "Total (MXN)",
+      pos: 0,
       total: cashTotal,
       idCurrency: 0,
       exchangeRate: 0,  
@@ -113,6 +114,8 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
         nameBank: item.bank,
         idBank: item.idBank,
         total: item.physical,
+        pos: item.pos,
+        currencyExternalId: item.currencyExternalId,
         exchangeRate: item.exchangeRate,
         isOpen: line.status === "Abierto" ? true : false,
         originalCurrency: item.physical * item.exchangeRate,
@@ -124,6 +127,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
       nameBank: "Total (MXN)",
       idBank: 0,
       total: 0,
+      pos: 0,
       exchangeRate: 0,
       isOpen: line.status === "Abierto" ? true : false,
       originalCurrency: creditCardTotal,
@@ -144,6 +148,9 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
       cdc: line.cdc,
       total: total,
       totalPOS: response.data.total,
+      electronicTips: response.data.cash.electronicTips,
+      tips: response.data.cash.tips,
+      idCurrencySub: 1 //TODO: Cambiar valor apenas el back lo mande
     }
 
     const starbucksData:StarbucksTableRow = {
@@ -156,111 +163,81 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
     return starbucksData;
   } catch (error) {
     console.error("Error fetching Starbucks detail data:", error);
-    throw error;
+    return {} as StarbucksTableRow;
   }
 
 }
 
 export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{
 
-  const totals = {
-    totalPOS: 0,
-    totalPhysical: 0,
-    difference: 0,
-  }
+  const cashPhysical = data.cash.reduce((acc, row) =>(acc+row.total),0);
+  const cashPOS = data.cash.reduce((acc, row) =>(acc+row.pos),0);
+  const tdcPhysical = data.tdc.reduce((acc, row) =>(acc+row.total),0);
+  const tdcPOS = data.tdc.reduce((acc, row) =>(acc+row.pos),0);
 
-  const body: ClousingSave ={
-    id: clousingId,
-    discountPhysical: 0,
-    prepaid: {
-      lines:[],
-      total: totals
-    },
-    employee: {
-      lines:[],
-      total: totals
-    },
-    specialCustomer: {
-      lines:[],
-      total: totals
-    },
-    intercompany: {
-      lines:[],
-      total: totals
-    },
-    customer: {
-      lines:[],
-      total: totals
-    },
+  const body: ClousingSaveStarbucksModel ={
+    crcId: clousingId,    
     cash: {
-      idCurrencySub: 5,
-      electronicTips: 0,
-      tips: 0,
+      idCurrencySub: data.data.idCurrencySub,
+      electronicTips: data.data.electronicTips,
+      tips: data.data.tips,
       total:{
-        totalPhysical: data.cash.reduce((acc, row) =>(acc+row.total),0),
-        totalPOS: data.cash.reduce((acc, row) =>(acc+row.total),0),
-        difference: 0
+        totalPhysical: cashPhysical,
+        totalPOS: cashPOS,
+        difference: cashPOS - cashPhysical
       },
       lines: data.cash.map(line => {
         return {
           id: line.id,
+          idCurrency: line.idCurrency,
           currency: line.currency,
+          totalPOS: line.pos,
+          totalFisico: line.total,
+          difference: line.pos - line.total,
           exchangeRate: line.exchangeRate,
           originalCurrency: line.originalCurrency,
           denominations: line.denominations.map((d:any) => ({
             id: d.id ?? 0,
             idDenomination: d.idDenomination ?? 0,
-            denomination: isNaN(Number(d.denomination)) ? 0 : Number(d.denomination),
+            denomination: String(d.denomination ?? ''),
             amount: d.amount,
-            //subtotal: d.subtotal
           })),
-          idCurrency: 1,
-          totalFisico: line.total,
-          totalPOS: line.total,
-          difference: 0
         }
       })
     },
     tdc:{
-      idCurrencySub: 5,
+      idCurrencySub: data.data.idCurrencySub,
       total:{
-        totalPhysical: data.tdc.reduce((acc, row) =>(acc+row.total),0),
-        totalPOS: data.tdc.reduce((acc, row) =>(acc+row.total),0),
-        difference: 0
+        totalPhysical: tdcPhysical,
+        totalPOS: tdcPOS,
+        difference: tdcPOS - tdcPhysical
       },
       lines: data.tdc.map(line => {
         return {
           id: line.id,
-          bank: line.nameBank,
           idBank: line.idBank,
-          POS: line.total,
+          bank: line.nameBank,
+          POS: line.pos,
           physical: line.total,
           voucherAmount: line.voucher.length,
-          vouchers: line.voucher
+          vouchers: line.voucher,
+          totalPosOriginal: line.originalCurrency,
+          exchangeRate: line.exchangeRate,
+          currencyExternalId: line.currencyExternalId
         }
       })
     },
-    currencies: data.cash.map(line => ({
-      id: line.idCurrency,
-      symbol: line.currency,
-      total: line.total,
-    })),
   }
 
   const response = await api.post(
-    SENDCASHCLOUSING,
+    SENDCASHCLOUSING_STARBUCKS,
     body,
     {
       params: {
-        isPreguardado: isConfirm
+        isPreSaved: isConfirm
       }
     }
   );
-
-  // Simulate async response and ensure the function returns a Promise<string>
-  // return await new Promise<string>((resolve) => {
-  //   setTimeout(() => resolve("response"), 2000);
-  // });
 
   return response.data;
 
