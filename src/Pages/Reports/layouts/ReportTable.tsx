@@ -99,72 +99,84 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     }
 
     return (
-        <Box  display="flex" flexDirection="column" height="100%">
-            {loading && (
-                <Box position="fixed" top="50%" left="50%">
-                    <Loading />
-                </Box>
-            )}
+        <>
+          {visibleItems.length > 0 
+            ? <Box  display="flex" flexDirection="column" height="100%">
+              {loading && (
+                  <Box position="fixed" top="50%" left="50%">
+                      <Loading />
+                  </Box>
+              )}
 
-            <Box flex="1" display="flex" flexDirection="column" minHeight="0" overflowY={'hidden'}>
-                <Table.ScrollArea rounded="md" borderWidth="1px">
-                    <Table.Root size="sm" variant="outline">
-                        <Table.Header>
-                          <Table.Row>
+              <Box flex="1" display="flex" flexDirection="column" minHeight="0" overflowY={'hidden'}>
+                  <Table.ScrollArea rounded="md" borderWidth="1px">
+                      <Table.Root size="sm" variant="outline">
+                          <Table.Header>
+                            <Table.Row>
 
-                            {headers.map((header) => (
-                              <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
-                            ))}
-                          </Table.Row>
-                        </Table.Header>
-                        <Table.Body>
-                            {visibleItems?.map((row, index) => (
-                                <Table.Row key={index}>
-                                    {headers.map((header) => (
-                                        <TableCell key={String(header.key)}>
-                                            {renderCellContent(header.key, row[header.key], index)}
-                                        </TableCell>
-                                    ))}
-                                </Table.Row>
-                            ))}
-                        </Table.Body>
-                    </Table.Root>
-                </Table.ScrollArea>
-                <Box mt="auto" pt={4} bg="white" bottom="0">
-                    <PaginationRoot
-                        count={countTable}
-                        pageSize={pageSize}
-                        page={page}
-                        onPageChange={(e) => {
-                        setPage(e.page);
-                        }}
-                    >
-                        <HStack justify="end">
-                            <SelectRoot width="200px"
-                                collection={PaginatorSize}
-                                onValueChange={(event) => {
-                                    setPageSize(event.items[0].value);
-                                }}
-                            >
-                                <SelectTrigger>
-                                <SelectValueText placeholder="Seleccione una opcion" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                {PaginatorSize.items.length > 0 && PaginatorSize.items.map((item: selectOption) => (
-                                    <SelectItem item={item} key={item.value}>
-                                    {item.label}
-                                    </SelectItem>
-                                ))}
-                                </SelectContent>
-                            </SelectRoot>
-                            <PaginationPrevTrigger />
-                            <PaginationItems />
-                            <PaginationNextTrigger />
-                        </HStack>
-                    </PaginationRoot>
-                </Box>
-            </Box>
-        </Box>
+                              {headers.map((header) => (
+                                <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
+                              ))}
+                            </Table.Row>
+                          </Table.Header>
+                          <Table.Body>
+                              {visibleItems?.map((row, index) => (
+                                  <Table.Row key={index}>
+                                      {headers.map((header) => (
+                                          <TableCell key={String(header.key)}>
+                                              {renderCellContent(header.key, row[header.key], index)}
+                                          </TableCell>
+                                      ))}
+                                  </Table.Row>
+                              ))}
+                          </Table.Body>
+                      </Table.Root>
+                  </Table.ScrollArea>
+                  <Box mt="auto" pt={4} bg="white" bottom="0">
+                      <PaginationRoot
+                          count={countTable}
+                          pageSize={pageSize}
+                          page={page}
+                          onPageChange={(e) => {
+                          setPage(e.page);
+                          }}
+                      >
+                          <HStack justify="end">
+                              <SelectRoot width="200px"
+                                  collection={PaginatorSize}
+                                  onValueChange={(event) => {
+                                      setPageSize(event.items[0].value);
+                                  }}
+                              >
+                                  <SelectTrigger>
+                                  <SelectValueText placeholder="Seleccione una opcion" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                  {PaginatorSize.items.length > 0 && PaginatorSize.items.map((item: selectOption) => (
+                                      <SelectItem item={item} key={item.value}>
+                                      {item.label}
+                                      </SelectItem>
+                                  ))}
+                                  </SelectContent>
+                              </SelectRoot>
+                              <PaginationPrevTrigger />
+                              <PaginationItems />
+                              <PaginationNextTrigger />
+                          </HStack>
+                      </PaginationRoot>
+                  </Box>
+              </Box>
+              </Box> 
+            : <Text
+              backgroundColor={"#f0f0f0"}
+              textAlign={"center"}
+              borderRadius={"6px"}
+              border={"2px solid #cecece"}
+              borderStyle={"dashed"}
+              color={"#666666"}
+              fontWeight={"600"}
+          >Reporte sin datos</Text>}
+        </>
     );
 }
 
