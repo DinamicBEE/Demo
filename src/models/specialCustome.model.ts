@@ -43,4 +43,5 @@ export interface SpecialCustomerModel {
   employeeId?: number;
   total: TotalModel;
   lines: SpecialCustomerLines[];
+  isRoleEditable?: boolean;
 }

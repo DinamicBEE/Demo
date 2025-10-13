@@ -157,7 +157,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                     onChange={(e) =>
                         handleInputTextData(e.target.value, item.id, "couponPrice")
                       }
-                    disabled={data?.closingConfirmation}
+                    disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                   />
                 </Table.Cell>
 
@@ -209,7 +209,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       onChange={(e) =>
                         handleInputTextData(e.target.value, item.id, "pax")
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                 </Table.Cell>
 
@@ -225,7 +225,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                           "couponFolio"
                         )
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>
@@ -242,7 +242,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                           "couponFolioUSD"
                         )
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>
@@ -255,7 +255,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       currency={true}
                       keyValue={"ammount"}
                       onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>
@@ -268,7 +268,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       currency={true}
                       keyValue={"ammountUSD"}
                       onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>
@@ -281,7 +281,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       onChange={(e) =>
                         handleInputTextData(e.target.value, item.id, "flight")
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>
@@ -298,7 +298,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                           "passengerName"
                         )
                       }
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
                     />
                   </Text>
                 </Table.Cell>

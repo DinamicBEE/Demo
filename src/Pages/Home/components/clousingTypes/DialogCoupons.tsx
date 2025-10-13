@@ -28,7 +28,7 @@ function DialogCoupons({
   isOpen,
   onClose,
   coupons,
-  client,
+  client
 }: DialogCouponsProps) {
   const [visibleItems, setVisibleItems] = useState<CouponCatalogModel[]>([]);
   const [page, setPage] = useState(1);

@@ -269,7 +269,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                   e.currentTarget.value = "";
                 }
               }}
-              disabled={data?.closingConfirmation}
+              disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
             />
           </Skeleton>
         </Group>
@@ -277,7 +277,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         <Button
           colorPalette="green.400"
           onClick={() => setIsNewCustomerOpen(true)}
-          disabled={data?.closingConfirmation}
+          disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
         >
           Agregar Complementario
         </Button>
@@ -347,7 +347,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                       currency={false}
                       keyValue="supplementsQuantity"
                       onChange={handleInputTextData}
-                      disabled={data?.closingConfirmation}
+                      disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
                     />
                   )}
                 </Table.Cell>

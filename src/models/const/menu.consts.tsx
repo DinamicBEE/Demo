@@ -3,14 +3,21 @@ import { PiCashRegisterLight } from "react-icons/pi";
 import { SiStarbucks } from "react-icons/si";
 import { VscGraph } from "react-icons/vsc";
 
+export enum ROLES {
+    SUPERVISOR_CDC = 'USER',
+    GENERAL_ZONE = 'ADMIN',
+    REVENUE_MANAGER = 'STARBUCKS',
+    CONTROLLER = 'CONTROLLER',
+}
+
 export const menuItems = [
   //{ name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
-  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
-  { name: 'Solicitud de ajuste', path: '/requests', icon:<LuClipboardCheck />, roles: ['USER', 'user'] },
-  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: ['ADMIN', 'admin'] },
+  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER] },
+  { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER] },
+  { name: 'Solicitud de ajuste', path: '/requests', icon:<LuClipboardCheck />, roles: [ROLES.SUPERVISOR_CDC] },
+  { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: [ROLES.CONTROLLER] },
   //{ name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
-  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER] },
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
+  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: [ROLES.GENERAL_ZONE] },
 ];

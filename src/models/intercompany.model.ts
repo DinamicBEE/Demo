@@ -28,7 +28,8 @@ export interface IntercompanyModel{
     id: number;
     employeeId: number;
     total: TotalModel;
-    lines: IntercompanyLine[]
+    lines: IntercompanyLine[];
+    isRoleEditable?: boolean;
 }
 
 export interface IntercompanyLine {

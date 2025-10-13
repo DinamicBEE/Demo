@@ -4,22 +4,10 @@ import { Button } from "@components/ui/button";
 import { DialogActionTrigger, DialogBackdrop, DialogBody, DialogContent,
   DialogFooter, DialogHeader, DialogRoot, DialogTitle, DialogCloseTrigger } from "@components/ui/dialog";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
+import { CashClousingDetailsProps } from "@models/cash.model";
 import React, { useEffect, useState } from "react";
 
-interface CashClousingDetailsProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (
-    currencyId: string,
-    total: number,
-    totalMXN: number,
-    updatedDenominations: any[]
-  ) => void;
-  currencyId: string;
-  data?: any;
-}
-
-export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, data }) => {
+export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, data, isRoleEditable }) => {
 
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
@@ -123,7 +111,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
                           currency={false}
                           onChange={(value) => handleChangeAmount(index, String(value ?? 0))} // convierte a string si es necesario
                           allowDecimals={item.denomination === 'Cambio' ? true : false}
-                          disabled={data?.closingConfirmation ?? false}
+                          disabled={data?.closingConfirmation || !isRoleEditable}
                         />
 
                       </Table.Cell>
@@ -162,7 +150,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
           <DialogActionTrigger asChild>
             <Button colorPalette="meraError">Cancelar</Button>
           </DialogActionTrigger>
-          <Button type="submit" colorPalette="meraPrimary" onClick={handleSave} disabled={data?.closingConfirmation ?? false}>
+          <Button type="submit" colorPalette="meraPrimary" onClick={handleSave} disabled={data?.closingConfirmation || !isRoleEditable}>
             Guardar
           </Button>
         </DialogFooter>

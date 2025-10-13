@@ -4,6 +4,7 @@ import { AuthContextType, Tokens, AuthState } from "@models/auth.model";
 import { getUserRol, loginUser, refreshAuthToken } from "@services/authService";
 import { loadData } from "../indexedDB/localDB";
 import { COOKIE_NAMES } from "@models/common.const";
+import { getRoleName } from "@utils/getRoles";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = (): AuthContextType => {
@@ -45,11 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setUserWithRole = useCallback(async (username: string) => {
     try {
       const { userRole } = await getUserRol();
-      const user = { first_name: username, role: userRole };
+      const user = { first_name: username, role: getRoleName(userRole.toLowerCase()) };
       
       setAuthState({ user });
       try {
-        await loadData.userData.put({ key: "userRole", value: userRole });
+        await loadData.userData.put({ key: "userRole", value: getRoleName(userRole.toLowerCase()) });
       } catch (dbError) {
         console.error("Error al guardar en IndexedDB:", dbError);
       }

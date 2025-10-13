@@ -218,6 +218,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                   size={"xs"}
                   width={"50% !important"}
                   onClick={() => setIsOpenDialogFiles(true)}
+                  disabled={closingConfirmation || !bankDetails?.isRoleEditable}
                 >
                   Subir archivos
                 </Button>
@@ -227,7 +228,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
             <Flex mb={4} mt={4} width="100%">
 
               <FilterVoucher
-                disabled={closingConfirmation}
+                disabled={closingConfirmation || !bankDetails?.isRoleEditable}
                 onSelect={onSelect}
                 vouchers={
                   detailsLocal?.vouchers?.filter((item) => !item.status) ?? []
@@ -251,7 +252,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                     <Table.ColumnHeader textAlign="end">
                       Importe convertido
                     </Table.ColumnHeader>
-                    {!closingConfirmation && <Table.ColumnHeader textAlign="center">
+                    {(!closingConfirmation && bankDetails?.isRoleEditable) && <Table.ColumnHeader textAlign="center">
                       
                     </Table.ColumnHeader>}
 
@@ -290,7 +291,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                           />
                         </Text>
                       </Table.Cell>
-                      {!closingConfirmation &&<Table.Cell textAlign="center">
+                      {(!closingConfirmation && bankDetails?.isRoleEditable) &&<Table.Cell textAlign="center">
                         <Text color="red.500" cursor="pointer" textStyle="lg" onClick={() => onDelete(item.idCustom)}>
                           
                           <Tooltip
@@ -341,7 +342,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
               <Button
                 colorPalette="meraPrimary"
                 onClick={() => setIsOpenDialogSave(true)}
-                disabled={ closingConfirmation }
+                disabled={ closingConfirmation || !bankDetails?.isRoleEditable}
               >
                 Guardar
               </Button>

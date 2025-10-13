@@ -3,12 +3,13 @@ import { HomeProvider } from '../context/home/homeProvider';
 import { ReportsProvider } from '@context/reports/reportsProvider';
 import { ApprovalsProvider } from '../context/approvals/approvalsProvider';
 import { ClosureProvider } from '../context/lotClosure/lotClosureProvider';
+import { ROLES } from '@models/const/menu.consts';
 
 const routesConfig = [
     {
       path: '/home',
       element: lazy(() => import('../Pages/Home/Home')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -18,7 +19,7 @@ const routesConfig = [
     {
       path: '/homeV2',
       element: lazy(() => import('../Pages/Home/Home_v2')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -28,7 +29,7 @@ const routesConfig = [
         {
       path: '/homeV3',
       element: lazy(() => import('../Pages/Home/Home_v3')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <HomeProvider>
           <Component />
@@ -38,7 +39,7 @@ const routesConfig = [
     {
       path: '/lotClosure',
       element: lazy(() => import('../Pages/LotClosure/LotClosure')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE],
       wrapper: (Component: React.ComponentType) => (
         <ClosureProvider>
           <Component />
@@ -48,7 +49,7 @@ const routesConfig = [
     {
       path: '/approvals',
       element: lazy(() => import('../Pages/Approvals/Approvals')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
@@ -58,7 +59,7 @@ const routesConfig = [
     {
       path: '/requests',
       element: lazy(() => import('../Pages/Approvals/requests')),
-      roles: ['USER', 'user', 'ADMIN', 'admin'],
+      roles: [ROLES.SUPERVISOR_CDC],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
@@ -68,7 +69,7 @@ const routesConfig = [
     {
       path: '/reportviewer',
       element: lazy(() => import('../Pages/ReportViewer/ReportViewer')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: ['ADMINFRONT'],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />
@@ -78,12 +79,12 @@ const routesConfig = [
     {
       path: '/currencymanagement',
       element: lazy(() => import('../Pages/CurrencyManagement/CurrencyManagement')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: ['ADMINFRONT'],
     },
     {
       path: '/reports',
       element: lazy(() => import('../Pages/Reports/Reports')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.CONTROLLER],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />
@@ -93,7 +94,7 @@ const routesConfig = [
     {
       path: '/starbucks',
       element: lazy(() => import('../Pages/starbucksClosure/Closure')),
-      roles: ['ADMIN', 'USER', 'admin', 'user'],
+      roles: [ROLES.GENERAL_ZONE],
     }
   ];
   

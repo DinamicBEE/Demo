@@ -30,6 +30,7 @@ export interface PrepaidModel {
   employeeId: number;
   total: TotalModel;
   lines: PrepaidLineModel[];
+  isRoleEditable?: boolean;
 }
 
 export interface PrepaidLineModel {

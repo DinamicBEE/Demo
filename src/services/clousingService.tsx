@@ -13,6 +13,8 @@ import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
 import { ClousingSave } from "@models/saveClousing.model";
+import { loadData } from "../indexedDB/localDB";
+import { ROLES } from "@models/const/menu.consts";
 
 /**
  * This function gets the information
@@ -31,9 +33,11 @@ export const getCashClousing = async (
         crcId: clousingId,
         idCurrency: idCurrency,
       },
-    });    
+    });
+    const userRole = await loadData.userData.get("userRole");    
     const cashDataCopy = {
       ...response.data,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
@@ -80,8 +84,10 @@ export const getTDCClousing = async (
     const response = await api.get(TDC, {
       params: { crcId: clousingId, idCurrency: idCurrency },
     });   
+    const userRole = await loadData.userData.get("userRole");
     const newResponse = {
       ...response.data,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       lines: response.data.lines.map((line: any) => ({
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
@@ -93,6 +99,7 @@ export const getTDCClousing = async (
           idCustom: "voucher-" + uuidv4(),
           dateDisplay: format(new Date(v.date), "dd/MM/yyyy"),
         })),
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       })),
       total:{
         difference: response.data.total.totalPhysical - response.data.total.totalPOS,
@@ -117,6 +124,7 @@ export const getTDCClousing = async (
 export const getCustomerClousing = async (
   clousingId: number
 ): Promise<ResponseModel> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
@@ -146,6 +154,7 @@ export const getCustomerClousing = async (
     const newDifference = newTotalFisico - (response.data.totalPos ?? 0);
     const data: CustomerModel = {
       id: clousingId,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       total: {
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
@@ -171,6 +180,7 @@ export const getCustomerClousing = async (
           difference: 0,
         },
         lines: [],
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       } as CustomerModel,
     };
     return responseData;
@@ -187,11 +197,11 @@ export const getSpecialCustomerClousing = async (
   clousingId: number,
   idCurrency: number
 ): Promise<ResponseModel> => {
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(SP_CLIENTS, {
       params: { idCashRegisterClosure: clousingId, idCurrency },
     });
-
     const lines = response.data.specialClientResponses.map(
       (line: any) => ({
         ...line,
@@ -216,6 +226,7 @@ export const getSpecialCustomerClousing = async (
         difference: newDiff ?? 0,
       },
       lines: [...lines],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const responseData: ResponseModel = {
@@ -235,6 +246,7 @@ export const getSpecialCustomerClousing = async (
           difference: 0,
         },
         lines: [],
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       } as SpecialCustomerModel,
     };
     return responseData;
@@ -252,7 +264,7 @@ export const getPrepaidClousing = async (
   dateClousing: string
 ): Promise<PrepaidModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     const response = await api.get(GET_PREPAID, {
       params: { idCashRegisterClosure: clousingId },
@@ -290,6 +302,7 @@ export const getPrepaidClousing = async (
         difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
       lines: updateLines,
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     return data;
@@ -304,6 +317,7 @@ export const getPrepaidClousing = async (
         difference: 0,
       },
       lines: [],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     } as PrepaidModel;
   }
 };
@@ -354,7 +368,7 @@ export const getEmployeeClousing = async (
   clousingId: number
 ): Promise<EmployeeModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
@@ -380,6 +394,7 @@ export const getEmployeeClousing = async (
         ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const response = /* employeeDataCopy; */ employeeDataCopyAxios;
@@ -406,7 +421,7 @@ export const getIntercompanyClousing = async (
   clousingId: number
 ): Promise<IntercompanyModel> => {
   // console.log(clousingId)
-
+  const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(INTERCOMPANY, {
@@ -438,6 +453,7 @@ export const getIntercompanyClousing = async (
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
       })),
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
     const data = {
@@ -456,6 +472,7 @@ export const getIntercompanyClousing = async (
         difference: 0,
       },
       lines: [],
+      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
   }
 };

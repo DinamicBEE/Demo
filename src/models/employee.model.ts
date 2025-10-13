@@ -29,7 +29,8 @@ export interface EmployeeModel {
     id: number | string;
     employeeId?: number;
     total: TotalModel;
-    lines: EmployeeLine[]
+    lines: EmployeeLine[];
+    isRoleEditable?: boolean;
 }
 
 export interface EmployeeLine {

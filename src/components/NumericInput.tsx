@@ -88,7 +88,8 @@ function CurrencyInputNumber({
 }) {
 
     return (
-        <NumericFormat
+        <NumericFormat 
+            disabled={disabled}
             customInput={Input}
             thousandSeparator=","
             decimalSeparator="."

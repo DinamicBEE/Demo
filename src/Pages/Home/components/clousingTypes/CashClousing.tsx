@@ -102,7 +102,7 @@ function CashClousing({ data, idCurrency }: any) {
             value={cashData.tips}
             loading={cashLoading}
             onChange={handleChangeTips}
-            disabled={data?.status === "Cerrado" ? true : false}
+            disabled={data?.status === "Cerrado" || !cashData.isRoleEditable ? true : false}
           />
         </Grid>
 
@@ -161,7 +161,7 @@ function CashClousing({ data, idCurrency }: any) {
                           disabled={true}
                         />
 
-                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={(Number(item.totalFisico) < 0 || Number(item.totalPOS) < 0 )? true : false}>
+                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={(Number(item.totalFisico) < 0 || Number(item.totalPOS) < 0 ) ? true : false}>
                           <CiSquarePlus />
                         </Button>
                       </>
@@ -229,6 +229,7 @@ function CashClousing({ data, idCurrency }: any) {
             onSave={handleSaveFromDialog}
             currencyId={selectedCurrencyId}
             data={data}
+            isRoleEditable={cashData.isRoleEditable}
           />
         </Box>
       )}
