@@ -74,11 +74,11 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPVEN_04,
     name: `${REPORT_NAME.REPVEN_00}: ${REPORT_NAME.REPVEN_04}`,
-    date: true,
-    dateRange: false,
-    multicdc: false,
+    date: false,
+    dateRange: true,
     subsidiary: true,
-    cdc: true,
+    multicdc: true,
+    cdc: false,
     customer: false,
   },
   {

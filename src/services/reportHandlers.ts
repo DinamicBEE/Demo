@@ -68,18 +68,21 @@ export const handleEmployeeSalesData = (rowData: any[]): ReportsModels.EmployeeS
   });
 }
 
+const dateTransform = (dateString: string) => {
+  const formatDate = dateString.split('T')[0]
+  const date = new Date(`${formatDate}`);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 export const handlePaymentMethod = (rowData: any[]): ReportsModels.PaymentMethodModel[] => {
 
   return rowData.map(item =>{
-    
-    const formatDate = item.fechaVenta.split('T')[0]
-    const date = new Date(`${formatDate}`);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
 
     return {
-      date: `${day}/${month}/${year}`,
+      date: dateTransform(item.fechaVenta),
       location: item.ubicacion,
       cdc: item.centroDeConsumo,
       paymentMethod: item.formaPago,
@@ -96,14 +99,9 @@ export const handlePaymentMethod = (rowData: any[]): ReportsModels.PaymentMethod
 
 export const handlePMIXGeneralData = (rowData: any[]): ReportsModels.PMixGeneralReportModel[] => {
   return rowData.map(item => {
-    const formatDate = item.salesDate.split('T')[0]
-    const date = new Date(`${formatDate}T00:00:00`);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear();
 
     return {
-      date: `${day}/${month}/${year}`,
+      date: dateTransform(item.salesDate),
       subsidiary: item.subsidiaries,
       cdc: item.consumerCenter,
       category: item.category,
@@ -311,6 +309,36 @@ export const handleVoidsData = (rowData: any[]): ReportsModels.VoidsModel[] => {
   })
 }
 
+export const handleSalesVsDiscountData = (rowData: any[]): ReportsModels.SalesVsDiscountModel[] => {
+  return rowData.map(item => {
+    return {
+      date: dateTransform(item.fechaVenta),
+      cdc: item.centroDeConsumo,
+      totalSale: Number(item.ventaTotal),
+      voids: Number(item.voids),
+      discounts: Number(item.descuentos),
+      netSales: Number(item.ventasNetas),
+      budget: Number(item.presupuesto),
+      budgetDifferencePercentage: Number(item.porcentajeDiferenciaVsPresupuesto),
+      budgetDifferenceAmount: Number(item.diferenciaVsPresupuesto),
+      lastYearSale: Number(item.ventaAnioAnterior),
+      lastYearDifferencePercentage: Number(item.porcentajeDiferenciaVsAnterior),
+      pax: Number(item.pax),
+      salePerPax: Number(item.ventaEntrePax),
+      lastYearPax: Number(item.paxAnioAnterior),
+      checksCount: Number(item.numCheques),
+      paxPerCheck: Number(item.paxEntreCheques),
+      averageCheckValue: Number(item.valorChequePromedio),
+      lastYearAverageCheckValue: Number(item.getValorChequePromedioAnioAnterior),
+      cost: item.costo ? Number(item.costo) : 0,
+      costPercentage: item.costoVsVentas ? Number(item.costoVsVentas) : 0,
+      realRPE: item.rpeReal ? Number(item.rpeReal) : 0,
+      budgetRPE: item.rpePresupuesto ? Number(item.rpePresupuesto) : 0,
+      rpeDifference: item.rpeDiferencia ? Number(item.rpeDiferencia) : 0,
+    }
+  });
+}
+
 export const reportHandlers = {
   handleDiscountData,
   handleEmployeeSalesData,
@@ -320,5 +348,6 @@ export const reportHandlers = {
   handleSyncErrorsData,
   handleBanamexData,
   handleSantanderData,
-  handleVoidsData
+  handleVoidsData,
+  handleSalesVsDiscountData 
 };
