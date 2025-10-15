@@ -40,22 +40,29 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
     async (clousingId: number, dateClousing: string) => {
       setPrepaidLoading(true);
 
+      
+
       if (prepaidRef.current[clousingId]) {
         setPrepaidLoading(false);
         return prepaidRef.current[clousingId];
       }
 
       try {
-        const data = await getPrepaidClousing(clousingId, dateClousing);
+        const response = await getPrepaidClousing(clousingId, dateClousing);
+
+        if (!response.success) {
+          setPrepaidLoading(false);
+          return response.data;
+      }
         
         const updatePrepaid = {
           ...prepaidRef.current,
-          [clousingId]: data,
+          [clousingId]: response.data,
         };
 
         updatePrepaidData(updatePrepaid);
 
-        return data;
+        return response.data;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
