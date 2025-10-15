@@ -66,3 +66,12 @@ export interface selectOption {
   value: number; 
   label: string;
 }
+
+export interface ParametersSelectedModel {
+  country: selectOption;
+  subsidiaries: selectOption[];
+  zone: selectOption[];
+  cdc: selectOption[];
+  status: selectOption[];
+  date?: string;
+}
