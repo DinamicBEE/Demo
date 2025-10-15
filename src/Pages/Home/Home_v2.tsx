@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
-import { selectOption } from "@models/common.model";
+import { ParametersSelectedModel, selectOption } from "@models/common.model";
 import { getCountries, getLocations, getStatus, getSubsidiariesByCountry } from "@services/catalogService";
 import GeneralInfo from "./components/table/GeneralInfo";
 import { getGeneralReports } from "@services/reportService";
@@ -11,9 +11,10 @@ import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import Loading from "@components/Loading";
 import { reportTotals } from "@services/homeService";
 import { handleMultiSelectChange, fetchAndSetData, renderMultiSelectWithControls } from "../../utils/selectManagement";
+import { parameters } from "../../indexedDB/parametersDB";
 
 function Home_v2() {
-
+   
     const [countries, setCountries] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
     const [subsidiaries, setSubsidiaries] = useState<ListCollection<selectOption>>(
@@ -23,6 +24,7 @@ function Home_v2() {
     const [status, setStatus] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
 
+    const [selectedCountry, setSelectedCountry] = useState<selectOption>({} as selectOption);
     const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
     const [selectedSubsidiaries, setSelectedSubsidiaries] = useState<selectOption[]>([]);
     const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
@@ -32,7 +34,7 @@ function Home_v2() {
     const [totals, setTotals] = useState<TotalModel>({} as TotalModel);
     
     const [formattedDate, setFormattedDate] = useState<string>('');
-    const initialDate = new Date();
+    const [initialDate, setInitialDate] = useState<Date>(new Date());
 
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
@@ -40,18 +42,37 @@ function Home_v2() {
 
     useEffect(() => {
         async function fetchData() {
+            
             try {
-
+                
                 await Promise.all([
                     fetchAndSetData(getCountries, setCountries),
                     fetchAndSetData(getStatus, setStatus),
-                ]);
+                ]).then(async () => {
+                    const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
+                    console.log("Initial data fetched", parametersPromise);
+                    if(parametersPromise !== undefined) {
+                        console.log("Fetched parameters from IndexedDB:", parametersPromise);
+                        const savedParams = parametersPromise.value;
+                        setSelectedSubsidiaries(savedParams.subsidiaries);
+                        setSelectedSubIds(savedParams.subsidiaries.map(sub => sub.value));
+                        setSelectedOptions(savedParams.cdc);
+                        setSelectedCDC(savedParams.cdc.map(cdc => cdc.value));
+                        setSelectedStatus(savedParams.status);
+                        setFormattedDate(savedParams.date ?? '');
+                        setInitialDate(savedParams.date ? new Date(savedParams.date) : new Date());
+                        setSelectedCountry(savedParams.country);
+
+                        fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
+                        getDataReport()
+                    }
+                });
+
                 
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         }
-
         fetchData();
     }, 
     []);
@@ -59,6 +80,17 @@ function Home_v2() {
     async function getDataReport() {
         setLoading(true);
         const estatusNames = selectedStatus.map((status) => status.label);
+        const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
+        const paramsToSave: ParametersSelectedModel = {
+            country: parametersPromise !== undefined ? parametersPromise.value.country : selectedCountry,
+            subsidiaries: parametersPromise !== undefined ? parametersPromise.value.subsidiaries : selectedSubsidiaries,
+            zone: parametersPromise !== undefined ? parametersPromise.value.zone : selectedCDCOptions,
+            cdc: parametersPromise !== undefined ? parametersPromise.value.cdc : selectedCDCOptions,
+            status: parametersPromise !== undefined ? parametersPromise.value.status : selectedStatus,
+            date: parametersPromise !== undefined ? parametersPromise.value.date : formattedDate
+        };
+        console.log("Parameters to save:", paramsToSave);
+        await parameters.parametersSelected.put({key: 'parameters', value: paramsToSave});
         const report = await getGeneralReports(selectedCDC, formattedDate, estatusNames)
         
         const totals = reportTotals(report);
@@ -77,11 +109,20 @@ function Home_v2() {
     }
 
     useEffect(() => {
-        if (selectedSubIds.length > 0) {
-            fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
-        } else {
-          setCDC(createListCollection<selectOption>({ items: [] }))
+        async function updateCDC() {
+            if (selectedSubIds.length > 0) {
+                const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
+                if(parametersPromise === undefined) {
+                    setSelectedCDC([]);
+                    setSelectedOptions([]);
+                }
+                setCDC(createListCollection<selectOption>({ items: [] }));
+                await fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+            } else {
+              setCDC(createListCollection<selectOption>({ items: [] }));
+            }
         }
+        updateCDC();
     }, [selectedSubIds]);
 
     const handleSubsidiariesChange = (event: { items: selectOption[] }) => {      
@@ -122,12 +163,14 @@ function Home_v2() {
             >
                 <SelectRoot
                     collection={countries}
+                    value={selectedCountry?.value ? [selectedCountry.value] : []}
                     onValueChange={(event) => {
                         const selectedCountries = event.items.map((item: selectOption) => ({
                             value: item.value,
                             label: item.label,
                         }));
 
+                        setSelectedCountry(selectedCountries[0]);
                         fetchAndSetData(() => getSubsidiariesByCountry(selectedCountries[0].label), setSubsidiaries);
                     }}
                 >

@@ -5,6 +5,7 @@ import { getUserRol, loginUser, refreshAuthToken } from "@services/authService";
 import { loadData } from "../indexedDB/localDB";
 import { COOKIE_NAMES } from "@models/common.const";
 import { getRoleName } from "@utils/getRoles";
+import { parameters } from "../indexedDB/parametersDB";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = (): AuthContextType => {
@@ -87,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     try {
       await loadData.userData.delete("userRole");
+      await parameters.parametersSelected.clear();
     } catch (error) {
       console.error("Error al limpiar IndexedDB:", error);
     }
