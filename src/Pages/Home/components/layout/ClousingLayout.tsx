@@ -12,7 +12,7 @@ import { BsPersonLinesFill, BsPersonVcard } from "react-icons/bs";
 import { RiUserStarFill, RiCoupon3Line } from "react-icons/ri";
 import { LiaUsersSolid } from "react-icons/lia";
 import HeaderClousing from "./HeaderClousing";
-import { lazy, useState, Suspense, useEffect, useLayoutEffect } from "react";
+import { lazy, useState, Suspense, useEffect } from "react";
 import FooterClousing from "./FooterClousing";
 import { CLOUSING_KEY } from "@models/common.const";
 import { ClousingLayoutProps, ClousingLinesModel } from "@models/common.clousing.model";
@@ -87,7 +87,7 @@ function ClousingLayout({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Corte de Caja {employee?.employe} </DialogTitle>
+            <DialogTitle>Corte de Caja {employee?.employe} {employee?.closingConfirmation ? " (Cerrado)" : " (Abierto)"} </DialogTitle>
             <Box>
               <HeaderClousing
                 location={location.name}

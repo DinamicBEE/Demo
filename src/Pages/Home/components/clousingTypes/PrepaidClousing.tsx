@@ -65,8 +65,8 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     type: "error" | "warning" | "success"
   ) => {
     toaster.create({
-      title: message,
-      description: "",
+      title: "",
+      description: message,
       type,
       duration: 2500,
     });
@@ -133,6 +133,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       );
 
       setVisibleItems(prepaidData?.lines?.slice(startRange, endRange) || []);
+
       setLoading(false);
     };
 

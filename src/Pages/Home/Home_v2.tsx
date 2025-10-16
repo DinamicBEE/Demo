@@ -49,19 +49,17 @@ function Home_v2() {
                     fetchAndSetData(getCountries, setCountries),
                     fetchAndSetData(getStatus, setStatus),
                 ]).then(async () => {
-                    const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
-                    console.log("Initial data fetched", parametersPromise);
+                    const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
                     if(parametersPromise !== undefined) {
-                        console.log("Fetched parameters from IndexedDB:", parametersPromise);
                         const savedParams = parametersPromise.value;
-                        setSelectedSubsidiaries(savedParams.subsidiaries);
-                        setSelectedSubIds(savedParams.subsidiaries.map(sub => sub.value));
-                        setSelectedOptions(savedParams.cdc);
-                        setSelectedCDC(savedParams.cdc.map(cdc => cdc.value));
-                        setSelectedStatus(savedParams.status);
+                        setSelectedSubsidiaries(savedParams.subsidiaries ?? []);
+                        setSelectedSubIds(savedParams.subsidiaries.map((sub: any) => sub.value) ?? []);
+                        setSelectedOptions(savedParams.cdc ?? []);
+                        setSelectedCDC(savedParams.cdc.map((cdc: any) => cdc.value) ?? []);
+                        setSelectedStatus(savedParams.status ?? []);
                         setFormattedDate(savedParams.date ?? '');
                         setInitialDate(savedParams.date ? new Date(savedParams.date) : new Date());
-                        setSelectedCountry(savedParams.country);
+                        setSelectedCountry(savedParams.country ?? {} as selectOption);
 
                         fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
                         getDataReport()
@@ -79,8 +77,8 @@ function Home_v2() {
 
     async function getDataReport() {
         setLoading(true);
-        const estatusNames = selectedStatus.map((status) => status.label);
-        const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
+        const estatusNames = selectedStatus.map((status) => status.label);        
+        const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
         const paramsToSave: ParametersSelectedModel = {
             country: parametersPromise !== undefined ? parametersPromise.value.country : selectedCountry,
             subsidiaries: parametersPromise !== undefined ? parametersPromise.value.subsidiaries : selectedSubsidiaries,
@@ -89,8 +87,9 @@ function Home_v2() {
             status: parametersPromise !== undefined ? parametersPromise.value.status : selectedStatus,
             date: parametersPromise !== undefined ? parametersPromise.value.date : formattedDate
         };
-        console.log("Parameters to save:", paramsToSave);
-        await parameters.parametersSelected.put({key: 'parameters', value: paramsToSave});
+        await parameters.parametersSelected.put(
+          {key: 'parametersSelected', value: paramsToSave},
+        );
         const report = await getGeneralReports(selectedCDC, formattedDate, estatusNames)
         
         const totals = reportTotals(report);
@@ -111,10 +110,16 @@ function Home_v2() {
     useEffect(() => {
         async function updateCDC() {
             if (selectedSubIds.length > 0) {
-                const parametersPromise = await parameters.parametersSelected.get({ key: 'parameters' });
-                if(parametersPromise === undefined) {
-                    setSelectedCDC([]);
-                    setSelectedOptions([]);
+                try {
+                  const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
+                  if(parametersPromise === undefined) {
+                      setSelectedCDC([]);
+                      setSelectedOptions([]);
+                  }
+                }
+                catch (e ) {
+                  console.error(e);
+                  
                 }
                 setCDC(createListCollection<selectOption>({ items: [] }));
                 await fetchAndSetData(() => getLocations(selectedSubIds), setCDC);

@@ -262,7 +262,7 @@ export const getSpecialCustomerClousing = async (
 export const getPrepaidClousing = async (
   clousingId: number,
   dateClousing: string
-): Promise<PrepaidModel> => {
+): Promise<ResponseModel> => {
   // console.log(clousingId)
   const userRole = await loadData.userData.get("userRole");
   try {
@@ -305,20 +305,27 @@ export const getPrepaidClousing = async (
       isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
     };
 
-    return data;
+    const responseData: ResponseModel = {
+      success: true,
+      data: data,
+    }
+
+    return responseData;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return {
-      employeeId: clousingId,
-      id: clousingId,
-      total: {
-        totalPOS: 0,
-        totalPhysical: 0,
-        difference: 0,
-      },
-      lines: [],
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
-    } as PrepaidModel;
+      success: false,
+      data:{
+        employeeId: clousingId,
+        id: clousingId,
+        total: {
+          totalPOS: 0,
+          totalPhysical: 0,
+          difference: 0,
+        },
+        lines: [],
+        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      } as PrepaidModel}
   }
 };
 
