@@ -10,7 +10,7 @@ class LocalDB extends Dexie {
         super("LocalDB");
 
         this.version(1).stores({
-            parametersSelected: "subsidiaries, zone, cdc, status, date",
+            parametersSelected: "country, subsidiaries, zone, cdc, status, date",
         });
 
         this.parametersSelected = this.table("parametersSelected");

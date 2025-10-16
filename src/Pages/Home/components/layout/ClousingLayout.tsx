@@ -121,7 +121,7 @@ function ClousingLayout({
                       cashRef !== undefined &&
                       cashRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
-                        ? "$ " + cashRef.current[employee.id].total?.totalPhysical
+                        ? "$ " + cashRef.current[employee.id].total?.totalPhysical.toFixed(2)
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -137,7 +137,7 @@ function ClousingLayout({
                       {employee?.id !== undefined &&
                       tdcRef != undefined &&
                       tdcRef.current[employee.id]?.total?.totalPhysical !== undefined
-                        ? "$ " + tdcRef.current[employee.id].total?.totalPhysical
+                        ? "$ " + tdcRef.current[employee.id].total?.totalPhysical.toFixed(2)
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -155,8 +155,8 @@ function ClousingLayout({
                       customerRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          customerRef.current[employee.id].total?.totalPhysical
-                        : "$ " + 0}
+                          customerRef.current[employee.id].total?.totalPhysical.toFixed(2)
+                        : "$ 0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
@@ -173,8 +173,8 @@ function ClousingLayout({
                       specialCustRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          specialCustRef.current[employee.id].total?.totalPhysical
-                        : "$ " + 0}
+                          specialCustRef.current[employee.id].total?.totalPhysical.toFixed(2)
+                        : "$ 0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
@@ -190,7 +190,7 @@ function ClousingLayout({
                       prepaidRef !== undefined &&
                       prepaidRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
-                        ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical
+                        ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical.toFixed(2)
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -208,7 +208,7 @@ function ClousingLayout({
                       employeeRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          employeeRef.current[employee.id].total?.totalPhysical
+                          employeeRef.current[employee.id].total?.totalPhysical.toFixed(2)
                         : "$ " + 0}
                     </Text>
                   </Flex>
@@ -226,7 +226,7 @@ function ClousingLayout({
                       intercompanyRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " +
-                          intercompanyRef.current[employee.id].total?.totalPhysical
+                          intercompanyRef.current[employee.id].total?.totalPhysical.toFixed(2)
                         : "$ " + 0}
                     </Text>
                   </Flex>

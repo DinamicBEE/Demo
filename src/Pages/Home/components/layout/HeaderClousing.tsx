@@ -53,11 +53,11 @@ function HeaderClousing({
 
   const memoizedHeaderProps = useMemo(() => ({
     date: localHeader?.date || "",
-    totalPOS: localHeader?.totalPOS,
-    totalClousing: localHeader?.totalClousing,
-    difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : undefined,
-    discountClousing: localHeader?.discountClousing,
-    discountPhysical: discountValue
+    totalPOS: localHeader?.totalPOS ? Number(localHeader.totalPOS.toFixed(2)) : 0,
+    totalClousing: localHeader?.totalClousing ? Number(localHeader.totalClousing.toFixed(2)) : 0,
+    difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : 0,
+    discountClousing: localHeader?.discountClousing ? Number(localHeader.discountClousing.toFixed(2)) : 0,
+    discountPhysical: discountValue ? Number(discountValue.toFixed(2)) : 0,
   }), [localHeader, discountValue]);
 
   return (
