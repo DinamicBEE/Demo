@@ -31,23 +31,17 @@ const EmployeesClousing = lazy(
 );
 import { useHeaders } from "@context/home/headerContext";
 
-function ClousingLayout({
-  isOpen,
-  onClose,
-  employee,
-  location,
-  subsidiary,
-}: ClousingLayoutProps) {
+function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
-  const { cashRef } = useCashClousing();
+  const { getCashData, cashRef } = useCashClousing();
   const { getCustomerData, customerRef } = useCustomerContext();
   const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
   const { setEmployee, employeeRef, getEmployeetData } = useEmployeeContext();
   const { getPrepaidData, prepaidRef,setCoupons } = usePrepaidContext();
   const { getTDCData, tdcRef } = useTDCContext();
   const { getIntercompanyData, setIntercompany, intercompanyRef } = useIntercompanyContext();
-  const { headerRef } = useHeaders();
+  const { headerRef, updateTotal } = useHeaders();
 
   const tabs = useTabs({
     defaultValue: CLOUSING_KEY.CASH,
@@ -57,18 +51,56 @@ function ClousingLayout({
   });
 
   useEffect(() => {
-    if (isOpen) {
-      tabs.setValue(CLOUSING_KEY.CASH);
-    }
-    if (isOpen && !employee?.closingConfirmation) {
-      getCustomerData(employee?.id ?? 0);
-      getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency);
-      getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? "");
-      getTDCData(employee?.id ?? 0, subsidiary.idCurrency);
-      getIntercompanyData(employee?.id ?? 0);
-      getEmployeetData(employee?.id ?? 0);
-      
-    }
+    const run = async () => {
+      if (isOpen) {
+        tabs.setValue(CLOUSING_KEY.CASH);
+        
+        await Promise.all([
+          getCustomerData(employee?.id ?? 0),
+          getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency),
+          getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? ""),
+          getTDCData(employee?.id ?? 0, subsidiary.idCurrency),
+          getIntercompanyData(employee?.id ?? 0),
+          getEmployeetData(employee?.id ?? 0),
+          getCashData(employee?.id ?? 0, subsidiary.idCurrency),
+        ]).then((response) => {
+          console.log("response", response);
+          if (response[6].total != undefined) {
+            updateTotal(response[6].total?.totalPhysical ?? 0, employee.id, CLOUSING_KEY.CASH);
+          }
+          if(response[0].total != undefined && response[0].total.difference < 0) {
+            updateTotal(response[0].total.totalPOS ?? 0, employee.id, CLOUSING_KEY.CUSTOMER);
+          } else {
+            updateTotal(response[0].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.CUSTOMER);
+          }
+  
+          if(response[1].total != undefined) {
+            updateTotal(response[1].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.SPECIALCUSTOMER);
+          }
+  
+          if(response[2].total != undefined) {
+            updateTotal(response[2].total.difference < 0 
+              ? response[2].total.totalPOS : response[2].total.totalPhysical, employee.id, CLOUSING_KEY.PREPAID);
+          }
+  
+          if(response[3].total != undefined) {
+            updateTotal(response[3].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.TDC);
+          }
+  
+          if(response[4].total != undefined) {
+            updateTotal(response[4].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.INTERCOMPANY);
+          }
+  
+          if(response[5].total != undefined) {
+            updateTotal(response[5].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.EMPLOYEE);
+          }
+        });       
+
+
+      }
+    };
+
+    run();
   }, [isOpen]);
 
   return (

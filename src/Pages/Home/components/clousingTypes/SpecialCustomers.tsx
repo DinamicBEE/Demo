@@ -22,7 +22,6 @@ import {
   SpecialCustomerModel,
 } from "@models/specialCustome.model";
 import { CLOUSING_KEY } from "@models/common.const";
-import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
@@ -43,7 +42,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
       setSpecialCustomer,
       data?.id
     );
-  const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([]);
 
@@ -65,11 +63,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
           CLOUSING_KEY.SPECIALCUSTOMER
         );
       setSpecialCustomer(specialCustomer);
-      updateTotal(
-        specialCustomer.total.totalPhysical,
-        data.id,
-        CLOUSING_KEY.SPECIALCUSTOMER
-      );
       setCustomers(customersApi);
       const items = specialCustomer?.lines?.slice(startRange, endRange);
       setVisibleItems(items);

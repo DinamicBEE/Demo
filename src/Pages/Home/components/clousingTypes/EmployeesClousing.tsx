@@ -6,7 +6,6 @@ import AddEmployee from "./AddEmployee";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/common.const";
-import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import { FiPrinter } from "react-icons/fi";
 import EmployeesPayrollDiscountForm from "./EmployeesPayrollDiscountForm";
@@ -20,7 +19,6 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
   const [ editEmployee, setEditEmployee ] = useState<EmployeeLine | null>(null);
   const { getEmployeetData, employee, employeeLoading } = useEmployeeContext();
   const { setFooterData } = useFooter();
-  const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<EmployeeLine[]>([])
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
@@ -36,7 +34,6 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)
-      updateTotal(employeeData.total.totalPhysical, data.id, CLOUSING_KEY.EMPLOYEE);
       
       const items = employeeData?.lines?.slice(startRange, endRange);
       setVisibleItems(items);

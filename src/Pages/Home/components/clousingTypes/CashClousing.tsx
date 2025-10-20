@@ -41,11 +41,7 @@ function CashClousing({ data, idCurrency }: any) {
       }
 
       setCashData(cashData);
-
-      if (cashData.total != undefined) {
-        updateTotal(cashData.total.totalPhysical, data.id, CLOUSING_KEY.CASH);
-      }
-
+      
       const items = cashData?.currencies?.slice(startRange, endRange);
 
       setVisibleItems(items);

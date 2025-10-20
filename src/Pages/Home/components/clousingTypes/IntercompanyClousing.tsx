@@ -80,7 +80,6 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
       }
 
       setLoading(false);
-      updateTotal(intercompanyData.total.totalPhysical, data.id, CLOUSING_KEY.INTERCOMPANY);
     
       const items = intercompanyData?.lines?.slice(startRange, endRange);
       setVisibleItems(items);

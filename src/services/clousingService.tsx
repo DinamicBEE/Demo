@@ -381,8 +381,7 @@ export const getEmployeeClousing = async (
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
       params: { crcId: clousingId },
     });
-    console.log("response",responseAxios.data);
-    
+        
     const totalPhysical = responseAxios.data.reduce(
       (acc: number, curr: any) => acc + curr.amount,
       0

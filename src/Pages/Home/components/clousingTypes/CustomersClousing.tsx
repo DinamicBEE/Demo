@@ -90,16 +90,6 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
 
       setCustomersData(customers);
       setCurrencies(currencies);
-      
-      if (customers?.total?.difference < 0) {
-        updateTotal(customers.total.totalPOS, data.id, CLOUSING_KEY.CUSTOMER);
-      } else {
-        updateTotal(
-          customers.total.totalPhysical,
-          data.id,
-          CLOUSING_KEY.CUSTOMER
-        );
-      }
 
       const items = customers?.lines?.slice(startRange, endRange);      
       setVisibleItems(items);
