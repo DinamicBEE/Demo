@@ -48,6 +48,12 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
   // Estado para almacenar la fecha seleccionada
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate || new Date());
 
+  useEffect(() => {
+    if (initialDate) {
+      setSelectedDate(initialDate);
+    }
+  }, [initialDate]);
+
   // Función para formatear la fecha como YYYY-MM-DD
   const formatDate = (date: Date | null): string => {
     if (!date) return '';

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { ParametersSelectedModel, selectOption } from "@models/common.model";
-import { getCountries, getLocations, getStatus, getSubsidiariesByCountry } from "@services/catalogService";
+import { getCountries, getLocations, getStatus, getSubsidiariesByCountry, getZones } from "@services/catalogService";
 import GeneralInfo from "./components/table/GeneralInfo";
 import { getGeneralReports } from "@services/reportService";
 import { ReportClousingLinesModel, ReportTotalsModel, TotalModel } from "@models/common.clousing.model";
@@ -23,6 +23,8 @@ function Home_v2() {
     createListCollection<selectOption>({ items: [] }));
     const [status, setStatus] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
+    const [zones, setZones] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
 
     const [selectedCountry, setSelectedCountry] = useState<selectOption>({} as selectOption);
     const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
@@ -31,14 +33,23 @@ function Home_v2() {
     const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
     const [rowtotals, setRowTotals] = useState<ReportTotalsModel>({} as ReportTotalsModel);
+    const [selectedZones, setSelectedZones] = useState<number[]>([]);
+    const [selectedZonesOptions, setSelectedZonesOptions] = useState<selectOption[]>([]);
     const [totals, setTotals] = useState<TotalModel>({} as TotalModel);
     
     const [formattedDate, setFormattedDate] = useState<string>('');
-    const [initialDate, setInitialDate] = useState<Date>(new Date());
+    const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
 
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
+    const [isReady, setIsReady] = useState(false);
+
+
+    const parseDateStringToLocalDate = (dateString: string): Date => {
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    };
 
     useEffect(() => {
         async function fetchData() {
@@ -57,16 +68,16 @@ function Home_v2() {
                         setSelectedOptions(savedParams.cdc ?? []);
                         setSelectedCDC(savedParams.cdc.map((cdc: any) => cdc.value) ?? []);
                         setSelectedStatus(savedParams.status ?? []);
-                        setFormattedDate(savedParams.date ?? '');
-                        setInitialDate(savedParams.date ? new Date(savedParams.date) : new Date());
+                        setFormattedDate(savedParams.date ? savedParams.date : '');
+                        setInitialDate(savedParams.date ? parseDateStringToLocalDate(savedParams.date) : undefined);
                         setSelectedCountry(savedParams.country ?? {} as selectOption);
 
                         fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
-                        getDataReport()
+                        // getDataReport()
                     }
                 });
 
-                
+                setIsReady(true);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -108,11 +119,53 @@ function Home_v2() {
     }
 
     useEffect(() => {
+      if (
+        isReady &&
+        formattedDate &&
+        selectedCountry &&
+        selectedSubsidiaries.length > 0
+      ) {
+        getDataReport();
+      }
+    }, [isReady]);
+
+    useEffect(() => {
+      /* setSelectedZones([]);
+      setSelectedZonesOptions([]);
+      setSelectedCDC([]);
+      setSelectedOptions([]); */
+      async function updateZone() {
+          if (selectedSubIds.length > 0) {
+              try {
+                const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
+                if(parametersPromise === undefined || selectedSubIds.length === 0) {
+                    setSelectedZones([]);
+                    setSelectedZonesOptions([]);
+                    setSelectedCDC([]);
+                    setSelectedOptions([]);
+                }
+              }
+              catch (e ) {
+                console.error(e);
+                
+              }
+              setCDC(createListCollection<selectOption>({ items: [] }));
+              setZones(createListCollection<selectOption>({ items: [] }));
+              await fetchAndSetData(() => getZones(selectedSubIds), setZones);
+          } else {
+            setZones(createListCollection<selectOption>({ items: [] }));
+            setCDC(createListCollection<selectOption>({ items: [] }));
+          }
+      }
+      updateZone();
+    }, [selectedSubIds]);
+
+    useEffect(() => {
         async function updateCDC() {
-            if (selectedSubIds.length > 0) {
+            if (selectedZones.length > 0) {
                 try {
                   const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
-                  if(parametersPromise === undefined) {
+                  if(parametersPromise === undefined || selectedSubIds.length === 0 || selectedZones.length === 0) {
                       setSelectedCDC([]);
                       setSelectedOptions([]);
                   }
@@ -122,13 +175,13 @@ function Home_v2() {
                   
                 }
                 setCDC(createListCollection<selectOption>({ items: [] }));
-                await fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+                await fetchAndSetData(() => getLocations(selectedZones), setCDC);
             } else {
               setCDC(createListCollection<selectOption>({ items: [] }));
             }
         }
         updateCDC();
-    }, [selectedSubIds]);
+    }, [selectedZonesOptions]);
 
     const handleSubsidiariesChange = (event: { items: selectOption[] }) => {      
         handleMultiSelectChange({
@@ -139,6 +192,14 @@ function Home_v2() {
         })
     };
 
+    const handleZoneChange = (event: { items: selectOption[] }) => {
+        handleMultiSelectChange({
+            newItems: event.items,
+            currentSelected: selectedZonesOptions,
+            setSelectedOptions: setSelectedZonesOptions,
+            setSelectedIds: setSelectedZones
+        })
+    };
     const handleCDCChange = (event: { items: selectOption[] }) => {
         handleMultiSelectChange({
             newItems: event.items,
@@ -205,12 +266,21 @@ function Home_v2() {
                 }
                 
                 {renderMultiSelectWithControls(
+                    zones,
+                    handleZoneChange,
+                    "Zona",
+                    "Selecciona una Zona",
+                    selectedZonesOptions,
+                    !(selectedSubsidiaries.length > 0)
+                  )
+                }
+                {renderMultiSelectWithControls(
                     cdc,
                     handleCDCChange,
                     "Centro de consumo",
                     "Selecciona un centro de consumo",
                     selectedCDCOptions,
-                    selectedSubsidiaries.length > 0 ? false : true
+                    !(selectedZones.length > 0)
                   )
                 }
 
@@ -228,7 +298,7 @@ function Home_v2() {
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
-                <GridItem colSpan={2} />
+                <GridItem colSpan={1} />
 
                 {formattedDate != '' && (<Button
                 alignSelf={"flex-end"}
