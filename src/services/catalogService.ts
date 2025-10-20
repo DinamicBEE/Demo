@@ -3,7 +3,8 @@ import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
 import { CLIENTSLIST, CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
-  REASONLIST, SUBSIDIARIES, TICKETS } from "./settings";
+  REASONLIST, SUBSIDIARIES, TICKETS, 
+  ZONES} from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 
@@ -220,7 +221,11 @@ export const employeeDelete = async (employeeDelId: number): Promise<boolean> =>
 
 export const getCountries = async (): Promise<location[]> => {
   try {
-    const response = await api.get(GET_COUNTRIES);
+    const response = await api.get(GET_COUNTRIES, {
+      params: {
+        user: Cookies.get("username"),
+      }
+    });
 
     const countries = response.data.map((country: string, index: number) => ({
       id: index + 1,
@@ -247,6 +252,19 @@ export const getSubsidiariesByCountry = async (country: string): Promise<locatio
     return [];
   }
 }
+export const getZones = async (subIds: number[]): Promise<location[]> => {
+  try {
+    const username = Cookies.get("username");
+    const response = await api.get(ZONES, {
+      params: { user: username, subsidiaria: subIds.join(",") },
+    });
+   
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener las zonas:", error);
+    return [];
+  }
+}
 
 export const getStatus = async (): Promise<location[]> => {
   try {
@@ -263,12 +281,12 @@ export const getStatus = async (): Promise<location[]> => {
   }
 }
 
-export const getLocations = async (subIds: number[]): Promise<location[]> => {
+export const getLocations = async (zoneIds: number[]): Promise<location[]> => {
   try {
-    const idsList = subIds.join(",");
+    const idsList = zoneIds.join(",");
 
     const response = await api.get(LOCATIONS,{
-      params: { subsidiaria: idsList },
+      params: { zone: idsList, user: Cookies.get("username") },
     });
 
     return response.data;

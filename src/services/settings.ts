@@ -36,6 +36,7 @@ export const GETREASONLIST = `${API_BASE}/reason/list`;
 //export const GET_BATCH_DETAILS = `crc/cash-register-closure/batchclosure/getBatchDetails`;
 
 export const SUBSIDIARIES = `${API_BASE}/subsidiaria/list`;
+export const ZONES = `${API_BASE}/subsidiaria/zones`;
 export const LOCATIONS = `${API_BASE}/subsidiaria/store`;
 export const CURRENCY = `${API_BASE}/currency/list`;
 export const SP_CLIENTS = `${API_BASE}/special/client`;
