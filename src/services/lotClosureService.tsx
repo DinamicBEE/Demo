@@ -52,7 +52,7 @@ export const getCompanies = async () => {
     return [];
   }
 };
-
+//! DEPRECATED
 export const getLocations = async (
   companyId: number
 ): Promise<StoreModel[]> => {

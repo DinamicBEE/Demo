@@ -7,11 +7,13 @@ import {
   useCallback,
   useRef,
 } from "react";
-import { getCompanies, getLocations } from "@services/lotClosureService";
+import { getCompanies } from "@services/lotClosureService";
 import {
   LotCatalogContextType,
 } from "@models/lotClosure.model";
 import { createListCollection, ListCollection } from "@chakra-ui/react";
+import { selectOption } from "@models/common.model";
+import { getLocations, getZones } from "@services/catalogService";
 
 const LotCatalogContext = createContext<LotCatalogContextType>(
   {} as LotCatalogContextType
@@ -20,13 +22,18 @@ const LotCatalogContext = createContext<LotCatalogContextType>(
 export const useLotCatalogList = () => useContext(LotCatalogContext);
 
 export function LotCatalogProvider({ children }: { children: ReactNode }) {
-  const [comapanies, setCompanies] = useState<
-    ListCollection<{ value: number; label: string }>
-  >(createListCollection({ items: [] }));
-  const [locations, setLocations] = useState<
-    ListCollection<{ value: number; label: string }>
-  >(createListCollection({ items: [] }));
-  const cachedLocations = useRef<{ [key: number]: ListCollection<{ value: number; label: string }> }>({});
+  const [comapanies, setCompanies] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] })
+  );
+  const [zones, setZones] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] })
+  );
+  const [locations, setLocations] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] })
+  );
+  const cachedLocations = useRef<{
+    [key: number]: ListCollection<selectOption>;
+  }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -50,16 +57,34 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
     }
   }, [comapanies]);
 
-  const fetchLocations = useCallback(
-    async (companyId: number) => {
-      if (cachedLocations.current[companyId]) {
-        setLocations(cachedLocations.current[companyId]);
-        return;
-      }
+  const fetchZones = useCallback(
+    async (companyId: number[]) => {
 
       setLoading(true);
       try {
-        const response = await getLocations(companyId);
+        const response = await getZones(companyId);
+        const newZones = createListCollection({
+          items: response.map((zone: { id: number; name: string; }) => ({
+            value: zone.id,
+            label: zone.name,
+          })),
+        });
+        setZones(newZones);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cachedLocations]
+  );
+
+  const fetchLocations = useCallback(
+    async (zones: number[]) => {
+
+      setLoading(true);
+      try {
+        const response = await getLocations(zones);
         const newLocations = createListCollection({
           items: response.map((location: { id: number; name: string; }) => ({
             value: location.id,
@@ -67,7 +92,6 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
           })),
         });
         setLocations(newLocations);
-        cachedLocations.current[companyId] = newLocations;
       } catch (error) {
         setError(true);
       } finally {
@@ -80,11 +104,13 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       comapanies,
+      zones,
       locations,
       setLocations,
       loading,
       error,
       fetchCompanies,
+      fetchZones,
       fetchLocations,
     }),
     [comapanies, locations, loading, error, fetchCompanies, fetchLocations, setLocations]

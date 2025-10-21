@@ -93,12 +93,14 @@ export interface LotClosureContextType {
 
 export interface LotCatalogContextType {
   comapanies: ListCollection<selectOption>;
+  zones: ListCollection<selectOption>;
   locations: ListCollection<selectOption>;
   loading: boolean;
   error: boolean;
   setLocations: (locations: ListCollection<selectOption>) => void;
   fetchCompanies: () => Promise<void>;
-  fetchLocations: (companyId: number) => Promise<void>;
+  fetchZones: (companyId: number[]) => Promise<void>;
+  fetchLocations: (zoneIds: number[]) => Promise<void>;
 }
 
 export type LotsClosureContext = Record<string, LotClosure[]>;

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Grid, VStack, HStack, Heading, Flex,
-  Field, Spinner } from "@chakra-ui/react";
+  Field } from "@chakra-ui/react";
 import SimpleDatePicker from "./components/SimpleDatePicker";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot,
   SelectTrigger, SelectValueText } from "@components/ui/select";
@@ -14,14 +14,16 @@ import Loading from "@components/Loading";
 function LotClosure() {
 
   const [locationId, setLocationId] = useState<number[]>([]);
+  const [zoneIds, setZoneIds] = useState<number[]>([]);
 
   const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
+  const [selectedZoneOptions, setSelectedZoneOptions] = useState<selectOption[]>([]);
 
   const [formattedDate, setFormattedDate] = useState<string>('');
   const initialDate = new Date();
 
   const { fetchLotClosureData, lotsClosure } = useLotClosureList();
-  const { fetchCompanies, fetchLocations, comapanies, locations, loading } =
+  const { fetchCompanies, fetchZones, fetchLocations, comapanies, zones, locations, loading } =
     useLotCatalogList();
   const [showTable, setShowTable] = useState(false);
 
@@ -33,21 +35,34 @@ function LotClosure() {
 
   };
 
+  useEffect(() => {
+    async function loadLocations() {
+      await fetchLocations(zoneIds);
+    }
+    loadLocations();
+  }, [zoneIds]);
+
+  const handleZoneChange = (event: { items: selectOption[] }) => {
+    handleMultiSelectChange({
+        newItems: event.items,
+        currentSelected: selectedZoneOptions,
+        setSelectedOptions: setSelectedZoneOptions,
+        setSelectedIds: setZoneIds
+    });
+  };
+
   const handleCDCChange = (event: { items: selectOption[] }) => {
-      handleMultiSelectChange({
-          newItems: event.items,
-          currentSelected: selectedCDCOptions,
-          setSelectedOptions: setSelectedOptions,
-          setSelectedIds: setLocationId
-      })
+    handleMultiSelectChange({
+        newItems: event.items,
+        currentSelected: selectedCDCOptions,
+        setSelectedOptions: setSelectedOptions,
+        setSelectedIds: setLocationId
+    })
   };
 
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align="start">
-        <Heading>
-          Selecciona una subsidiaria , rango de fechas y centro de consumo
-        </Heading>
 
         <HStack w="100%">
           <Grid
@@ -61,7 +76,7 @@ function LotClosure() {
               collection={comapanies}
               size="sm"
               onOpenChange={fetchCompanies}
-              onValueChange={(value) => fetchLocations(Number(value.value))}
+              onValueChange={(value) => fetchZones([Number(value.value)])}
             >
               <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
@@ -80,12 +95,22 @@ function LotClosure() {
             </SelectRoot>
 
             {renderMultiSelectWithControls(
+                zones,
+                handleZoneChange,
+                "Zonas",
+                "Selecciona una zona",
+                selectedZoneOptions,
+                true
+              )
+            }
+
+            {renderMultiSelectWithControls(
                 locations,
                 handleCDCChange,
                 "Centro de consumo",
                 "Selecciona un centro de consumo",
                 selectedCDCOptions,
-                true
+                !(selectedZoneOptions.length > 0)
               )
             }
 
