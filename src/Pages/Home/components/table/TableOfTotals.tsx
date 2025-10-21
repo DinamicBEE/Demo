@@ -38,7 +38,6 @@ function TableOfTotals({
       employe: "TOTALES",
       status: "",
       closingConfirmation: true,
-      // discount: 0, //TODO: Cambiar cuando llegue el dato del back de los decuentos
       iva: 0,
       service: 0,
       creationDate: "",
@@ -76,7 +75,6 @@ function TableOfTotals({
   const closeDialog = (isRefresh: boolean) => {
     setSelectedEmployee({} as ClousingLinesModel);
     setIsDialogOpen(false);
-    //TODO:Validar que fue un cierre de caja
     if(isRefresh) {
       getInfo(store.id, 0, startDate, endDate, true);
     }

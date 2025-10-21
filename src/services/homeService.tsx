@@ -86,8 +86,7 @@ export const getGeneralInfo = async (
       })),
     };
 
-    
-
+    console.log("data", transformedData);
     return transformedData as ClousingModel;
   } catch (error) {
     console.error("Error fetching general info:", error);

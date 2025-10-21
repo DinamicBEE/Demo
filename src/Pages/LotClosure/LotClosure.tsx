@@ -20,7 +20,11 @@ function LotClosure() {
   const [selectedZoneOptions, setSelectedZoneOptions] = useState<selectOption[]>([]);
 
   const [formattedDate, setFormattedDate] = useState<string>('');
-  const initialDate = new Date();
+  const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
+  const parseDateStringToLocalDate = (dateString: string): Date => {
+      const [year, month, day] = dateString.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    }
 
   const { fetchLotClosureData, lotsClosure } = useLotClosureList();
   const { fetchCompanies, fetchZones, fetchLocations, comapanies, zones, locations, loading } =
@@ -37,11 +41,22 @@ function LotClosure() {
 
   useEffect(() => {
     async function loadLocations() {
-      await fetchLocations(zoneIds);
+      if (zoneIds.length > 0) {
+        setLocationId([]);
+        setSelectedOptions([]);
+        await fetchLocations(zoneIds);
+      }
     }
     loadLocations();
   }, [zoneIds]);
 
+  useEffect(() => {
+    if (formattedDate) {
+      const date = parseDateStringToLocalDate(formattedDate);
+      setInitialDate(date);
+    }
+  }, [formattedDate]);
+  
   const handleZoneChange = (event: { items: selectOption[] }) => {
     handleMultiSelectChange({
         newItems: event.items,
@@ -76,7 +91,13 @@ function LotClosure() {
               collection={comapanies}
               size="sm"
               onOpenChange={fetchCompanies}
-              onValueChange={(value) => fetchZones([Number(value.value)])}
+              onValueChange={(value) => {
+                setZoneIds([]);
+                setSelectedZoneOptions([]);
+                setLocationId([]);
+                setSelectedOptions([]);
+                fetchZones([Number(value.value)])
+              }}
             >
               <SelectLabel>Subsidiaria</SelectLabel>
               <SelectTrigger>
