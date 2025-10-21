@@ -14,36 +14,39 @@ import { handleMultiSelectChange, fetchAndSetData, renderMultiSelectWithControls
 import { parameters } from "../../indexedDB/parametersDB";
 
 function Home_v2() {
-   
+    // Países
     const [countries, setCountries] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
+    const [selectedCountry, setSelectedCountry] = useState<selectOption>({} as selectOption);
+    // Subsidiarias
     const [subsidiaries, setSubsidiaries] = useState<ListCollection<selectOption>>(
     createListCollection<selectOption>({ items: [] }));
-    const [cdc, setCDC] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] }));
-    const [status, setStatus] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] }));
-    const [zones, setZones] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] }));
-
-    const [selectedCountry, setSelectedCountry] = useState<selectOption>({} as selectOption);
     const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
     const [selectedSubsidiaries, setSelectedSubsidiaries] = useState<selectOption[]>([]);
-    const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
-    const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
+    // CDC
+    const [cdc, setCDC] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
+    const [selectedCDCIds, setSelectedCDCIds] = useState<number[]>([]);
+    const [selectedCDCOptions, setSelectedCDCOptions] = useState<selectOption[]>([]);
+    // Estatus
+    const [status, setStatus] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
     const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
-    const [rowtotals, setRowTotals] = useState<ReportTotalsModel>({} as ReportTotalsModel);
-    const [selectedZones, setSelectedZones] = useState<number[]>([]);
+    // Zonas
+    const [zones, setZones] = useState<ListCollection<selectOption>>(
+    createListCollection<selectOption>({ items: [] }));
+    const [selectedZonesIds, setSelectedZonesIds] = useState<number[]>([]);
     const [selectedZonesOptions, setSelectedZonesOptions] = useState<selectOption[]>([]);
+    // General
+    const [rowtotals, setRowTotals] = useState<ReportTotalsModel>({} as ReportTotalsModel);
     const [totals, setTotals] = useState<TotalModel>({} as TotalModel);
-    
     const [formattedDate, setFormattedDate] = useState<string>('');
     const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
-
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
     const [isReady, setIsReady] = useState(false);
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
 
     const parseDateStringToLocalDate = (dateString: string): Date => {
@@ -62,20 +65,22 @@ function Home_v2() {
                 ]).then(async () => {
                     const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
                     if(parametersPromise !== undefined) {
+                        setIsInitialLoad(false);
                         const savedParams = parametersPromise.value;
                         console.log(savedParams);
                         setSelectedSubsidiaries(savedParams.subsidiaries ?? []);
                         setSelectedSubIds(savedParams.subsidiaries.map((sub: any) => sub.value) ?? []);
-                        setSelectedOptions(savedParams.cdc ?? []);
-                        setSelectedCDC(savedParams.cdc.map((cdc: any) => cdc.value) ?? []);
+                        setSelectedZonesOptions(savedParams.zone ?? []);
+                        setSelectedZonesIds(savedParams.zone.map((zone: any) => zone.value) ?? []);
+                        setSelectedCDCOptions(savedParams.cdc ?? []);
+                        setSelectedCDCIds(savedParams.cdc.map((cdc: any) => cdc.value) ?? []);
                         setSelectedStatus(savedParams.status ?? []);
                         setFormattedDate(savedParams.date ? savedParams.date : '');
                         setInitialDate(savedParams.date ? parseDateStringToLocalDate(savedParams.date) : undefined);
                         setSelectedCountry(savedParams.country ?? {} as selectOption);
-
-                        fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
-                        // getDataReport()
+                        await fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
                     }
+                    setIsInitialLoad(true);
                 });
 
                 setIsReady(true);
@@ -90,19 +95,18 @@ function Home_v2() {
     async function getDataReport() {
         setLoading(true);
         const estatusNames = selectedStatus.map((status) => status.label);        
-        const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
         const paramsToSave: ParametersSelectedModel = {
-            country: parametersPromise !== undefined ? parametersPromise.value.country : selectedCountry,
-            subsidiaries: parametersPromise !== undefined ? parametersPromise.value.subsidiaries : selectedSubsidiaries,
-            zone: parametersPromise !== undefined ? parametersPromise.value.zone : selectedCDCOptions,
-            cdc: parametersPromise !== undefined ? parametersPromise.value.cdc : selectedCDCOptions,
-            status: parametersPromise !== undefined ? parametersPromise.value.status : selectedStatus,
-            date: parametersPromise !== undefined ? parametersPromise.value.date : formattedDate
+            country: selectedCountry,
+            subsidiaries: selectedSubsidiaries,
+            zone: selectedZonesOptions,
+            cdc: selectedCDCOptions,
+            status: selectedStatus,
+            date: formattedDate
         };
         await parameters.parametersSelected.put(
           {key: 'parametersSelected', value: paramsToSave},
         );
-        const report = await getGeneralReports(selectedCDC, formattedDate, estatusNames)
+        const report = await getGeneralReports(selectedCDCIds, formattedDate, estatusNames)
         
         const totals = reportTotals(report);
         const newTotals: TotalModel ={
@@ -131,25 +135,40 @@ function Home_v2() {
     }, [isReady]);
 
     useEffect(() => {
+      if (selectedCountry.label === "") {
+        setSelectedSubsidiaries([]);
+        setSelectedSubIds([]);
+        setSelectedZonesIds([]);
+        setSelectedZonesOptions([]);
+        setSelectedCDCIds([]);
+        setSelectedCDCOptions([]);
+        setSubsidiaries(createListCollection<selectOption>({ items: [] }));
+        setZones(createListCollection<selectOption>({ items: [] }));
+        setCDC(createListCollection<selectOption>({ items: [] }));
+      }
+    }, [selectedCountry])
+
+    useEffect(() => {
       async function updateZone() {
           if (selectedSubIds.length > 0) {
               try {
-                const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
-                if(parametersPromise === undefined || selectedSubIds.length === 0) {
-                    setSelectedZones([]);
-                    setSelectedZonesOptions([]);
-                    setSelectedCDC([]);
-                    setSelectedOptions([]);
+                if (isInitialLoad) {
+                  setSelectedZonesIds([]);
+                  setSelectedZonesOptions([]);
+                  setSelectedCDCIds([]);
+                  setSelectedCDCOptions([]);
                 }
+                await fetchAndSetData(() => getZones(selectedSubIds), setZones);
               }
-              catch (e ) {
+              catch (e) {
                 console.error(e);
-                
               }
-              setCDC(createListCollection<selectOption>({ items: [] }));
-              setZones(createListCollection<selectOption>({ items: [] }));
-              await fetchAndSetData(() => getZones(selectedSubIds), setZones);
+              
           } else {
+            setSelectedZonesIds([]);
+            setSelectedZonesOptions([]);
+            setSelectedCDCIds([]);
+            setSelectedCDCOptions([]);
             setZones(createListCollection<selectOption>({ items: [] }));
             setCDC(createListCollection<selectOption>({ items: [] }));
           }
@@ -159,26 +178,25 @@ function Home_v2() {
 
     useEffect(() => {
         async function updateCDC() {
-            if (selectedZones.length > 0) {
+            if (selectedZonesIds.length > 0) {
                 try {
-                  const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
-                  if(parametersPromise === undefined || selectedSubIds.length === 0 || selectedZones.length === 0) {
-                      setSelectedCDC([]);
-                      setSelectedOptions([]);
+                  if (isInitialLoad) {
+                    setSelectedCDCIds([]);
+                    setSelectedCDCOptions([]);
                   }
+                  await fetchAndSetData(() => getLocations(selectedZonesIds), setCDC);
                 }
-                catch (e ) {
+                catch (e) {
                   console.error(e);
-                  
-                }
-                setCDC(createListCollection<selectOption>({ items: [] }));
-                await fetchAndSetData(() => getLocations(selectedZones), setCDC);
+                }                
             } else {
+              setSelectedCDCIds([]);
+              setSelectedCDCOptions([]);
               setCDC(createListCollection<selectOption>({ items: [] }));
             }
         }
         updateCDC();
-    }, [selectedZonesOptions]);
+    }, [selectedZonesIds]);
 
     const handleSubsidiariesChange = (event: { items: selectOption[] }) => {      
         handleMultiSelectChange({
@@ -194,15 +212,15 @@ function Home_v2() {
             newItems: event.items,
             currentSelected: selectedZonesOptions,
             setSelectedOptions: setSelectedZonesOptions,
-            setSelectedIds: setSelectedZones
+            setSelectedIds: setSelectedZonesIds
         })
     };
     const handleCDCChange = (event: { items: selectOption[] }) => {
         handleMultiSelectChange({
             newItems: event.items,
             currentSelected: selectedCDCOptions,
-            setSelectedOptions: setSelectedOptions,
-            setSelectedIds: setSelectedCDC
+            setSelectedOptions: setSelectedCDCOptions,
+            setSelectedIds: setSelectedCDCIds
         })
     };
 
@@ -258,7 +276,7 @@ function Home_v2() {
                     "Subsidiaria",
                     "Selecciona una Subsidiaria",
                     selectedSubsidiaries,
-                    true
+                    !selectedCountry?.value
                   )
                 }
                 
@@ -268,7 +286,7 @@ function Home_v2() {
                     "Zona",
                     "Selecciona una Zona",
                     selectedZonesOptions,
-                    !(selectedSubsidiaries.length > 0)
+                    selectedSubsidiaries.length === 0
                   )
                 }
                 {renderMultiSelectWithControls(
@@ -277,7 +295,7 @@ function Home_v2() {
                     "Centro de consumo",
                     "Selecciona un centro de consumo",
                     selectedCDCOptions,
-                    !(selectedZones.length > 0)
+                    selectedZonesIds.length === 0
                   )
                 }
 

@@ -119,7 +119,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
                 <Table.Cell textAlign="center">
                   <Text> {item.ticketNumber ? item.ticketNumber : "---"} </Text>
                 </Table.Cell>
-                {(!data?.closingConfirmation && employeeLocal?.isRoleEditable) &&<Table.Cell textAlign="center">
+                {(data?.closingConfirmation && employeeLocal?.isRoleEditable) &&<Table.Cell textAlign="center">
                   <IconButton rounded={"full"}colorScheme={"blue"} onClick={() =>openForm(item)}>
                     <FiPrinter />
                   </IconButton>
