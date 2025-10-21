@@ -61,7 +61,7 @@ export const getGeneralInfo = async (
       },
       clousingLines: response.data.registerClosure.map((line: any) => ({
         ...line,
-        currencies: line.currencies,
+        currencies: line.currencies.map((curr: any) => curr.symbol === 'MXN' ? { ...curr, total: curr.total - (line.tipsCash || 0) } : curr),
         id: line.crcId,
         employe: line.employe,
         totalPOS: line.totalPOS,
@@ -82,6 +82,7 @@ export const getGeneralInfo = async (
         closingStartDate: format(line.closingStartDate, "dd/MM/yyyy"),
         closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
         tips: line.tips || 0,
+        tipsCash: line.tipsCash || 0,
         isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
       })),
     };
@@ -185,6 +186,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
           acc.employees += curr.employees || 0;
           acc.intercompany += curr.intercompany || 0;
           acc.tips += curr.tips || 0;
+          acc.tipsCash += curr.tipsCash || 0;
           curr.currencies.forEach( (currency: Currency) => {
             const currCurrency = acc.currencies.find(
               (c: { symbol: string; }) => c.symbol === currency.symbol
@@ -226,6 +228,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
       employees: 0,
       intercompany: 0,
       tips: 0,
+      tipsCash: 0,
       tdc: [] as TDC[],
       currencies: [] as Currency[],
     }
@@ -251,6 +254,7 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       acc.employees += curr.employees;
       acc.intercompany += curr.intercompany;
       acc.tips += curr.tips;
+      acc.tipsCash += curr.tipsCash || 0;
       acc.generalTotal = (acc.generalTotal ?? 0) + (curr.generalTotal ?? 0);
       acc.tpvBancomerUsd +=curr.tpvBancomerUsd || 0;
       acc.tpvSbdellMxn += curr.tpvSbdellMxn || 0;
@@ -291,6 +295,7 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       employees: 0,
       intercompany: 0,
       tips: 0,
+      tipsCash: 0,
       generalTotal: 0,
       tpvBancomerUsd: 0,
       tpvSbdellMxn:  0,

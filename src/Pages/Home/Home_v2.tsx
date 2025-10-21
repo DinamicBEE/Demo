@@ -63,6 +63,7 @@ function Home_v2() {
                     const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
                     if(parametersPromise !== undefined) {
                         const savedParams = parametersPromise.value;
+                        console.log(savedParams);
                         setSelectedSubsidiaries(savedParams.subsidiaries ?? []);
                         setSelectedSubIds(savedParams.subsidiaries.map((sub: any) => sub.value) ?? []);
                         setSelectedOptions(savedParams.cdc ?? []);
@@ -130,10 +131,6 @@ function Home_v2() {
     }, [isReady]);
 
     useEffect(() => {
-      /* setSelectedZones([]);
-      setSelectedZonesOptions([]);
-      setSelectedCDC([]);
-      setSelectedOptions([]); */
       async function updateZone() {
           if (selectedSubIds.length > 0) {
               try {

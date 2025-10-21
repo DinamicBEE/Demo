@@ -55,6 +55,7 @@ export interface ClousingLinesModel {
   closingEndtDate: string;
   tdc: TDC[];
   tips: number;
+  tipsCash: number;
   isRoleEditable?: boolean;
 }
 
