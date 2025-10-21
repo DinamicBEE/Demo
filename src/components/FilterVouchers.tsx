@@ -1,5 +1,5 @@
 import { HtmlHTMLAttributes, useEffect, useRef, useState } from "react";
-import { Box, createListCollection, ListCollection, Portal, Select, Span, Stack } from "@chakra-ui/react";
+import { Box, createListCollection, Field, FieldErrorText, FieldRoot, HStack, ListCollection, Portal, Select, Span, Stack, VStack } from "@chakra-ui/react";
 import { VoucherFilter, voucherSelectOption } from "@models/tdc.model";
 
 function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) {
@@ -10,6 +10,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
   );
   const searchRef = useRef<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isEmpty, setIsEmpty] = useState<boolean>(false);
 
   useEffect(() => {
     const sortedVouchers = [...vouchers].sort((a, b) => {
@@ -107,54 +108,70 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
     setIsOpen(false);
   }
 
+  useEffect(() => {
+    if (filteredVouchers.items.length === 0) {
+      setIsEmpty(true);
+    } else {
+      setIsEmpty(false);
+    }
+  }, [filteredVouchers.items])
+
   return (
     <Box width="100%">
-      <Select.Root
-        collection={filteredVouchers}
-        closeOnSelect={false}
-        onKeyUp={(e) => handleSearch(e.key)}
-        // onValueChange={(event) => handleSelect(event)}
-        disabled={disabled || false}
-        size="sm"
-        width={"100%"}
-        value={[]}
-        open={isOpen}
-        onOpenChange={(details) => setIsOpen(details.open)}
-      >
-        <Select.HiddenSelect />
-        <Select.Label>Selecciona ticket</Select.Label>
-        <Select.Control>
-          <Select.Trigger>
-            <Select.ValueText
-              placeholder={searchQuery || "Selecciona ticket"}
-            />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {filteredVouchers.items.map((voucher) => (
-                <Select.Item
-                onPointerDown={() => handleSelect(voucher.value)}
-                  item={voucher}
-                  key={voucher.value + voucher.description}
-                >
-                  <Stack gap="0">
-                    <Select.ItemText>{voucher.label}</Select.ItemText>
-                    <Span color="fg.muted" textStyle="xs">
-                      {voucher.description}
-                    </Span>
-                  </Stack>
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
+      <FieldRoot invalid={isEmpty}>
+        <Select.Root
+          collection={filteredVouchers}
+          closeOnSelect={false}
+          onKeyUp={(e) => handleSearch(e.key)}
+          // onValueChange={(event) => handleSelect(event)}
+          disabled={disabled || false}
+          size="sm"
+          width={"100%"}
+          value={[]}
+          open={isOpen}
+          onOpenChange={(details) => setIsOpen(details.open)}
+        >
+          <Select.HiddenSelect />
+          <HStack>
+            <Select.Label>Selecciona ticket</Select.Label>
+            <FieldErrorText >Cheque no encontrado o ya seleccionado</FieldErrorText>
+          </HStack>
+          <Select.Control>
+            <Select.Trigger>
+              <Select.ValueText
+                placeholder={searchQuery || "Selecciona ticket"}
+              />
+            </Select.Trigger>
+            <Select.IndicatorGroup>
+              <Select.Indicator />
+            </Select.IndicatorGroup>
+          </Select.Control>
+          <Portal>
+            <Select.Positioner>
+              <Select.Content>
+                {filteredVouchers.items.map((voucher) => (
+                  <Select.Item
+                  onPointerDown={() => handleSelect(voucher.value)}
+                    item={voucher}
+                    key={voucher.value + voucher.description}
+                  >
+                    <Stack gap="0">
+                      <Select.ItemText>{voucher.label}</Select.ItemText>
+                      <Span color="fg.muted" textStyle="xs">
+                        {voucher.description}
+                      </Span>
+                    </Stack>
+                    <Select.ItemIndicator />
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Positioner>
+          </Portal>
+        </Select.Root>
+      </FieldRoot>
+        {/* { filteredVouchers.items.length == 0 &&
+          } */}
+      
     </Box>
   );
 }

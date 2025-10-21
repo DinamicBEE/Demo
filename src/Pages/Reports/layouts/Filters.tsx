@@ -45,10 +45,24 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [cdc, setCDC] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
   const [formattedDate, setFormattedDate] = useState<string>("");
 
-  const initialDate = new Date();
+  const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
   const { getReportData, reportData } = useReportsContext();
 
   const [actualReport, setActualReport] = useState<number>();
+
+  const parseDateStringToLocalDate = (dateString: string): Date => {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  useEffect(() => {
+    if (formattedDate) {
+      const localDate = parseDateStringToLocalDate(formattedDate);
+      setInitialDate(localDate);
+    }
+  
+  }, [formattedDate])
+  
 
   const resetValues = useMemo<ReportFilterModel>(() => ({
     categories: null,
