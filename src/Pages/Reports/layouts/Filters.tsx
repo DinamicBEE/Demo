@@ -342,7 +342,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   return (
     <Box p={4} mb={4}>
-      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 2fr)" }} gap={4} mb={4}>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={4} mb={4}>
         {activeFilters.length > 0
           ? activeFilters.map((filterKey) => (
             <Box key={filterKey} minWidth="200px">
