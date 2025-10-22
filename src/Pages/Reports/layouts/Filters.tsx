@@ -343,7 +343,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   };
 
   return (
-    <Box p={4} mb={4}>
+    <Box w={'100%'} py={4} mb={4}>
       <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={4} mb={4}>
         {activeFilters.length > 0
           ? activeFilters.map((filterKey) => (
@@ -354,14 +354,14 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           : <Box minWidth="200px"></Box>}
       </Grid>
 
-      <HStack gap={4} mt={4}>
-        <Button colorPalette="blue" width={"50%"} onClick={applyFilters}>
+      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} mt={4}>
+        <Button colorPalette="blue" width={"100%"} onClick={applyFilters}>
           {currentReport === 100 ? "Cargar" : "Buscar por filtros"}
         </Button>
-        <Button colorPalette="green" width={"50%"} disabled={reportData.length === 0} onClick={exportCSV}>
+        <Button colorPalette="green" width={"100%"} disabled={reportData.length === 0} onClick={exportCSV}>
           Exportar CSV
         </Button>
-      </HStack>
+      </Grid>
     </Box>
   );
 }
