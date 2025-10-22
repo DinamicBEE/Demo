@@ -26,7 +26,7 @@ import { FILTER_LABELS, FilterKey, REPORT_CONFIG
 } from "@models/const/reportFilter.const";
 import { useEffect, useMemo, useCallback, useState } from "react";
 import DatePicker from "../../LotClosure/components/DatePicker";
-import { getFilterOptions, getLocations } from "@services/catalogService";
+import { getFilterOptions, getLocations, getZones } from "@services/catalogService";
 import { generateBanckReportCSV, generateReportCSV_V2 } from "@services/reportService";
 import { useReportsContext } from "@context/reports/reportsContext";
 import { selectOption } from "@models/common.model";
@@ -41,8 +41,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [filterData, setFilterData] = useState<FilterData>({});
   const [loadingFilters, setLoadingFilters] = useState<Record<string, boolean>>({});
   const [selectedSubIds, setSelectedSubIds] = useState<number[]>([]);
-  const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
   const [cdc, setCDC] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
+  const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
+  const [zone, setZone] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
+  const [selectedZone, setSelectedZone] = useState<number[]>([])
   const [formattedDate, setFormattedDate] = useState<string>("");
 
   const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
@@ -66,6 +68,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   const resetValues = useMemo<ReportFilterModel>(() => ({
     categories: null,
+    zone: [],
     cdc: [],
     multicdc: [],
     customer: null,
@@ -89,6 +92,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     date: false,
     dateRange: false,
     subsidiary: false,
+    zone: false,
     cdc: false,
     multicdc: false,
     customer: false,
@@ -110,6 +114,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (actualReport === currentReport) return;
     if (!currentReport) return;
     setSelectedCDC([]);
+    setSelectedZone([]);
     setSelectedSubIds([]);
     setSelectedValues(resetValues);
     setDateRange([null, null]);
@@ -127,20 +132,36 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     setActualReport(currentReport);
   }, [currentReport, reportName]);
 
-  // Cargar CDC cuando cambian las subsidiarias
+  // Cargar Zonas cuando cambian las subsidiarias
   useEffect(() => {
     if (selectedSubIds.length > 0) {
-      fetchAndSetData(() => getLocations(selectedSubIds), setCDC);
+      setSelectedZone([]);
+      setSelectedCDC([]);
+      fetchAndSetData(() => getZones(selectedSubIds), setZone);
+    } else {
+      setZone(createListCollection<selectOption>({ items: [] }));
+    }
+  }, [selectedSubIds]);
+  // Cargar CDC cuando cambian las zonas
+  useEffect(() => {
+    if (selectedZone.length > 0) {
+      setSelectedCDC([]);
+      fetchAndSetData(() => getLocations(selectedZone), setCDC);
     } else {
       setCDC(createListCollection<selectOption>({ items: [] }));
     }
-  }, [selectedSubIds]);
+  }, [selectedZone]);
 
   // Manejo de selects
   const handleSubsidiariesChange = useCallback((ev: { value: string[] }) => {
     const ids = ev.value.map(Number);
     setSelectedSubIds(ids);
     // setSelectedValues(prev => ({ ...prev, subsidiary: ids }));
+  }, []);
+
+  const handleZoneChange = useCallback((ev: { value: string[] }) => {
+    const ids = ev.value.map(Number);
+    setSelectedZone(ids);
   }, []);
 
   const handleCDCChange = useCallback((ev: { value: string[] }) => {
@@ -236,6 +257,28 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           </SelectTrigger>
           <SelectContent>
             {(subsidiaries.items || []).map((option) => (
+              <SelectItem key={option.value} item={option}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
+      );
+    }
+    if (filterKey === "zone") {
+      return (
+        <SelectRoot
+          multiple={true}
+          collection={zone}
+          onValueChange={handleZoneChange}
+          value={selectedZone}
+        >
+          <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
+          <SelectTrigger clearable={true}>
+            <SelectValueText placeholder="Selecciona una o más" />
+          </SelectTrigger>
+          <SelectContent>
+            {(zone.items || []).map((option) => (
               <SelectItem key={option.value} item={option}>
                 {option.label}
               </SelectItem>
