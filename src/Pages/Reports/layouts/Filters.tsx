@@ -250,6 +250,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           collection={subsidiaries}
           onValueChange={handleSubsidiariesChange}
           value={selectedSubIds}
+          
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
           <SelectTrigger clearable={true}>
@@ -272,6 +273,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           collection={zone}
           onValueChange={handleZoneChange}
           value={selectedZone}
+          disabled={selectedSubIds.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
           <SelectTrigger clearable={true}>
@@ -295,7 +297,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           collection={cdc}
           onValueChange={handleCDCChange}
           value={selectedCDC}
-          disabled={selectedSubIds.length === 0}
+          disabled={selectedZone.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
           <SelectTrigger clearable={true}>
