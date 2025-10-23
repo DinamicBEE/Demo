@@ -14,7 +14,7 @@ import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
 import { ClousingSave } from "@models/saveClousing.model";
 import { loadData } from "../indexedDB/localDB";
-import { ROLES } from "@models/const/menu.consts";
+import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 
 /**
  * This function gets the information
@@ -37,7 +37,7 @@ export const getCashClousing = async (
     const userRole = await loadData.userData.get("userRole");    
     const cashDataCopy = {
       ...response.data,
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
@@ -87,7 +87,7 @@ export const getTDCClousing = async (
     const userRole = await loadData.userData.get("userRole");
     const newResponse = {
       ...response.data,
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       lines: response.data.lines.map((line: any) => ({
         ...line,
         // Generate new UUID for null IDs, otherwise keep existing ID
@@ -99,7 +99,7 @@ export const getTDCClousing = async (
           idCustom: "voucher-" + uuidv4(),
           dateDisplay: format(new Date(v.date), "dd/MM/yyyy"),
         })),
-        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+        isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       })),
       total:{
         difference: response.data.total.totalPhysical - response.data.total.totalPOS,
@@ -154,7 +154,7 @@ export const getCustomerClousing = async (
     const newDifference = newTotalFisico - (response.data.totalPos ?? 0);
     const data: CustomerModel = {
       id: clousingId,
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       total: {
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
@@ -180,7 +180,7 @@ export const getCustomerClousing = async (
           difference: 0,
         },
         lines: [],
-        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+        isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       } as CustomerModel,
     };
     return responseData;
@@ -226,7 +226,7 @@ export const getSpecialCustomerClousing = async (
         difference: newDiff ?? 0,
       },
       lines: [...lines],
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable:userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
     const responseData: ResponseModel = {
@@ -246,7 +246,7 @@ export const getSpecialCustomerClousing = async (
           difference: 0,
         },
         lines: [],
-        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+        isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       } as SpecialCustomerModel,
     };
     return responseData;
@@ -302,7 +302,7 @@ export const getPrepaidClousing = async (
         difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
       },
       lines: updateLines,
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
     const responseData: ResponseModel = {
@@ -324,7 +324,7 @@ export const getPrepaidClousing = async (
           difference: 0,
         },
         lines: [],
-        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+        isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       } as PrepaidModel}
   }
 };
@@ -400,7 +400,7 @@ export const getEmployeeClousing = async (
         ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
     const response = /* employeeDataCopy; */ employeeDataCopyAxios;
@@ -459,7 +459,7 @@ export const getIntercompanyClousing = async (
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
       })),
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
     const data = {
@@ -478,7 +478,7 @@ export const getIntercompanyClousing = async (
         difference: 0,
       },
       lines: [],
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable:userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
   }
 };
