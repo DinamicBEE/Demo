@@ -118,7 +118,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
 
   return (
     <Box width="100%">
-      <FieldRoot invalid={isEmpty}>
+      <FieldRoot invalid={isEmpty && !disabled && vouchers.length > 0}>
         <Select.Root
           collection={filteredVouchers}
           closeOnSelect={false}
