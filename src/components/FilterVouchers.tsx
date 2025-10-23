@@ -139,7 +139,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
           <Select.Control>
             <Select.Trigger>
               <Select.ValueText
-                placeholder={searchQuery || "Selecciona ticket"}
+                placeholder={vouchers.length === 0 ? "Sin tickets para seleccionar" : searchQuery || "Selecciona ticket"}
               />
             </Select.Trigger>
             <Select.IndicatorGroup>
