@@ -30,7 +30,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     try {
       const extraInfo = await getExtraInfo(clousingData.id);
       const data = createObjectHeader(clousingData, extraInfo);
-
       /* const info = getInfoColumn(clousingData.id);
 
       console.log("info", info); */

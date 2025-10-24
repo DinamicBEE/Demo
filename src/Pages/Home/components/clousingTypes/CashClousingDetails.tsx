@@ -42,7 +42,12 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen
   const totalMXN = (total * cashClousingSelect.exchangeRate)
 
   const handleSave = () => {
-    onSave(currencyId, total, totalMXN, denominations);
+    let newTotalMXN = totalMXN;
+    if(total == (parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)))){
+      newTotalMXN = cashClousingSelect.totalPOS;
+    }
+
+    onSave(currencyId, total, newTotalMXN, denominations);
     onClose();
   };
 

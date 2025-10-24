@@ -64,7 +64,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
           getEmployeetData(employee?.id ?? 0),
           getCashData(employee?.id ?? 0, subsidiary.idCurrency),
         ]).then((response) => {
-          console.log("response", response);
+          //console.log("response", response);
           if (response[6].total != undefined) {
             updateTotal(response[6].total?.totalPhysical ?? 0, employee.id, CLOUSING_KEY.CASH);
           }

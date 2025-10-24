@@ -532,7 +532,6 @@ export const getPDF = async (obj: PdfRequestNSDto): Promise<PdfData | null> => {
 
 export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean) => {
   try {
-
      const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
         ({
@@ -628,7 +627,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
     }
     const body: ClousingSave = {
       id: dataService.clousingId,
-      discountPhysical: dataService.discountPhysical | 0,
+      discountPhysical: dataService.discountPhysical || 0,
       cash: {
         idCurrencySub: dataService.idCurrency,
         electronicTips: dataService.cash.electronicTips,
