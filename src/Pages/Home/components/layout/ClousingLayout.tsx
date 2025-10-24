@@ -52,52 +52,64 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
 
   useEffect(() => {
     const run = async () => {
-      if (isOpen) {
-        tabs.setValue(CLOUSING_KEY.CASH);
+      if (!isOpen || !employee?.id || !subsidiary?.idCurrency) return;
+
+      tabs.setValue(CLOUSING_KEY.CASH);
+
+      try {
+
+        const [ customer, specialCustomer, prepaid, tdc,
+        intercompany, employeeT, cash ] = await Promise.all([
+          getCustomerData(employee.id),
+          getSpecialCustData(employee.id, subsidiary.idCurrency),
+          getPrepaidData(employee.id, employee.closingStartDate ?? ""),
+          getTDCData(employee.id, subsidiary.idCurrency),
+          getIntercompanyData(employee.id),
+          getEmployeetData(employee.id),
+          getCashData(employee.id, subsidiary.idCurrency),
+        ]);
         
-        await Promise.all([
-          getCustomerData(employee?.id ?? 0),
-          getSpecialCustData(employee?.id ?? 0, subsidiary.idCurrency),
-          getPrepaidData(employee?.id ?? 0, employee?.closingStartDate ?? ""),
-          getTDCData(employee?.id ?? 0, subsidiary.idCurrency),
-          getIntercompanyData(employee?.id ?? 0),
-          getEmployeetData(employee?.id ?? 0),
-          getCashData(employee?.id ?? 0, subsidiary.idCurrency),
-        ]).then((response) => {
-          //console.log("response", response);
-          if (response[6].total != undefined) {
-            updateTotal(response[6].total?.totalPhysical ?? 0, employee.id, CLOUSING_KEY.CASH);
-          }
-          if(response[0].total != undefined && response[0].total.difference < 0) {
-            updateTotal(response[0].total.totalPOS ?? 0, employee.id, CLOUSING_KEY.CUSTOMER);
-          } else {
-            updateTotal(response[0].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.CUSTOMER);
-          }
-  
-          if(response[1].total != undefined) {
-            updateTotal(response[1].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.SPECIALCUSTOMER);
-          }
-  
-          if(response[2].total != undefined) {
-            updateTotal(response[2].total.difference < 0 
-              ? response[2].total.totalPOS : response[2].total.totalPhysical, employee.id, CLOUSING_KEY.PREPAID);
-          }
-  
-          if(response[3].total != undefined) {
-            updateTotal(response[3].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.TDC);
-          }
-  
-          if(response[4].total != undefined) {
-            updateTotal(response[4].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.INTERCOMPANY);
-          }
-  
-          if(response[5].total != undefined) {
-            updateTotal(response[5].total.totalPhysical ?? 0, employee.id, CLOUSING_KEY.EMPLOYEE);
-          }
-        });       
+        const updateIfTotal = (data: any, key: string, condition?: boolean) => {
+          if (!data?.total) return;
+          const total =
+            condition && data.total.difference < 0
+              ? data.total.totalPOS
+              : data.total.totalPhysical ?? 0;
+          updateTotal(total, employee.id, key as CLOUSING_KEY);
+        };
 
+        if (cash) {
+          updateIfTotal(cash, CLOUSING_KEY.CASH);
+        }
+        
+        if (customer) {
+          updateIfTotal(customer, CLOUSING_KEY.CUSTOMER, true);
+        }
 
+        if (specialCustomer) {
+          updateIfTotal(specialCustomer, CLOUSING_KEY.SPECIALCUSTOMER);
+        }
+        
+        if (prepaid) {
+          updateIfTotal(prepaid, CLOUSING_KEY.PREPAID, true);
+        }
+
+        if (tdc) {
+          updateIfTotal(tdc, CLOUSING_KEY.TDC);
+        }
+        
+        if (intercompany) {
+          updateIfTotal(intercompany, CLOUSING_KEY.INTERCOMPANY);
+        }
+
+        if (employeeT) {
+          updateIfTotal(employeeT, CLOUSING_KEY.EMPLOYEE);
+        }
+
+      } catch (error) {
+        console.error("Error fetching closing data:", error);        
       }
+
     };
 
     run();
