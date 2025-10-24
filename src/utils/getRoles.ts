@@ -2,14 +2,16 @@ import { ROLES } from "@models/const/menu.consts";
 
 export const getRoleName = (role: string): string => {
     switch (role) {
-        case "user":
+        case "user"://"supervisorcdc":
             return ROLES.SUPERVISOR_CDC;
-        case "admin":
+        case "admin"://"generalcashier":
             return ROLES.GENERAL_ZONE;
-        case "starbucks":
+        case "revenuemanager":
             return ROLES.REVENUE_MANAGER;
-        case "admincdc":
+        case "comptroller":
             return ROLES.CONTROLLER;
+        case "superadmin":
+            return ROLES.ADMIN;
         default:
             return "";
     }

@@ -4,7 +4,7 @@ import { GET_CLOUSINGS } from "./settings";
 import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
-import { ROLES } from "@models/const/menu.consts";
+import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 
 /**
  * This function returns the list of selected
@@ -83,7 +83,7 @@ export const getGeneralInfo = async (
         closingEndtDate: format(line.closingEndtDate, "dd/MM/yyyy"),
         tips: line.tips || 0,
         tipsCash: line.tipsCash || 0,
-        isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+        isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       })),
     };
 

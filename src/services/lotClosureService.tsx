@@ -8,7 +8,7 @@ import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
 import { loadData } from "../indexedDB/localDB";
-import { ROLES } from "@models/const/menu.consts";
+import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 
 export const getLotsClosure = async (
   date: string
@@ -27,7 +27,7 @@ export const getLotsClosure = async (
     const transformedData = response.data.map((lot: any, index:number) => ({
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
-      isRoleEditable: userRole?.value === ROLES.SUPERVISOR_CDC ? true : false,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       status: getStatus(lot.status),
       difference: lot.totalLote - lot.totalPos
     }));    
