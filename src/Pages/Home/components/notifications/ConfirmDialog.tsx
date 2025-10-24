@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@components/ui/dialog";
 import { ConfirmDialogProps } from "@models/common.clousing.model";
+import { useState } from "react";
 
 function ConfirmDialog({
   isOpen,
@@ -17,8 +18,14 @@ function ConfirmDialog({
   sendData,
   isConfirm
 }: ConfirmDialogProps) {
+  const [loading, setLoading] = useState<boolean>(false);
   return (
-    <DialogRoot open={isOpen} onOpenChange={closeDialog}>
+    <DialogRoot
+      open={isOpen}
+      onOpenChange={closeDialog}
+      closeOnEscape={false}
+      closeOnInteractOutside={false}
+    >
       <DialogBackdrop />
       <DialogContent>
         <DialogHeader>
@@ -49,10 +56,13 @@ function ConfirmDialog({
             <Button colorPalette="meraError">Cancelar</Button>
           </DialogActionTrigger>
           <Button
+            loading={loading}
             colorPalette="meraPrimary"
             onClick={() => {
+              setLoading(true);
               sendData(isConfirm);
               closeDialog();
+              setLoading(false);
             }}
           >
             Confirmar

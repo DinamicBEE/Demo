@@ -99,7 +99,7 @@ function FooterClousing({
         setIntercompany({} as any);
       }
       closeDialog(true);
-    } 
+    }
     setloading(false);
     setButtonLoading(false);
   }
@@ -194,23 +194,23 @@ function FooterClousing({
           />
 
           <Button
-            loading={loading}
+            loading={loading || buttonLoading}
             colorPalette="meraWarning"
             onClick={async () => {
               handleDialogConfirm(true);
             }}
-            disabled={closingConfirmation || (!isRoleEditable)}
+            disabled={closingConfirmation || (!isRoleEditable) || loading}
           >
             Guardar Corte
           </Button>
 
           <Button
-            loading={loading}
+            loading={loading || buttonLoading}
             colorPalette="meraPrimary"
             onClick={async () => {
               handleDialogConfirm(false);
             }}
-            disabled={closingConfirmation || (!isRoleEditable)}
+            disabled={closingConfirmation || (!isRoleEditable) || loading}
           >
             Confirmar Corte
           </Button>
