@@ -56,7 +56,7 @@ export const getStores = async (subId: number): Promise<StoreModel[]> => {
   try {
     if (subId === null) throw new Error("Error al obtener las tiendas");
     const response = await api.get(LOCATIONS, {
-      params: { subsidiaria: subId },
+      params: { zone: subId, user: Cookies.get("username") },
     });
 
     const locs = response.data || [];

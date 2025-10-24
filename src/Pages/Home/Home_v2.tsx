@@ -310,6 +310,7 @@ function Home_v2() {
                 }
 
                 <Field.Root>
+                    <Field.Label>Fecha</Field.Label>
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 

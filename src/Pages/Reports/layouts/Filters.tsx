@@ -33,6 +33,7 @@ import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
 import { REPORT_EXECPTION } from "@models/const/reportsService.const";
+import Loading from "@components/Loading";
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -51,6 +52,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const { getReportData, reportData } = useReportsContext();
 
   const [actualReport, setActualReport] = useState<number>();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const parseDateStringToLocalDate = (dateString: string): Date => {
     const [year, month, day] = dateString.split("-").map(Number);
@@ -186,6 +189,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
 
   // Aplicar filtros
   const applyFilters = useCallback(async () => {
+    setLoading(true)
     if (!filterConfig) return;
     const allFilters: AppliedFilters = {};
 
@@ -213,6 +217,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       report: currentReport ?? 0,
       filterOpction: allFilters
     });
+    setLoading(false)
   }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);
 
   // Exportar CSV
@@ -355,13 +360,19 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       </Grid>
 
       <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4} mt={4}>
-        <Button colorPalette="blue" width={"100%"} onClick={applyFilters}>
+        <Button loading={loading} colorPalette="blue" width={"100%"} onClick={applyFilters}>
           {currentReport === 100 ? "Cargar" : "Buscar por filtros"}
         </Button>
-        <Button colorPalette="green" width={"100%"} disabled={reportData.length === 0} onClick={exportCSV}>
+        <Button loading={loading} colorPalette="green" width={"100%"} disabled={reportData.length === 0} onClick={exportCSV}>
           Exportar CSV
         </Button>
       </Grid>
+      {loading && (
+          <Box position="fixed" top="50%" left="50%" zIndex={1000}>
+              <Loading />
+          </Box>
+      )
+      }
     </Box>
   );
 }
