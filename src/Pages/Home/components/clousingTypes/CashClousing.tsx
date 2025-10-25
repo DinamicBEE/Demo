@@ -21,7 +21,7 @@ function CashClousing({ data, idCurrency }: any) {
   const { cashLoading, getCashData, setCashClousingSelect } = useCashClousing();
   const { handleChangeTips, handleInputChange } = useHandleCashData(cashData, setCashData, data?.id);
   const { setFooterData } = useFooter();
-  const { updateTotal } = useHeaders();
+  //const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<CashLines[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -97,7 +97,7 @@ function CashClousing({ data, idCurrency }: any) {
             name={"Propina de fondo"}
             value={cashData.tips}
             loading={cashLoading}
-            onChange={handleChangeTips}
+            //onChange={handleChangeTips}
             disabled={data?.status === "Cerrado" || !cashData.isRoleEditable ? true : false}
           />
         </Grid>
@@ -153,7 +153,8 @@ function CashClousing({ data, idCurrency }: any) {
                           value={item.totalFisico}
                           id={item.id}
                           currency={true}
-                          onChange={handleInputChange}
+                          //TODO: Validar forma para evitar ejecucion al primer renderizado
+                          //onChange={handleInputChange}
                           disabled={true}
                         />
 

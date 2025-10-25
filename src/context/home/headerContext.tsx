@@ -30,10 +30,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     try {
       const extraInfo = await getExtraInfo(clousingData.id);
       const data = createObjectHeader(clousingData, extraInfo);
-      /* const info = getInfoColumn(clousingData.id);
-
-      console.log("info", info); */
-
 
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 
@@ -53,8 +49,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   }
 
   const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
-//console.log("updateTotal", newTotal, clousingId, clousingType);
-    //console.log("headerRef", headerRef.current);
     
     const currentHeader = headerRef.current;
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
@@ -66,7 +60,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     //Validar que todos los valores de totalPhysical sean diferentes de 0
     const allValues = Object.values(currentHeader[clousingId]?.closures || {}).every((value) => value.totalPhysical == 0);
-    //console.log("allValues", allValues);
+
     const lastTotalClousing = !allValues ? 
       (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal : 0;
 
