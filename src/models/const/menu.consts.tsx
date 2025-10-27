@@ -12,6 +12,7 @@ export enum ROLES {
 }
 
 export const ROLES_EDIT = [ROLES.ADMIN, ROLES.SUPERVISOR_CDC];
+export const ROLES_APPROVALS = [ROLES.ADMIN, ROLES.CONTROLLER];
 
 export const menuItems = [
   //{ name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },

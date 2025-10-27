@@ -93,8 +93,9 @@ function Home_v2() {
     []);
 
     async function getDataReport() {
-        setLoading(true);
-        const estatusNames = selectedStatus.map((status) => status.label);        
+        setLoading(true);;
+        let nullIds: number[] = [];
+        const estatusNames = selectedStatus.map((status) => status.label);      
         const paramsToSave: ParametersSelectedModel = {
             country: selectedCountry,
             subsidiaries: selectedSubsidiaries,
@@ -106,7 +107,7 @@ function Home_v2() {
         await parameters.parametersSelected.put(
           {key: 'parametersSelected', value: paramsToSave},
         );
-        const report = await getGeneralReports(selectedCDCIds, formattedDate, estatusNames)
+        const report = await getGeneralReports(selectedCDCIds.length === 0 ? nullIds : selectedCDCIds, formattedDate, estatusNames)
         
         const totals = reportTotals(report);
         const newTotals: TotalModel ={
@@ -316,8 +317,9 @@ function Home_v2() {
 
                 <GridItem colSpan={1} />
 
-                {formattedDate != '' && (<Button
-                alignSelf={"flex-end"}
+                <Button
+                    disabled={formattedDate != '' && selectedZonesIds.length === 0}
+                    alignSelf={"flex-end"}
                     colorPalette="meraInfo"
                     onClick={async () => {
                         getDataReport()
@@ -325,7 +327,6 @@ function Home_v2() {
                 >
                     Buscar
                 </Button>
-                )}
             </Grid>
 
             {loading && (

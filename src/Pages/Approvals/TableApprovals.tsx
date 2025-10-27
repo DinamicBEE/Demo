@@ -9,6 +9,7 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
 import Loading from "@components/Loading";
+import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
@@ -94,9 +95,9 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
               <Table.ColumnHeader textAlign="center">Fecha</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Tipo de Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo de Solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">{role?.toLocaleLowerCase() === 'admin' ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Estatus</Table.ColumnHeader>
-              {role?.toLocaleLowerCase() === 'admin' && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
+              {ROLES_APPROVALS.includes(role as ROLES || '') && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -107,13 +108,13 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                 <Table.Cell textAlign="center">{item.date}</Table.Cell>
                 <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
-                <Table.Cell textAlign="center">{role?.toLocaleLowerCase() === 'admin' ? item.comment : item.commentSupervisor}</Table.Cell>
+                <Table.Cell textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Table.Cell>
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
                     {statusLabels[item.status]}
                   </Badge>
                 </Table.Cell>
-                {role?.toLocaleLowerCase() === 'admin' && (
+                {ROLES_APPROVALS.includes(role as ROLES || '') && (
                   <Table.Cell textAlign="center">
                     {item.status === 3 && (
                       <>
