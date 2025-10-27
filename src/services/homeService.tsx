@@ -36,7 +36,7 @@ export const getGeneralInfo = async (
         serverId: 42,
       },
     });
-    console.log("response", response);
+    //console.log("response", response);
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
       0
@@ -90,7 +90,7 @@ export const getGeneralInfo = async (
 
     return transformedData as ClousingModel;
   } catch (error) {
-    console.error("Error fetching general info:", error);
+    //console.error("Error fetching general info:", error);
     return {
       header: {
         subsidiaryName: "",

@@ -7,7 +7,6 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { useHandleCashData } from "@hooks/cashClousing/useHandleCashData";
 import { CLOUSING_KEY } from "@models/common.const";
-import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import { CashLines, CashModel } from "@models/cash.model";
 import { Button } from "@components/ui/button";
@@ -21,7 +20,6 @@ function CashClousing({ data, idCurrency }: any) {
   const { cashLoading, getCashData, setCashClousingSelect } = useCashClousing();
   const { handleChangeTips, handleInputChange } = useHandleCashData(cashData, setCashData, data?.id);
   const { setFooterData } = useFooter();
-  //const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<CashLines[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
@@ -46,7 +44,7 @@ function CashClousing({ data, idCurrency }: any) {
 
       setVisibleItems(items);
     }
-
+    
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -153,8 +151,6 @@ function CashClousing({ data, idCurrency }: any) {
                           value={item.totalFisico}
                           id={item.id}
                           currency={true}
-                          //TODO: Validar forma para evitar ejecucion al primer renderizado
-                          //onChange={handleInputChange}
                           disabled={true}
                         />
 

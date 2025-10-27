@@ -30,7 +30,7 @@ function HeaderClousing({
     } else {
       setLocalHeader(currentHeader);
     }
-  }, [currentHeader, dataRow, getHeader]);
+  }, [currentHeader, dataRow]);
 
   useEffect(() => {
     fetchHeader();
@@ -47,9 +47,9 @@ function HeaderClousing({
     if (localHeader && discountValue !== localHeader.discountPhysical) {
       const updatedLocal = { ...localHeader, discountPhysical: discountValue };
       setLocalHeader(updatedLocal);
-      updateHeaderState({ ...header, [id]: updatedLocal });
+      updateHeaderState({ ...header, [id]: updatedLocal }, id);
     }
-  }, [discountValue, localHeader, header, id, updateHeaderState]);
+  }, [discountValue, localHeader, ]);//header, id, updateHeaderState
 
   const memoizedHeaderProps = useMemo(() => ({
     date: localHeader?.date || "",

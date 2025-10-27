@@ -121,17 +121,17 @@ api.interceptors.response.use(
         return Promise.reject(err);
       }
     }
-    if (window.location.pathname !== "/home") {
-      const errorResponse = getValidationsError(
-        error,
-        window.location.pathname
-      );
-      if (typeof error.status === "number" && error.status === 404) { //Validar con Back uso correcto de codigos
-        toast(errorResponse, "warning");
-      } else {
-        toast(errorResponse, "error");
-      }
-    }
+    // if (window.location.pathname !== "/home") {
+    //   const errorResponse = getValidationsError(
+    //     error,
+    //     window.location.pathname
+    //   );
+    //   if (typeof error.status === "number" && error.status === 404) { //Validar con Back uso correcto de codigos
+    //     toast(errorResponse, "warning");
+    //   } else {
+    //     toast(errorResponse, "error");
+    //   }
+    // }
     return Promise.reject(error);
   }
 );

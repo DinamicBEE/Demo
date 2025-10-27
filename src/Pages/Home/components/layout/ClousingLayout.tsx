@@ -68,42 +68,37 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
           getEmployeetData(employee.id),
           getCashData(employee.id, subsidiary.idCurrency),
         ]);
-        
-        const updateIfTotal = (data: any, key: string, condition?: boolean) => {
-          if (!data?.total) return;
+
+        const prepareUpdate = (data: any, key: string, condition?: boolean) => {
+          if (!data?.total) return null;
+          
           const total =
             condition && data.total.difference < 0
               ? data.total.totalPOS
               : data.total.totalPhysical ?? 0;
-          updateTotal(total, employee.id, key as CLOUSING_KEY);
+          
+          return {
+            newTotal: total,
+            clousingId: employee.id,
+            clousingType: key as CLOUSING_KEY
+          };
         };
 
-        if (cash) {
-          updateIfTotal(cash, CLOUSING_KEY.CASH);
-        }
-        
-        if (customer) {
-          updateIfTotal(customer, CLOUSING_KEY.CUSTOMER, true);
-        }
+        const updates = [
+          prepareUpdate(cash, CLOUSING_KEY.CASH),
+          prepareUpdate(customer, CLOUSING_KEY.CUSTOMER, true),
+          prepareUpdate(specialCustomer, CLOUSING_KEY.SPECIALCUSTOMER),
+          prepareUpdate(prepaid, CLOUSING_KEY.PREPAID, true),
+          prepareUpdate(tdc, CLOUSING_KEY.TDC),
+          prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY),
+          prepareUpdate(employeeT, CLOUSING_KEY.EMPLOYEE),
+        ].filter(Boolean);
 
-        if (specialCustomer) {
-          updateIfTotal(specialCustomer, CLOUSING_KEY.SPECIALCUSTOMER);
-        }
-        
-        if (prepaid) {
-          updateIfTotal(prepaid, CLOUSING_KEY.PREPAID, true);
-        }
 
-        if (tdc) {
-          updateIfTotal(tdc, CLOUSING_KEY.TDC);
-        }
-        
-        if (intercompany) {
-          updateIfTotal(intercompany, CLOUSING_KEY.INTERCOMPANY);
-        }
-
-        if (employeeT) {
-          updateIfTotal(employeeT, CLOUSING_KEY.EMPLOYEE);
+        for (const update of updates) {
+          if (update) {
+            await updateTotal(update.newTotal, update.clousingId, update.clousingType);
+          }
         }
 
       } catch (error) {

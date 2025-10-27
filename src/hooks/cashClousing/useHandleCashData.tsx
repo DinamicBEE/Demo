@@ -7,13 +7,14 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { AlertClousing, TotalModel } from "@models/common.clousing.model";
 import { CashLines, CashModel } from "@models/cash.model";
 
-export const useHandleCashData = (cashData: CashModel, setData: any, clousingId: number) => {
+export const useHandleCashData = (cashData: CashModel, setData: any, clousingId: number,) => {
 
   const cashRef = useRef(cashData);
 
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
   const { setCashData } = useCashClousing();
+  const isFirstLoad = useRef(true);
 
   function handleInputChange(itemId: number | string, value: string, updatedDenominations?: CashLines["denominations"]) {
 
@@ -54,7 +55,10 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
   }
 
   function handleChangeTips(value: string) {
-
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+      return;
+    }
     const preTotalPhysical = cashData.currencies.reduce((acc: number, curr: { totalFisico: number }) => acc + (curr.totalFisico), 0);
     const newTotalPhysical = preTotalPhysical - parseFloat(value);
 

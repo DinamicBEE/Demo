@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react';
+import { ReactNode, useCallback, useRef } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { ClousingLinesModel, ExtraInfo, HeaderContext, HeaderContextType, HeaderData } from '@models/common.clousing.model'
 import { CLOUSING_KEY } from '@models/common.const';
@@ -29,7 +29,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     try {
       const extraInfo = await getExtraInfo(clousingData.id);
-      const data = createObjectHeader(clousingData, extraInfo);
+      const data = createObjectHeader(clousingData, extraInfo, headerRef.current[clousingData.id]);
 
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 
@@ -48,9 +48,9 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   }
 
-  const updateTotal = (newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
+  const updateTotal = useCallback((newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
     
-    const currentHeader = headerRef.current;
+    const currentHeader = structuredClone(headerRef.current || {});
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
 
     const lastCashTotal = currentClousing.totalPOS || 0;
@@ -58,9 +58,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     const lastTotalPOS = (currentHeader[clousingId]?.totalPOS || 0);
 
-    //Validar que todos los valores de totalPhysical sean diferentes de 0
     const allValues = Object.values(currentHeader[clousingId]?.closures || {}).every((value) => value.totalPhysical == 0);
-
     const lastTotalClousing = !allValues ? 
       (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal : 0;
 
@@ -86,7 +84,7 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     updateHeaderState(updatedHeader);
 
-  }
+  },[]);
 
   const value = {
     header,
@@ -105,13 +103,12 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function createObjectHeader(dataRow: ClousingLinesModel, extraInfo: ExtraInfo) {
-
-  
-  const headerData: HeaderData = {
-    cdc: "No seleccionada",
-    location: "No seleccionado",
-    subsidiary: "No seleccionado",
+const createObjectHeader = (dataRow: ClousingLinesModel, extraInfo: ExtraInfo, prevHeader?: HeaderData) => {
+  return {
+    ...prevHeader,
+    cdc: prevHeader?.cdc || "No seleccionada",
+    location: prevHeader?.location || "No seleccionado",
+    subsidiary: prevHeader?.subsidiary || "No seleccionado",
     date: dataRow.closingStartDate,
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
@@ -120,15 +117,13 @@ function createObjectHeader(dataRow: ClousingLinesModel, extraInfo: ExtraInfo) {
     discountPhysical: extraInfo.discountPhysical || 0,
     discountClousing: Math.abs(extraInfo.totalDiscount) || 0,
     closures: {
-      cash: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      customer: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      specialCustomer: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      tdc: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      employee: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      prepaid: { totalPOS: 0, totalPhysical: 0, difference: 0 },
-      intercompany: { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      cash: prevHeader?.closures?.cash || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      customer: prevHeader?.closures?.customer || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      specialCustomer: prevHeader?.closures?.specialCustomer || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      tdc: prevHeader?.closures?.tdc || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      employee: prevHeader?.closures?.employee || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      prepaid: prevHeader?.closures?.prepaid || { totalPOS: 0, totalPhysical: 0, difference: 0 },
+      intercompany: prevHeader?.closures?.intercompany || { totalPOS: 0, totalPhysical: 0, difference: 0 },
     },
-  }
-
-  return headerData
+  };
 }
