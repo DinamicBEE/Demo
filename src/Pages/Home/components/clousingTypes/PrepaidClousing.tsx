@@ -33,6 +33,7 @@ import DialogCoupons from "./DialogCoupons";
 import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
 import PrepaidNewCustomer from "./PrepaidNewCustomer";
+import { toast } from "@utils/Toast";
 
 const pageSize = 10;
 
@@ -59,19 +60,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   // Helpers
   const getCouponPhysicalValue = (coupons: CouponCatalogModel[]) =>
     coupons.filter((c) => !c.isExpired).reduce((acc, c) => acc + c.amount, 0);
-
-  const handleToast = (
-    message: string,
-    type: "error" | "warning" | "success"
-  ) => {
-    toaster.create({
-      title: "",
-      description: message,
-      type,
-      duration: 2500,
-    });
-    setLoadingAdded(false);
-  };
 
   const updateData = (updatePrepaid: PrepaidLineModel[]) => {
     const newTotalComp = updatePrepaid.reduce(
@@ -112,10 +100,17 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     const fetchData = async () => {
       setLoading(true);
 
-      const prepaidData = await getPrepaidData(
+      const response = await getPrepaidData(
         data?.id,
         data?.closingStartDate
       );
+
+      if (!response.success) {
+        toast("No se encotraron datos", "warning")
+      }
+
+      const prepaidData = response.data as PrepaidModel;
+
       const couponsList = await getCouponData(cdc, data?.closingStartDate);
 
       setPrepaid(prepaidData);
@@ -152,7 +147,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
-    if (!couponModel) return handleToast("Cupón inválido o vencido", "error");
+    if (!couponModel) return toast("Cupón inválido o vencido", "error");
 
     let clientLine = prepaid.lines.find(
       (l) =>
@@ -181,14 +176,14 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (
       clientLine.coupons.some((c) => c.folioCustom === couponModel.folioCustom)
     ) {
-      return handleToast("Cupón duplicado", "warning");
+      return toast("Cupón duplicado", "warning");
     }
 
     if (
       clientLine.coupons.length &&
       clientLine.coupons[0].amount !== couponModel.amount
     ) {
-      return handleToast("Monto diferente", "warning");
+      return toast("Monto diferente", "warning");
     }
 
     clientLine.coupons.push(couponModel);
@@ -215,7 +210,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         : l
     );
 
-    handleToast(
+    toast(
       couponModel.isExpired ? "Cupón vencido" : "Cupón válido",
       couponModel.isExpired ? "warning" : "success"
     );

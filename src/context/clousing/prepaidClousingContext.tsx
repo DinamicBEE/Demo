@@ -17,6 +17,7 @@ import {
   PrepaidContextType,
   PrepaidModel,
 } from "@models/prepaid.model";
+import { ResponseModel } from "@models/common.clousing.model";
 
 const prepaidContext = createContext<PrepaidContextType>(
   {} as PrepaidContextType
@@ -41,10 +42,12 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
       setPrepaidLoading(true);
 
       
-
       if (prepaidRef.current[clousingId]) {
         setPrepaidLoading(false);
-        return prepaidRef.current[clousingId];
+        return {
+          success: true,
+          data:prepaidRef.current[clousingId]
+        } as ResponseModel;
       }
 
       try {
@@ -52,7 +55,7 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
         if (!response.success) {
           setPrepaidLoading(false);
-          return response.data;
+          return response;
       }
         
         const updatePrepaid = {
@@ -62,11 +65,11 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
         updatePrepaidData(updatePrepaid);
 
-        return response.data;
+        return response;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
-        return {} as PrepaidModel;
+        return error as ResponseModel;
       } finally {
         setPrepaidLoading(false);
       }

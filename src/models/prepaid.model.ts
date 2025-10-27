@@ -1,4 +1,4 @@
-import { TotalModel } from "./common.clousing.model";
+import { ResponseModel, TotalModel } from "./common.clousing.model";
 
 export interface PrepaidContextType {
   prepaid: PrepaidModel | {};
@@ -7,7 +7,7 @@ export interface PrepaidContextType {
   getPrepaidData: (
     clousingId: number,
     dateClousing: string
-  ) => Promise<PrepaidModel>;
+  ) => Promise<ResponseModel>;
   getCouponData: (
     clousingId: number,
     dateClousing: string

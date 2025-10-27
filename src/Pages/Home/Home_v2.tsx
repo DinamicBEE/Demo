@@ -92,20 +92,30 @@ function Home_v2() {
     []);
 
     async function getDataReport() {
+      let cdcIds: number[] = [];
+      let cdcOptions: selectOption[] = [];
+      if (selectedCDCIds.length === 0) {
+          cdcIds = cdc.items.map((item) => item.value);
+          cdcOptions = cdc.items;
+          setSelectedCDCIds(cdcIds);
+          setSelectedCDCOptions(cdc.items);
+      } else {
+        cdcIds = selectedCDCIds;
+      };
         setLoading(true);
         const estatusNames = selectedStatus.map((status) => status.label);        
         const paramsToSave: ParametersSelectedModel = {
             country: selectedCountry,
             subsidiaries: selectedSubsidiaries,
             zone: selectedZonesOptions,
-            cdc: selectedCDCOptions,
+            cdc: cdcOptions,
             status: selectedStatus,
             date: formattedDate
         };
         await parameters.parametersSelected.put(
           {key: 'parametersSelected', value: paramsToSave},
         );
-        const report = await getGeneralReports(selectedCDCIds, formattedDate, estatusNames)
+        const report = await getGeneralReports(cdcIds, formattedDate, estatusNames)
         
         const totals = reportTotals(report);
         const newTotals: TotalModel ={
