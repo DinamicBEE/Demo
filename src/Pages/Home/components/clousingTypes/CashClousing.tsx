@@ -97,7 +97,7 @@ function CashClousing({ data, idCurrency }: any) {
             name={"Propina de fondo"}
             value={cashData.tips}
             loading={cashLoading}
-            //onChange={handleChangeTips}
+            onChange={handleChangeTips}
             disabled={data?.status === "Cerrado" || !cashData.isRoleEditable ? true : false}
           />
         </Grid>
