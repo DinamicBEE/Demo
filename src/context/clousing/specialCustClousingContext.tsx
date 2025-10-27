@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback, useRef } from 'react';
 import { getSpecialCustomerClousing } from '@services/clousingService';
 import { specialCustContextType, SpecialCustomerContext, SpecialCustomerLines, SpecialCustomerModel } from '@models/specialCustome.model';
+import { ResponseModel } from '@models/common.clousing.model';
 
 const specialCustContext = createContext<specialCustContextType>({} as specialCustContextType);
 
@@ -9,7 +10,6 @@ export const useSpecialCustContext = () => useContext(specialCustContext);
 export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
     const [specialCust, setSpecialCust] = useState<SpecialCustomerContext>({});
     const [specialCustLoading, setSpecialCustLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
     const specialCustRef = useRef<SpecialCustomerContext>(specialCust);
 
     const updateSpecialCustData = (newCashData: SpecialCustomerContext) => {
@@ -22,7 +22,11 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
 
         if(specialCustRef.current[clousingId]){
             setSpecialCustLoading(false);
-            return specialCustRef.current[clousingId];
+            const response: ResponseModel = {
+                success: true,
+                data: specialCustRef.current[clousingId]
+            }
+            return response;
         }
 
         try {
@@ -30,7 +34,7 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
 
             if (!response.success) {
                 setSpecialCustLoading(false);
-                return response.data;
+                return response as ResponseModel;
             }
 
             const updateSpecialCust = {
@@ -41,11 +45,10 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
 
             updateSpecialCustData(updateSpecialCust)
 
-            return response.data as SpecialCustomerModel;
+            return response as ResponseModel;
             
         } catch (error) {
-            setError(error instanceof Error ? error.message : String(error));
-            return {} as SpecialCustomerModel
+            return error as ResponseModel
         } finally {
             setSpecialCustLoading(false);
         }
@@ -67,11 +70,10 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         ()=>({
             specialCust,
             specialCustLoading,
-            error,
             getSpecialCustData,
             setSpecialCustData, 
             specialCustRef
-        }),[specialCust, specialCustLoading, error, getSpecialCustData, setSpecialCustData, specialCustRef]
+        }),[specialCust, specialCustLoading, getSpecialCustData, setSpecialCustData, specialCustRef]
     );
 
     return (

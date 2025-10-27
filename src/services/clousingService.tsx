@@ -250,6 +250,7 @@ export const getSpecialCustomerClousing = async (
         lines: [],
         isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       } as SpecialCustomerModel,
+      error: error as AxiosError,
     };
     return responseData;
   }

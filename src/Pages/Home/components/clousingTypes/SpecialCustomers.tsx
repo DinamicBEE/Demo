@@ -25,6 +25,8 @@ import { CLOUSING_KEY } from "@models/common.const";
 import Loading from "@components/Loading";
 import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
+import { ResponseModel } from "@models/common.clousing.model";
+import { handleErrorMessage } from "@utils/getValidationsError";
 
 const pageSize = 10;
 
@@ -51,20 +53,23 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
   useEffect(() => {
     async function fetchData() {
   
-      const specialCustomer: SpecialCustomerModel = await getSpecialCustData(
+      const specialCustomer: ResponseModel = await getSpecialCustData(
         data?.id,
         subsidiary.idCurrency
       );
       const customersApi = await getCustomers(false);
+      if(!specialCustomer.success){
+        handleErrorMessage(specialCustomer.error)
+      }
       if (specialCustomer)
         setFooterData(
-          specialCustomer.total,
+          specialCustomer.data.total,
           data.id,
           CLOUSING_KEY.SPECIALCUSTOMER
         );
-      setSpecialCustomer(specialCustomer);
+      setSpecialCustomer(specialCustomer.data);
       setCustomers(customersApi);
-      const items = specialCustomer?.lines?.slice(startRange, endRange);
+      const items = specialCustomer?.data.lines?.slice(startRange, endRange);
       setVisibleItems(items);
     }
 
