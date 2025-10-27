@@ -10,6 +10,8 @@ export const getStatusColor = (status: STATUS) => {
       return "meraWarning";
     case STATUS.WITH_DIFFERENCE:
       return "meraError";
+    case STATUS.WITH_DIFFERENCE_:
+      return "meraError";
     case STATUS.Open:
       return "meraSecondary";
     case STATUS.ACTIVE:

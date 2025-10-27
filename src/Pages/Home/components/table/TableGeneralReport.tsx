@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, FormatNumber, HStack, Table, Text } from "@chakra-ui/react";
+import { Box, FormatNumber, HStack, Table, Tag, Text } from "@chakra-ui/react";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { HomeParamsProps, ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
 import { useClousing } from "@context/home/clousingContext";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
+import { STATUS } from "@models/status.model";
+import { getStatusColor } from "@utils/getStatusColor";
 
 
 function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
@@ -37,6 +39,10 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
         })
 
     }
+
+    const statusColor = (status: STATUS) => {
+        return getStatusColor(status);
+      }
 
     return (
         <Box>
@@ -188,7 +194,13 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                                 <Table.Cell>
                                     <FormatNumber value={row.difference} style="currency" currency="USD" />
                                 </Table.Cell>
-                                <Table.Cell><Text>{row.status}</Text></Table.Cell>
+                                <Table.Cell>
+                                  <Tag.Root
+                                    colorPalette={statusColor(row.status as STATUS)}
+                                  >
+                                    <Tag.Label>{row.status}</Tag.Label>
+                                  </Tag.Root>
+                                </Table.Cell>
                                 <Table.Cell>
                                     <FormatNumber value={row.mxn ?? 0} style="currency" currency="USD" />
                                 </Table.Cell>

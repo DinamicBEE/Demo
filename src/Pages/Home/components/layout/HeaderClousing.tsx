@@ -128,13 +128,13 @@ function HeaderClousing({
           loading={false} 
         />
 
-        <Button
+        {/* <Button
           size="sm"
           colorPalette="meraInfo"
           disabled={closingConfirmation}
         >
           Actualizar
-        </Button>
+        </Button> */}
       </Grid>
     </Box>
   );
