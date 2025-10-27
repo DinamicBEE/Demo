@@ -1,4 +1,5 @@
 import { AxiosError } from "axios";
+import { toast } from "./Toast";
 
 const SERVER_ERROR_MESSAGE = "Error en el servidor";
 const TOKEN_NOT_FOUND = "Token no proporcionado";
@@ -77,3 +78,15 @@ export const getValidationsError = (
   // Si no se encuentra un mensaje específico, devolver un mensaje genérico
   return "Ha ocurrido un error inesperado";
 };
+
+export const handleErrorMessage = (error: any) => {
+  if ( window.location.pathname !== "/home") {
+    const errorResponse = getValidationsError(
+      error,
+      window.location.pathname
+    );
+    if (typeof error.status === "number" && error.status === 404) {
+      toast(errorResponse, "warning");
+    } 
+  }
+}

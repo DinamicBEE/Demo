@@ -1,4 +1,4 @@
-import { ClousingLinesModel, TotalModel } from "./common.clousing.model";
+import { ClousingLinesModel, ResponseModel, TotalModel } from "./common.clousing.model";
 import { SubsidiaryModal } from "./common.model";
 
 
@@ -10,8 +10,7 @@ export interface CustomersClousingProps {
 export interface CustomerContextType {
     customer: CustomerModel | {};
     customerLoading: boolean;
-    error: string;
-    getCustomerData: (clousingId: number) => Promise<CustomerModel>;
+    getCustomerData: (clousingId: number) => Promise<ResponseModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
     customerRef: React.MutableRefObject<CustomerContext>;
 }
