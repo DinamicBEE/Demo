@@ -67,7 +67,6 @@ function Home_v2() {
                     if(parametersPromise !== undefined) {
                         setIsInitialLoad(false);
                         const savedParams = parametersPromise.value;
-                        console.log(savedParams);
                         setSelectedSubsidiaries(savedParams.subsidiaries ?? []);
                         setSelectedSubIds(savedParams.subsidiaries.map((sub: any) => sub.value) ?? []);
                         setSelectedZonesOptions(savedParams.zone ?? []);
