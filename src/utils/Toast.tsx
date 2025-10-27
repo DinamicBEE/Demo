@@ -5,7 +5,7 @@ export const toast = (message: string, type: "success" | "error" | "warning") =>
     toaster.create({
         description: message,
         type,
-        duration: 2500,
+        duration: 1500,
         closable: true,
     })
 }

@@ -7,6 +7,7 @@ import { IntercompanyModel } from "./intercompany.model";
 import { PrepaidModel } from "./prepaid.model";
 import { SpecialCustomerModel } from "./specialCustome.model";
 import { TDCModel } from "./tdc.model";
+import { AxiosError } from "axios";
 
 export interface ClousingModel {
   header: HeaderClousingModel;
@@ -244,8 +245,9 @@ export interface FooterContextType {
 
 export interface ResponseModel {
   success: boolean;
+  code?: number;
   data?: any;
-  error?: string;
+  error?: AxiosError;
   message?: string;
 }
 

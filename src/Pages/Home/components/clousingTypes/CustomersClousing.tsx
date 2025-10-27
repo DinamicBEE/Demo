@@ -27,7 +27,7 @@ import { useCustomerContext } from "@context/clousing/customerClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import { getCurrencies } from "@services/catalogService";
-import { CurrencyModel } from "@models/common.clousing.model";
+import { CurrencyModel, ResponseModel } from "@models/common.clousing.model";
 import {
   CustomerLines,
   CustomerModel,
@@ -40,6 +40,7 @@ import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
 import { getCustomers } from "@services/catalogService";
 import { selectOption } from "@models/common.model";
+import { handleErrorMessage } from "@utils/getValidationsError";
 
 
 const pageSize = 10;
@@ -59,7 +60,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
     setCustomersData,
     data?.id ?? 0
   );
-  const { updateTotal } = useHeaders();
+
   const { open, onOpen, onClose } = useDisclosure();
 
   const [page, setPage] = useState(1);
@@ -71,11 +72,21 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
   useEffect(() => {
     async function fetchData() {
       if (!data) return;
-      const customers: CustomerModel = await getCustomerData(data.id);
+      
+      const customers: ResponseModel = await getCustomerData(data.id);
 
-      if (customers?.total)
-        setFooterData(customers.total, data.id, CLOUSING_KEY.CUSTOMER);
+      if(!customers.success){
+        handleErrorMessage(customers.error)
+      }
 
+      if (customers?.data.total)
+        setFooterData(customers.data.total, data.id, CLOUSING_KEY.CUSTOMER);
+      
+      setCustomersData(customers.data);
+
+      const items = customers?.data.lines?.slice(startRange, endRange);      
+      setVisibleItems(items);
+      
       const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
 
       if (!currencies) {
@@ -87,12 +98,8 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
         setcurrenciesForSelect(createCurrenciList);
       }
 
-
-      setCustomersData(customers);
       setCurrencies(currencies);
 
-      const items = customers?.lines?.slice(startRange, endRange);      
-      setVisibleItems(items);
     }
 
     fetchData();

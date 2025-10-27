@@ -12,6 +12,7 @@ import {
   CustomerContextType,
   CustomerModel,
 } from "@models/customer.model";
+import { ResponseModel } from "@models/common.clousing.model";
 
 const customerContext = createContext<CustomerContextType>(
   {} as CustomerContextType
@@ -37,18 +38,22 @@ export function CustomerClousingProvider({
   const getCustomerData = useCallback(
     async (clousingId: number) => {
       setCustomerLoading(true);
-
+      
       if (customerRef.current[clousingId]) {
         setCustomerLoading(false);
-        return customerRef.current[clousingId];
+        const response: ResponseModel = {
+          success: true,
+          data: customerRef.current[clousingId]
+        }
+        return response;
       }
 
       try {
-        const data = await getCustomerClousing(clousingId);
+        const data: ResponseModel = await getCustomerClousing(clousingId);
 
         if (!data.success) {
           setCustomerLoading(false);
-          return data.data;
+          return data as ResponseModel;
         }
 
         const updateCustomer = {
@@ -58,11 +63,10 @@ export function CustomerClousingProvider({
 
         updateCustomerData(updateCustomer);
 
-        return data.data as CustomerModel;
+        return data as ResponseModel;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
-
-        return {} as CustomerModel;
+        return error as ResponseModel
       } finally {
         setCustomerLoading(false);
       }

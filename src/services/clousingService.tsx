@@ -15,6 +15,7 @@ import Papa from "papaparse";
 import { ClousingSave } from "@models/saveClousing.model";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
+import { AxiosError } from "axios";
 
 /**
  * This function gets the information
@@ -168,10 +169,10 @@ export const getCustomerClousing = async (
     };
 
     return responseData;
-  } catch (error) {
-    //console.error("Error al obtener los valores generales:", error);
+  } catch (error: any) {
     const responseData: ResponseModel = {
       success: false,
+      code: error.response?.status,
       data: {
         id: clousingId,
         total: {
@@ -182,6 +183,7 @@ export const getCustomerClousing = async (
         lines: [],
         isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       } as CustomerModel,
+      error: error as AxiosError,
     };
     return responseData;
   }

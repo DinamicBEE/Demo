@@ -86,7 +86,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
 
         const updates = [
           prepareUpdate(cash, CLOUSING_KEY.CASH),
-          prepareUpdate(customer, CLOUSING_KEY.CUSTOMER, true),
+          prepareUpdate(customer.data, CLOUSING_KEY.CUSTOMER, true),
           prepareUpdate(specialCustomer, CLOUSING_KEY.SPECIALCUSTOMER),
           prepareUpdate(prepaid, CLOUSING_KEY.PREPAID, true),
           prepareUpdate(tdc, CLOUSING_KEY.TDC),
