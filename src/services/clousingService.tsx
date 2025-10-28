@@ -42,7 +42,6 @@ export const getCashClousing = async (
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
-        totalFisico: currency.totalPOS < 0 ? 0 : currency.totalFisico,
         difference: currency.totalPOS < 0 ? Math.abs(currency.totalPOS) : currency.difference,
       })),
     };
