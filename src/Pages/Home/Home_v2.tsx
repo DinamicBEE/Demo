@@ -92,44 +92,68 @@ function Home_v2() {
     []);
 
     async function getDataReport() {
+      setLoading(true);
       let cdcIds: number[] = [];
       let cdcOptions: selectOption[] = [];
-      if (selectedCDCIds.length === 0) {
-          cdcIds = cdc.items.map((item) => item.value);
-          cdcOptions = cdc.items;
-          setSelectedCDCIds(cdcIds);
-          setSelectedCDCOptions(cdc.items);
-      } else {
+
+      const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
+      const savedParams = parametersPromise?.value;
+
+      if (selectedCDCIds.length > 0) {
         cdcIds = selectedCDCIds;
-      };
-        setLoading(true);
-        const estatusNames = selectedStatus.map((status) => status.label);        
-        const paramsToSave: ParametersSelectedModel = {
-            country: selectedCountry,
-            subsidiaries: selectedSubsidiaries,
-            zone: selectedZonesOptions,
-            cdc: cdcOptions,
-            status: selectedStatus,
-            date: formattedDate
-        };
-        await parameters.parametersSelected.put(
-          {key: 'parametersSelected', value: paramsToSave},
-        );
-        const report = await getGeneralReports(cdcIds, formattedDate, estatusNames)
-        
-        const totals = reportTotals(report);
-        const newTotals: TotalModel ={
-            totalPOS: totals.totalPOS,
-            totalPhysical: totals.totalPhysical,
-            difference: totals.difference,
-        }
-        
-        setRowTotals(totals);
-        setTotals(newTotals);
-        setDataReport(report);
-        
-        setShowTable(true);
+        cdcOptions = selectedCDCOptions;
+      } 
+      else if (cdc.items.length > 0 && selectedCDCIds.length === 0) {
+        cdcIds = cdc.items.map((item) => item.value);
+        cdcOptions = cdc.items;
+        setSelectedCDCIds(cdcIds);
+        setSelectedCDCOptions(cdcOptions);
+      }
+      else if (Array.isArray(savedParams?.cdc) && savedParams.cdc.length > 0) {
+        cdcIds = savedParams.cdc.map((cdc: any) => cdc.value);
+        cdcOptions = savedParams.cdc;
+        setSelectedCDCIds(cdcIds);
+        setSelectedCDCOptions(cdcOptions);
+      } 
+      if (cdcIds.length === 0) {
+        console.warn("No hay CDC válidos para generar el reporte");
         setLoading(false);
+        return;
+      }
+
+      
+
+      const estatusNames = selectedStatus.map((status) => status.label);
+
+      const paramsToSave: ParametersSelectedModel = {
+        country: selectedCountry,
+        subsidiaries: selectedSubsidiaries,
+        zone: selectedZonesOptions,
+        cdc: cdcOptions,
+        status: selectedStatus,
+        date: formattedDate,
+      };
+
+      await parameters.parametersSelected.put({
+        key: "parametersSelected",
+        value: paramsToSave,
+      });
+
+      const report = await getGeneralReports(cdcIds, formattedDate, estatusNames);
+
+      const totals = reportTotals(report);
+      const newTotals: TotalModel = {
+        totalPOS: totals.totalPOS,
+        totalPhysical: totals.totalPhysical,
+        difference: totals.difference,
+      };
+
+      setRowTotals(totals);
+      setTotals(newTotals);
+      setDataReport(report);
+
+      setShowTable(true);
+      setLoading(false);
     }
 
     useEffect(() => {
