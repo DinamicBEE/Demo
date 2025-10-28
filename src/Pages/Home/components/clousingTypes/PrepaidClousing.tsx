@@ -165,6 +165,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         supplementsQuantity: 0,
         unitPrice: couponModel.amount,
         client: couponModel.clientCustom.toLocaleUpperCase(),
+        idClient: 3,
         physical: couponModel.amount,
         totalPOS: couponModel.amount * 1,
         difference: 0,

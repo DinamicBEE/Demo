@@ -36,6 +36,7 @@ export interface PrepaidModel {
 export interface PrepaidLineModel {
   id: number | string;
   client: string | null;
+  idClient: number;
   quantity: number;
   supplementsQuantity: number;
   unitPrice: number;
