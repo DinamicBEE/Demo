@@ -147,7 +147,10 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
-    if (!couponModel) return toast("Cupón inválido o vencido", "error");
+    if (!couponModel) {
+      setLoadingAdded(false)
+      return toast("Cupón inválido", "error")
+    };
 
     let clientLine = prepaid.lines.find(
       (l) =>
@@ -176,6 +179,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (
       clientLine.coupons.some((c) => c.folioCustom === couponModel.folioCustom)
     ) {
+      setLoadingAdded(false);
       return toast("Cupón duplicado", "warning");
     }
 
@@ -183,6 +187,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       clientLine.coupons.length &&
       clientLine.coupons[0].amount !== couponModel.amount
     ) {
+      setLoadingAdded(false);
       return toast("Monto diferente", "warning");
     }
 
