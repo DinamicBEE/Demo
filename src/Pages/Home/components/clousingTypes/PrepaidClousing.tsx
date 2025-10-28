@@ -198,6 +198,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       item.id === clientLine!.id
         ? {
             ...clientLine!,
+            idClient: item.idClient,
             quantity: clientLine!.coupons.filter((c) => !c.isExpired).length,
             physical: newTotalFisico,
             totalPOS:

@@ -282,7 +282,6 @@ export const getPrepaidClousing = async (
       ? validLines.map((item: PrepaidLineModel) => ({
           ...item,
           id: item.id === 0 ? "prepaid-" + uuidv4() : item.id,
-          idClient: 3,
           edit: item.supplementsQuantity > 0,
           coupons:
             item.coupons?.map((coupon: CouponCatalogModel) => ({
