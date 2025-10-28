@@ -119,14 +119,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       if (prepaidData?.total)
         setFooterData(prepaidData.total, data.id, CLOUSING_KEY.PREPAID);
 
-      // updateTotal(
-      //   prepaidData.total.difference < 0
-      //     ? prepaidData.total.totalPOS
-      //     : prepaidData.total.totalPhysical,
-      //   data.id,
-      //   CLOUSING_KEY.PREPAID
-      // );
-
       setVisibleItems(prepaidData?.lines?.slice(startRange, endRange) || []);
 
       setLoading(false);

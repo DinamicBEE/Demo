@@ -303,12 +303,13 @@ export const getPrepaidClousing = async (
       total: {
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
-        difference: (response.data.totalPhysical ?? 0) - (response.data.totalPOS ?? 0),
+        difference: response.data.totalDifference ?? 0,
       },
       lines: updateLines,
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
+    console.log(data)
     const responseData: ResponseModel = {
       success: true,
       data: data,
