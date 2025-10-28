@@ -26,12 +26,12 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPMIX_01,
     name: `${REPORT_NAME.REPMIX_00}: ${REPORT_NAME.REPMIX_01}`,
-    date: true,
-    dateRange: false,
+    date: false,
+    dateRange: true,
     subsidiary: true,
     zone: true,
-    multicdc: false,
-    cdc: true,
+    multicdc: true,
+    cdc: false,
     customer: false,
   },
   {

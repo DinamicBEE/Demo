@@ -34,8 +34,9 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
   },
   [REPORT_KEY.REPMIX_01]: {
     params: [
-      { paramsKey: "cdcId", filterKey: "cdc" },
-      { paramsKey: "dateOfReport", filterKey: "date" },
+      { paramsKey: "cdcId", filterKey: "multicdc" },
+      { paramsKey: "startDate", filterKey: "date_1" },
+      { paramsKey: "endDate", filterKey: "date_2" },
     ],
   },
   [REPORT_KEY.REPCUP_01]: {
