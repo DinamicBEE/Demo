@@ -22,18 +22,18 @@ export const renderMultiSelectWithControls = (
 
   const handleSelectAll = () => {
     
-  if (selectedItems.length === collection.items.length) {
-    onValueChange({ items: [] });
-    setValue([]);
-  } else {
-    onValueChange({ items: [...collection.items] });
-    setValue(collection.items.map(item => item.value));
-  }
-};
+    if (selectedItems.length === collection.items.length) {
+      onValueChange({ items: [] });
+      setValue([]);
+    } else {
+      onValueChange({ items: [...collection.items] });
+      setValue(collection.items.map(item => item.value));
+    }
+  };
 
-useEffect(() => {
-  setValue(selectedItems.map(item => item.value));
-}, [selectedItems]);
+  useEffect(() => {
+    setValue(selectedItems.map(item => item.value));
+  }, [selectedItems]);
 
   const handleChange = (e: any) => {
     onValueChange(e);
