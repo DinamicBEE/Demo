@@ -212,13 +212,42 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       }
     });
 
-
     await getReportData({
       report: currentReport ?? 0,
       filterOpction: allFilters
     });
     setLoading(false)
   }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);
+
+  const handleCleanSelects = (key: string, action: string) => {
+    if (key === "subsidiary") {
+      if (action === "all") {
+        const allIds = subsidiaries.items.map(item => item.value as number);
+        if (allIds.length === selectedSubIds.length) return;
+        setSelectedSubIds(allIds);
+      } else {
+        setSelectedSubIds([]);
+      }
+    }
+    if (key === "zone") {
+      if (action === "all") {
+        const allIds = zone.items.map(item => item.value as number);
+        if (allIds.length === selectedZone.length) return;
+        setSelectedZone(allIds);
+      } else {
+        setSelectedZone([]);
+      }
+    }
+    if (key === "multicdc") {
+      if (action === "all") {
+        const allIds = cdc.items.map(item => item.value as number);
+        if (allIds.length === selectedCDC.length) return;
+        setSelectedCDC(allIds);
+      } else {
+        setSelectedCDC([]);
+      }
+    }
+  }
 
   // Exportar CSV
   const exportCSV = useCallback(() => {
@@ -262,6 +291,9 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
             <SelectValueText placeholder="Selecciona una o más" />
           </SelectTrigger>
           <SelectContent>
+            <Box>
+              {renderSelectAllButton(filterKey)}
+            </Box>
             {(subsidiaries.items || []).map((option) => (
               <SelectItem key={option.value} item={option}>
                 {option.label}
@@ -285,6 +317,9 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
             <SelectValueText placeholder="Selecciona una o más" />
           </SelectTrigger>
           <SelectContent>
+            <Box>
+              {renderSelectAllButton(filterKey)}
+            </Box>
             {(zone.items || []).map((option) => (
               <SelectItem key={option.value} item={option}>
                 {option.label}
@@ -309,6 +344,9 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
             <SelectValueText placeholder={cdc.items.length === 0 ? "Sin datos" : "Selecciona"} />
           </SelectTrigger>
           <SelectContent>
+            {<Box>
+              {filterKey === "multicdc" && renderSelectAllButton(filterKey)}
+            </Box>}
             {cdc.items.map((option) => (
               <SelectItem key={option.value} item={option}>
                 {option.label}
@@ -347,6 +385,33 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     );
   };
 
+  const renderSelectAllButton = (key: string) => {
+    return <HStack mb={2} justify="space-between" gap="2">
+      <Button
+        size={"sm"}
+        colorPalette={'meraPrimary'}
+        variant={"surface"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleCleanSelects(key, "all");
+        }}
+      >
+        Seleccionar todos
+      </Button>
+      <Button
+        size={"sm"}
+        colorPalette={'meraWarning'}
+        variant={"surface"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleCleanSelects(key, "none");
+        }}
+      >
+        Borrar selección
+      </Button>
+    </HStack>
+  }
+
   return (
     <Box w={'100%'} py={4} mb={4}>
       <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={4} mb={4}>
@@ -376,5 +441,4 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     </Box>
   );
 }
-//idClient
 export default Filters;
