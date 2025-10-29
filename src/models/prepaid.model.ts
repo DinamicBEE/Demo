@@ -36,6 +36,7 @@ export interface PrepaidModel {
 export interface PrepaidLineModel {
   id: number | string;
   client: string | null;
+  idClient: number;
   quantity: number;
   supplementsQuantity: number;
   unitPrice: number;
@@ -44,6 +45,7 @@ export interface PrepaidLineModel {
   difference: number;
   isEdit: boolean; // TODO isEdit
   coupons: CouponCatalogModel[];
+  couponsSelected?: CouponCatalogModel[];
   ticketId: number;
 }
 

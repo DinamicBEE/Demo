@@ -68,10 +68,9 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
           getEmployeetData(employee.id),
           getCashData(employee.id, subsidiary.idCurrency),
         ]);
-
         const prepareUpdate = (data: any, key: string, condition?: boolean) => {
           if (!data?.total) return null;
-          
+          console.log(key, data)
           const total =
             condition && data.total.difference < 0
               ? data.total.totalPOS
@@ -87,8 +86,8 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
         const updates = [
           prepareUpdate(cash, CLOUSING_KEY.CASH),
           prepareUpdate(customer.data, CLOUSING_KEY.CUSTOMER, true),
-          prepareUpdate(specialCustomer, CLOUSING_KEY.SPECIALCUSTOMER),
-          prepareUpdate(prepaid, CLOUSING_KEY.PREPAID, true),
+          prepareUpdate(specialCustomer.data, CLOUSING_KEY.SPECIALCUSTOMER),
+          prepareUpdate(prepaid.data, CLOUSING_KEY.PREPAID),
           prepareUpdate(tdc, CLOUSING_KEY.TDC),
           prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY),
           prepareUpdate(employeeT, CLOUSING_KEY.EMPLOYEE),
