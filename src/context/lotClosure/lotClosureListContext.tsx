@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState,
   useMemo, useCallback, useRef } from "react";
-import { getBanks, getLotsClosure, updateBankService } from "@services/lotClosureService";
-import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest } from "@models/lotClosure.model";
+import { getBanks, getLotsClosure, updateAdyenDistribution, updateBankService } from "@services/lotClosureService";
+import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest, BankUpdate } from "@models/lotClosure.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -12,12 +12,12 @@ export const useLotClosureList = () => useContext(LotClosureListContext);
 export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [lotsClosure, setLotsClosure] = useState<LotClosure[]>([]);
   const lostClosureCache = useRef<LotsClosureContext>({});
-  const [banks, setBanks] = useState<Bank[]>([]);
+  const [banks, setBanks] = useState<BankUpdate>({bank: [], bankCopy: []} as BankUpdate);
   const [loading, setLoading] = useState(false);
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [updateBankLoading, setUpdateBankLoading] = useState(false);
   const [error, setError] = useState<string>("");
-  const bankCache = useRef<{ [key: number]: Bank[] }>({});
+  const bankCache = useRef<{ [key: number]: BankUpdate }>({});
 
   const filterDataLots = (date: string, locationId: number[]) => {
     if(locationId.length > 0) {
@@ -46,7 +46,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       try {
         if (isRefresh) {
-          setBanks([]);
+          setBanks({} as BankUpdate);
           bankCache.current = {};
           setLotsClosure([]);
           lostClosureCache.current = {};
@@ -66,14 +66,17 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const updateBank = useCallback(
-    async (localBank: Bank[], localLotClosure: LotClosure) => {
+    async (localBank: BankUpdate, localLotClosure: LotClosure) => {
       setError("");
       setUpdateBankLoading(true);
+      const updateBanks: Bank[] = [];
+      const splitedBanks = updateAdyenDistribution(localBank);
+      updateBanks.push(...splitedBanks);
       try {
         const body: BankUpdateRequest = {
           ...localLotClosure,
           batchClosureId: typeof localLotClosure.id === "number" ? localLotClosure.id : null,
-          batchDetailsRequest: localBank.map((bank) => ({
+          batchDetailsRequest: updateBanks.map((bank) => ({
             ...bank,
             batchDetailsId: typeof bank.batchDetailsId === "string" ? null : bank.batchDetailsId,
             lines: bank.affiliationList.map((line) => ({
@@ -96,16 +99,19 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
 
   const fetchBanks = useCallback(
     async (cdcId: number, date:string) => {
-      if (bankCache.current[cdcId]) return bankCache.current[cdcId]; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
+      if (bankCache.current[cdcId]) return bankCache.current[cdcId] as BankUpdate; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
       setLoadingBanks(true);
       try {
-        const response = await getBanks(cdcId, date);
-        setBanks(response);        
+        const response: BankUpdate = await getBanks(cdcId, date);
+        setBanks(response);   
         bankCache.current[cdcId] = response;
         return response;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
-        return [];
+        return {
+          bank: [],
+          bankCopy: []
+        };
       } finally {
         setLoadingBanks(false);
       }

@@ -1,12 +1,12 @@
-import { Bank, LotClosure } from "@models/lotClosure.model";
+import { Bank, BankUpdate, LotClosure } from "@models/lotClosure.model";
 import React from "react";
 export const useHandleAffiliationsData = () => {
   // Function to handle input data and update local banks
   const handleInputData = (
     bankId: number | string,
     inputValue: string,
-    setLocalBanks: React.Dispatch<React.SetStateAction<Bank[]>>,
-    localBanks: Bank[],
+    setLocalBanks: React.Dispatch<React.SetStateAction<BankUpdate>>,
+    localBanks: BankUpdate,
     localLot: LotClosure,
     setLocalLot: React.Dispatch<React.SetStateAction<LotClosure>>,
     affiliationKey?: string
@@ -14,7 +14,7 @@ export const useHandleAffiliationsData = () => {
     const cleanedValue = Number(inputValue.replace(/[^\d.]/g, ""));
     if (cleanedValue < 0) return;
 
-    const updatedBanks = localBanks.map((bank) => {
+    const updatedBanks = localBanks.bank.map((bank) => {
       if (bank.bankTerminalId === bankId) {
         const updatedAffiliations = bank.affiliationList.map((affiliation) => {
           if (affiliation.affiliationId.toString() === affiliationKey) {
@@ -44,7 +44,7 @@ export const useHandleAffiliationsData = () => {
       totalLote: totalLot,
       difference: totalDifference,
     });
-    setLocalBanks(banksWithDifference);
+    setLocalBanks((prev) => {return {...prev, bank: banksWithDifference }});
   };
 
   // Helper function to calculate total lot for each bank

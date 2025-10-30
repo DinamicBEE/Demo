@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { LotClosure, Bank, BankUpdateRequest } from "@models/lotClosure.model";
+import { LotClosure, Bank, BankUpdateRequest, Afilation, BankUpdate } from "@models/lotClosure.model";
 import Cookies from "js-cookie";
 import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
   GET_BATCH_DETAILS, CONFIRM_BATCH, 
@@ -86,21 +86,138 @@ export const getBanks = async (cdcId: number, date:string) => {
 
     }));
 
-    return transformedData as Bank[];
+    const copyAdyen: Bank[] = transformedData.filter((bank: Bank) => bank.bankTerminalName === "TPV ADYEN");
+
+    if (copyAdyen.length >= 2) {
+      const newLineAdyen: Bank = {
+        bankTerminalId: copyAdyen[0].bankTerminalId,
+        bankTerminalName: copyAdyen[0].bankTerminalName,
+        batchClosureId: copyAdyen[0].batchClosureId,
+        batchDetailsId: copyAdyen[0].batchDetailsId,
+        difference: copyAdyen.reduce((acc, curr) => acc + curr.difference, 0),
+        totalBatch: copyAdyen.reduce((acc, curr) => acc + curr.totalBatch, 0),
+        totalPos: copyAdyen.reduce((acc, curr) => acc + curr.totalPos, 0),
+        affiliationList: [],
+        totalCrc: copyAdyen.reduce((acc, curr) => (acc || 0) + (curr.totalCrc || 0), 0)
+      } 
+      const adyenAffiliations = copyAdyen.reduce((acc: Afilation[], curr: Bank) => acc.concat(curr.affiliationList), []);
+      const afiliations: Afilation = {
+        affiliationId: adyenAffiliations[0].affiliationId,
+        amount: adyenAffiliations.reduce((acc, curr) => acc + curr.amount, 0),
+        affiliation: adyenAffiliations[0].affiliation,
+        affiliationDetailsId: adyenAffiliations[0].affiliationDetailsId
+
+      }
+      newLineAdyen.affiliationList.push(afiliations);
+      const newLines = transformedData.filter((bank: Bank) => bank.bankTerminalName !== "TPV ADYEN");
+      newLines.push(newLineAdyen);
+      const bankUpdate: BankUpdate = {
+        bank: newLines,
+        bankCopy: copyAdyen
+      }
+      return bankUpdate;
+    } else {
+      const bankUpdate: BankUpdate = {
+        bank: transformedData,
+        bankCopy: []
+      }
+      return bankUpdate as BankUpdate;
+    }
+
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
-    return [];
+    return {} as BankUpdate;
+  }
+};
+
+export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
+  try {
+    const { bank, bankCopy } = bankUpdate;
+    if (!bankCopy || bankCopy.length < 2) {
+      return bankUpdate.bank;
+    }
+    const unifiedAdyenIndex = bank.findIndex((bankItem: Bank) => 
+      bankItem.bankTerminalName === "ADYEN"
+    );
+
+    if (unifiedAdyenIndex === -1) {
+      console.warn("No se encontró la línea unificada de Adyen");
+      return bankUpdate.bank;
+    }
+
+    const unifiedAdyen = bank[unifiedAdyenIndex];
+    const modifiedCopies: Bank[] = [];
+
+    if (unifiedAdyen.totalPos > unifiedAdyen.totalBatch) {
+      const firstCopy: Bank = {
+        ...bankCopy[0],
+        totalBatch: bankCopy[0].totalPos > unifiedAdyen.totalBatch ? unifiedAdyen.totalBatch : bankCopy[0].totalPos,
+        difference: bankCopy[0].totalPos > unifiedAdyen.totalBatch ? unifiedAdyen.totalBatch - bankCopy[0].totalPos : 0
+      };
+      
+      const remainingAmount = bankCopy[0].totalPos - unifiedAdyen.totalBatch;
+      const secondCopy: Bank = {
+        ...bankCopy[1],
+        totalBatch: remainingAmount > 0 ? remainingAmount : 0,
+        difference: remainingAmount !== 0 ? remainingAmount - bankCopy[1].totalPos : bankCopy[1].totalBatch- bankCopy[1].totalPos
+      };
+      modifiedCopies.push(firstCopy, secondCopy);
+      
+      if (bankCopy.length > 1) {
+        modifiedCopies.push(...bankCopy);
+      }
+      
+    } else if (unifiedAdyen.totalPos === unifiedAdyen.totalBatch) {
+      modifiedCopies.push(...bankCopy.map(copy => ({
+        ...copy,
+        totalBatch: copy.totalPos,
+        difference: 0
+      })));
+    } else {
+      modifiedCopies.push(...bankCopy);
+    }
+    const updatedCopiesWithAffiliations = modifiedCopies.map((copy, index) => {
+      if (copy.affiliationList && copy.affiliationList.length > 0) {
+        const updatedAffiliationList = copy.affiliationList.map(affiliation => ({
+          ...affiliation,
+          amount: copy.totalBatch || 0
+        }));
+        return {
+          ...copy,
+          affiliationList: updatedAffiliationList
+        };
+      }
+      return copy;
+    });
+
+    const newBankArray = bank.filter((bankItem: Bank) => 
+      bankItem.bankTerminalName !== "ADYEN"
+    );
+
+    newBankArray.push(...updatedCopiesWithAffiliations);
+
+    const updatedBankUpdate: BankUpdate = {
+      bank: newBankArray,
+      bankCopy: bankCopy 
+    };
+
+    return updatedBankUpdate.bank;
+
+  } catch (error) {
+    console.error("Error al actualizar la distribución de Adyen: ", error);
+    return bankUpdate.bank;
   }
 };
 
 export const updateBankService = async (localBank: BankUpdateRequest) => {
   try {    
-    const response = await api.post(CONFIRM_BATCH, localBank);
-    if (response.status === 200 && localBank.status === "Abierto") {
-      assembliesController(localBank.consumerCenterId, localBank.batchDate)
-    }
+    // const response = await api.post(CONFIRM_BATCH, localBank);
+    // if (response.status === 200 && localBank.status === "Abierto") {
+    //   assembliesController(localBank.consumerCenterId, localBank.batchDate)
+    // }
     
-    return response.data as string;
+    console.log(localBank);
+    
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];

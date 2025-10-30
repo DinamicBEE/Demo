@@ -50,7 +50,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             } else {
                 items = reportData?.slice(startRange, endRange);
             }
-            setVisibleItems(items);
+            setVisibleItems(items || []);
             setCountTable(reportData?.length);
         }
     }, [page, reportData, pageSize]);

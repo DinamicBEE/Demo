@@ -26,6 +26,11 @@ export interface Afilation {
   amount: number;
 }
 
+export interface BankUpdate {
+  bank: Bank[];
+  bankCopy?: Bank[];
+}
+
 export interface Bank {
   totalCrc: number;
   bankTerminalId: number;
@@ -74,21 +79,21 @@ export interface LotClosureDialogProps {
 export interface LotClosureContextType {
   lotsClosure: LotClosure[];
   lotClosureCache: Record<number, LotClosure[]>;
-  banks: Bank[];
-  bankCache: Record<number, Bank[]>;
+  banks: BankUpdate;
+  bankCache: Record<number, BankUpdate>;
   error: string;
   loading: boolean;
   loadingBanks: boolean;
   updateBankLoading: boolean;
   setLotsClosure: (lots: LotClosure[]) => void;
-  setBanks: (banks: Bank[]) => void;
+  setBanks: (banks: BankUpdate[]) => void;
   fetchLotClosureData: (
     dateRange: string,
     locationId: Array<number>,
     isRefresh?: boolean
   ) => Promise<void>;
-  fetchBanks: (cdcId: number, date: string) => Promise<Bank[]>;
-  updateBank: (banks: Bank[], lot: LotClosure) => Promise<void>;
+  fetchBanks: (cdcId: number, date: string) => Promise<BankUpdate>;
+  updateBank: (banks: BankUpdate, lot: LotClosure) => Promise<void>;
 }
 
 export interface LotCatalogContextType {

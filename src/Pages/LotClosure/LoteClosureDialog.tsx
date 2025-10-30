@@ -5,7 +5,7 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useHandleAffiliationsData } from "@hooks/affiliations/useHandleAffiliationsData";
-import { Bank, LotClosure, LotClosureDialogProps } from "@models/lotClosure.model";
+import { Bank, BankUpdate, LotClosure, LotClosureDialogProps } from "@models/lotClosure.model";
 import { STATUS } from "@models/status.model";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
@@ -18,7 +18,7 @@ function LoteClosureDialog({
 }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading, error } =
     useLotClosureList();
-  const [localBanks, setLocalBanks] = useState<Bank[]>([]);
+  const [localBanks, setLocalBanks] = useState<BankUpdate>({ bank: [], bankCopy: []} as BankUpdate);
   const [openCloseLot, setOpenCloseLot] = useState(false);
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
@@ -57,9 +57,10 @@ function LoteClosureDialog({
       if (isOpen) {
         setLocalLot(lot);
         const banks = await fetchBanks(lot.consumerCenterId, date);
-        const sortedBanks = [...banks].sort((a, b) => 
+        const sortedBanks = [...banks.bank].sort((a, b) => 
           a.bankTerminalName.localeCompare(b.bankTerminalName)
         );
+        setLocalBanks(banks);
         cleanNameBank(sortedBanks);
       }
     };
@@ -75,7 +76,7 @@ function LoteClosureDialog({
         bankTerminalName: cleanedName
       };
     });
-    setLocalBanks(cleanedBanks);
+    setLocalBanks( (prev) => { return { ...prev, bank: cleanedBanks}} );
   }
 
   return (
@@ -130,9 +131,9 @@ function LoteClosureDialog({
                       loading={false}
                     />
                   </Flex>
-                  {localBanks.length > 0 &&
+                  {localBanks.bank.length > 0 &&
                     !loadingBanks &&
-                    localBanks.map((bank) => (
+                    localBanks.bank.map((bank) => (
                       <Box key={bank.batchDetailsId}>
                         <Text fontWeight="bold" textStyle="md">
                           {bank.bankTerminalName}
@@ -256,7 +257,7 @@ function LoteClosureDialog({
                       </Table.ScrollArea>
                     </Box>
                   )}
-                  {localBanks.length === 0 && !loadingBanks && (
+                  {localBanks.bank.length === 0 && !loadingBanks && (
                     <Text>No hay bancos registrados</Text>
                   )}
                 </Flex>
