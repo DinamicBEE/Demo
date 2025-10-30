@@ -117,10 +117,25 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                   <Table.Cell textAlign="center">
                     {item.status === 3 && (
                       <>
-                        <Button size='xs' colorPalette='green' variant="surface" rounded="full" marginRight='5px' onClick={() => handleOpenConfirm(item, true)}>
+                        <Button
+                          size='xs'
+                          colorPalette='green'
+                          variant="surface"
+                          rounded="full"
+                          marginRight='5px'
+                          onClick={() => handleOpenConfirm(item, true)}
+                          loading={isLoading}
+                        >
                           Aprobar
                         </Button>
-                        <Button size='xs' colorPalette='red' variant="surface" rounded="full" onClick={() => handleOpenConfirm(item, false)}>
+                        <Button
+                          size='xs'
+                          colorPalette='red'
+                          variant="surface"
+                          rounded="full"
+                          onClick={() => handleOpenConfirm(item, false)}
+                          loading={isLoading}
+                        >
                           Rechazar
                         </Button>
                       </>

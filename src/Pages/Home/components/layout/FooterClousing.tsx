@@ -115,23 +115,23 @@ function FooterClousing({
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
 
-    const isUSD = cashRef.current[clousingId].currencies.some((line) => line.currency === "USD");
+    // const isUSD = cashRef.current[clousingId].currencies.some((line) => line.currency === "USD");
 
-    if (isUSD && isConfirm === false) {
-      const totalPos = cashRef.current[clousingId].currencies.find(
-        (line) => line.currency === "USD"
-      )?.totalPOS;
-      const totalPhysical = cashRef.current[clousingId].currencies.find(
-        (line) => line.currency === "USD"
-      )?.totalFisico;
+    // if (isUSD && isConfirm === false) {
+    //   const totalPos = cashRef.current[clousingId].currencies.find(
+    //     (line) => line.currency === "USD"
+    //   )?.totalPOS;
+    //   const totalPhysical = cashRef.current[clousingId].currencies.find(
+    //     (line) => line.currency === "USD"
+    //   )?.totalFisico;
 
-      const difference =
-        (totalPos ?? 0) - (totalPhysical ?? 0) != 0 ? true : false;
+    //   const difference =
+    //     (totalPos ?? 0) - (totalPhysical ?? 0) != 0 ? true : false;
 
-      setOpenDialogDifference(difference);
-      setUSDmenssage(difference);
-      if (difference === true) return;
-    }
+    //   setOpenDialogDifference(difference);
+    //   setUSDmenssage(difference);
+    //   if (difference === true) return;
+    // }
 
     const ref: PrepaidModel = prepaidRef.current[clousingId];
     const clientNull = ref?.lines.some(
