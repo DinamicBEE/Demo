@@ -39,6 +39,7 @@ function Home_v3() {
         startDate={new Date(`${homeParams.date}T00:00:00`) ?? new Date()}
         endDate={new Date(`${homeParams.date}T00:00:00`) ?? new Date()}
         isReport={false}
+        isStarbucks={homeParams.isStarbucks}
       />
 
     </Box>

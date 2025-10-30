@@ -1,14 +1,23 @@
 import { location } from "@models/common.model";
-import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
+import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksBanksModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
+import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
-    // Simulate an API call to fetch Starbucks data
     const response = await api.get(GET_STARBUCKSCDC);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching Starbucks data:", error);
+    return [];
+  }
+}
+
+export const getBanksStarbucks = async (): Promise<StarbucksBanksModel[]> => {
+  try {
+    const response = await api.get(GET_BANKS);
     console.log(response)
     return response.data;
   } catch (error) {
@@ -63,7 +72,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
   }
 }
 
-export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<StarbucksTableRow> => {
+export const getDetailStarbucks = async (line: StarbucksTableModel, banks: StarbucksBanksModel[]): Promise<StarbucksTableRow> => {
   try {
 
     const response = await api.get(GET_STARBUCKSDETAIL, {
@@ -108,20 +117,58 @@ export const getDetailStarbucks = async (line: StarbucksTableModel): Promise<Sta
       denominations: []
     });
 
-    let creditCardDataDummy: TDCStarbucksModel[] = response.data.tdc.lines.map((item:any) => {
-      return {
-        id: item.id,
-        nameBank: item.bank,
-        idBank: item.idBank,
-        total: item.physical,
-        pos: item.pos,
-        currencyExternalId: item.currencyExternalId,
-        exchangeRate: item.exchangeRate,
-        isOpen: line.status === "Abierto" ? true : false,
-        originalCurrency: item.physical * item.exchangeRate,
-        voucher: item.vouchers
-      }
-    });
+    let creditCardDataDummy: TDCStarbucksModel[] = [];
+    if(response.data.tdc.lines && response.data.tdc.lines.length > 2){
+      // let creditCardDataDummy: TDCStarbucksModel[] = response.data.tdc.lines.map((item:any) => {
+      //   return {
+      //     id: item.id,
+      //     nameBank: item.bank,
+      //     idBank: item.idBank,
+      //     total: item.physical,
+      //     pos: item.pos,
+      //     currencyExternalId: item.currencyExternalId,
+      //     exchangeRate: item.exchangeRate,
+      //     isOpen: line.status === "Abierto" ? true : false,
+      //     originalCurrency: item.physical * item.exchangeRate,
+      //     voucher: item.vouchers
+      //   }
+      // });
+    } else {
+      creditCardDataDummy = banks.map((bank) => {
+  
+        let bankId: number = 0;
+        switch (bank.bankName) {
+          case "Banamex - CITI":
+            bankId = 28;
+            break;
+          case "BBVA Bancomer":
+            bankId = 4;
+            break;
+          case "BBVA Bancomer USD":
+            bankId = 13;
+            break;
+          case "Santander":
+            bankId = 43;
+            break;
+          case "Amexco":
+            bankId = 3;
+            break;
+        }
+        return {
+          id: null,
+          nameBank: bank.bankName,
+          idBank: bankId,
+          total: 0,
+          pos: 0,
+          currencyExternalId: 0,
+          exchangeRate: 0,
+          isOpen: line.status === "Abierto" ? true : false,
+          originalCurrency: 0,
+          voucher: []
+        }
+      })
+    }
+    
     creditCardDataDummy.push({
       id: creditCardDataDummy.length + 1,
       nameBank: "Total (MXN)",

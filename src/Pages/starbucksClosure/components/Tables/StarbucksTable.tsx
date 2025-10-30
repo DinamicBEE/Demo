@@ -1,6 +1,6 @@
 import { Box, FormatNumber, Table, Tag, Text } from "@chakra-ui/react";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
-import { PropDialogStarbucksTable, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
+import { PropDialogStarbucksTable, StarbucksBanksModel, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
 import { SortableHeader } from "../../../../utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
@@ -8,6 +8,7 @@ import Loading from "@components/Loading";
 import { STATUS } from "@models/status.model";
 import { getStatusColor } from "../../../../utils/getStatusColor";
 import { formatToDDMMYYYY } from "@utils/dateFormatter";
+import { getBanksStarbucks } from "@services/starbucksService";
 
 
 
@@ -16,7 +17,8 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
     const [starbucksData, setStarbucksData] = useState<StarbucksTableModel[]>([]); 
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
     const { sortedData, handleSort, getSortIcon } = useSortableTable<StarbucksTableModel>(starbucksData);
-    const [selectedLine, setSelectedLine] = useState<StarbucksTableModel>({} as StarbucksTableModel)
+    const [selectedLine, setSelectedLine] = useState<StarbucksTableModel>({} as StarbucksTableModel);
+    const [banks, setBanks] = useState<StarbucksBanksModel[]>([])
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -25,8 +27,10 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
           setLoading(true);
             const data = lines;
             const header = headers;
+            const bankList = await  getBanksStarbucks();
             setTableHeaders(header);
             setStarbucksData(data);
+            setBanks(bankList);
           setLoading(false)
         };
 
@@ -158,6 +162,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                     isOpen={isDialogOpen} 
                     line={selectedLine}
                     onClose={closeDialog}
+                    banks={banks}
                 >
                 </DialogDetails>)
             }

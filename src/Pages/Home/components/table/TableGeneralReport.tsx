@@ -31,6 +31,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                 name: cdcData?.cdc ??  ""
             },
             date: date,
+            isStarbucks: cdcData?.isStarbucks || false,
         }
 
         getInfo(homeParams.store?.id ?? 0, 0, new Date(date + "T00:00:00"), new Date(date + "T00:00:00"), true)
