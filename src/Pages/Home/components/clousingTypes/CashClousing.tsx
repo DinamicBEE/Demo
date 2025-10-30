@@ -154,7 +154,10 @@ function CashClousing({ data, idCurrency }: any) {
                           disabled={true}
                         />
 
-                        <Button marginLeft={4} onClick={() => openDialog(String(item.id), item)} disabled={(Number(item.totalFisico) < 0 || Number(item.totalPOS) < 0 ) ? true : false}>
+                        <Button marginLeft={4} 
+                          onClick={() => openDialog(String(item.id), item)}
+                          disabled={(Number(item.totalFisico) < 0) ? true : false
+                        }>
                           <CiSquarePlus />
                         </Button>
                       </>

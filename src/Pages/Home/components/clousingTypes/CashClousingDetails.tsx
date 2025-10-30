@@ -7,7 +7,8 @@ import { useCashClousing } from "@context/clousing/cashClousingContext";
 import { CashClousingDetailsProps } from "@models/cash.model";
 import React, { useEffect, useState } from "react";
 
-export const CashClousingDetails: React.FC<CashClousingDetailsProps> = ({ isOpen, onClose, onSave, currencyId, data, isRoleEditable }) => {
+export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
+  ({ isOpen, onClose, onSave, currencyId, data, isRoleEditable }) => {
 
   const { cashClousingSelect } = useCashClousing();
   const [denominations, setDenominations] = useState<any[]>([]);
