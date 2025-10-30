@@ -59,7 +59,7 @@ const routesConfig = [
     {
       path: '/requests',
       element: lazy(() => import('../Pages/Approvals/requests')),
-      roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC],
+      roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER,],
       wrapper: (Component: React.ComponentType) => (
         <ApprovalsProvider>
           <Component />
