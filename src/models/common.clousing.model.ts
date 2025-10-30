@@ -26,6 +26,7 @@ export interface HeaderClousingModel {
   totalPOS: number;
   totalPhysical: number;
   difference: number;
+  isStarbucks?: boolean;
 }
 
 export interface ClousingLinesModel {
@@ -109,6 +110,7 @@ export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" 
   tpvAdyenAmex: number,
   tpvAdyenKiosko: number,
   tpvKioskoUsd: number,
+  isStarbucks: boolean,
 };
 
 export interface ReportTotalsModel extends Omit<ReportClousingLinesModel, "id" | "ubicacion" | "status" | "cdc">{
@@ -258,6 +260,7 @@ export interface ClousingLayoutProps {
   location: location;
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
+  isStarbucks: boolean;
 }
 
 export interface TableOfTotalsProps {
@@ -266,6 +269,7 @@ export interface TableOfTotalsProps {
   startDate: Date;
   endDate: Date;
   isReport: boolean;
+  isStarbucks: boolean;
 }
 
 export interface ConfirmDialogProps {
@@ -309,6 +313,7 @@ export interface HomeParamsProps {
   subsidiary?: SubsidiaryModal;
   store?: location;
   date: string
+  isStarbucks: boolean;
 }
 
 export interface SelectHandlerParams<T = selectOption> {

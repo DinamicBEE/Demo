@@ -7,7 +7,7 @@ import { EmployeeLine, EmployeeModel, PdfData, PdfRequestNSDto } from "@models/e
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
-import { BankLineModel, TDCModel } from "@models/tdc.model";
+import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
 import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
@@ -42,7 +42,6 @@ export const getCashClousing = async (
       currencies: response.data.lines.map((currency: CashLines) => ({
         ...currency,
         id: currency.id === null ? "cash-" + uuidv4() : currency.id,
-        totalFisico: currency.totalPOS < 0 ? 0 : currency.totalFisico,
         difference: currency.totalPOS < 0 ? Math.abs(currency.totalPOS) : currency.difference,
       })),
     };
@@ -109,7 +108,40 @@ export const getTDCClousing = async (
       }
     };
 
-    return newResponse;
+    const adyenLines: BankLineModel[] = newResponse.lines.filter((line:BankLineModel) => line.bank === "TPV ADYEN")
+
+    if(adyenLines.length >= 2){
+
+      const newAdyenLine: BankLineModel ={
+        id: adyenLines[0].id,
+        idBank: adyenLines[0].idBank,
+        bank: adyenLines[0].bank,
+        physical: adyenLines.reduce((acc, curr) => acc + curr.physical, 0 ),
+        pos: adyenLines.reduce((acc, curr) => acc + curr.pos, 0),
+        voucherAmount: adyenLines.reduce((acc, curr) => acc + curr.voucherAmount, 0),
+        voucherAmountDisplay: adyenLines.reduce((acc, curr) => acc + curr.voucherAmountDisplay, 0),
+        vouchers: adyenLines.reduce((acc:any, curr) => acc.concat(curr.vouchers), []),
+        isRoleEditable: adyenLines[0].isRoleEditable,
+      }
+
+      const newLines = newResponse.lines.filter((item:BankLineModel)=> item.bank != "TPV ADYEN")
+
+      newLines.push(newAdyenLine)
+
+      const copy = {
+        ...newResponse,
+        lines: newLines,
+        linesCopy: newResponse.lines
+      }
+
+      return copy
+    } else {
+      return {
+        ...newResponse,
+        linesCopy: newResponse.lines
+      };
+    }
+
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as TDCModel;
@@ -536,6 +568,7 @@ export const getPDF = async (obj: PdfRequestNSDto): Promise<PdfData | null> => {
 
 export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean) => {
   try {
+    console.log(dataService)
      const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
         ({
@@ -612,16 +645,37 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
           })),
       }));
 
-    const mapTdcLines = (lines: BankLineModel[]) => {
-      return lines.map(({ ...rest }) => ({
+    const mapTdcLines = (lines: BankLineModel[], linesCopy: BankLineModel[]) => {
+      const first = linesCopy.map(copy => {
+        return {
+          ...copy,
+          vouchers: copy.vouchers.map(voucher =>{
+            let foundVoucher: Voucher | undefined;
+            
+            for (const line of lines) {
+              foundVoucher = line.vouchers.find(linVou => linVou.uniqueIdVoucher === voucher.uniqueIdVoucher);
+              if (foundVoucher) break;
+            }
+            
+            return foundVoucher ? foundVoucher : voucher;
+          })
+        }
+      })
+
+      console.log(first)
+      
+      return first.map(({ ...rest }) => ({
         ...rest,
         id: typeof rest.id === "number" ? rest.id : null,
         POS: rest.pos,
+        physical: rest.vouchers.reduce((acc,current) => current.status===true ? acc + current.amount : acc, 0),
+        voucherAmountDisplay: rest.vouchers.reduce((acc,current) => current.status===true ? acc + 1 : acc, 0),
         vouchers: rest.vouchers.map((voucher) => ({
           ...voucher
         })),
       }));
     };
+
     const mapCurrLines = (lines: CashLines[]) => {
       return lines.map(({...curr}) => ({
         id: curr.idCurrency,
@@ -691,7 +745,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       },
       tdc: {
         idCurrencySub: dataService.idCurrency,
-        lines: mapTdcLines(dataService.tdc != undefined ? dataService.tdc.lines : []),
+        lines: mapTdcLines(dataService.tdc != undefined ? dataService.tdc.lines : [], dataService.tdc.linesCopy ?? []),
         total: dataService.tdc != undefined && dataService.tdc.total ? dataService.tdc.total : {
           totalPOS: 0,
           totalPhysical: 0,
@@ -700,7 +754,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       },
       currencies:  mapCurrLines(dataService.cash.currencies ?? []),
     };
-    
+    console.log(body)
     const response = await api.post(
       SENDCASHCLOUSING,
       body,

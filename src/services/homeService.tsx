@@ -240,6 +240,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
 export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTotalsModel {
   const totals: ReportTotalsModel = reportData.reduce(
     (acc: ReportTotalsModel, curr) => {
+      acc.isStarbucks = false;
       acc.totalPOS += curr.totalPOS;
       acc.totalPhysical += curr.totalPhysical;
       acc.difference += curr.difference;
@@ -281,6 +282,7 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       return acc;
     },
     {
+      isStarbucks: false,
       totalPOS: 0,
       totalPhysical: 0,
       difference: 0,

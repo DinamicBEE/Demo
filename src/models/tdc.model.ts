@@ -53,6 +53,7 @@ export interface TDCModel {
   employeId: number;
   total: TotalModel;
   lines: BankLineModel[];
+  linesCopy?: BankLineModel[];
   isRoleEditable?: boolean;
 }
 

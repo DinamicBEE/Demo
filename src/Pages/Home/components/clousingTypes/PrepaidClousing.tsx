@@ -216,6 +216,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       couponModel.isExpired ? "Cupón vencido" : "Cupón válido",
       couponModel.isExpired ? "warning" : "success"
     );
+    //console.log(updatePrepaid)
     updateData(updatePrepaid);
     setLoadingAdded(false);
   };
@@ -322,7 +323,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                       onClick={() => {
                         setClient(item.client ?? "");
                         setCouponsSelectedList(
-                          item.coupons
+                          item.coupons.filter((c) => !c.isExpired)
                         );
                         setIsOpen(true);
                       }}

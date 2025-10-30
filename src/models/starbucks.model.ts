@@ -28,7 +28,8 @@ export interface StarbucksTableModel {
     total: number;
     currencies: Currency[];
     creditCards: TDC[];
-    cxc: number
+    cxc: number,
+    fgUpt?: boolean,
 }
 
 export interface StarbucksTableRow {
@@ -60,7 +61,7 @@ export interface CashStarbucksModel {
 }
 
 export interface TDCStarbucksModel {
-  id: number;
+  id: number | null;
   nameBank: string;
   idBank: number;
   total: number;
@@ -97,6 +98,7 @@ export interface StarbucksTableHeader {
 export interface StarbucksDetailsProps {
   isOpen: boolean;
   line: StarbucksTableModel;
+  banks: StarbucksBanksModel[];
   onClose: (isConfirm:boolean) => void;
 }
 
@@ -134,4 +136,9 @@ export interface ClousingSaveStarbucksModel {
     total: TotalModel;
     lines: StarbucksToSend[];
   }
+}
+
+export interface StarbucksBanksModel {
+  bankName: string;
+  bankId: number;
 }

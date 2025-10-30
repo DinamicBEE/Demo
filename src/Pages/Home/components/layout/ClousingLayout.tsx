@@ -31,7 +31,7 @@ const EmployeesClousing = lazy(
 );
 import { useHeaders } from "@context/home/headerContext";
 
-function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: ClousingLayoutProps) {
+function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks}: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
   const { getCashData, cashRef } = useCashClousing();
@@ -287,6 +287,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
                     <TDCClousing
                       data={employee}
                       idCurrency={subsidiary.idCurrency}
+                      isStarbucks={isStarbucks}
                     />
                   </Suspense>
                 )}

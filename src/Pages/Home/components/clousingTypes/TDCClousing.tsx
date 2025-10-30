@@ -14,7 +14,7 @@ import { useTDC } from "@hooks/tdcClousing/useTDC";
 
 const pageSize = 5;
 
-function TDCClousing({ data, idCurrency }: any) {
+function TDCClousing({ data, idCurrency, isStarbucks }: any) {
   const [tdcData, setCashData] = useState<TDCModel>();
   const [lineSelected, setLineSeleted] = useState<number | null | string>(null);
   const [details, setDetails] = useState<boolean>(false);
@@ -105,9 +105,12 @@ function TDCClousing({ data, idCurrency }: any) {
                 <Table.ColumnHeader textAlign="center">
                   Cantidad Vouchers seleccionados
                 </Table.ColumnHeader>
-                <Table.ColumnHeader textAlign="center">
-                  Acciones
-                </Table.ColumnHeader>
+                {!isStarbucks ? (
+                    <Table.ColumnHeader textAlign="center">
+                      Acciones
+                    </Table.ColumnHeader>
+                  ) : null
+                }
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -126,7 +129,7 @@ function TDCClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="end">
-                    { item.bank.toLowerCase() != "starbucks" ? (        
+                    { !isStarbucks ? (        
                         <FormatNumber
                           value={item.physical}
                           style="currency"
@@ -154,7 +157,7 @@ function TDCClousing({ data, idCurrency }: any) {
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">
-                    { item.bank.toLowerCase() != "starbucks" ? (
+                    { !isStarbucks ? (
                       
                       <IconButton
                         rounded="full"
