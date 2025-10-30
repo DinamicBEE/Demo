@@ -108,6 +108,34 @@ export const getTDCClousing = async (
       }
     };
 
+    const adyenLines: BankLineModel[] = newResponse.lines.filter((line:BankLineModel) => line.bank === "TPV ADYEN")
+
+    if(adyenLines.length >= 2){
+      console.log(adyenLines)
+      const newAdyenLine: BankLineModel ={
+        id: adyenLines[0].id,
+        idBank: adyenLines[0].idBank,
+        bank: adyenLines[0].bank,
+        physical: adyenLines.reduce((acc, curr) => acc + curr.physical, 0 ),
+        pos: adyenLines.reduce((acc, curr) => acc + curr.pos, 0),
+        voucherAmount: adyenLines.reduce((acc, curr) => acc + curr.voucherAmount, 0),
+        voucherAmountDisplay: adyenLines.reduce((acc, curr) => acc + curr.voucherAmountDisplay, 0),
+        vouchers: adyenLines.reduce((acc:any, curr) => acc.concat(curr.vouchers), []),
+        isRoleEditable: adyenLines[0].isRoleEditable,
+      }
+
+      const newLines = newResponse.lines.filter((item:BankLineModel)=> item.bank != "TPV ADYEN")
+
+      newLines.push(newAdyenLine)
+      console.log(newAdyenLine)
+      console.log(newLines)
+    }
+
+    const copy = {
+      ...newResponse,
+      linesCopy: newResponse.lines   
+    }
+    console.log(copy)
     return newResponse;
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
