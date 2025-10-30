@@ -70,7 +70,6 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary,}: Clou
         ]);
         const prepareUpdate = (data: any, key: string, condition?: boolean) => {
           if (!data?.total) return null;
-          console.log(key, data)
           const total =
             condition && data.total.difference < 0
               ? data.total.totalPOS

@@ -65,7 +65,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                             <Table.ColumnHeader onClick={() => handleSort('difference')} _hover={{textDecoration: "underline"}} cursor="pointer">
                               <HStack justify={"center"}>Diferencia {getSortIcon('difference')}</HStack>
                             </Table.ColumnHeader>
-                            <Table.ColumnHeader onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                            <Table.ColumnHeader minW="110px" onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
                               <HStack justify={"center"}>Estatus {getSortIcon('status')}</HStack>
                             </Table.ColumnHeader>
                             <Table.ColumnHeader onClick={() => handleSort('mxn')} _hover={{textDecoration: "underline"}} cursor="pointer">

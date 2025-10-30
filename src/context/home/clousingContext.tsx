@@ -101,7 +101,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           page,
           startDate,
           endDate
-        );
+        );        
 
         dataCache.current[pageKey] = response;
 
@@ -113,17 +113,39 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           difference: accumulated.difference,
         };
 
+        const newClousingLines = response.clousingLines.map(line => {
+          const tdc = line.tdc ?? [];
+
+          const groupedTDC = tdc.reduce((acc: TDC[], curr: TDC) => {
+            const existing = acc.find(item => item.nameBank === curr.nameBank);
+
+            if (existing) {
+              existing.total += curr.total;
+            } else {
+              acc.push({ ...curr });
+            }
+
+            return acc;
+          }, []);
+
+          return {
+            ...line,
+            tdc: groupedTDC,
+          };
+        });
+                
+
         setHeader(data);
         setPagination(response.pagination);
 
-        const currentPageData = response.clousingLines;
+        const currentPageData = newClousingLines;
 
         const totals = calculateClousingTotals(currentPageData);
 
         setData(currentPageData.sort((a,b) => a.employe.localeCompare(b.employe)));
         setTotals(totals);
         setOriginalData(currentPageData);
-        setTdcHeader(response.clousingLines[0]?.tdc || []);
+        setTdcHeader(newClousingLines[0]?.tdc || []);
         setCurrHeader(response.clousingLines[0]?.currencies || []);
         
       } catch (error) {
