@@ -57,7 +57,8 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
       page: number,
       startDate: Date,
       endDate: Date,
-      isSearch: boolean = false
+      isSearch: boolean = false,
+      isStarbucks: boolean = false
     ) => {
       try {
         setError('');
@@ -100,8 +101,9 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
           store,
           page,
           startDate,
-          endDate
-        );        
+          endDate,
+          isStarbucks
+        );
 
         dataCache.current[pageKey] = response;
 

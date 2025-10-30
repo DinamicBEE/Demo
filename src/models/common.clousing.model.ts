@@ -141,7 +141,8 @@ export interface ClousingContextType {
     page: number,
     startDate: Date,
     endDate: Date,
-    isSearch: boolean
+    isSearch: boolean,
+    isStarbucks?: boolean
   ) => void;
   //dataClousing: any;
   //setDataClousing: React.Dispatch<React.SetStateAction<{}>>;
@@ -213,6 +214,7 @@ export interface FooterClousing {
   closingConfirmation: boolean;
   idCurrency: number;
   isRoleEditable?: boolean;
+  isStarbucks: boolean;
 }
 
 export interface TotalModel {

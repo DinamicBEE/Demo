@@ -63,7 +63,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
           getCustomerData(employee.id),
           getSpecialCustData(employee.id, subsidiary.idCurrency),
           getPrepaidData(employee.id, employee.closingStartDate ?? ""),
-          getTDCData(employee.id, subsidiary.idCurrency),
+          getTDCData(employee.id, subsidiary.idCurrency, isStarbucks),
           getIntercompanyData(employee.id),
           getEmployeetData(employee.id),
           getCashData(employee.id, subsidiary.idCurrency),
@@ -95,6 +95,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
 
         for (const update of updates) {
           if (update) {
+            //console.log("updateTotal", update)
             await updateTotal(update.newTotal, update.clousingId, update.clousingType);
           }
         }
@@ -369,6 +370,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               closingConfirmation={employee?.closingConfirmation ?? false}
               idCurrency={subsidiary.idCurrency}
               isRoleEditable={employee?.isRoleEditable}
+              isStarbucks={isStarbucks}
             />
           </DialogFooter>
 

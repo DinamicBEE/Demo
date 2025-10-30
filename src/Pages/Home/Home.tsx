@@ -206,6 +206,7 @@ function Home() {
 
       {showTable && (
         <TableOfTotals
+          isStarbucks={false}
           subsidiary={SubSelect}
           store={location}
           startDate={new Date(`${formattedDate}T00:00:00`) ?? new Date()}

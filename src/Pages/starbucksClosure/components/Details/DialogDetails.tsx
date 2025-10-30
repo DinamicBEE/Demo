@@ -57,14 +57,13 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
   useEffect(() => {
     async function fetchData() {
       setDialogLoading(true);
-      console.log(line);
+
       const newLine = {
         ...line,
-        fgUpt: false //TODO verificar lógica en esta parte para los diferentes casos
+        fgUpt: line.total !== 0 ? false : true
       }
       
       const data = await getDetailStarbucks(newLine, banks);
-      console.log(data);
       
       setGeneralData(data.data);
       setCashRows(data.cash);
@@ -140,7 +139,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
     () =>
       tdcRows.reduce(
         (acc, row) =>
-          row.nameBank !== "Total (MXN)" ? acc + row.originalCurrency : acc,
+          row.nameBank !== "Total (MXN)" ? acc + row.total : acc,//originalCurrency
         0
       ),
     [tdcRows]
@@ -197,7 +196,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       );
       const totalTDC = updatedTdcRows.reduce(
         (acc, row) =>
-          row.nameBank != "Total (MXN)" ? acc + row.originalCurrency : acc,
+          row.nameBank != "Total (MXN)" ? acc + row.total : acc,//originalCurrency
         0
       );
       const newTdcRows = updatedTdcRows.map((row) =>
@@ -265,7 +264,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       tdc: tdcRows,
       cxc: cxcRows
     }
-    console.log(body);
+    
     try {
 
       const response = await saveStarbucksClousing(line.id, body, isConfirm);
@@ -629,6 +628,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
           <DialogFooter>
             <Button
               colorPalette="meraWarning"
+              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(true);
@@ -639,6 +639,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
             <Button
               colorPalette="meraPrimary"
+              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(false);

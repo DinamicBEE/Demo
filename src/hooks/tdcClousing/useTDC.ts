@@ -17,7 +17,7 @@ export const useTDC = (clousingId: number,) => {
         if (!tdcData) return;
 
         const updateLines: BankLineModel[] = tdcData?.lines?.map((item, i) =>
-            i === index
+            item.id === index
                 ? {
                     ...item,
                     physical: parseFloat(value),
@@ -32,12 +32,13 @@ export const useTDC = (clousingId: number,) => {
             totalPhysical: newTotalPhysical || 0,
         };
 
-
         const updateTDCData: TDCModel = {
-            id: tdcData?.id || 0,
-            employeId: tdcData?.employeId || 0,
+            id: tdcData.id,
+            employeId: tdcData.employeId,
             total: newTotal,
             lines: updateLines || [],
+            linesCopy: tdcData.linesCopy,
+            isRoleEditable: tdcData.isRoleEditable
         };
 
         updateTotal(newTotalPhysical || 0, clousingId, CLOUSING_KEY.TDC);

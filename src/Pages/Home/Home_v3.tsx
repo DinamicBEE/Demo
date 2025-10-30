@@ -17,7 +17,7 @@ function Home_v3() {
       if (!homeParams || !homeParams.subsidiary || !homeParams.store || !homeParams.date) {
         navigate("/homeV2");
       } else {
-        getInfo(homeParams.store?.id ?? 0, 0, new Date(homeParams.date + "T00:00:00"), new Date(homeParams.date + "T00:00:00"), true)
+        getInfo(homeParams.store?.id ?? 0, 0, new Date(homeParams.date + "T00:00:00"), new Date(homeParams.date + "T00:00:00"), true, homeParams.isStarbucks)
       }
 
     }, []);
