@@ -37,6 +37,7 @@ import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 import Loading from "@components/Loading";
+import { formatToDDMMYYYY } from "@utils/dateFormatter";
 
 function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
@@ -56,8 +57,13 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
   useEffect(() => {
     async function fetchData() {
       setDialogLoading(true);
-
-      const data = await getDetailStarbucks(line, banks);
+      console.log(line);
+      const newLine = {
+        ...line,
+        fgUpt: false //TODO verificar lógica en esta parte para los diferentes casos
+      }
+      
+      const data = await getDetailStarbucks(newLine, banks);
       console.log(data);
       
       setGeneralData(data.data);
@@ -312,7 +318,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                   <InputAddon>Fecha</InputAddon>
                   <Skeleton loading={false} width={"100%"}>
                     <Input
-                      value={generalData.date || " "}
+                      value={formatToDDMMYYYY(new Date(generalData.date)) || " "}
                       placeholder="Fecha"
                       readOnly
                     />

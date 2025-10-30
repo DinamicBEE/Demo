@@ -28,7 +28,8 @@ export interface StarbucksTableModel {
     total: number;
     currencies: Currency[];
     creditCards: TDC[];
-    cxc: number
+    cxc: number,
+    fgUpt?: boolean,
 }
 
 export interface StarbucksTableRow {

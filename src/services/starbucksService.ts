@@ -77,12 +77,15 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
 
     const response = await api.get(GET_STARBUCKSDETAIL, {
       params: {
-        crcId: line.id
+        crcId: line.id,
+        fgUpt: line.fgUpt
       }
     })
     console.log(response)
     const cashTotal = response.data.cash.lines.reduce((acc:number, curr:any) => acc + curr.totalFisico, 0);
-    const creditCardTotal = response.data.tdc.lines.reduce((acc:number, curr:any) => acc + curr.physical, 0);
+    const creditCardTotal = response.data.tdc.lines
+      .filter((item: any) => item.bank !== "No encontrado/No identificado")
+      .reduce((acc:number, curr:any) => acc + curr.physical, 0);
     
     const cxcTotal = cxcData.reduce((acc, curr) => acc + curr.originalCurrency, 0); // TODO DATA FALTANTE
     const total =  cashTotal + creditCardTotal + cxcTotal;
@@ -119,20 +122,21 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
 
     let creditCardDataDummy: TDCStarbucksModel[] = [];
     if(response.data.tdc.lines && response.data.tdc.lines.length > 2){
-      // let creditCardDataDummy: TDCStarbucksModel[] = response.data.tdc.lines.map((item:any) => {
-      //   return {
-      //     id: item.id,
-      //     nameBank: item.bank,
-      //     idBank: item.idBank,
-      //     total: item.physical,
-      //     pos: item.pos,
-      //     currencyExternalId: item.currencyExternalId,
-      //     exchangeRate: item.exchangeRate,
-      //     isOpen: line.status === "Abierto" ? true : false,
-      //     originalCurrency: item.physical * item.exchangeRate,
-      //     voucher: item.vouchers
-      //   }
-      // });
+
+      creditCardDataDummy = response.data.tdc.lines
+        .filter((item: any) => item.bank !== "No encontrado/No identificado")
+        .map((item: any) => ({
+          id: item.id,
+          nameBank: item.bank,
+          idBank: item.idBank,
+          total: item.physical,
+          pos: item.pos,
+          currencyExternalId: item.currencyExternalId,
+          exchangeRate: item.exchangeRate,
+          isOpen: line.status === "Abierto",
+          originalCurrency: item.physical * item.exchangeRate,
+          voucher: item.vouchers
+        }));
     } else {
       creditCardDataDummy = banks.map((bank) => {
   
