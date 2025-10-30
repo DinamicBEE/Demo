@@ -34,7 +34,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
             isStarbucks: cdcData?.isStarbucks || false,
         }
 
-        getInfo(homeParams.store?.id ?? 0, 0, new Date(date + "T00:00:00"), new Date(date + "T00:00:00"), true)
+        getInfo(homeParams.store?.id ?? 0, 0, new Date(date + "T00:00:00"), new Date(date + "T00:00:00"), true, homeParams.isStarbucks)
         navigate("/homeV3",{
             state: { homeParams }
         })

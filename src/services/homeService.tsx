@@ -5,6 +5,7 @@ import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
+import { STATUS } from "@models/status.model";
 
 /**
  * This function returns the list of selected
@@ -18,11 +19,11 @@ export const getGeneralInfo = async (
   store: number,
   page: number,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  isStarbucks: boolean
 ): Promise<ClousingModel> => {
   const userRole = await loadData.userData.get("userRole");
   try {
-    
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
 
@@ -68,7 +69,7 @@ export const getGeneralInfo = async (
         totalPOS: line.totalPOS,
         totalPhysical: line.totalPhysical,
         difference: line.totalPhysical - line.totalPOS,
-        status: getStatus(line.status),
+        status: isStarbucks && line.status === "Cerrado Starbucks" ? STATUS.Open : getStatus(line.status),
         extra: line.exta,
         customer: line.customer,
         specialCustomer: line.specialCustomer,

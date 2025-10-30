@@ -22,7 +22,6 @@ export const getCDCStarbucks = async (): Promise<location[]> => {
 export const getBanksStarbucks = async (): Promise<StarbucksBanksModel[]> => {
   try {
     const response = await api.get(GET_BANKS);
-    console.log(response)
     return response.data;
   } catch (error) {
     console.error("Error fetching Starbucks data:", error);
@@ -42,7 +41,6 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         endDate: endFormatDate
       }
     })
-    console.log(response)
 
     if(response.data.registerClosure<=0){
       return {} as StarbucksTableDataModel
@@ -85,7 +83,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         fgUpt: line.fgUpt
       }
     })
-    console.log(response)
+
     const cashTotal = response.data.cash.lines.reduce((acc:number, curr:any) => acc + curr.totalFisico, 0);
     const creditCardTotal = response.data.tdc.lines
       .filter((item: any) => item.bank !== "No encontrado/No identificado")
@@ -346,7 +344,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       }
     }
   );
-  console.log(body)
+
   return response.data;
 
 }

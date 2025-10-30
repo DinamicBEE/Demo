@@ -12,6 +12,8 @@ export const getStatus = (status: string) => {
       return STATUS.Open;
     case "Re-cerrado":
       return STATUS.RECLOSED;
+    case "Cerrado Starbucks":
+      return STATUS.CLOSED_STARBUCKS
     default:
       return STATUS.Open;
   }
