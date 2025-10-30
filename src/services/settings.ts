@@ -87,6 +87,7 @@ export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
 // * Starbucks
 export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
+export const GET_BANKS = `${API_BASE}/starbucks/filters/bank`;
 export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/search`;
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;

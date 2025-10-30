@@ -37,8 +37,9 @@ import DenominationsDetaisl from "./DenominationsDetails";
 import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 import Loading from "@components/Loading";
+import { formatToDDMMYYYY } from "@utils/dateFormatter";
 
-function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
+function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
   const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
@@ -56,8 +57,13 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
   useEffect(() => {
     async function fetchData() {
       setDialogLoading(true);
-
-      const data = await getDetailStarbucks(line);
+      console.log(line);
+      const newLine = {
+        ...line,
+        fgUpt: false //TODO verificar lógica en esta parte para los diferentes casos
+      }
+      
+      const data = await getDetailStarbucks(newLine, banks);
       console.log(data);
       
       setGeneralData(data.data);
@@ -170,22 +176,22 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
     const keyValue = key?.split("-");
 
     if (keyValue && keyValue[0] === "BANK" && keyValue.length > 1) {
-      const exchangeRate =
-        tdcRows.find((item) => item.id === id)?.exchangeRate || 0;
-      newValue =
-        keyValue[1] === "total"
-          ? parseFloat(value)
-          : parseFloat(value) / exchangeRate;
-      newValueOriginalCurrency =
-        keyValue[1] === "total"
-          ? parseFloat(value) * exchangeRate
-          : parseFloat(value);
+      // const exchangeRate =
+      //   tdcRows.find((item) => item.id === id)?.exchangeRate || 0;
+      // newValue =
+      //   keyValue[1] === "total"
+      //     ? parseFloat(value)
+      //     : parseFloat(value) / exchangeRate;
+      // newValueOriginalCurrency =
+      //   keyValue[1] === "total"
+      //     ? parseFloat(value) * exchangeRate
+      //     : parseFloat(value);
       const updatedTdcRows = tdcRows.map((item: TDCStarbucksModel) =>
-        item.id === id
+        item.idBank === id
           ? {
               ...item,
-              total: newValue,
-              originalCurrency: newValueOriginalCurrency,
+              total: parseFloat(value),//newValue,
+              originalCurrency: parseFloat(value),//newValueOriginalCurrency,
             }
           : item
       );
@@ -312,7 +318,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                   <InputAddon>Fecha</InputAddon>
                   <Skeleton loading={false} width={"100%"}>
                     <Input
-                      value={generalData.date || " "}
+                      value={formatToDDMMYYYY(new Date(generalData.date)) || " "}
                       placeholder="Fecha"
                       readOnly
                     />
@@ -453,12 +459,12 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                         <Table.ColumnHeader textAlign="center">
                           Importe
                         </Table.ColumnHeader>
-                        <Table.ColumnHeader textAlign="center">
+                        {/* <Table.ColumnHeader textAlign="center">
                           Tasa de cambio
                         </Table.ColumnHeader>
                         <Table.ColumnHeader textAlign="center">
                           Monto MXN
-                        </Table.ColumnHeader>
+                        </Table.ColumnHeader> */}
                       </Table.Row>
                     </Table.Header>
 
@@ -475,17 +481,21 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                                   <TableInput
                                     disabled={!row.isOpen}
                                     value={row.total}
-                                    id={row.id}
+                                    id={row.idBank}
                                     currency={true}
                                     keyValue={"BANK-total"}
                                     onChange={updateAmmount}
                                   />
                                 ) : (
-                                  ""
+                                  <FormatNumber
+                                    value={row.originalCurrency}
+                                    style="currency"
+                                    currency="USD"
+                                  />
                                 )}
                               </Text>
                             </Table.Cell>
-                            <Table.Cell textAlign="center">
+                            {/* <Table.Cell textAlign="center">
                               <Text>
                                 {row.nameBank != "Total (MXN)" ? (
                                   <FormatNumber
@@ -517,7 +527,7 @@ function DialogDetails({ isOpen, line, onClose }: StarbucksDetailsProps) {
                                   />
                                 )}
                               </Text>
-                            </Table.Cell>
+                            </Table.Cell> */}
                           </Table.Row>
                         ))}
                     </Table.Body>

@@ -17,7 +17,8 @@ function TableOfTotals({
   store,
   endDate,
   startDate,
-  isReport
+  isReport,
+  isStarbucks
 }: TableOfTotalsProps) {
   
   const { data, totals, loading, error, header, getInfo, setDataRow,
@@ -368,6 +369,7 @@ function TableOfTotals({
         location={store}
         subsidiary={subsidiary}
         isEdit={isEdit}
+        isStarbucks={isStarbucks}
       ></ClousingLayout>
     </>
   );
