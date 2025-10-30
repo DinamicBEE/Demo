@@ -2,6 +2,7 @@ import { ReactNode, useRef } from 'react';
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import { getTDCClousing } from '@services/clousingService';
 import { BankLineModel, TDCModel, TDCContext, TDCContextType, TDCDetailsContext } from '@models/tdc.model';
+import { getTDCByMERA } from '@services/starbucksService';
 
 const tdcContext = createContext<TDCContextType>({} as TDCContextType);
 
@@ -27,7 +28,7 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         tdcDetailsRef.current = newDetails;
     }
 
-    const getTDCData = useCallback( async(clousingId:number, idCurrency: number)=>{
+    const getTDCData = useCallback( async(clousingId:number, idCurrency: number, isStarbucks: boolean)=>{
         setTDCLoading(true);
 
         if(tdcRef.current[clousingId]) {
@@ -37,7 +38,21 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
         try {
 
-            const data: TDCModel = await getTDCClousing(clousingId, idCurrency);
+            let data: TDCModel;
+            if(isStarbucks){
+                const preDataMera = await getTDCClousing(clousingId, idCurrency);
+                const preDataStarbucks = await getTDCByMERA(clousingId);
+                data = {
+                    ...preDataStarbucks,
+                    total: preDataMera.total
+                }
+                console.log(data);
+
+            } else {
+                data = await getTDCClousing(clousingId, idCurrency);
+                console.log(data)
+
+            }
 
             const updateTDC: TDCContext = {
                 ...tdcRef.current,

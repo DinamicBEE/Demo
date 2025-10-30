@@ -25,7 +25,8 @@ function FooterClousing({
   closeDialog,
   closingConfirmation,
   idCurrency,
-  isRoleEditable
+  isRoleEditable,
+  isStarbucks
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -83,7 +84,7 @@ function FooterClousing({
       employee
     }
 
-    const response: any = await sendCashClousing(dataService, isConfirm);
+    const response: any = await sendCashClousing(dataService, isConfirm, isStarbucks);
 
     if (response === "response") {
 

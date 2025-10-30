@@ -4,6 +4,10 @@ import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
 import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
+import { loadData } from "../indexedDB/localDB";
+import { TDCModel, Voucher } from "@models/tdc.model";
+import { TotalModel } from "@models/common.clousing.model";
+import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -199,6 +203,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       cdc: line.cdc,
       total: total,
       totalPOS: response.data.total,
+      totalPOSTDC: response.data.tdc.total.totalPOS,
       electronicTips: response.data.cash.electronicTips,
       tips: response.data.cash.tips,
       idCurrencySub: 1 //TODO: Cambiar valor apenas el back lo mande
@@ -219,12 +224,64 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
 
 }
 
+export const getTDCByMERA = async(id:number): Promise<TDCModel> => {
+  try {
+    
+    const response = await api.get(GET_STARBUCKSDETAIL, {
+      params: {
+        crcId: id,
+        fgUpt: false
+      }
+    })
+    const userRole = await loadData.userData.get("userRole");
+    const creditCardTotalPhysical = response.data.tdc.lines
+      .filter((item: any) => item.bank !== "No encontrado/No identificado")
+      .reduce((acc:number, curr:any) => acc + curr.physical, 0);
+    const creditCardTotalPos = response.data.tdc.lines
+      .filter((item: any) => item.bank !== "No encontrado/No identificado")
+      .reduce((acc:number, curr:any) => acc + curr.pos, 0);
+
+    const newTotal: TotalModel = {
+      totalPOS: creditCardTotalPos,
+      totalPhysical: creditCardTotalPhysical,
+      difference: creditCardTotalPhysical - creditCardTotalPos
+    }
+
+    const linesFormated = response.data.tdc.lines
+        .filter((item: any) => item.bank !== "No encontrado/No identificado")
+        .map((item: any) => ({
+          id: item.id,
+          bank: item.bank,
+          idBank: item.idBank,
+          physical: item.physical,
+          pos: item.pos,
+          voucherAmount: item.vouchers.length,
+          voucherAmountDisplay: item.vouchers.reduce((acc: number,current: Voucher) => current.status===true ? acc + 1 : acc, 0),
+          vouchers: item.vouchers
+        }));
+
+    const newResponse = {
+      ...response.data.tdc,
+      isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
+      total:newTotal,
+      lines: linesFormated,
+      linesCopy: linesFormated,
+    }
+
+    return newResponse
+  } catch (error) {
+    console.error("Error al obtener los valores generales:", error);
+    return [] as unknown as TDCModel;
+  }
+
+}
+
 export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{
 
   const cashPhysical = data.cash.reduce((acc, row) =>(acc+row.total),0);
   const cashPOS = data.cash.reduce((acc, row) =>(acc+row.pos),0);
   const tdcPhysical = data.tdc.reduce((acc, row) =>(acc+row.total),0);
-  const tdcPOS = data.tdc.reduce((acc, row) =>(acc+row.pos),0);
+  const tdcPOS = data.data.totalPOSTDC;
 
   const body: ClousingSaveStarbucksModel ={
     crcId: clousingId,    
@@ -261,7 +318,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       total:{
         totalPhysical: tdcPhysical,
         totalPOS: tdcPOS,
-        difference: tdcPOS - tdcPhysical
+        difference: tdcPhysical - tdcPOS
       },
       lines: data.tdc.map(line => {
         return {
@@ -289,7 +346,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       }
     }
   );
-
+  console.log(body)
   return response.data;
 
 }

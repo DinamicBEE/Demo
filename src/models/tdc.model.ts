@@ -8,7 +8,7 @@ export interface TDCContextType {
   detailsLoading: boolean;
   error: string;
   detailsError: string;
-  getTDCData: (clousingId: number, idCurrency: number) => Promise<TDCModel>;
+  getTDCData: (clousingId: number, idCurrency: number, isStarbucks: boolean) => Promise<TDCModel>;
   setTDCData: (tdc: TDCModel, clousingId: number) => void;
   setDetails: (
     details: BankLineModel,

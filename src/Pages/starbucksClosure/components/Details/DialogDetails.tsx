@@ -60,7 +60,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       console.log(line);
       const newLine = {
         ...line,
-        fgUpt: false //TODO verificar lógica en esta parte para los diferentes casos
+        fgUpt: line.total !== 0 ? false : true
       }
       
       const data = await getDetailStarbucks(newLine, banks);
@@ -140,7 +140,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
     () =>
       tdcRows.reduce(
         (acc, row) =>
-          row.nameBank !== "Total (MXN)" ? acc + row.originalCurrency : acc,
+          row.nameBank !== "Total (MXN)" ? acc + row.total : acc,//originalCurrency
         0
       ),
     [tdcRows]
@@ -197,7 +197,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       );
       const totalTDC = updatedTdcRows.reduce(
         (acc, row) =>
-          row.nameBank != "Total (MXN)" ? acc + row.originalCurrency : acc,
+          row.nameBank != "Total (MXN)" ? acc + row.total : acc,//originalCurrency
         0
       );
       const newTdcRows = updatedTdcRows.map((row) =>

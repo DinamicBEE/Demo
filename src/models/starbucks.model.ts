@@ -44,6 +44,7 @@ export interface HeaderDetailsInfoModel {
   cdc: string;
   total: number;
   totalPOS: number;
+  totalPOSTDC: number;
   electronicTips: number;
   tips: number;
   idCurrencySub: number;

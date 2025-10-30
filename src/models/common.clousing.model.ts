@@ -213,6 +213,7 @@ export interface FooterClousing {
   closingConfirmation: boolean;
   idCurrency: number;
   isRoleEditable?: boolean;
+  isStarbucks: boolean;
 }
 
 export interface TotalModel {
