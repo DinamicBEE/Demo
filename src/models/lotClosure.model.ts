@@ -86,7 +86,7 @@ export interface LotClosureContextType {
   loadingBanks: boolean;
   updateBankLoading: boolean;
   setLotsClosure: (lots: LotClosure[]) => void;
-  setBanks: (banks: BankUpdate[]) => void;
+  setBanks: (banks: BankUpdate) => void;
   fetchLotClosureData: (
     dateRange: string,
     locationId: Array<number>,

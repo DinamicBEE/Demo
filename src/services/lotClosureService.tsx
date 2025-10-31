@@ -133,6 +133,7 @@ export const getBanks = async (cdcId: number, date:string) => {
 export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
   try {
     const { bank, bankCopy } = bankUpdate;
+
     if (!bankCopy || bankCopy.length < 2) {
       return bankUpdate.bank;
     }
@@ -152,21 +153,17 @@ export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
       const firstCopy: Bank = {
         ...bankCopy[0],
         totalBatch: bankCopy[0].totalPos > unifiedAdyen.totalBatch ? unifiedAdyen.totalBatch : bankCopy[0].totalPos,
-        difference: bankCopy[0].totalPos > unifiedAdyen.totalBatch ? unifiedAdyen.totalBatch - bankCopy[0].totalPos : 0
+        difference: bankCopy[0].totalPos > unifiedAdyen.totalBatch ?  unifiedAdyen.totalBatch - bankCopy[0].totalPos: 0
       };
       
-      const remainingAmount = bankCopy[0].totalPos - unifiedAdyen.totalBatch;
+      const remainingAmount = unifiedAdyen.totalBatch - firstCopy.totalBatch;
       const secondCopy: Bank = {
         ...bankCopy[1],
         totalBatch: remainingAmount > 0 ? remainingAmount : 0,
-        difference: remainingAmount !== 0 ? remainingAmount - bankCopy[1].totalPos : bankCopy[1].totalBatch- bankCopy[1].totalPos
+        difference: remainingAmount !== 0 ? remainingAmount - bankCopy[1].totalPos : bankCopy[1].totalBatch - bankCopy[1].totalPos
       };
       modifiedCopies.push(firstCopy, secondCopy);
-      
-      if (bankCopy.length > 1) {
-        modifiedCopies.push(...bankCopy);
-      }
-      
+
     } else if (unifiedAdyen.totalPos === unifiedAdyen.totalBatch) {
       modifiedCopies.push(...bankCopy.map(copy => ({
         ...copy,
@@ -174,8 +171,10 @@ export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
         difference: 0
       })));
     } else {
+
       modifiedCopies.push(...bankCopy);
     }
+
     const updatedCopiesWithAffiliations = modifiedCopies.map((copy, index) => {
       if (copy.affiliationList && copy.affiliationList.length > 0) {
         const updatedAffiliationList = copy.affiliationList.map(affiliation => ({
@@ -211,12 +210,10 @@ export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
 
 export const updateBankService = async (localBank: BankUpdateRequest) => {
   try {    
-    // const response = await api.post(CONFIRM_BATCH, localBank);
-    // if (response.status === 200 && localBank.status === "Abierto") {
-    //   assembliesController(localBank.consumerCenterId, localBank.batchDate)
-    // }
-    
-    console.log(localBank);
+    const response = await api.post(CONFIRM_BATCH, localBank);
+    if (response.status === 200 && localBank.status === "Abierto") {
+      assembliesController(localBank.consumerCenterId, localBank.batchDate)
+    }
     
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);

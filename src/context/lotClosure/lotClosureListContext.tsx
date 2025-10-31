@@ -12,7 +12,7 @@ export const useLotClosureList = () => useContext(LotClosureListContext);
 export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [lotsClosure, setLotsClosure] = useState<LotClosure[]>([]);
   const lostClosureCache = useRef<LotsClosureContext>({});
-  const [banks, setBanks] = useState<BankUpdate>({bank: [], bankCopy: []} as BankUpdate);
+  const [banks, setBanks] = useState<BankUpdate>({} as BankUpdate);
   const [loading, setLoading] = useState(false);
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [updateBankLoading, setUpdateBankLoading] = useState(false);
@@ -28,7 +28,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setLotsClosure(lostClosureCache.current[date]);
     }
   }
-
 
   const fetchLotClosureData = useCallback(
     async (
