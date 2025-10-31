@@ -29,6 +29,7 @@ export interface StarbucksTableModel {
     currencies: Currency[];
     creditCards: TDC[];
     cxc: number,
+    modificationUser: string;
     fgUpt?: boolean,
 }
 

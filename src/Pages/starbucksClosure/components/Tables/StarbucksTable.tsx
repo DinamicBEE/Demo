@@ -67,7 +67,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                                 <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
                                 <SortableHeader columnKey="date" label="Fecha" handleSort={handleSort} getSortIcon={getSortIcon} />
                                 <SortableHeader columnKey="total" label="Total" handleSort={handleSort} getSortIcon={getSortIcon} />
-                            
+
                                 {
                                     tableHeaders.currencies?.map
                                         ((item) => (
@@ -82,6 +82,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                                         ))
                                 }
                                 <Table.ColumnHeader textAlign="center">CXC</Table.ColumnHeader>
+                                <SortableHeader columnKey="modificationUser" label="Empleado (Realizado por)" handleSort={handleSort} getSortIcon={getSortIcon} />
                             </Table.Row>
                         </Table.Header>
                         <Table.Body>
@@ -139,6 +140,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                                         ))
                                     }
                                     <Table.Cell textAlign="center">{item.cxc}</Table.Cell>
+                                    <Table.Cell key={"modificationUser"} textAlign="center">{item.modificationUser}</Table.Cell>
                                 </Table.Row>
                             ))}
 

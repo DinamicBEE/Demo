@@ -195,6 +195,9 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center" onClick={() => handleSort('tips')} _hover={{textDecoration: "underline"}} cursor="pointer">
                       <HStack justify={"center"}>Propinas electrónica {getSortIcon('tips')}</HStack>
                     </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('modificationUser')} _hover={{textDecoration: "underline"}} cursor="pointer">
+                      <HStack justify={"center"}>Empleado (Realizado por) {getSortIcon('modificationUser')}</HStack>
+                    </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
@@ -348,6 +351,11 @@ function TableOfTotals({
                             style="currency"
                             currency="USD"
                           />
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell textAlign="end">
+                        <Text textAlign="center">
+                          {item.modificationUser}
                         </Text>
                       </Table.Cell>
                     </Table.Row>

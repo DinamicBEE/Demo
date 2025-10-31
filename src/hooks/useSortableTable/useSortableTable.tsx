@@ -42,7 +42,7 @@ function useSortableTable<T extends SortableItem>(data: T[]) {
         }
         return 0;
       });
-    }
+    }    
     return sortableItems;
   }, [data, sortConfig]);
 

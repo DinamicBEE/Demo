@@ -48,14 +48,13 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
 
     const handleLines = response.data.registerClosure.map((line:any)=> {
       return{
+        ...line,
         id:line.crcId,
         employee: line.employe,
         status: getStatus(line.status),
         date: line.closingStartDate,
         total: line.totalPhysical,
-        currencies: line.currencies,
         creditCards: line.tdc,
-        cxc: line.cxc
       }
     })
         
