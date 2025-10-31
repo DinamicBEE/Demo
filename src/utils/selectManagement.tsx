@@ -139,10 +139,12 @@ export const handleMultiSelectChange = <T extends { value: number }>({
 
 export const mapToSelectOptions = <T extends { id: number; name: string }>(
   items: T[]
-): selectOption[] => items.map((item) => ({
+): selectOption[] => {
+  return sortData(items.map((item) => ({
     value: item.id,
     label: item.name,
-}));
+  })));
+};
 
 export const fetchAndSetData = async <T extends { id: number; name: string }>(
   fetchFn: () => Promise<T[]>,
@@ -154,3 +156,9 @@ export const fetchAndSetData = async <T extends { id: number; name: string }>(
   });
   setter(options);
 };
+
+const sortData = (data: any) => {
+  return [...data].sort((a, b) =>
+    a.label.localeCompare(b.label, "es", { sensitivity: "base" })
+  )
+}

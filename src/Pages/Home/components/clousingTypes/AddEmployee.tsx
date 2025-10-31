@@ -40,6 +40,7 @@ import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
+import { toast } from "@utils/Toast";
 
 function AddEmployee({
   clousingId,
@@ -252,17 +253,19 @@ function AddEmployee({
     const deletionSuccessful: boolean = await deleteEmployee(employeeId, clousingId);
     setLoading(false);
     if (deletionSuccessful === false) {
-      alert("Error al eliminar el empleado. Por favor, inténtalo de nuevo.");
+      toast("Error al eliminar el empleado. Por favor, inténtalo de nuevo.", "error")
       return;
+    } else {
+      toast("Empleado eliminado correctamente", "success");
+      onClose();
+      setAmount(0);
+      setReason([]);
+      setTicket([]);
+      setIsEdited(false);
+      setShowTicketSelector(false);
+      setSelectEmployee(undefined);
+      setLoading(false);
     }
-    onClose();
-    setAmount(0);
-    setReason([]);
-    setTicket([]);
-    setIsEdited(false);
-    setShowTicketSelector(false);
-    setSelectEmployee(undefined);
-    setLoading(false);
   }
 
   return (

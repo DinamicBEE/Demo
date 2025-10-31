@@ -17,7 +17,7 @@ export interface EmployeeContextType {
     setNewEmployee: (newEmployee: EmployeeLine, clousingId: number) => void;
     setEmployee :  React.Dispatch<React.SetStateAction<EmployeeContext>>,
     updateEmployee: (updatedEmployee: EmployeeLine, clousingId: number) => void;
-    deleteEmployee: (employeeId: string|number, clousingId: number) => void;
+    deleteEmployee: (employeeId: string|number, clousingId: number) => Promise<boolean>;
     employeeRef: React.MutableRefObject<EmployeeContext>;
 }
 
