@@ -8,7 +8,7 @@ const API_BASE = `${CRC_BASE}/api`;
 const CRCPROC_BASE = `${CRC_BASE}/crcproc`;
 const BATCH_BASE = `${CRC_BASE}/batchclosure`;
 const REPORT_BASE = `${CRC_BASE}/api/report`;
-const AUTH_BASE = `/auth/authentication/api`;
+const AUTH_BASE = `/authentication/api`;//`/auth/authentication/api`;
 
 // * LOGIN
 export const SIGNIN =  `${AUTH_BASE}/v1/auth/signin`;
