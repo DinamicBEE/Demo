@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { API_AUTH, MODE } from "../services/settings";
+//import { API_AUTH, MODE } from "../services/settings";
 import { refreshAuthToken } from "@services/authService";
 import { getValidationsError } from "../utils/getValidationsError";
 import { toast } from "../utils/index";
@@ -26,7 +26,7 @@ const removeTokens = () => {
 
 // Configuración base del cliente Axios
 const api = axios.create({
-  baseURL: API_AUTH,
+  baseURL: "/api",//API_AUTH,
   headers: {
     "Content-Type": "application/json",
   }
@@ -59,8 +59,8 @@ api.interceptors.response.use(
       originalRequest &&
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      window.location.pathname !== "/" &&
-      MODE === "BACK"
+      window.location.pathname !== "/" //&&
+      //MODE === "BACK"
     ) {
       originalRequest._retry = true;
 

@@ -1,8 +1,8 @@
-export const API_AUTH = import.meta.env.VITE_API_URL;
+//export const API_AUTH = import.meta.env.VITE_API_URL;
 export const API_USER = `https://reqres.in/api`;
 export const API_CATALOG = `https://run.mocky.io/v3`;
 export const API_HOME = `https://run.mocky.io/v3`;
-export const API_LOCAL = import.meta.env.VITE_API_URL;
+//export const API_LOCAL = import.meta.env.VITE_API_URL;
 const CRC_BASE = `/crc/cash-register-closure`;
 const API_BASE = "/api";//`${CRC_BASE}/api`;
 const CRCPROC_BASE = `${CRC_BASE}/crcproc`;
@@ -92,5 +92,5 @@ export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/sear
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
 
-export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
-export const MODE = import.meta.env.VITE_MODE;
+//export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
+//export const MODE = import.meta.env.VITE_MODE;
