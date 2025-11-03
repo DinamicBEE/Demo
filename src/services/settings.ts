@@ -3,6 +3,7 @@ export const API_USER = `https://reqres.in/api`;
 export const API_CATALOG = `https://run.mocky.io/v3`;
 export const API_HOME = `https://run.mocky.io/v3`;
 //export const API_LOCAL = import.meta.env.VITE_API_URL;
+// const CRC_BASE = `/crc/cash-register-closure`;
 const CRC_BASE = `/cash-register`;
 const API_BASE = `${CRC_BASE}/api`;//"/api";//`${CRC_BASE}/api`;
 const CRCPROC_BASE = `${CRC_BASE}/crcproc`;

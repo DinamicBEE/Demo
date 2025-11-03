@@ -7,6 +7,9 @@
 node_modules/
 dist/
 
+# Vercel
+.vercel/
+
 #env files
 .env
 .env.back
