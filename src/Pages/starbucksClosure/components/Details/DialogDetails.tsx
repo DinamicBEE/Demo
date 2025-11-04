@@ -165,6 +165,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
   }, [totalGlobal]);
 
   function updateAmmount(id: number | string, value: string, key?: string) {
+    
     value = value.replace(/[^\d.]/g, "");
 
     let newValue = 0;
@@ -194,6 +195,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
             }
           : item
       );
+      
       const totalTDC = updatedTdcRows.reduce(
         (acc, row) =>
           row.nameBank != "Total (MXN)" ? acc + row.total : acc,//originalCurrency
@@ -327,21 +329,21 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
               <GridItem colSpan={1}>
                 <CurrencyInput
-                  value={generalData.total | 0}
+                  value={generalData.total || 0}
                   name={"Total Físico"}
                   loading={false}
                 />
               </GridItem>
               <GridItem colSpan={1}>
                 <CurrencyInput
-                  value={generalData.totalPOS | 0}
+                  value={generalData.totalPOS || 0}
                   name={"Total POS"}
                   loading={false}
                 />
               </GridItem>
               <GridItem colSpan={1}>
                 <CurrencyInput
-                  value={(generalData.total | 0) - (generalData.totalPOS | 0)}
+                  value={(generalData.total || 0) - (generalData.totalPOS || 0)}
                   name={"Diferencia"}
                   loading={false}
                 />
