@@ -10,9 +10,7 @@ function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: Denomina
 
     const [denominationsRef, setDenominationsRef] = useState<DenominationsModel[]>([] as DenominationsModel[]); 
 
-    useEffect(() => {
-      console.log(denominations);
-      
+    useEffect(() => {      
         setDenominationsRef(denominations.denominations);
 
     }, []);
