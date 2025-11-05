@@ -99,7 +99,10 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         total: item.totalFisico,
         pos: item.totalPOS,
         exchangeRate: item.exchangeRate,
-        originalCurrency: item.originalCurrency,
+        originalCurrency: 
+          item.exchangeRate !== 0
+            ? (item.totalFisico || 0) / (item.exchangeRate || 0)
+            : 0,
         isOpen: line.status === "Abierto" ? true : false,
         denominations: item.denominations.map((denomination:any) =>{
           return {

@@ -105,7 +105,7 @@ function FilterVoucher({ vouchers, itemId, onSelect, disabled,}: VoucherFilter) 
     setSearchQuery("");
     searchRef.current = "";
     handleSearch("");
-    setIsOpen(false);
+    // setIsOpen(false);
   }
 
   useEffect(() => {

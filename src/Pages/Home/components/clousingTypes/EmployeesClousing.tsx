@@ -29,7 +29,8 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
 
   useEffect(() => {
     async function fetchData() {      
-      if (!data) return;      
+      if (!data || !cdc || !subsidiaryId) return;
+            
       const employeeData: EmployeeModel = await getEmployeetData(data?.id);      
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
