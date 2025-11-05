@@ -18,7 +18,10 @@ import {
   Input,
   InputAddon,
   ListCollection,
+  SelectItemText,
+  Span,
   Stack,
+  VStack,
 } from "@chakra-ui/react";
 import {
   SelectLabel,
@@ -41,6 +44,7 @@ import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
 import { toast } from "@utils/Toast";
+import { getTicketListClousing } from "@services/catalogService";
 
 function AddEmployee({
   clousingId,
@@ -86,7 +90,7 @@ function AddEmployee({
       setCatalogLoading(true);
       const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
       const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
-      const ticketsList: TicketModel[] = await getTicketsList(subsidiaryId);
+      const ticketsList: TicketModel[] = await getTicketListClousing(clousingId);
 
 
       setEmployees(employeeList);
@@ -189,10 +193,21 @@ function AddEmployee({
     });
 
     const ticketCollection = createListCollection({
-      items: filteredTickets.map((ticket) => ({
-        label: ticket.ticketNumber,
-        value: ticket.id,
-      })),
+      items: filteredTickets.map((ticket) => {
+        
+
+        const paymentMatch = ticket.paymentTypeResponse?.find(payment => 
+          payment?.paymentMethod && allowedPaymentMethods.includes(payment.paymentMethod)
+        );
+
+        const amountDescription = paymentMatch?.amount ?? 0; 
+        
+        return {
+          label: ticket.ticketNumber,
+          value: ticket.id,
+          description: `Cantidad: $${amountDescription.toFixed(2)}` 
+        };
+      }),
     });
 
     setTickets(ticketCollection);
@@ -349,7 +364,12 @@ function AddEmployee({
                 <SelectContent>
                   {tickets.items.map((ticket) => (
                     <SelectItem item={ticket} key={ticket.value}>
-                      {ticket.label}
+                      <VStack alignItems={"flex-start"} gap={0}>
+                        <SelectItemText>{ticket.label}</SelectItemText>
+                        <Span color="fg.muted" textStyle="xs">
+                          {ticket.description}
+                        </Span>
+                      </VStack>
                     </SelectItem>
                   ))}
                 </SelectContent>
