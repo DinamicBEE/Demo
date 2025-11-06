@@ -50,7 +50,6 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
 
             } else {
                 data = await getTDCClousing(clousingId, idCurrency);
-                console.log(data)
 
             }
 
