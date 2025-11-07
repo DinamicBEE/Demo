@@ -57,8 +57,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
   useEffect(() => {
     async function fetchData() {
-      setDialogLoading(true);
-
+      setDialogLoading(true);      
       const newLine = {
         ...line,
         fgUpt: line.total !== 0 ? false : true,
@@ -449,7 +448,8 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                     />
                                   </Text>
 
-                                  <Button disabled={!row.isOpen}
+                                  <Button
+                                    // disabled={!row.isOpen}
                                     onClick={() => openDialog(index, row)}
                                   >
                                     <CiSquarePlus />
@@ -719,6 +719,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
             onClose={onCloseDenominations}
             onSave={onSaveDenominations}
             denominations={selectedDenomination}
+            disabled={line.status === "Cerrado"}
           ></DenominationsDetaisl>
         </Box>
       )}
