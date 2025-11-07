@@ -7,5 +7,5 @@ export enum STATUS {
     RECLOSED = "Re-cerrado",
     ACTIVE = "Activo",
     INACTIVE = "Inactivo",
-    CLOSED_STARBUCKS = "Cerrado"
+    CLOSED_STARBUCKS = "Cerrado Starbucks"
 }

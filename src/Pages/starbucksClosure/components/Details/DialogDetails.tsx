@@ -64,7 +64,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
         fgUpt: line.total !== 0 ? false : true,
       }
       
-      const data = await getDetailStarbucks(newLine, banks);
+      const data = await getDetailStarbucks(newLine, banks);      
       
       setGeneralData(data.data);
       setCashRows(data.cash);

@@ -466,6 +466,7 @@ export const getIntercompanyClousing = async (
   clousingId: number
 ): Promise<IntercompanyModel> => {
   // console.log(clousingId)
+  if (!clousingId) return {} as IntercompanyModel;
   const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
