@@ -6,13 +6,11 @@ import { useEffect, useState } from "react";
 
 
 
-function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: DenominationsDetaislProps) {
+function DenominationsDetaisl({isOpen, onClose, onSave, denominations, disabled}: DenominationsDetaislProps) {
 
     const [denominationsRef, setDenominationsRef] = useState<DenominationsModel[]>([] as DenominationsModel[]); 
 
-    useEffect(() => {
-      console.log(denominations);
-      
+    useEffect(() => {      
         setDenominationsRef(denominations.denominations);
 
     }, []);
@@ -83,6 +81,7 @@ function DenominationsDetaisl({isOpen, onClose, onSave, denominations}: Denomina
                                                 value={denomination.amount}
                                                 onChange={(value) => handleChangeAmount(index, parseFloat(String(value ?? "0")))}
                                                 allowDecimals={denomination.denomination === 'Cambio' ? true : false}
+                                                disabled={disabled}
                                             />
                                         </Table.Cell>
                                         <Table.Cell>{denomination.subtotal}</Table.Cell>

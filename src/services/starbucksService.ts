@@ -99,7 +99,10 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         total: item.totalFisico,
         pos: item.totalPOS,
         exchangeRate: item.exchangeRate,
-        originalCurrency: item.originalCurrency,
+        originalCurrency: 
+          item.exchangeRate !== 0
+            ? (item.totalFisico || 0) / (item.exchangeRate || 0)
+            : 0,
         isOpen: line.status === "Abierto" ? true : false,
         denominations: item.denominations.map((denomination:any) =>{
           return {
@@ -122,13 +125,13 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
     });
 
     let creditCardDataDummy: TDCStarbucksModel[] = [];
-    if(response.data.tdc.lines && response.data.tdc.lines.length > 2){
-
+    if(response.data.tdc.lines && response.data.tdc.lines.length > 2){      
       creditCardDataDummy = response.data.tdc.lines
         .filter((item: any) => item.bank !== "No encontrado/No identificado")
+        .sort((a: any, b: any) => a.bank.localeCompare(b.bank))
         .map((item: any) => ({
           id: item.id,
-          nameBank: item.bank,
+          nameBank: item.idBank === 13 ? "BBVA Bancomer USD" : item.bank,
           idBank: item.idBank,
           total: item.physical,
           pos: item.pos,
@@ -138,6 +141,23 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
           originalCurrency: item.physical * item.exchangeRate,
           voucher: item.vouchers
         }));
+
+        const isSantanderPresent = creditCardDataDummy.some((card) => card.nameBank === "Santander");
+        if (!isSantanderPresent) {
+          creditCardDataDummy.push({
+            id: 796,
+            nameBank: "Santander",
+            idBank: 43,
+            total: 0,
+            pos:0,
+            currencyExternalId: 5,
+            exchangeRate: 0,
+            isOpen: line.status === "Abierto" ? true : false,
+            originalCurrency: 0,
+            voucher: []
+          });
+        }
+
     } else {
       creditCardDataDummy = banks.map((bank) => {
   

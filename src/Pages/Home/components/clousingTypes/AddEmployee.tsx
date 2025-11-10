@@ -18,7 +18,10 @@ import {
   Input,
   InputAddon,
   ListCollection,
+  SelectItemText,
+  Span,
   Stack,
+  VStack,
 } from "@chakra-ui/react";
 import {
   SelectLabel,
@@ -40,6 +43,8 @@ import { useEmployeeContext } from "@context/clousing/employeeClousing";
 import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
+import { toast } from "@utils/Toast";
+import { getTicketListClousing } from "@services/catalogService";
 
 function AddEmployee({
   clousingId,
@@ -56,8 +61,8 @@ function AddEmployee({
 
 
   const [amount, setAmount] = useState<number>(0);
-  const [reason, setReason] = useState<string[]>([]);
-  const [ticket, setTicket] = useState<string[]>([]);
+  const [reason, setReason] = useState<number[]>([]);
+  const [ticket, setTicket] = useState<number[]>([]);
 
   const [isEdited, setIsEdited] = useState<boolean>(false);
 
@@ -81,77 +86,75 @@ function AddEmployee({
   } = useEmployeeContext();
 
   useEffect(() => {
-    async function fetchData() {
-      setCatalogLoading(true);
-      const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
-      const reasonsList: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
-      const ticketsList: TicketModel[] = await getTicketsList(subsidiaryId);
-
-
-      setEmployees(employeeList);
-
-      const reasonCollection = createListCollection({
-        items: reasonsList.map((reason) => ({
-          label: reason.reasonName,
-          value: reason.id,
-        })),
-      });
-
-      const ticketCollection = createListCollection({
-        items: ticketsList.map((ticket) => ({
-          label: ticket.ticketNumber,
-          value: ticket.id,
-        })),
-      });
-
-      setReasonsList(reasonsList);
-      setReasons(reasonCollection);
-      setTickets(ticketCollection);
-      setTicketsList(ticketsList);
-      setCatalogLoading(false);
-
-      if (isOpen && data) {
+    const fetchData = async () => { 
+      if (isOpen) {
+        setCatalogLoading(true);
+  
+        const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
+        setEmployees(employeeList);
         
-        setIsEdited(true);
-
-        const employeeToEdit = employeeList.find(
-          (emp) => emp.name === data.employeeName
-        );
-
-        setSelectEmployee({
-          id: employeeToEdit?.id || 0,
-          name: data.employeeName,
-          employeeNumber: data.employeeNumber,
+        const reasonsListResponse: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
+        const reasonCollection = createListCollection({
+          items: reasonsListResponse.map((reason) => ({
+            label: reason.reasonName,
+            value: reason.id,
+          })),
         });
-        setAmount(data.amount);
-        const reasonToSelect = reasonsList.find(
-          (reasonItem) => reasonItem.reasonName === data.reason
-        );
-        if (reasonToSelect) {
-          handleReasonChange(reasonToSelect.id.toString());
-        } else {
-          setShowTicketSelector(false);
-          setReason([]);
-        }
-        if (data.ticketNumber) {
-          const ticketToSelect = ticketsList.find(
-            (ticketItem) => ticketItem.ticketNumber === data.ticketNumber
+        setReasonsList(reasonsListResponse);
+        setReasons(reasonCollection);
+  
+        const ticketsListResponse: TicketModel[] = await getTicketListClousing(clousingId);
+        const ticketCollection = createListCollection({
+          items: ticketsListResponse.map((ticket) => ({
+            label: ticket.ticketNumber,
+            value: ticket.id,
+          })),
+        });
+        setTickets(ticketCollection);
+        setTicketsList(ticketsListResponse);
+
+        if (data !== null) {
+          setIsEdited(true);
+  
+          const employeeToEdit = employeeList.find(
+            (emp) => emp.name === data.employeeName
           );
-          if (ticketToSelect) {
-            setTicket([ticketToSelect.id.toString() || '']);
-          } else {
-            setTicket([]);
+
+          if (!employeeToEdit) {
+            console.warn("Empleado no encontrado:", data.employeeName);
+            return;
           }
-        } else {
-          setTicket([]);
+  
+          setSelectEmployee({
+            id: employeeToEdit?.id || 0,
+            name: data.employeeName,
+            employeeNumber: data.employeeNumber,
+          });
+          setAmount(data.amount);
+          const reasonToSelect = reasonsListResponse.find(
+            (reasonItem) => reasonItem.reasonName === data.reason
+          );
+          if (reasonToSelect) {
+            setReason([Number(reasonToSelect.id)])
+            // handleReasonChange(reasonToSelect.id.toString());
+          } else {
+            setShowTicketSelector(false);
+            setReason([]);
+          }
+          if (data.ticketNumber) {
+            const ticketToSelect = ticketsListResponse.find(
+              t => t.ticketNumber === data.ticketNumber
+            );
+
+            if (ticketToSelect) {
+              setTicket([ticketToSelect.id]);
+            }
+          }
         }
-      } else if (isOpen && !data) {
-        setAmount(0);
-        setReason([]);
-        setTicket([]);
-        setSelectEmployee(undefined);
-        setIsEdited(false);
-        setShowTicketSelector(false);
+        setCatalogLoading(false);
+        
+      } else {
+        resetForm()
       }
     }
 
@@ -159,16 +162,7 @@ function AddEmployee({
   }, [getEmployeeList, getReasonsList, getTicketsList, subsidiaryId, cdc, isOpen, data]);
 
   useEffect(() => {
-    if (isNaN(amount) || amount < 0) {
-      setAmount(0);
-    }
-  }, [amount])
-  
-  const handleReasonChange = (selectedReasonId: string) => {
-    setReason([selectedReasonId]);
-    setTicket([]);
-    
-    const selectedReason = reasonsList.find(item => item.id === Number(selectedReasonId));
+    const selectedReason = reasonsList.find(item => item.id === Number(reason[0]));
     if (!selectedReason) {
       setShowTicketSelector(false);
       return;
@@ -188,14 +182,26 @@ function AddEmployee({
     });
 
     const ticketCollection = createListCollection({
-      items: filteredTickets.map((ticket) => ({
-        label: ticket.ticketNumber,
-        value: ticket.id,
-      })),
+      items: filteredTickets.map((ticket) => {
+        
+
+        const paymentMatch = ticket.paymentTypeResponse?.find(payment => 
+          payment?.paymentMethod && allowedPaymentMethods.includes(payment.paymentMethod)
+        );
+
+        const amountDescription = Number(paymentMatch?.amount ?? 0); 
+        
+        return {
+          label: ticket.ticketNumber,
+          value: ticket.id,
+          description: `Cantidad: $${amountDescription.toFixed(2)}` 
+        };
+      }),
     });
 
     setTickets(ticketCollection);
-  };
+    
+  }, [reason])
 
 
   async function handleData() {
@@ -234,16 +240,10 @@ function AddEmployee({
     } else {
       setNewEmployee(newEmployee, clousingId);
     }
-
     setLoading(false);
-    onClose();
-    setAmount(0);
-    setReason([]);
-    setTicket([]);
-    setShowTicketSelector(false);
-    setSelectEmployee(undefined);
-    setIsEdited(false);
 
+    resetForm();
+    onClose();
   }
 
   async function handleDelete(employeeId: string | number, clousingId: number) {
@@ -252,17 +252,23 @@ function AddEmployee({
     const deletionSuccessful: boolean = await deleteEmployee(employeeId, clousingId);
     setLoading(false);
     if (deletionSuccessful === false) {
-      alert("Error al eliminar el empleado. Por favor, inténtalo de nuevo.");
+      toast("Error al eliminar el empleado. Por favor, inténtalo de nuevo.", "error")
       return;
+    } else {
+      toast("Empleado eliminado correctamente", "success");
+      onClose();
+      resetForm();
+      setLoading(false);
     }
-    onClose();
+  }
+
+  function resetForm() {
     setAmount(0);
     setReason([]);
     setTicket([]);
-    setIsEdited(false);
     setShowTicketSelector(false);
     setSelectEmployee(undefined);
-    setLoading(false);
+    setIsEdited(false);
   }
 
   return (
@@ -310,12 +316,12 @@ function AddEmployee({
             <SelectRoot
               collection={reasons}
               value={reason}
-              onValueChange={(e) => handleReasonChange(e.value[0])}
+              onValueChange={(e) => setReason([Number(e.value[0])])}
             >
               <SelectLabel>Motivo</SelectLabel>
               <SelectTrigger>
                 <SelectValueText
-                  placeholder={isEdited && data?.reason ? data.reason : "Motivo"}
+                  placeholder={"Motivo"}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -331,7 +337,7 @@ function AddEmployee({
               <SelectRoot
                 collection={tickets}
                 value={ticket}
-                onValueChange={(e) => setTicket(e.value)}
+                onValueChange={(e) => setTicket([Number(e.value)])}
               >
                 <SelectLabel>Ticket</SelectLabel>
                 <SelectTrigger>
@@ -346,7 +352,12 @@ function AddEmployee({
                 <SelectContent>
                   {tickets.items.map((ticket) => (
                     <SelectItem item={ticket} key={ticket.value}>
-                      {ticket.label}
+                      <VStack alignItems={"flex-start"} gap={0}>
+                        <SelectItemText>{ticket.label}</SelectItemText>
+                        <Span color="fg.muted" textStyle="xs">
+                          {ticket.description}
+                        </Span>
+                      </VStack>
                     </SelectItem>
                   ))}
                 </SelectContent>

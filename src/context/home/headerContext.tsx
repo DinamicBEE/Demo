@@ -30,7 +30,6 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
     try {
       const extraInfo = await getExtraInfo(clousingData.id);
       const data = createObjectHeader(clousingData, extraInfo, headerRef.current[clousingData.id]);
-      console.log("ST", data)
       const updatedHeader = { ...headerRef.current, [clousingData.id]: data, }
 
       updateHeaderState(updatedHeader);

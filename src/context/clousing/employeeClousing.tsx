@@ -211,6 +211,8 @@ export function EmployeeClousingProvider({
       const response = await employeeDelete(employeeId);
       if (!response) {
         return false;
+      } else {
+        return true;
       }
     }
 

@@ -8,7 +8,6 @@ export const SortableHeader = ({
   getSortIcon,
   textAlign = "center"
 }: SortableHeaderProps) => {
-  console.log(columnKey, label);
   
   return (
     <Table.ColumnHeader 

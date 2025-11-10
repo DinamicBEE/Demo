@@ -56,8 +56,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
 
       tabs.setValue(CLOUSING_KEY.CASH);
 
-      try {
-
+      try {        
         const [ customer, specialCustomer, prepaid, tdc,
         intercompany, employeeT, cash ] = await Promise.all([
           getCustomerData(employee.id),
@@ -321,7 +320,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               <Tabs.Content value={CLOUSING_KEY.PREPAID}>
                 {value === CLOUSING_KEY.PREPAID && (
                   <Suspense
-                    fallback={<div>Cargando Clientes Especiales...</div>}
+                    fallback={<div>Cargando Prepago...</div>}
                   >
                     <PrepaidClousing
                       data={employee}
@@ -335,7 +334,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               <Tabs.Content value={CLOUSING_KEY.EMPLOYEE}>
                 {value === CLOUSING_KEY.EMPLOYEE && (
                   <Suspense
-                    fallback={<div>Cargando Clientes Especiales...</div>}
+                    fallback={<div>Cargando Empleados...</div>}
                   >
                     <EmployeesClousing
                       data={employee}
@@ -349,7 +348,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               <Tabs.Content value={CLOUSING_KEY.INTERCOMPANY}>
                 {value === CLOUSING_KEY.INTERCOMPANY && (
                   <Suspense
-                    fallback={<div>Cargando Clientes Especiales...</div>}
+                    fallback={<div>Cargando Intercompañía...</div>}
                   >
                     <IntercompanyClousing
                       data={employee}

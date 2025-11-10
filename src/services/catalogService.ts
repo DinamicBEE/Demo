@@ -199,7 +199,7 @@ export const getTicketListClousing = async (
 
     return reasons;
   } catch (error) {
-    console.error("Error al obtener la lista de motivos:", error);
+    console.error("Error al obtener la lista de tickets:", error);
     return [] as unknown as TicketModel[];
   }
 };

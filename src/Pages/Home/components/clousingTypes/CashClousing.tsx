@@ -189,7 +189,7 @@ function CashClousing({ data, idCurrency }: any) {
 
                     <Text>
                       <FormatNumber
-                        value={item.originalCurrency}
+                        value={item.totalFisico/ item.exchangeRate} //TODO: Validar, llega otra cosa de back en algunos casos value={item.originalCurrency}
                         style="currency"
                         currency="USD"
                       />

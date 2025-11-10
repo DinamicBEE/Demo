@@ -109,6 +109,7 @@ export interface DenominationsDetaislProps {
     onClose: () => void;
     onSave: (denominatios:DenominationsPropModel) => void;
     denominations: DenominationsPropModel;
+    disabled: boolean;
 }
 
 export interface DenominationsPropModel{

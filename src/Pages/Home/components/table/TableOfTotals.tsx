@@ -60,7 +60,8 @@ function TableOfTotals({
     if (
       item.status.toLowerCase() === "Abierto".toLowerCase() ||
       item.status.toLowerCase() === "open".toLowerCase() ||
-      item.status.toLowerCase() === "Reabierto".toLowerCase()
+      item.status.toLowerCase() === "Reabierto".toLowerCase() ||
+      item.status.toLowerCase() === "Cerrado Starbucks".toLowerCase()
     ) {
       item.closingConfirmation = false;
     } else {
@@ -252,7 +253,7 @@ function TableOfTotals({
                         <Tag.Root
                           colorPalette={statusColor(item.status as STATUS)}
                         >
-                          <Tag.Label>{item.status}</Tag.Label>
+                          <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto" : item.status}</Tag.Label>
                         </Tag.Root>
                       </Table.Cell>
 

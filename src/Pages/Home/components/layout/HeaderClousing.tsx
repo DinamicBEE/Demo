@@ -34,7 +34,7 @@ function HeaderClousing({
 
   useEffect(() => {
     fetchHeader();
-  }, [fetchHeader]);
+  }, [currentHeader, fetchHeader]);
 
   const handleDiscountInputChange = useCallback((value: string) => {
     const numericValue = Number(value.replace(/[^0-9.-]+/g, ""));
