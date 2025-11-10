@@ -5,7 +5,7 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
   PaginationRoot } from "@components/ui/pagination";
 import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
-import { STATUS } from "@models/status.model";
+import { STATUS } from "@models/const/status.const";
 import { exportCSV } from "../../utils/exportCSV";
 import { LotClosure } from "@models/lotClosure.model";
 import { TableLotsClosureProps } from "@models/lotClosure.model";

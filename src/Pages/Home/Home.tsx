@@ -64,7 +64,6 @@ function Home() {
 
     setSubSelect(itemSelected);
 
-    // TODO: Guardar las tiendas encontradas en stores para no repetir búsquedas
     let storeBySubsidiary = stores.filter(
       (item) => item.subsidiary === selection
     );

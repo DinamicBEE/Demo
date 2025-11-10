@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, HStack, Table, Tag, Text } from "@chakra-ui/react";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
 import { ClousingLinesModel, Currency, TableOfTotalsProps, TDC } from "@models/common.clousing.model";
 import Loading from "@components/Loading";
-import { STATUS } from "@models/status.model";
-import { getStatusColor } from "../../../../utils/getStatusColor";
+import { STATUS, STATUS_CLOSED_DIALOG_EXCEPTIONS } from "@models/const/status.const";
+import { getStatusColor } from "@utils/getStatusColor";
 import ClousingLayout from "../layout/ClousingLayout";
 import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
+import { SortableHeader } from "@utils/table";
 
 function TableOfTotals({
   subsidiary,
@@ -57,16 +58,7 @@ function TableOfTotals({
   }
 
   const openDialog = (item: any) => {
-    if (
-      item.status.toLowerCase() === "Abierto".toLowerCase() ||
-      item.status.toLowerCase() === "open".toLowerCase() ||
-      item.status.toLowerCase() === "Reabierto".toLowerCase() ||
-      item.status.toLowerCase() === "Cerrado Starbucks".toLowerCase()
-    ) {
-      item.closingConfirmation = false;
-    } else {
-      item.closingConfirmation = true;
-    }
+    item.closingConfirmation = STATUS_CLOSED_DIALOG_EXCEPTIONS.includes(item.status.toLowerCase()) ? false : true;
         
     setSelectedEmployee(item);
     setIsDialogOpen(true);
@@ -143,21 +135,11 @@ function TableOfTotals({
                     <Table.ColumnHeader textAlign="center">
                       Fecha
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employe')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Vendedor {getSortIcon('employe')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPOS')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Total POS {getSortIcon('totalPOS')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('totalPhysical')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Total Físico {getSortIcon('totalPhysical')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('difference')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Diferencia {getSortIcon('difference')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" minW="110px" onClick={() => handleSort('status')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Estatus {getSortIcon('status')}</HStack>
-                    </Table.ColumnHeader>
+                    <SortableHeader columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
 
                     {currHeader.length > 0 &&
                       currHeader.map((item: Currency) => (
@@ -169,21 +151,12 @@ function TableOfTotals({
                         </Table.ColumnHeader>
                       ))}
                     
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('customer')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Clientes General {getSortIcon('customer')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('specialCustomer')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Clientes Especiales {getSortIcon('specialCustomer')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('prepaid')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Prepago {getSortIcon('prepaid')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('employees')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>CXC Empleados {getSortIcon('employees')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('intercompany')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Intercompañia {getSortIcon('intercompany')}</HStack>
-                    </Table.ColumnHeader>
+                    <SortableHeader columnKey="customer" label="Clientes General" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="specialCustomer" label="Clientes Especiales" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="prepaid" label="Prepago" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="employees" label="CXC Empleados" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="intercompany" label="Intercompañia" handleSort={handleSort} getSortIcon={getSortIcon} />
+
                     {tdcHeader.length > 0 &&
                       tdcHeader.map((item: TDC) => (
                         <Table.ColumnHeader
@@ -193,12 +166,10 @@ function TableOfTotals({
                           {item.nameBank.toUpperCase()}
                         </Table.ColumnHeader>
                       ))}
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('tips')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Propinas electrónica {getSortIcon('tips')}</HStack>
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center" onClick={() => handleSort('modificationUser')} _hover={{textDecoration: "underline"}} cursor="pointer">
-                      <HStack justify={"center"}>Empleado (Realizado por) {getSortIcon('modificationUser')}</HStack>
-                    </Table.ColumnHeader>
+
+                    <SortableHeader columnKey="tips" label="Propinas electrónicas" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="modificationUser" label="Empleado (Realizado por)" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
