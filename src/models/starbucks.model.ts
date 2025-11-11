@@ -1,5 +1,5 @@
 import { Currency, TDC, TotalModel } from "./common.clousing.model";
-import { STATUS } from "./status.model";
+import { STATUS } from "./const/status.const";
 import { Voucher } from "./tdc.model";
 
 export interface SortableHeaderProps {

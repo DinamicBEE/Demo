@@ -43,7 +43,7 @@ export interface PrepaidLineModel {
   totalPOS: number;
   physical: number;
   difference: number;
-  isEdit: boolean; // TODO isEdit
+  isEdit: boolean;
   coupons: CouponCatalogModel[];
   couponsSelected?: CouponCatalogModel[];
   ticketId: number;

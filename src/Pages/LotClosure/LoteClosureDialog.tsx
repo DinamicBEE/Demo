@@ -6,7 +6,7 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useHandleAffiliationsData } from "@hooks/affiliations/useHandleAffiliationsData";
 import { Bank, BankUpdate, LotClosure, LotClosureDialogProps } from "@models/lotClosure.model";
-import { STATUS } from "@models/status.model";
+import { STATUS } from "@models/const/status.const";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
 

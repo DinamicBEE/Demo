@@ -1,12 +1,12 @@
 import { Box, FormatNumber, Table, Tag, Text } from "@chakra-ui/react";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { PropDialogStarbucksTable, StarbucksBanksModel, StarbucksTableHeader, StarbucksTableModel } from "@models/starbucks.model";
-import { SortableHeader } from "../../../../utils/table";
+import { SortableHeader } from "@utils/table";
 import { useEffect, useState } from "react";
 import DialogDetails from "../Details/DialogDetails";
 import Loading from "@components/Loading";
-import { STATUS } from "@models/status.model";
-import { getStatusColor } from "../../../../utils/getStatusColor";
+import { STATUS } from "@models/const/status.const";
+import { getStatusColor } from "@utils/getStatusColor";
 import { formatToDDMMYYYY } from "@utils/dateFormatter";
 import { getBanksStarbucks } from "@services/starbucksService";
 

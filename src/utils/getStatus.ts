@@ -1,4 +1,4 @@
-import { STATUS } from "@models/status.model";
+import { STATUS } from "@models/const/status.const";
 
 export const getStatus = (status: string) => {
   switch (status) {

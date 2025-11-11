@@ -5,7 +5,7 @@ import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
-import { STATUS } from "@models/status.model";
+import { STATUS } from "@models/const/status.const";
 
 /**
  * This function returns the list of selected
