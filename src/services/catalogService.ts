@@ -19,7 +19,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
         label: item.name
       }));
     case "customer":
-      return await getCustomers(true); //TODO: Validar funcionamiento del filtro
+      return await getCustomers(false);
   
     default:
       return [];
