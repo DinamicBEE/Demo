@@ -1,5 +1,5 @@
 import { selectOption } from "./common.model";
-import { STATUS } from "./status.model";
+import { STATUS } from "./const/status.const";
 import { ListCollection } from "@chakra-ui/react";
 
 export interface LotClosure {

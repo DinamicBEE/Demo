@@ -11,6 +11,8 @@ import { location, StoreModel, SubsidiaryModal } from "@models/common.model";
 import Loading from "@components/Loading";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 
+// DEPRECATED el componente se cambio por homev2
+
 function Home() {
   const [subsidiary, setSubsidiary] = useState<ListCollection<{ value: number; label: string; idCurrency?: number }>>(
     createListCollection<{ value: number; label: string; idCurrency?: number }>({ items: [] })
@@ -64,7 +66,6 @@ function Home() {
 
     setSubSelect(itemSelected);
 
-    // TODO: Guardar las tiendas encontradas en stores para no repetir búsquedas
     let storeBySubsidiary = stores.filter(
       (item) => item.subsidiary === selection
     );

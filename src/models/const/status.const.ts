@@ -7,5 +7,7 @@ export enum STATUS {
     RECLOSED = "Re-cerrado",
     ACTIVE = "Activo",
     INACTIVE = "Inactivo",
-    CLOSED_STARBUCKS = "Cerrado"
+    CLOSED_STARBUCKS = "Cerrado Starbucks"
 }
+
+export const STATUS_CLOSED_DIALOG_EXCEPTIONS = ["abierto", "open", "reabierto", "cerrado starbucks"];

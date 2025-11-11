@@ -144,7 +144,7 @@ export const REPORTSERVICE_CONFIG = [
   },
 ];
 
-//TODO: Revisar uso PENDIENTE
+//TODO: Revisar uso reporte de sincronizacion de errores, revisar con Ramiro su uso
 export enum ESTTATUS {
   REPSYNC_ERRORS = 100,
   REPDES_01 = 1,
