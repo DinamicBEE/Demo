@@ -2,7 +2,7 @@ import { location } from "@models/common.model";
 import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksBanksModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
+import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDENOMINATIONS, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
 import { loadData } from "../indexedDB/localDB";
 import { TDCModel, Voucher } from "@models/tdc.model";
@@ -112,8 +112,13 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         })
       }
     });
-    cashDataDummy.push({
-      id: cashDataDummy.length + 1,
+
+    const denominations = await getSatrbucksDenominations(line.id);
+
+    const cashModified = transformCashData(cashDataDummy, denominations);
+
+    cashModified.push({
+      id: cashModified.length + 1,
       currency: "Total (MXN)",
       pos: 0,
       total: cashTotal,
@@ -228,7 +233,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
 
     const starbucksData:StarbucksTableRow = {
       data: header,
-      cash: cashDataDummy,
+      cash: cashModified,
       tdc: creditCardDataDummy,
       cxc: cxcDataDummy
     }
@@ -291,6 +296,54 @@ export const getTDCByMERA = async(id:number): Promise<TDCModel> => {
     return [] as unknown as TDCModel;
   }
 
+}
+
+export const getSatrbucksDenominations = async (cashClosure: number) => {
+  try {
+
+    const response = await api.get(GET_STARBUCKSDENOMINATIONS, {
+      params: {
+        idCashClosure: cashClosure,
+        idCurrency: 5
+      }
+    });
+    return response.data;
+  }
+  catch ( e ) {
+    return [];
+  }
+}
+
+const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): CashStarbucksModel[] => {
+  if (!Array.isArray(denominations) || denominations.length === 0) return lines;
+  
+  const filtered = (denominations || []).filter(
+    (base) => base?.currency?.name?.trim()?.toLowerCase() !== "tipo de cambio interno"
+  );
+
+  return filtered.map((base) => {
+    const found = lines.find((line) => line.idCurrency === base.currency.id);
+
+    if (found) return found;
+
+    return {
+      id: null, // ID temporal
+      idCurrency: base.currency.id,
+      currency: base.currency.symbol,
+      pos: 0,
+      total: 0,
+      denominations: (base.denominationResponses || []).map((d: any) => ({
+        id: 0,
+        idDenomination: d.denominationId,
+        denomination: d.denomination,
+        amount: 0,
+      })),
+      difference: 0,
+      exchangeRate: Number(base.currency.exchange) || 0,
+      originalCurrency: 0,
+      isOpen: false,
+    };
+  });
 }
 
 export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{

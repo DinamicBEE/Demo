@@ -63,7 +63,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
         fgUpt: line.total !== 0 ? false : true,
       }
       
-      const data = await getDetailStarbucks(newLine, banks);      
+      const data = await getDetailStarbucks(newLine, banks);
       
       setGeneralData(data.data);
       setCashRows(data.cash);
@@ -266,7 +266,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       tdc: tdcRows,
       cxc: cxcRows
     }
-    
+
     try {
 
       const response = await saveStarbucksClousing(line.id, body, isConfirm);
@@ -624,7 +624,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                   <TableInput
                                     disabled={!row.isOpen}
                                     value={row.total}
-                                    id={row.id}
+                                    id={row.id || 0}
                                     currency={true}
                                     keyValue={"CXC-total"}
                                     onChange={updateAmmount}
@@ -653,7 +653,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                   <TableInput
                                     disabled={!row.isOpen}
                                     value={row.originalCurrency}
-                                    id={row.id}
+                                    id={row.id || 0}
                                     currency={true}
                                     keyValue={"CXC-original"}
                                     onChange={updateAmmount}

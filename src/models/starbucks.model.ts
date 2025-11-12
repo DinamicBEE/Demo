@@ -51,7 +51,7 @@ export interface HeaderDetailsInfoModel {
   idCurrencySub: number;
 }
 export interface CashStarbucksModel {
-  id: number;
+  id: number | null;
   currency: string;
   idCurrency: number
   total: number;
