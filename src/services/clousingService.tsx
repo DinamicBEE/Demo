@@ -342,7 +342,7 @@ export const getPrepaidClousing = async (
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
-    console.log(data)
+    //console.log(data)
     const responseData: ResponseModel = {
       success: true,
       data: data,
