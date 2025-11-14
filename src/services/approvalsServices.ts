@@ -15,7 +15,7 @@ export const approvalsServices = {
       return result;
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return [];
     }
 
@@ -72,7 +72,7 @@ export const approvalsServices = {
       return result
 
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return [] as AprovalsClousureList[];
     }
   },
@@ -97,7 +97,7 @@ export const approvalsServices = {
       return result;
 
     } catch (error) {
-      console.log(error)
+      console.error(error)
       return [] as AprovalsReason[];
     }
   }

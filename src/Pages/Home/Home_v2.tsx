@@ -168,9 +168,7 @@ function Home_v2() {
     }, [isReady]);
 
     useEffect(() => {
-      console.log("country")
       if (selectedCountry.label === "") {
-        console.log("country reset")
         setSelectedSubsidiaries([]);
         setSelectedSubIds([]);
         setSelectedZonesIds([]);
