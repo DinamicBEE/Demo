@@ -139,7 +139,7 @@ function TableOfTotals({
                     <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
-                    <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} columnProps={{width: "200px", minWidth: "150px", maxWidth: "250px"}} />
 
                     {currHeader.length > 0 &&
                       currHeader.map((item: Currency) => (

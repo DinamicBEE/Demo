@@ -1,3 +1,4 @@
+import { Table } from "@chakra-ui/react";
 import { Currency, TDC, TotalModel } from "./common.clousing.model";
 import { STATUS } from "./const/status.const";
 import { Voucher } from "./tdc.model";
@@ -8,6 +9,7 @@ export interface SortableHeaderProps {
   handleSort: (key: string) => void;
   getSortIcon: (key: string) => React.ReactNode;
   textAlign?: "left" | "center" | "right";
+  columnProps?: Omit<React.ComponentProps<typeof Table.ColumnHeader>, 'children' | 'onClick'>;
 }
 
 export interface StarbucksTableDataModel {
