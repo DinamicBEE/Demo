@@ -32,7 +32,7 @@ import {
   PdfRequestNSDto,
 } from "@models/employee.model";
 import SimpleDatePicker from "../../../LotClosure/components/SimpleDatePicker";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Button } from "@components/ui/button";
 import { getPDF } from "@services/clousingService";
 import Loading from "@components/Loading";
@@ -259,6 +259,10 @@ function EmployeesPayrollDiscountForm({
     }
   };
 
+  const initialParsedDate = useMemo(() => {
+    return creationDate ? parseLocalDate(creationDate) : new Date();
+  }, [creationDate]);
+
   return (
     <>
       <DialogRoot
@@ -289,10 +293,8 @@ function EmployeesPayrollDiscountForm({
               <FieldRoot w="100%">
                 <FieldLabel>Fecha de creación</FieldLabel>
                 <SimpleDatePicker
-                  initialDate={
-                    creationDate ? parseLocalDate(creationDate) : new Date()
-                  }
-                  onDateChange={(d) => setCreationDate(d)}
+                  initialDate={initialParsedDate}
+                  onDateChange={setCreationDate}
                 />
               </FieldRoot>
 

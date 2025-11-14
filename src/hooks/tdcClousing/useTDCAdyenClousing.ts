@@ -21,7 +21,7 @@ export const useHandleTDCAdyen = () => {
     if (!dataFilesProcess.consolidatedData || !detailsLocal?.vouchers) {
       return;
     }
-    console.log("dataFilesProcess", dataFilesProcess);
+    // console.log("dataFilesProcess", dataFilesProcess);
 
     // Crear conjuntos únicos para comparación eficiente
     const checkDate = new Set<string>(
