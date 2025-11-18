@@ -40,7 +40,7 @@ import Loading from "@components/Loading";
 import { formatToDDMMYYYY } from "@utils/dateFormatter";
 import { HStack } from '@chakra-ui/react';
 
-function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) {
+function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
   const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
@@ -63,7 +63,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
         fgUpt: line.total !== 0 ? false : true,
       }
       
-      const data = await getDetailStarbucks(newLine, banks);
+      const data = await getDetailStarbucks(newLine, banks, idCurrency);
       
       setGeneralData(data.data);
       setCashRows(data.cash);
@@ -134,7 +134,6 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
     [cashRows]
   );
  
-
   const totalTDC = useMemo(
     () =>
       tdcRows.reduce(
@@ -344,59 +343,6 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                 
                 
             </HStack>
-            {/* <Grid
-              templateColumns={{ base: "1fr", md: "repeat(6, 1fr)" }}
-              gap={1}
-              mb={4}
-            >
-              <GridItem colSpan={2}>
-                <Group width={"100%"}>
-                  <InputAddon>CDC</InputAddon>
-                  <Skeleton loading={false} width={"100%"}>
-                    <Input
-                      value={generalData.cdc || " "}
-                      placeholder="CDC"
-                      readOnly
-                    />
-                  </Skeleton>
-                </Group>
-              </GridItem>
-
-              <GridItem colSpan={1}>
-                <Group>
-                  <InputAddon>Fecha</InputAddon>
-                  <Skeleton loading={false} width={"100%"}>
-                    <Input
-                      value={formatToDDMMYYYY(new Date(generalData.date)) || " "}
-                      placeholder="Fecha"
-                      readOnly
-                    />
-                  </Skeleton>
-                </Group>
-              </GridItem>
-
-              <GridItem colSpan={1}>
-                <CurrencyInput
-                  value={generalData.total || 0}
-                  name={"Total Físico"}
-                  loading={false}
-                />
-              </GridItem>
-              <GridItem colSpan={1}>
-                <CurrencyInput
-                  value={generalData.totalPOS || 0}
-                  name={"Total POS"}
-                  loading={false}
-                />
-              </GridItem>
-              <GridItem colSpan={1}>
-                <CurrencyInput
-                  value={(generalData.total || 0) - (generalData.totalPOS || 0)}
-                  name={"Diferencia"}
-                  loading={false}
-                />
-              </GridItem>
-            </Grid> */}
           </DialogHeader>
 
           <DialogBody>

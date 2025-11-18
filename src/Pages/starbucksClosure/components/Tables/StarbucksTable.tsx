@@ -12,7 +12,7 @@ import { getBanksStarbucks } from "@services/starbucksService";
 
 
 
-function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable) {
+function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogStarbucksTable) {
 
     const [starbucksData, setStarbucksData] = useState<StarbucksTableModel[]>([]); 
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
@@ -165,6 +165,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                     line={selectedLine}
                     onClose={closeDialog}
                     banks={banks}
+                    idCurrency={idCurrency}
                 >
                 </DialogDetails>)
             }

@@ -19,6 +19,7 @@ export interface StarbucksTableDataModel {
 
 export interface PropDialogStarbucksTable extends StarbucksTableDataModel {
   getTableData(): void;
+  idCurrency: number;
 }
 
 export interface StarbucksTableModel {
@@ -104,6 +105,7 @@ export interface StarbucksDetailsProps {
   line: StarbucksTableModel;
   banks: StarbucksBanksModel[];
   onClose: (isConfirm:boolean) => void;
+  idCurrency: number;
 }
 
 export interface DenominationsDetaislProps {
