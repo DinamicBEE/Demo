@@ -206,20 +206,14 @@ export function EmployeeClousingProvider({
       console.error(`Empleado no encontrado en el corte ${clousingId}`);
       return false;
     }
-    
     if (typeof employeeId == "number") {
       const response = await employeeDelete(employeeId);
-      if (!response) {
+      if (!response && response != "DELETED ENTRY") {
         return false;
-      } else {
-        return true;
-      }
+      } 
     }
 
-    
-
     const updatedLines = currentEmployee.lines.filter((line) => line.id !== employeeId);
-    
     const newTotalPhysical = updatedLines?.reduce(
       (acc: number, curr: EmployeeLine) => acc + curr.amount,
       0
