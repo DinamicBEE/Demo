@@ -690,7 +690,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
             <Button
               colorPalette="meraPrimary"
-              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
+              disabled={!cashRows[0]?.isOpen}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(false);
