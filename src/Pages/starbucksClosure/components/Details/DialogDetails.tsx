@@ -625,7 +625,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
           <DialogFooter>
             <Button
               colorPalette="meraWarning"
-              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
+              disabled={!cashRows[0]?.isOpen}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(true);
@@ -636,7 +636,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
 
             <Button
               colorPalette="meraPrimary"
-              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
+              disabled={!cashRows[0]?.isOpen}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(false);
