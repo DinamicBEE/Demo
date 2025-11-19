@@ -129,6 +129,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               <HeaderClousing
                 location={location.name}
                 subsidiary={subsidiary.name}
+                zone={employee?.zone ?? ""}
                 id={employee?.id ?? 0}
                 closingConfirmation={employee?.closingConfirmation ?? false}
               ></HeaderClousing>
