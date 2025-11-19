@@ -10,6 +10,7 @@ import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/app
 import { useApi } from "@hooks/useApi";
 import Loading from "@components/Loading";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
+import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
@@ -105,7 +106,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
               <Table.Row key={item.idRequest}>
                 <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
                 <Table.Cell textAlign="center">{item.employee}</Table.Cell>
-                <Table.Cell textAlign="center">{item.date}</Table.Cell>
+                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
                 <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
                 <Table.Cell textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Table.Cell>

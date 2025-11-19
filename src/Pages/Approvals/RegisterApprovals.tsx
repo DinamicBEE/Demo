@@ -41,6 +41,7 @@ import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../utils/selectManagement";
 import { ApprovalsReasons } from "@models/common.const";
+import { toast } from "@utils/Toast";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   ({ isOpen, onClose }) => {
@@ -140,10 +141,16 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
             setClosingList
           );
 
+          if (closingList.items.length === 0)
+            toast("No hay cierres de caja/lotes para la fecha, cdc o tipo seleccionados", "warning");
+
           await fetchAndSetData(
             () => approvalsServices.getReasonsList(type),
             setReasonsListFilter
           );
+
+          if (reasonsListFilter.items.length === 0)
+            toast("No hay motivos para el tipo de reapertura seleccionado", "warning");
         }
       }
       fetchClousingList();
