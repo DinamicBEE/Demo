@@ -1,0 +1,113 @@
+.primary-button-filter {
+  max-width: fit-content;
+  margin-top: 12px;
+  background-color: #64b5f6;
+  border: none;
+  color: white;
+  padding: 10px 15px !important;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.primary-button-filter:hover {
+  background-color: #2e7d32;
+  box-shadow: 0 0 10px rgba(46, 125, 50, 0.5);
+}
+
+.primary-button-filter:active {
+  background-color: #1b5e20;
+  box-shadow: 0 0 5px rgba(27, 94, 32, 0.5);
+}
+
+.primary-button-filter:disabled {
+  background-color: #bdbdbd;
+  color: #e0e0e0;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+/* Icono de X para borrar fechas */
+.react-datepicker__close-icon::after {
+  background-color: rgba(0,0,0,0.2) !important;
+}
+
+
+/* Color del header del selector de fechas */
+.react-datepicker__header {
+  background-color: #66BB6A !important;
+  border: 1px;
+}
+
+.react-datepicker__current-month {
+  color: white !important;
+}
+
+.react-datepicker__day-name {
+  color: white !important;
+}
+
+
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(102, 187, 106, 0.3) !important;
+}
+
+.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--in-range) {
+   background-color: rgba(102, 187, 106, 0.3) !important;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__day--in-range {
+  background-color: rgba(102, 187, 106, 0.8) !important;
+}
+
+.secondary-button-filter {
+  min-width: 30%;
+  width: 100%;
+  max-width: 40%;
+  align-items: center;
+  margin-top: 12px;
+  background-color: #66BB6A;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  justify-self: center;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  
+}
+
+.secondary-button-filter:hover {
+  background-color: #42a5f5;
+  box-shadow: 0 0 10px rgba(66, 165, 245, 0.5);
+}
+
+.secondary-button-filter:active {
+  background-color: #2196f3;
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+.secondary-button-filter:disabled {
+  background-color: #bbdefb;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.save-button-filter {
+  width: auto;
+  margin-top: 0px;
+}
+
+.sticky-row {
+  width: 100%;
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  z-index: 1;
+}

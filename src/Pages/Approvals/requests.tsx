@@ -1,0 +1,47 @@
+import React, { useCallback, useState } from "react";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { Approval } from "@models/approvals.model";
+import { TableApprovals } from "./TableApprovals";
+import { RegisterApprovals } from "./RegisterApprovals";
+
+const Approvals: React.FC = () => {
+
+	const { setDataApproval } = useApprovalsList();
+	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+
+	const openDialog = useCallback(() => setIsDialogOpen(true), []);
+
+	const closeDialog = useCallback(() => setIsDialogOpen(false), []);
+
+	const openDialogEdit = useCallback((approval: Approval) => {
+		setDataApproval(approval);
+	}, []);
+
+	return (
+		<>
+			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
+
+				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
+
+				<Flex justifyContent='end'>
+
+					<Flex width={'250px'}>
+						<Button colorPalette="meraPrimary" onClick={() => openDialog()}>
+							Agregar nueva Solicitud
+						</Button>
+					</Flex>
+
+				</Flex>
+
+				<TableApprovals openEditDialog={openDialogEdit} />
+
+			</Box>
+
+			<RegisterApprovals isOpen={isDialogOpen} onClose={closeDialog} />
+			
+		</>
+	)
+}
+
+export default Approvals;
