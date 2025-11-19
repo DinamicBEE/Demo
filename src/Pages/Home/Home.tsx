@@ -33,6 +33,9 @@ function Home() {
   const [formattedDate, setFormattedDate] = useState<string>('');
   const initialDate = new Date();
 
+  console.log();
+  
+
   useEffect(() => {
     async function fetchData() {
       setCatalogLoading(true);
