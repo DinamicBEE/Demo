@@ -64,7 +64,7 @@ function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogSta
                             <Table.Row>
 
                                 <SortableHeader columnKey="employee" label="Empleado" handleSort={handleSort} getSortIcon={getSortIcon} />
-                                <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
+                                <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} columnProps={{width: "200px", minWidth: "150px", maxWidth: "250px"}}/>
                                 <SortableHeader columnKey="date" label="Fecha" handleSort={handleSort} getSortIcon={getSortIcon} />
                                 <SortableHeader columnKey="total" label="Total" handleSort={handleSort} getSortIcon={getSortIcon} />
 
