@@ -73,7 +73,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
   }
 }
 
-export const getDetailStarbucks = async (line: StarbucksTableModel, banks: StarbucksBanksModel[]): Promise<StarbucksTableRow> => {
+export const getDetailStarbucks = async (line: StarbucksTableModel, banks: StarbucksBanksModel[], idCurrency: number): Promise<StarbucksTableRow> => {
   try {
 
     const response = await api.get(GET_STARBUCKSDETAIL, {
@@ -113,7 +113,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       }
     });
 
-    const denominations = await getSatrbucksDenominations(line.id);
+    const denominations = await getSatrbucksDenominations(line.id, idCurrency);
 
     const cashModified = transformCashData(cashDataDummy, denominations);
 
@@ -228,7 +228,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       totalPOSTDC: response.data.tdc.total.totalPOS,
       electronicTips: response.data.cash.electronicTips,
       tips: response.data.cash.tips,
-      idCurrencySub: 1 //TODO: Cambiar valor apenas el back lo mande
+      idCurrencySub: idCurrency
     }
 
     const starbucksData:StarbucksTableRow = {
@@ -298,13 +298,13 @@ export const getTDCByMERA = async(id:number): Promise<TDCModel> => {
 
 }
 
-export const getSatrbucksDenominations = async (cashClosure: number) => {
+export const getSatrbucksDenominations = async (cashClosure: number, idCurrency: number) => {
   try {
 
     const response = await api.get(GET_STARBUCKSDENOMINATIONS, {
       params: {
         idCashClosure: cashClosure,
-        idCurrency: 5
+        idCurrency: idCurrency
       }
     });
     return response.data;
@@ -341,7 +341,7 @@ const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): C
       difference: 0,
       exchangeRate: Number(base.currency.exchange) || 0,
       originalCurrency: 0,
-      isOpen: false,
+      isOpen: lines[0].isOpen,
     };
   });
 }

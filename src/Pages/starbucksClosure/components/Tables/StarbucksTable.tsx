@@ -12,7 +12,7 @@ import { getBanksStarbucks } from "@services/starbucksService";
 
 
 
-function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable) {
+function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogStarbucksTable) {
 
     const [starbucksData, setStarbucksData] = useState<StarbucksTableModel[]>([]); 
     const [tableHeaders, setTableHeaders] = useState<StarbucksTableHeader>({} as StarbucksTableHeader); 
@@ -64,7 +64,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                             <Table.Row>
 
                                 <SortableHeader columnKey="employee" label="Empleado" handleSort={handleSort} getSortIcon={getSortIcon} />
-                                <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
+                                <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} columnProps={{width: "200px", minWidth: "150px", maxWidth: "250px"}}/>
                                 <SortableHeader columnKey="date" label="Fecha" handleSort={handleSort} getSortIcon={getSortIcon} />
                                 <SortableHeader columnKey="total" label="Total" handleSort={handleSort} getSortIcon={getSortIcon} />
 
@@ -165,6 +165,7 @@ function StarbucksTable({headers, lines, getTableData}:PropDialogStarbucksTable)
                     line={selectedLine}
                     onClose={closeDialog}
                     banks={banks}
+                    idCurrency={idCurrency}
                 >
                 </DialogDetails>)
             }

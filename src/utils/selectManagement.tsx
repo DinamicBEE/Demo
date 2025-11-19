@@ -137,16 +137,17 @@ export const handleMultiSelectChange = <T extends { value: number }>({
   
 };
 
-export const mapToSelectOptions = <T extends { id: number; name: string }>(
+export const mapToSelectOptions = <T extends { id: number; name: string; idCurrency?: number}>(
   items: T[]
 ): selectOption[] => {
   return sortData(items.map((item) => ({
     value: item.id,
     label: item.name,
+    idCurrency: item.idCurrency || 0
   })));
 };
 
-export const fetchAndSetData = async <T extends { id: number; name: string }>(
+export const fetchAndSetData = async <T extends { id: number; name: string; idCurrency?: number }>(
   fetchFn: () => Promise<T[]>,
   setter: (data: ReturnType<typeof createListCollection<selectOption>>) => void
 ) => {

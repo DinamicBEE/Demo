@@ -57,7 +57,7 @@ export const approvalsServices = {
         }
       });
 
-      const newType = type === 1 ? "corte" : type === 2 ? "lote": "";
+      const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
 
       const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
       const result: AprovalsClousureList[] = filteredData.map((item: any) => {
