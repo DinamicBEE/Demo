@@ -60,6 +60,7 @@ export interface ClousingLinesModel {
   tipsCash: number;
   isRoleEditable?: boolean;
   modificationUser: string;
+  zone: string;
 }
 
 export type ClousingLinesTotals =

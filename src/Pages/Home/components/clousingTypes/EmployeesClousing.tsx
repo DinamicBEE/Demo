@@ -33,7 +33,8 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     async function fetchData() {      
       if (!data || !cdc || !subsidiaryId) return;
       
-      const employeeData: EmployeeModel = await getEmployeetData(data?.id);      
+      const employeeData: EmployeeModel = await getEmployeetData(data?.id);   
+      console.log(employeeData)   
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)
@@ -81,7 +82,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
               <Table.ColumnHeader textAlign="center">Monto</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Ticket</Table.ColumnHeader>
-              {(!data?.closingConfirmation && employeeLocal?.isRoleEditable) && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
+              {(data?.closingConfirmation && employeeLocal?.isRoleEditable) && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>

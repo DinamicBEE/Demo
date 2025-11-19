@@ -30,7 +30,7 @@ export const getSubsidiariesList = async (idEmploye: string): Promise<Subsidiary
 		return result;
 
 	} catch (error: any) {
-		console.log(error)
+		console.error(error)
 		return []
 		// throw new Error(error)
 	}

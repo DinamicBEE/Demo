@@ -57,7 +57,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                             <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
-                            <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} columnProps={{width: "200px", minWidth: "150px", maxWidth: "250px"}} />
                             <SortableHeader columnKey="mxn" label="MXN" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="usd" label="USD" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="eur" label="EUR" handleSort={handleSort} getSortIcon={getSortIcon} />

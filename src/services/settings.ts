@@ -67,11 +67,6 @@ export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
 
-export const GET_CATEGORIES = ``;
-export const GET_SUBCATEGORIES = ``;
-export const GET_FAMILIES = ``;
-export const GET_ITEMS = ``;
-
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
 export const REPORT_MIXGEN = `${CRC_BASE}/PMIX/GenerateReportByCdcAndDate`;
@@ -91,6 +86,7 @@ export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
 export const GET_BANKS = `${API_BASE}/starbucks/filters/bank`;
 export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/search`;
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
+export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
 
 //export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;

@@ -65,6 +65,7 @@ export interface ErrorDialogContextType {
 export interface selectOption {
   value: number; 
   label: string;
+  idCurrency?: number;
 }
 
 export interface ParametersSelectedModel {

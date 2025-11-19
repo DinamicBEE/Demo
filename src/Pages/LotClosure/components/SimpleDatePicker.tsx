@@ -49,7 +49,7 @@ const SimpleDatePicker: React.FC<DatePickerProps> = ({ onDateChange, initialDate
   const [selectedDate, setSelectedDate] = useState<Date | null>(initialDate || new Date());
 
   useEffect(() => {
-    if (initialDate) {
+    if (initialDate && (!selectedDate || selectedDate.getTime() !== initialDate.getTime())) {
       setSelectedDate(initialDate);
     }
   }, [initialDate]);

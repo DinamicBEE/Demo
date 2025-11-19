@@ -1,3 +1,4 @@
+import { Table } from "@chakra-ui/react";
 import { Currency, TDC, TotalModel } from "./common.clousing.model";
 import { STATUS } from "./const/status.const";
 import { Voucher } from "./tdc.model";
@@ -8,6 +9,7 @@ export interface SortableHeaderProps {
   handleSort: (key: string) => void;
   getSortIcon: (key: string) => React.ReactNode;
   textAlign?: "left" | "center" | "right";
+  columnProps?: Omit<React.ComponentProps<typeof Table.ColumnHeader>, 'children' | 'onClick'>;
 }
 
 export interface StarbucksTableDataModel {
@@ -17,6 +19,7 @@ export interface StarbucksTableDataModel {
 
 export interface PropDialogStarbucksTable extends StarbucksTableDataModel {
   getTableData(): void;
+  idCurrency: number;
 }
 
 export interface StarbucksTableModel {
@@ -51,7 +54,7 @@ export interface HeaderDetailsInfoModel {
   idCurrencySub: number;
 }
 export interface CashStarbucksModel {
-  id: number;
+  id: number | null;
   currency: string;
   idCurrency: number
   total: number;
@@ -102,6 +105,7 @@ export interface StarbucksDetailsProps {
   line: StarbucksTableModel;
   banks: StarbucksBanksModel[];
   onClose: (isConfirm:boolean) => void;
+  idCurrency: number;
 }
 
 export interface DenominationsDetaislProps {
