@@ -10,11 +10,13 @@ function HeaderClousing({
   closingConfirmation,
   location,
   subsidiary,
+  zone
 }: {
   id: number;
   closingConfirmation: boolean;
   location: string;
   subsidiary: string;
+  zone: string;
 }) {
   const { dataRow } = useClousing();
   const { getHeader, header, updateHeaderState } = useHeaders();
@@ -77,7 +79,7 @@ function HeaderClousing({
         <Group>
           <InputAddon>Ubicación</InputAddon>
           <Skeleton loading={false} width={"100%"}>
-            <Input value={location || ""} placeholder="Ubicación" readOnly />
+            <Input value={zone || ""} placeholder="Ubicación" readOnly />
           </Skeleton>
         </Group>
 
