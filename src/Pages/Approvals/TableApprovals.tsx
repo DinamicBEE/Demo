@@ -16,7 +16,7 @@ import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
 
   const statusLabels: Record<number, string> = { 1: "Rechazado", 2: "Aprobado", 3: "En espera" };
-  const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Corte de Lote' };
+  const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Cierre de Lote' };
 
   const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
   const [message, setMessage] = React.useState<string>();

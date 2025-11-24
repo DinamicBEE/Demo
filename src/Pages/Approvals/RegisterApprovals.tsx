@@ -7,6 +7,7 @@ import {
   Textarea,
   useDisclosure,
   Field,
+  Box,
 } from "@chakra-ui/react";
 import {
   SelectContent,
@@ -42,6 +43,7 @@ import { selectOption } from "@models/common.model";
 import { fetchAndSetData } from "../../utils/selectManagement";
 import { ApprovalsReasons } from "@models/common.const";
 import { toast } from "@utils/Toast";
+import Loading from "@components/Loading";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
   ({ isOpen, onClose }) => {
@@ -60,6 +62,8 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
     const [date, setDate] = useState<string>("");
     const [textareaValue, setTextareaValue] = useState<string>("");
     const [initialDate, setIntialDate] = useState<Date | undefined>(undefined);
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [subsidiaries, setSubsidiaries] = useState<
       ListCollection<selectOption>
@@ -101,6 +105,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
     //hook encargado de realizar el guardado de la informacion
     const { refetch, isLoading } = useApi(
       () => {
+        setLoading(true);
         const formData: RequestOpeningForm = {
           id: idClousing.toString(),
           reason: reason,
@@ -112,6 +117,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
         autoFetch: false,
         onSuccess: (data) => {
           if (data == "create") {
+            setLoading(false);
             onClose();
             handleCancel(false);
             triggerRefresh();
@@ -124,6 +130,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
         },
         onError: (data) => {
           handleCancel(false);
+          setLoading(false);
           onClose();
           toaster.create({
             title: `No se guardaron los datos correctamente`,
@@ -312,7 +319,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
               <SelectRoot
                   collection={ApprovalsReasons}
                 onValueChange={(event) => {
-                  setType(event.items[0].value);
+                  setType(event.items[0].value);                  
                 }}
               >
                 <SelectLabel fontFamily="heading">
@@ -426,6 +433,12 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
             <DialogCloseTrigger />
           </DialogContent>
         </DialogRoot>
+        {loading && (
+                <Box position="fixed" top="50%" left="50%" zIndex={100000}>
+                    <Loading />
+                </Box>
+            )
+            }
       </>
     );
   }
