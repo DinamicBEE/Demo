@@ -10,9 +10,9 @@ export const approvalsServices = {
     try {
 
       const response = await api.get(GETLISTAPPROVALS);
-      const result = response.data;
-
-      return result;
+      const list = response.data.sort((a: any, b: any) => a.idRequest - b.idRequest);
+      
+      return list;
 
     } catch (error) {
       console.error(error);

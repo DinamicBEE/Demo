@@ -96,6 +96,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         for (const update of updates) {
           if (update) {
             //console.log("updateTotal", update)
+
             await updateTotal(update.newTotal, update.clousingId, update.clousingType);
           }
         }

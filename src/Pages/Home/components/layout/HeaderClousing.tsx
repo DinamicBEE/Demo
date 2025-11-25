@@ -77,9 +77,9 @@ function HeaderClousing({
         </Group>
 
         <Group>
-          <InputAddon>Ubicación</InputAddon>
+          <InputAddon>Zona</InputAddon>
           <Skeleton loading={false} width={"100%"}>
-            <Input value={zone || ""} placeholder="Ubicación" readOnly />
+            <Input value={zone || ""} placeholder="Zona" readOnly />
           </Skeleton>
         </Group>
 
