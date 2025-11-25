@@ -71,7 +71,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
           if (!data?.total) return null;
           //console.log("prepareUpdate", data)
           const total =
-            condition && data.total.difference < 0
+            condition && (data.total.difference > data.total.totalPOS)
               ? data.total.totalPOS
               : data.total.totalPhysical ?? 0;
           
