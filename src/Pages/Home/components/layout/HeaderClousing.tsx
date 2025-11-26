@@ -117,6 +117,12 @@ function HeaderClousing({
           loading={false}
         />
 
+        <CurrencyInput
+          name={"Dif. cupones"}
+          value={memoizedHeaderProps?.differenceCupons ?? 0}
+          loading={false}
+        />
+
         <CurrencyInput 
           value={memoizedHeaderProps.discountClousing}
           name={"Descuento POS"}
@@ -129,12 +135,6 @@ function HeaderClousing({
           disabled={closingConfirmation}
           onChange={handleDiscountInputChange}
           loading={false} 
-        />
-
-        <CurrencyInput
-          name={"Diferencia de Cupones"}
-          value={memoizedHeaderProps?.differenceCupons ?? 0}
-          loading={false}
         />
 
         {/* <Button

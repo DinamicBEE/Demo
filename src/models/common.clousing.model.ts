@@ -36,6 +36,7 @@ export interface ClousingLinesModel {
   totalPhysical: number;
   currencies: Currency[];
   difference: number;
+  diferenciaCupones?: number;
   status: string;
   extra: number;
   mxm?: number;

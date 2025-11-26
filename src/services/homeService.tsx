@@ -182,6 +182,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
       acc.totalPOS += curr.totalPOS || 0;
           acc.totalPhysical += curr.totalPhysical || 0;
           acc.difference += curr.difference || 0;
+          acc.diferenciaCupones! += curr.diferenciaCupones || 0;
           acc.extra += curr.extra || 0;
           acc.customer += curr.customer || 0;
           acc.specialCustomer += curr.specialCustomer || 0;
@@ -224,6 +225,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
       totalPOS: 0,
       totalPhysical: 0,
       difference: 0,
+      diferenciaCupones: 0,
       extra: 0,
       customer: 0,
       specialCustomer: 0,

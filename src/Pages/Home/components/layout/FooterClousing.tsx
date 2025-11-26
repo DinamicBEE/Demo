@@ -192,7 +192,7 @@ function FooterClousing({
 
           {clousingType === "customer" && (
             <CurrencyInput
-              name={"Diferencia de Cupones"}
+              name={"Dif. cupones"}
               value={footer?.differenceCupons ?? 0}
               loading={false}
             />
