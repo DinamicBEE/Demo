@@ -167,8 +167,9 @@ export interface HeaderContextType {
     newtotal: number,
     clousingId: number,
     clousingType: CLOUSING_KEY,
-    isUpdate?: boolean,
-    valueCurrent?: number
+    differenceCupons?: number
+    //isUpdate?: boolean,
+    //valueCurrent?: number
   ) => void;
   headerRef: React.MutableRefObject<HeaderContext>;
 }
@@ -186,6 +187,7 @@ export interface HeaderData {
   totalPOSAux?: number;
   totalClousing?: number;
   difference?: number;
+  differenceCupons?: number
   service: number;
   discountPhysical: number;
   discountClousing?: number;
@@ -223,6 +225,7 @@ export interface TotalModel {
   totalPOS: number;
   totalPhysical: number;
   difference: number;
+  differenceCupons?: number;
 }
 
 export interface CurrencyModel {
