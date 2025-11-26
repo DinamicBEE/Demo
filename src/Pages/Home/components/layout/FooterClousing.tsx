@@ -50,10 +50,6 @@ function FooterClousing({
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
 
-      /* if (clousingType === "employee") {
-        data.difference = 0;
-      } */
-
       setFooter(data);
     }
 
@@ -193,6 +189,14 @@ function FooterClousing({
             value={footer?.difference ?? 0}
             loading={false}
           />
+
+          {clousingType === "customer" && (
+            <CurrencyInput
+              name={"Diferencia de Cupones"}
+              value={footer?.differenceCupons ?? 0}
+              loading={false}
+            />
+          )}
 
           <Button
             loading={loading || buttonLoading}

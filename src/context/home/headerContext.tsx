@@ -47,23 +47,27 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
   }
 
-  const updateTotal = useCallback((newTotal: number, clousingId: number, clousingType: CLOUSING_KEY) => {
-    
+  const updateTotal = useCallback((newTotal: number, clousingId: number, clousingType: CLOUSING_KEY, differenceCupons?: number) => {
     const currentHeader = structuredClone(headerRef.current || {});
     const currentClousing = currentHeader[clousingId]?.closures[clousingType] || {};
-
+    
     const lastCashTotal = currentClousing.totalPOS || 0;
     const lastCashPhysicalTotal = currentClousing.totalPhysical || 0;
-
+    
     const lastTotalPOS = (currentHeader[clousingId]?.totalPOS || 0);
-
+    
     const allValues = Object.values(currentHeader[clousingId]?.closures || {}).every((value) => value.totalPhysical == 0);
     const lastTotalClousing = !allValues ? 
-      (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal : 0;
-
+    (currentHeader[clousingId]?.totalClousing || 0) - lastCashPhysicalTotal : 0;
+    
     const newDifference = lastCashTotal - newTotal
     const newTotalClousing = lastTotalClousing + newTotal;
+    
+    const actualDiffCupons = currentHeader[clousingId]?.differenceCupons || 0;
 
+    const differenceCuponsValue = actualDiffCupons != 0 ?
+      (actualDiffCupons - (currentClousing.differenceCupons || 0)) + (differenceCupons || 0) : differenceCupons
+   
     const updatedHeader = {
       ...currentHeader,
       [clousingId]: {
@@ -74,10 +78,12 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
             totalPhysical: newTotal,
             difference: newDifference,
             totalPOS: lastCashTotal,
+            differenceCupons: differenceCupons
           },
         },
         difference: newTotalClousing - lastTotalPOS,
         totalClousing: newTotalClousing,
+        differenceCupons: differenceCuponsValue
       },
     };
 
@@ -112,6 +118,7 @@ const createObjectHeader = (dataRow: ClousingLinesModel, extraInfo: ExtraInfo, p
     totalPOS: dataRow.totalPOS,
     totalClousing: dataRow.totalPhysical,
     difference: dataRow.difference,
+    differenceCupons: 0,
     service: dataRow.service || 0,
     discountPhysical: extraInfo.discountPhysical || 0,
     discountClousing: Math.abs(extraInfo.totalDiscount) || 0,

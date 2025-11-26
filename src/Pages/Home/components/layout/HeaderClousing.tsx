@@ -60,6 +60,7 @@ function HeaderClousing({
     difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : 0,
     discountClousing: localHeader?.discountClousing ? Number(localHeader.discountClousing.toFixed(2)) : 0,
     discountPhysical: discountValue ? Number(discountValue.toFixed(2)) : Number(localHeader?.discountPhysical?.toFixed(2)) || 0,
+    differenceCupons: localHeader?.differenceCupons ? Number(localHeader.differenceCupons.toFixed(2)) : 0,
   }), [localHeader, discountValue]);
 
   return (
@@ -128,6 +129,12 @@ function HeaderClousing({
           disabled={closingConfirmation}
           onChange={handleDiscountInputChange}
           loading={false} 
+        />
+
+        <CurrencyInput
+          name={"Diferencia de Cupones"}
+          value={memoizedHeaderProps?.differenceCupons ?? 0}
+          loading={false}
         />
 
         {/* <Button
