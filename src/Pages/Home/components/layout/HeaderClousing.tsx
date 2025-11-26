@@ -51,7 +51,7 @@ function HeaderClousing({
       setLocalHeader(updatedLocal);
       updateHeaderState({ ...header, [id]: updatedLocal }, id);
     }
-  }, [discountValue, localHeader, ]);//header, id, updateHeaderState
+  }, [discountValue, localHeader, ]);
 
   const memoizedHeaderProps = useMemo(() => ({
     date: localHeader?.date || "",
