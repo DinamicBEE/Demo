@@ -205,7 +205,7 @@ function FooterClousing({
             Guardar Corte
           </Button>
 
-          {/* <Button
+          <Button
             loading={loading || buttonLoading}
             colorPalette="meraPrimary"
             onClick={async () => {
@@ -214,7 +214,7 @@ function FooterClousing({
             disabled={closingConfirmation || (!isRoleEditable) || loading}
           >
             Confirmar Corte
-          </Button> */}
+          </Button>
         </Flex>
 
         <Flex></Flex>
