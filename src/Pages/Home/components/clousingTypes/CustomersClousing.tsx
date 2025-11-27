@@ -234,7 +234,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
                       <TableInput
                         value={item.pax}
                         id={item.id}
-                        currency={false}
+                        currency={true}
                         onChange={handleAmountPAX}
                         disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
                       />
