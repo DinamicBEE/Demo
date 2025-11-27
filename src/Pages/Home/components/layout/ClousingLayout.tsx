@@ -69,7 +69,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         ]);
         const prepareUpdate = (data: any, key: string) => {
           if (!data?.total) return null;
-          //console.log("Data to update", data);
+          console.log("Data to update", data);
           const total = data.total.totalPhysical;
           const differenceCupons = data.total.differenceCupons || 0;
           
@@ -94,7 +94,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
 
         for (const update of updates) {
           if (update) {
-            //console.log("updateTotal", update)
+            console.log("updateTotal", update)
             await updateTotal(update.newTotal, update.clousingId, update.clousingType, update.differenceCupons);
           }
         }
@@ -103,8 +103,8 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         console.error("Error fetching closing data:", error);        
       }
 
-      run();
     }
+    run();
   }, [isOpen]);
 
   return (

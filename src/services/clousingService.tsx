@@ -575,6 +575,7 @@ export const getPDF = async (obj: PdfRequestNSDto): Promise<PdfData | null> => {
 
 export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean, isStarbucks: boolean) => {
   try {
+    //console.log(dataService)
      const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
         ({
