@@ -168,6 +168,7 @@ function TableOfTotals({
                       ))}
 
                     <SortableHeader columnKey="tips" label="Propinas electrónicas" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnKey="specialCustomer" label="Diferencia de cupones" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="modificationUser" label="Empleado (Realizado por)" handleSort={handleSort} getSortIcon={getSortIcon} />
                     
                   </Table.Row>
@@ -256,7 +257,9 @@ function TableOfTotals({
                             currency="USD"
                           />
                         </Text>
-                      </Table.Cell>
+                     </Table.Cell>
+
+                        
 
                       <Table.Cell textAlign="end">
                         <Text>
@@ -266,7 +269,7 @@ function TableOfTotals({
                             currency="USD"
                           />
                         </Text>
-                      </Table.Cell>
+                        </Table.Cell>
 
                       <Table.Cell textAlign="end">
                         <Text>
@@ -320,6 +323,15 @@ function TableOfTotals({
                         <Text>
                           <FormatNumber
                             value={item.tips || 0}
+                            style="currency"
+                            currency="USD"
+                          />
+                        </Text>
+                      </Table.Cell>
+                      <Table.Cell textAlign="end">
+                        <Text>
+                          <FormatNumber
+                            value={item.diferenciaCupones || 0}
                             style="currency"
                             currency="USD"
                           />

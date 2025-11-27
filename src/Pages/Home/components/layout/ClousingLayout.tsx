@@ -67,24 +67,23 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
           getEmployeetData(employee.id),
           getCashData(employee.id, subsidiary.idCurrency),
         ]);
-        const prepareUpdate = (data: any, key: string, condition?: boolean) => {
+        const prepareUpdate = (data: any, key: string) => {
           if (!data?.total) return null;
-          //console.log("prepareUpdate", data)
-          const total =
-            condition && (data.total.difference > 0)
-              ? data.total.totalPOS
-              : data.total.totalPhysical ?? 0;
+          //console.log("Data to update", data);
+          const total = data.total.totalPhysical;
+          const differenceCupons = data.total.differenceCupons || 0;
           
           return {
             newTotal: total,
             clousingId: employee.id,
-            clousingType: key as CLOUSING_KEY
+            clousingType: key as CLOUSING_KEY,
+            differenceCupons: differenceCupons
           };
         };
 
         const updates = [
           prepareUpdate(cash, CLOUSING_KEY.CASH),
-          prepareUpdate(customer.data, CLOUSING_KEY.CUSTOMER, true),
+          prepareUpdate(customer.data, CLOUSING_KEY.CUSTOMER),
           prepareUpdate(specialCustomer.data, CLOUSING_KEY.SPECIALCUSTOMER),
           prepareUpdate(prepaid.data, CLOUSING_KEY.PREPAID),
           prepareUpdate(tdc, CLOUSING_KEY.TDC),
@@ -96,8 +95,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         for (const update of updates) {
           if (update) {
             //console.log("updateTotal", update)
-
-            await updateTotal(update.newTotal, update.clousingId, update.clousingType);
+            await updateTotal(update.newTotal, update.clousingId, update.clousingType, update.differenceCupons);
           }
         }
 
@@ -105,9 +103,8 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         console.error("Error fetching closing data:", error);        
       }
 
-    };
-
-    run();
+      run();
+    }
   }, [isOpen]);
 
   return (

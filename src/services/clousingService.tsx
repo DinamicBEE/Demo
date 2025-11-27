@@ -164,6 +164,8 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
+
+    //console.log(response)
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
@@ -194,6 +196,7 @@ export const getCustomerClousing = async (
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
+        differenceCupons: response.data.diferenciaCupones ?? 0,
       },
       lines: [...lines],
     };
@@ -704,11 +707,15 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       },
       customer: {
         lines: mapCustomerLines(dataService.customer != undefined ? dataService.customer.lines : []),
-        total: dataService.customer != undefined ? dataService.customer.total :
+        total: dataService.customer != undefined ? {
+          ...dataService.customer.total,
+          diferenciaCupones: dataService.customer.total.differenceCupons || 0,
+        } :
         {
           totalPOS:  0,
           totalPhysical:  0,
           difference:  0,
+          diferenciaCupones: 0,
         },
       },
       intercompany: {

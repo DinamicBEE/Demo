@@ -51,7 +51,7 @@ function HeaderClousing({
       setLocalHeader(updatedLocal);
       updateHeaderState({ ...header, [id]: updatedLocal }, id);
     }
-  }, [discountValue, localHeader, ]);//header, id, updateHeaderState
+  }, [discountValue, localHeader, ]);
 
   const memoizedHeaderProps = useMemo(() => ({
     date: localHeader?.date || "",
@@ -60,6 +60,7 @@ function HeaderClousing({
     difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : 0,
     discountClousing: localHeader?.discountClousing ? Number(localHeader.discountClousing.toFixed(2)) : 0,
     discountPhysical: discountValue ? Number(discountValue.toFixed(2)) : Number(localHeader?.discountPhysical?.toFixed(2)) || 0,
+    differenceCupons: localHeader?.differenceCupons ? Number(localHeader.differenceCupons.toFixed(2)) : 0,
   }), [localHeader, discountValue]);
 
   return (
@@ -113,6 +114,12 @@ function HeaderClousing({
         <CurrencyInput
           value={memoizedHeaderProps.difference}
           name={"Diferencia"}
+          loading={false}
+        />
+
+        <CurrencyInput
+          name={"Dif. cupones"}
+          value={memoizedHeaderProps?.differenceCupons ?? 0}
           loading={false}
         />
 
