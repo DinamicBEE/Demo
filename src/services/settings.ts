@@ -17,7 +17,7 @@ export const GETROLE = `${AUTH_BASE}/test/echo-role`;
 export const REFRESH = `${AUTH_BASE}/v1/auth/refresh`;
 
 // * CORTE DE CAJA
- //! DEPRECATED
+// DEPRECATED 
 export const CLIENTSLIST = `${API_BASE}/clients/list`;
 
 export const CLIENTSPREPAY = `${API_BASE}/clients/clientPrepago`;
@@ -32,7 +32,7 @@ export const SAVE_REQUEST = `${API_BASE}/reason/save`;
 export const UPDATE_REQUEST = `${API_BASE}/supervisor/request`;
 export const GETLISTCLOUSING = `${API_BASE}/reason/listClosing`;
 export const GETREASONLIST = `${API_BASE}/reason/list`;
- //! DEPRECATED
+// DEPRECATED 
 //export const GET_BATCH = `/crc/cash-register-closure/batchclosure/getBatchByDates`;
 //export const GET_BATCH_DETAILS = `crc/cash-register-closure/batchclosure/getBatchDetails`;
 
@@ -67,11 +67,6 @@ export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
 
-export const GET_CATEGORIES = ``;
-export const GET_SUBCATEGORIES = ``;
-export const GET_FAMILIES = ``;
-export const GET_ITEMS = ``;
-
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
 export const REPORT_MIXGEN = `${CRC_BASE}/PMIX/GenerateReportByCdcAndDate`;
@@ -91,6 +86,7 @@ export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
 export const GET_BANKS = `${API_BASE}/starbucks/filters/bank`;
 export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/search`;
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
+export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
 
 //export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;

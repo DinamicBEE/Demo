@@ -5,7 +5,7 @@ import { getStatus } from "../utils/getStatus";
 import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
-import { STATUS } from "@models/status.model";
+import { STATUS } from "@models/const/status.const";
 
 /**
  * This function returns the list of selected
@@ -111,9 +111,10 @@ export const getGeneralInfo = async (
   }
 };
 
-export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: Currency[]) {
+export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: Currency[]) {  
   const csvString = [
     [
+      "Zona",
       "Vendedor",
       "Total POS",
       "Total Físico",
@@ -130,6 +131,7 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: 
       "Propina electrónica",
     ],
     ...data.map((item: any) => [
+      item.zone,
       item.employe,
       item.totalPOS,
       item.totalPhysical,
@@ -175,11 +177,12 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: 
 
 export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): TotalsModel
 {
-  const totals = clousingLines.reduce(
+  const totals = clousingLines.reduce<TotalsModel>(
     (acc: TotalsModel, curr: ClousingLinesModel) => {
       acc.totalPOS += curr.totalPOS || 0;
           acc.totalPhysical += curr.totalPhysical || 0;
           acc.difference += curr.difference || 0;
+          acc.diferenciaCupones! += curr.diferenciaCupones || 0;
           acc.extra += curr.extra || 0;
           acc.customer += curr.customer || 0;
           acc.specialCustomer += curr.specialCustomer || 0;
@@ -222,6 +225,7 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
       totalPOS: 0,
       totalPhysical: 0,
       difference: 0,
+      diferenciaCupones: 0,
       extra: 0,
       customer: 0,
       specialCustomer: 0,
@@ -232,14 +236,14 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
       tipsCash: 0,
       tdc: [] as TDC[],
       currencies: [] as Currency[],
-    }
+    } as TotalsModel
   );
 
   return totals;
 }
 
 export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTotalsModel {
-  const totals: ReportTotalsModel = reportData.reduce(
+  const totals: ReportTotalsModel = reportData.reduce<ReportTotalsModel>(
     (acc: ReportTotalsModel, curr) => {
       acc.isStarbucks = false;
       acc.totalPOS += curr.totalPOS;
@@ -325,7 +329,9 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       currencies: [],
       subsidiariaId: 0,
       subsidiariaCurrencyId: 0,
-      cdcId: 0
+      cdcId: 0,
+      zone: "",
+      modificationUser: ""
     }
   );
 

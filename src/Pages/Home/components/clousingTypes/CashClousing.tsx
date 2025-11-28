@@ -23,6 +23,7 @@ function CashClousing({ data, idCurrency }: any) {
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<CashLines[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [tips, setTips] = useState<string>("");
 
   const [selectedCurrencyId, setSelectedCurrencyId] = useState<string | null>(null);
 
@@ -33,6 +34,7 @@ function CashClousing({ data, idCurrency }: any) {
     async function fetchData() {
       
       const cashData = await getCashData(data.id, idCurrency);
+      setTips(cashData.tips?.toString() || "0")
       
       if (cashData.total != undefined) {
         setFooterData(cashData.total, data.id, CLOUSING_KEY.CASH);
@@ -77,6 +79,10 @@ function CashClousing({ data, idCurrency }: any) {
 
   };
 
+  useEffect(() => {
+    handleChangeTips(tips);
+  }, [tips])
+
   return (
     <>
       <Box>
@@ -93,9 +99,9 @@ function CashClousing({ data, idCurrency }: any) {
 
           <EditableCurrencyInput
             name={"Propina de fondo"}
-            value={cashData.tips}
+            value={Number(tips)}
             loading={cashLoading}
-            onChange={handleChangeTips}
+            onChange={setTips}
             disabled={data?.status === "Cerrado" || !cashData.isRoleEditable ? true : false}
           />
         </Grid>
@@ -189,7 +195,7 @@ function CashClousing({ data, idCurrency }: any) {
 
                     <Text>
                       <FormatNumber
-                        value={item.originalCurrency}
+                        value={item.exchangeRate !== 0 ? (item.totalFisico || 0)/ (item.exchangeRate || 0) : 0}
                         style="currency"
                         currency="USD"
                       />

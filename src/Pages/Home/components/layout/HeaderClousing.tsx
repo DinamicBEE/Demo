@@ -10,11 +10,13 @@ function HeaderClousing({
   closingConfirmation,
   location,
   subsidiary,
+  zone
 }: {
   id: number;
   closingConfirmation: boolean;
   location: string;
   subsidiary: string;
+  zone: string;
 }) {
   const { dataRow } = useClousing();
   const { getHeader, header, updateHeaderState } = useHeaders();
@@ -34,7 +36,7 @@ function HeaderClousing({
 
   useEffect(() => {
     fetchHeader();
-  }, [fetchHeader]);
+  }, [currentHeader, fetchHeader]);
 
   const handleDiscountInputChange = useCallback((value: string) => {
     const numericValue = Number(value.replace(/[^0-9.-]+/g, ""));
@@ -49,7 +51,7 @@ function HeaderClousing({
       setLocalHeader(updatedLocal);
       updateHeaderState({ ...header, [id]: updatedLocal }, id);
     }
-  }, [discountValue, localHeader, ]);//header, id, updateHeaderState
+  }, [discountValue, localHeader, ]);
 
   const memoizedHeaderProps = useMemo(() => ({
     date: localHeader?.date || "",
@@ -58,6 +60,7 @@ function HeaderClousing({
     difference: localHeader?.difference ? Number(localHeader.difference.toFixed(2)) : 0,
     discountClousing: localHeader?.discountClousing ? Number(localHeader.discountClousing.toFixed(2)) : 0,
     discountPhysical: discountValue ? Number(discountValue.toFixed(2)) : Number(localHeader?.discountPhysical?.toFixed(2)) || 0,
+    differenceCupons: localHeader?.differenceCupons ? Number(localHeader.differenceCupons.toFixed(2)) : 0,
   }), [localHeader, discountValue]);
 
   return (
@@ -75,9 +78,9 @@ function HeaderClousing({
         </Group>
 
         <Group>
-          <InputAddon>Ubicación</InputAddon>
+          <InputAddon>Zona</InputAddon>
           <Skeleton loading={false} width={"100%"}>
-            <Input value={location || ""} placeholder="Ubicación" readOnly />
+            <Input value={zone || ""} placeholder="Zona" readOnly />
           </Skeleton>
         </Group>
 
@@ -111,6 +114,12 @@ function HeaderClousing({
         <CurrencyInput
           value={memoizedHeaderProps.difference}
           name={"Diferencia"}
+          loading={false}
+        />
+
+        <CurrencyInput
+          name={"Dif. cupones"}
+          value={memoizedHeaderProps?.differenceCupons ?? 0}
           loading={false}
         />
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DialogRoot,
   DialogContent,
@@ -38,8 +38,9 @@ import ExitDialog from "../../../Home/components/notifications/ExitDialog";
 import ConfirmDialog from "../../../Home/components/notifications/ConfirmDialog";
 import Loading from "@components/Loading";
 import { formatToDDMMYYYY } from "@utils/dateFormatter";
+import { HStack } from '@chakra-ui/react';
 
-function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) {
+function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
   const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
@@ -56,14 +57,13 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
   useEffect(() => {
     async function fetchData() {
-      setDialogLoading(true);
-
+      setDialogLoading(true);      
       const newLine = {
         ...line,
         fgUpt: line.total !== 0 ? false : true,
       }
       
-      const data = await getDetailStarbucks(newLine, banks);
+      const data = await getDetailStarbucks(newLine, banks, idCurrency);
       
       setGeneralData(data.data);
       setCashRows(data.cash);
@@ -134,7 +134,6 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
     [cashRows]
   );
  
-
   const totalTDC = useMemo(
     () =>
       tdcRows.reduce(
@@ -266,7 +265,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
       tdc: tdcRows,
       cxc: cxcRows
     }
-    
+
     try {
 
       const response = await saveStarbucksClousing(line.id, body, isConfirm);
@@ -296,14 +295,9 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Corte de caja</DialogTitle>
-            <Grid
-              templateColumns={{ base: "1fr", md: "repeat(6, 1fr)" }}
-              gap={4}
-              mb={4}
-            >
-              <GridItem colSpan={2}>
-                <Group width={"100%"}>
-                  <InputAddon>CDC</InputAddon>
+            <HStack>
+              <HStack w={"150%"}>
+                <InputAddon>CDC</InputAddon>
                   <Skeleton loading={false} width={"100%"}>
                     <Input
                       value={generalData.cdc || " "}
@@ -311,11 +305,8 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                       readOnly
                     />
                   </Skeleton>
-                </Group>
-              </GridItem>
-
-              <GridItem colSpan={1}>
-                <Group>
+              </HStack>
+              <Group w={"988px"}>
                   <InputAddon>Fecha</InputAddon>
                   <Skeleton loading={false} width={"100%"}>
                     <Input
@@ -325,30 +316,33 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                     />
                   </Skeleton>
                 </Group>
-              </GridItem>
-
-              <GridItem colSpan={1}>
-                <CurrencyInput
+                <Box w={"100%"}>
+                  <CurrencyInput
                   value={generalData.total || 0}
                   name={"Total Físico"}
                   loading={false}
                 />
-              </GridItem>
-              <GridItem colSpan={1}>
-                <CurrencyInput
+                </Box>
+                <Box w={"100%"}>
+                  <CurrencyInput
                   value={generalData.totalPOS || 0}
                   name={"Total POS"}
                   loading={false}
                 />
-              </GridItem>
-              <GridItem colSpan={1}>
-                <CurrencyInput
+
+                </Box>
+                <Box w={"100%"}>
+                  <CurrencyInput
                   value={(generalData.total || 0) - (generalData.totalPOS || 0)}
                   name={"Diferencia"}
                   loading={false}
                 />
-              </GridItem>
-            </Grid>
+
+                </Box>
+                
+                
+                
+            </HStack>
           </DialogHeader>
 
           <DialogBody>
@@ -400,7 +394,8 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                     />
                                   </Text>
 
-                                  <Button disabled={!row.isOpen}
+                                  <Button
+                                    // disabled={!row.isOpen}
                                     onClick={() => openDialog(index, row)}
                                   >
                                     <CiSquarePlus />
@@ -575,7 +570,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                   <TableInput
                                     disabled={!row.isOpen}
                                     value={row.total}
-                                    id={row.id}
+                                    id={row.id || 0}
                                     currency={true}
                                     keyValue={"CXC-total"}
                                     onChange={updateAmmount}
@@ -604,7 +599,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
                                   <TableInput
                                     disabled={!row.isOpen}
                                     value={row.originalCurrency}
-                                    id={row.id}
+                                    id={row.id || 0}
                                     currency={true}
                                     keyValue={"CXC-original"}
                                     onChange={updateAmmount}
@@ -630,7 +625,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
           <DialogFooter>
             <Button
               colorPalette="meraWarning"
-              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
+              disabled={!cashRows[0]?.isOpen}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(true);
@@ -641,7 +636,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
 
             <Button
               colorPalette="meraPrimary"
-              disabled={cashRows.length > 0 ? !cashRows[0].isOpen : false}
+              disabled={!cashRows[0]?.isOpen}
               onClick={() => {
                 setButtonLoading(true);
                 setIsConfirm(false);
@@ -670,6 +665,7 @@ function DialogDetails({ isOpen, line, onClose, banks }: StarbucksDetailsProps) 
             onClose={onCloseDenominations}
             onSave={onSaveDenominations}
             denominations={selectedDenomination}
+            disabled={line.status === "Cerrado"}
           ></DenominationsDetaisl>
         </Box>
       )}

@@ -164,6 +164,8 @@ export const getCustomerClousing = async (
     const response = await api.get(CLIENTS, {
       params: { idCashRegisterClosure: clousingId },
     });
+
+    //console.log(response)
     const lines = response.data.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
@@ -194,6 +196,7 @@ export const getCustomerClousing = async (
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
         totalPOS: response.data.totalPos ?? 0,
         totalPhysical: response.data.totalPhysical ?? 0,
+        differenceCupons: response.data.diferenciaCupones ?? 0,
       },
       lines: [...lines],
     };
@@ -342,7 +345,7 @@ export const getPrepaidClousing = async (
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
-    console.log(data)
+    //console.log(data)
     const responseData: ResponseModel = {
       success: true,
       data: data,
@@ -466,6 +469,7 @@ export const getIntercompanyClousing = async (
   clousingId: number
 ): Promise<IntercompanyModel> => {
   // console.log(clousingId)
+  if (!clousingId) return {} as IntercompanyModel;
   const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
@@ -571,7 +575,7 @@ export const getPDF = async (obj: PdfRequestNSDto): Promise<PdfData | null> => {
 
 export const sendCashClousing = async (dataService: DataServiceModel, isConfirm: boolean, isStarbucks: boolean) => {
   try {
-    console.log(dataService)
+    //console.log(dataService)
      const mapCustomerLines = (lines: CustomerLines[]) =>
       lines.map(
         ({
@@ -704,11 +708,15 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       },
       customer: {
         lines: mapCustomerLines(dataService.customer != undefined ? dataService.customer.lines : []),
-        total: dataService.customer != undefined ? dataService.customer.total :
+        total: dataService.customer != undefined ? {
+          ...dataService.customer.total,
+          diferenciaCupones: dataService.customer.total.differenceCupons || 0,
+        } :
         {
           totalPOS:  0,
           totalPhysical:  0,
           difference:  0,
+          diferenciaCupones: 0,
         },
       },
       intercompany: {
@@ -758,7 +766,6 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       currencies:  mapCurrLines(dataService.cash.currencies ?? []),
     };
     
-    console.log(body)
 
     if(isStarbucks){
 

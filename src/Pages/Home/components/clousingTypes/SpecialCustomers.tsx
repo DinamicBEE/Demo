@@ -253,7 +253,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       currency={true}
                       keyValue={"ammount"}
                       onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
                     />
                   </Text>
                 </Table.Cell>
@@ -266,7 +266,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                       currency={true}
                       keyValue={"ammountUSD"}
                       onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
                     />
                   </Text>
                 </Table.Cell>

@@ -6,6 +6,7 @@ interface Total {
   totalPOS: number;
   totalPhysical: number;
   difference: number;
+  diferenciaCupones?: number;
 }
 
 interface LineBase {

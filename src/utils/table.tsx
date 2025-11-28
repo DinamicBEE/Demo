@@ -6,7 +6,8 @@ export const SortableHeader = ({
   label,
   handleSort,
   getSortIcon,
-  textAlign = "center"
+  textAlign = "center",
+  columnProps = {}
 }: SortableHeaderProps) => {
   
   return (
@@ -15,6 +16,7 @@ export const SortableHeader = ({
       onClick={() => handleSort(columnKey)} 
       _hover={{textDecoration: "underline"}} 
       cursor="pointer"
+      {...columnProps}
     >
       <HStack justify={textAlign}>
         {label} {getSortIcon(columnKey)}

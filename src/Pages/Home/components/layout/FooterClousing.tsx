@@ -50,10 +50,6 @@ function FooterClousing({
     async function fetchFooterData() {
       const data: TotalModel = await getFooterData(clousingId, clousingType);
 
-      if (clousingType === "employee") {
-        data.difference = 0;
-      }
-
       setFooter(data);
     }
 
@@ -194,6 +190,14 @@ function FooterClousing({
             loading={false}
           />
 
+          {clousingType === "customer" && (
+            <CurrencyInput
+              name={"Dif. cupones"}
+              value={footer?.differenceCupons ?? 0}
+              loading={false}
+            />
+          )}
+
           <Button
             loading={loading || buttonLoading}
             colorPalette="meraWarning"
@@ -205,7 +209,7 @@ function FooterClousing({
             Guardar Corte
           </Button>
 
-          {/* <Button
+          <Button
             loading={loading || buttonLoading}
             colorPalette="meraPrimary"
             onClick={async () => {
@@ -214,7 +218,7 @@ function FooterClousing({
             disabled={closingConfirmation || (!isRoleEditable) || loading}
           >
             Confirmar Corte
-          </Button> */}
+          </Button>
         </Flex>
 
         <Flex></Flex>

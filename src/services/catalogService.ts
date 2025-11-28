@@ -19,7 +19,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
         label: item.name
       }));
     case "customer":
-      return await getCustomers(true); //TODO: Validar funcionamiento del filtro
+      return await getCustomers(false);
   
     default:
       return [];
@@ -204,18 +204,18 @@ export const getTicketListClousing = async (
   }
 };
 //!REVISAR RESPUESTA DE LA API
-export const employeeDelete = async (employeeDelId: number): Promise<boolean> => {
+export const employeeDelete = async (employeeDelId: number): Promise<string> => {
   try {
     if (employeeDelId === null) throw new Error("Error al eliminar el empleado");
     const response = await api.delete(EMPLOYEEDELETE, {
       params: {id: employeeDelId},
     });
     // console.log(response.data);
-    return true;
+    return response.data;
     
   } catch(e) {
     console.error("Error al eliminar el empleado del preguardado", e);
-    return false;
+    return "REGISTER ERROR";
   }
 }
 

@@ -12,7 +12,9 @@ export const getListEmployesIntercompany = async (): Promise<Employee[]> => {
 		return result;
 
 	} catch (error: any) {
-		throw new Error(error);
+		console.error("No se pudo obtener la lista de empleados de intercompañías", error);
+    return [] as Employee[];
+    
 	}
 }
 
@@ -30,7 +32,7 @@ export const getSubsidiariesList = async (idEmploye: string): Promise<Subsidiary
 		return result;
 
 	} catch (error: any) {
-		console.log(error)
+		console.error(error)
 		return []
 		// throw new Error(error)
 	}

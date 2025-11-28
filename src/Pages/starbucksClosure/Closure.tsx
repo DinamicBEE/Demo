@@ -23,7 +23,7 @@ function StarbucksClosure() {
     const [startDate, endDate] = dateRange;
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [infoCDC, setInfoCDC] = useState<selectOption>({value: 0, label: ""})
+    const [infoCDC, setInfoCDC] = useState<number>(0)
   
     useEffect(() => {
         async function fetchData() {
@@ -33,7 +33,6 @@ function StarbucksClosure() {
                 await Promise.all([
                     fetchAndSetData(getCDCStarbucks, setCDC),
                 ]);
-                
             } catch (error) {
                 console.error("Error fetching data:", error);
                 setLoading(false)
@@ -97,9 +96,10 @@ function StarbucksClosure() {
                                 const selectedCountries = event.items.map((item: selectOption) => ({
                                     value: item.value,
                                     label: item.label,
+                                    idCurrency: item.idCurrency
                                 }));
-
                                 setSelectedCDC(selectedCountries[0].value);
+                                setInfoCDC(selectedCountries[0].idCurrency || 0)
                             }}
                         >
                             <SelectLabel fontFamily="heading">
@@ -160,7 +160,7 @@ function StarbucksClosure() {
                 
                 <>
 
-                    <StarbucksTable headers={data.headers} lines={data.lines} getTableData={getTableData}></StarbucksTable>
+                    <StarbucksTable headers={data.headers} lines={data.lines} getTableData={getTableData} idCurrency={infoCDC}></StarbucksTable>
 
                 </>
 

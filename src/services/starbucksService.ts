@@ -2,7 +2,7 @@ import { location } from "@models/common.model";
 import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksBanksModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
+import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDENOMINATIONS, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
 import { loadData } from "../indexedDB/localDB";
 import { TDCModel, Voucher } from "@models/tdc.model";
@@ -73,7 +73,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
   }
 }
 
-export const getDetailStarbucks = async (line: StarbucksTableModel, banks: StarbucksBanksModel[]): Promise<StarbucksTableRow> => {
+export const getDetailStarbucks = async (line: StarbucksTableModel, banks: StarbucksBanksModel[], idCurrency: number): Promise<StarbucksTableRow> => {
   try {
 
     const response = await api.get(GET_STARBUCKSDETAIL, {
@@ -112,8 +112,13 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         })
       }
     });
-    cashDataDummy.push({
-      id: cashDataDummy.length + 1,
+
+    const denominations = await getSatrbucksDenominations(line.id, idCurrency);
+
+    const cashModified = transformCashData(cashDataDummy, denominations);
+
+    cashModified.push({
+      id: cashModified.length + 1,
       currency: "Total (MXN)",
       pos: 0,
       total: cashTotal,
@@ -125,13 +130,13 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
     });
 
     let creditCardDataDummy: TDCStarbucksModel[] = [];
-    if(response.data.tdc.lines && response.data.tdc.lines.length > 2){
-
+    if(response.data.tdc.lines && response.data.tdc.lines.length > 2){      
       creditCardDataDummy = response.data.tdc.lines
         .filter((item: any) => item.bank !== "No encontrado/No identificado")
+        .sort((a: any, b: any) => a.bank.localeCompare(b.bank))
         .map((item: any) => ({
           id: item.id,
-          nameBank: item.bank,
+          nameBank: item.idBank === 13 ? "BBVA Bancomer USD" : item.bank,
           idBank: item.idBank,
           total: item.physical,
           pos: item.pos,
@@ -141,25 +146,42 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
           originalCurrency: item.physical * item.exchangeRate,
           voucher: item.vouchers
         }));
+
+        const isSantanderPresent = creditCardDataDummy.some((card) => card.nameBank === "Santander");
+        if (!isSantanderPresent) {
+          creditCardDataDummy.push({
+            id: 796,
+            nameBank: "Santander",
+            idBank: 670,
+            total: 0,
+            pos:0,
+            currencyExternalId: 5,
+            exchangeRate: 0,
+            isOpen: line.status === "Abierto" ? true : false,
+            originalCurrency: 0,
+            voucher: []
+          });
+        }
+
     } else {
       creditCardDataDummy = banks.map((bank) => {
   
         let bankId: number = 0;
         switch (bank.bankName) {
           case "Banamex - CITI":
-            bankId = 28;
+            bankId = 656;
             break;
           case "BBVA Bancomer":
-            bankId = 4;
+            bankId = 660;
             break;
           case "BBVA Bancomer USD":
-            bankId = 13;
+            bankId = 662;
             break;
           case "Santander":
-            bankId = 43;
+            bankId = 670;
             break;
           case "Amexco":
-            bankId = 3;
+            bankId = 653;
             break;
         }
         return {
@@ -206,12 +228,12 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       totalPOSTDC: response.data.tdc.total.totalPOS,
       electronicTips: response.data.cash.electronicTips,
       tips: response.data.cash.tips,
-      idCurrencySub: 1 //TODO: Cambiar valor apenas el back lo mande
+      idCurrencySub: idCurrency
     }
 
     const starbucksData:StarbucksTableRow = {
       data: header,
-      cash: cashDataDummy,
+      cash: cashModified,
       tdc: creditCardDataDummy,
       cxc: cxcDataDummy
     }
@@ -274,6 +296,54 @@ export const getTDCByMERA = async(id:number): Promise<TDCModel> => {
     return [] as unknown as TDCModel;
   }
 
+}
+
+export const getSatrbucksDenominations = async (cashClosure: number, idCurrency: number) => {
+  try {
+
+    const response = await api.get(GET_STARBUCKSDENOMINATIONS, {
+      params: {
+        idCashClosure: cashClosure,
+        idCurrency: idCurrency
+      }
+    });
+    return response.data;
+  }
+  catch ( e ) {
+    return [];
+  }
+}
+
+const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): CashStarbucksModel[] => {
+  if (!Array.isArray(denominations) || denominations.length === 0) return lines;
+  
+  const filtered = (denominations || []).filter(
+    (base) => base?.currency?.name?.trim()?.toLowerCase() !== "tipo de cambio interno"
+  );
+
+  return filtered.map((base) => {
+    const found = lines.find((line) => line.idCurrency === base.currency.id);
+
+    if (found) return found;
+
+    return {
+      id: null,
+      idCurrency: base.currency.id,
+      currency: base.currency.symbol,
+      pos: 0,
+      total: 0,
+      denominations: (base.denominationResponses || []).map((d: any) => ({
+        id: 0,
+        idDenomination: d.denominationId,
+        denomination: d.denomination,
+        amount: 0,
+      })),
+      difference: 0,
+      exchangeRate: Number(base.currency.exchange) || 0,
+      originalCurrency: 0,
+      isOpen: lines[0].isOpen,
+    };
+  });
 }
 
 export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{

@@ -113,6 +113,13 @@ function TotalsRow(){
                         currency="USD"
                       />
                     </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber
+                        value={totals.diferenciaCupones || 0}
+                        style="currency"
+                        currency="USD"
+                      />
+                    </Table.Cell>
                     <Table.Cell textAlign="center"></Table.Cell>
                   </Table.Row>
     )

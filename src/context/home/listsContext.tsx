@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useState, useMemo, ReactNode } from 'react';
 import { ListContextType, StoreModel, SubsidiaryModal } from '@models/common.model';
 import { getStores, getSubsidiaries } from '@services/catalogService';
-
+// DEPRECATED el contexto sera remplazado por uno global para listas comunes
 
 const listContext = createContext<ListContextType>({} as ListContextType);
 

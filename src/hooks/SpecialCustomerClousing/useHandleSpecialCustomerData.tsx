@@ -43,7 +43,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
     function handleUpdateAmountMXN(id: number | string, value: string, key?: string) {
       value = value.replace(/[^\d.]/g, "");
       
-      let newAmoutn = 0;
+      let newAmount = 0;
       let newValue = 0;
       let newValueUSD = 0;
 
@@ -52,11 +52,11 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
       if (key === "ammount") {
         newValue = parseFloat(value);
         newValueUSD = 0;
-        newAmoutn = parseFloat(value);
+        newAmount = parseFloat(value);
       } else {
         newValue = 0;
         newValueUSD = parseFloat(value);
-        newAmoutn =
+        newAmount =
           parseFloat(value) *
           specialCustomerData.lines.filter(
             (item: SpecialCustomerLines) => item.id === id
@@ -70,7 +70,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
                 ...item,
                 ammount: newValue,
                 ammountUSD: newValueUSD,
-                ammountMXN: newAmoutn,
+                ammountMXN: newAmount,
               }
             : item
       );
