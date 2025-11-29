@@ -20,6 +20,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     const [countTable, setCountTable] = useState<number>(0)
     const [pageSize, setPageSize] = useState<number>(100)
     const { reportData, loading } = useReportsContext();
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
     const [page, setPage] = useState<number>(1);
     const startRange = (page - 1) * pageSize;
@@ -71,7 +72,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
 
         if(key === 'especialStatus') {
             let item = visibleItems as ReportTypeMap[K][]
-            const {nextStatus, nextStatusTool} = item[index] as SyncErrorsModel;
+            const {nextStatus, id} = item[index] as SyncErrorsModel;
             return (
                 <HStack alignItems={'center'}>
                   <Text 
@@ -84,8 +85,18 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                     <IconButton 
                       rounded="full"
                       color={'gray.600'}
-                      onClick={() => changeStatus(nextStatus )} variant={'ghost'}
+                      onClick={async () => {
+                        setDeleteLoading(true);
+                        const response = await changeStatus(nextStatus, id)
+                        if ( response ){
+                            reportData && reportData.splice(index + (pageSize * (page - 1)), 1);
+                            setVisibleItems(reportData?.slice(startRange, endRange) || []);
+                        }
+                        setDeleteLoading(false);
+                      }
+                    } variant={'ghost'}
                       fontSize={'small'}
+                      disabled={deleteLoading}
                     >
                       <IoPlay />
                     </IconButton>
@@ -102,7 +113,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
         <>
           {visibleItems.length > 0 
             ? <Box  display="flex" flexDirection="column" height="100%">
-              {loading && (
+              {(loading || deleteLoading) && (
                   <Box position="fixed" top="50%" left="50%">
                       <Loading />
                   </Box>

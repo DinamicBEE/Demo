@@ -68,6 +68,7 @@ export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
 
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
+export const CHANGE_REPORTSTATUS = `${CRC_BASE}/administration/panel/delete`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
 export const REPORT_MIXGEN = `${CRC_BASE}/PMIX/GenerateReportByCdcAndDate`;
 export const REPORT_MIXEMP = ``;

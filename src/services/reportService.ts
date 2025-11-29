@@ -1,7 +1,7 @@
 import { ReportClousingLinesModel } from "@models/common.clousing.model";
 import { Row, Headers } from "@models/report.model";
 import api from "../api/index";
-import { GET_REPORT } from "./settings";
+import { CHANGE_REPORTSTATUS, GET_REPORT } from "./settings";
 import { ReporGeneralRequesttModel } from "@models/reports.model";
 import { REPORT_CONFIG } from "@models/const/reportFilter.const";
 import { REPORTSERVICE_CONFIG } from "@models/const/reportsService.const";
@@ -578,7 +578,24 @@ export const generateBanckReportCSV =async (currentReport: number, reportData: a
   await downloadWorkbook(workbook, `${title}_${date}`);
 }
 
-export function changeStatus(nextStatusId: number){
-    console.log(nextStatusId)
+export async function changeStatus(nextStatusId: number, id: number): Promise<boolean>{
+  console.log(nextStatusId)
+  
+  try {
+
+    const response = await api.delete(CHANGE_REPORTSTATUS, {params: {id}})
+
+    console.log("Respuesta del servidor:", response.data);
+    
+    return response.data === "Borrado exitosamente" ? true : false;
+
+  } catch (error) {
+
+    console.error("Error al cambiar el estado:", error);
+
+    return false;
+
+  }
+
 
 }
