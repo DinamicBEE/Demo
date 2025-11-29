@@ -20,9 +20,9 @@ function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
 
 export function PublicRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
-
+  const path = user?.role === 'GENERALZONE' ? '/starbucks' : '/homeV2';
   if (isLoading) return <Loading />;
-  if (isAuthenticated && user) return <Navigate to="/homeV2" replace />;
+  if (isAuthenticated && user) return <Navigate to={path} replace />;
   return children;
 }
 

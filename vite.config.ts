@@ -43,14 +43,14 @@ export default defineConfig({
       "@utils": path.resolve(__dirname, "./src/utils"),
     },
   },
-  // server: {
-  //   proxy:{
-  //     "/api":{
-  //       target: "http://18.188.99.249:8085/",
-  //       changeOrigin: true,
-  //       rewrite: (path) => path.replace(/^\/api/, ''),
-  //       secure: false,
-  //     }
-  //   }
-  // }
+  server: {
+    proxy:{
+      "/api":{
+        target: "http://18.188.99.249:8085/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false,
+      }
+    }
+  }
 });
