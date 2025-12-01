@@ -243,12 +243,16 @@ export function calculateClousingTotals(clousingLines: ClousingLinesModel[]): To
 }
 
 export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTotalsModel {
+  const newTotalPOS = reportData.reduce((acc, curr) => acc + curr.totalPOS, 0);
+  const newTotalPhysical = reportData.reduce((acc, curr) => acc + curr.totalPhysical, 0);
+  const newDifference = newTotalPhysical - newTotalPOS  
+  
   const totals: ReportTotalsModel = reportData.reduce<ReportTotalsModel>(
     (acc: ReportTotalsModel, curr) => {
       acc.isStarbucks = false;
-      acc.totalPOS += curr.totalPOS;
-      acc.totalPhysical += curr.totalPhysical;
-      acc.difference += curr.difference;
+      acc.totalPOS = newTotalPOS;
+      acc.totalPhysical = newTotalPhysical;
+      acc.difference = newDifference;
       acc.mxn = (acc.mxn ?? 0) + (curr.mxn ?? 0);
       acc.usd! += curr.usd || 0;
       acc.eur! += curr.eur || 0;
