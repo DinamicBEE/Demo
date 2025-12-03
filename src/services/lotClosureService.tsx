@@ -86,7 +86,7 @@ export const getBanks = async (cdcId: number, date:string) => {
 
     }));
 
-    const copyAdyen: Bank[] = transformedData.filter((bank: Bank) => bank.bankTerminalName === "TPV ADYEN");
+    const copyAdyen: Bank[] = transformedData.filter((bank: Bank) => bank.bankTerminalName.includes("ADYEN"));
 
     if (copyAdyen.length >= 2) {
       const newLineAdyen: Bank = {
@@ -109,7 +109,7 @@ export const getBanks = async (cdcId: number, date:string) => {
 
       }
       newLineAdyen.affiliationList.push(afiliations);
-      const newLines = transformedData.filter((bank: Bank) => bank.bankTerminalName !== "TPV ADYEN");
+      const newLines = transformedData.filter((bank: Bank) => !bank.bankTerminalName.includes("ADYEN"));
       newLines.push(newLineAdyen);
       const bankUpdate: BankUpdate = {
         bank: newLines,
@@ -131,14 +131,14 @@ export const getBanks = async (cdcId: number, date:string) => {
 };
 
 export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
-  try {
+  try {    
     const { bank, bankCopy } = bankUpdate;
 
     if (!bankCopy || bankCopy.length < 2) {
       return bankUpdate.bank;
     }
     const unifiedAdyenIndex = bank.findIndex((bankItem: Bank) => 
-      bankItem.bankTerminalName === "ADYEN"
+      bankItem.bankTerminalName.includes("ADYEN")
     );
 
     if (unifiedAdyenIndex === -1) {
