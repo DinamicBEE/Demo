@@ -67,62 +67,71 @@ export const getLocations = async (
   }
 };
 
-export const getBanks = async (cdcId: number, date:string) => {
+export const getBanks = async (cdcId: number, date: string) => {
   try {
-    
-    const dateArray = date.split("-");
-    const newFormatDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
+    const [day, month, year] = date.split("-");
+    const newFormatDate = `${year}-${month}-${day}`;
 
     const response = await api.get(GET_BATCH_DETAILS, {
-      params: { 
+      params: {
         consId: cdcId,
         startDate: newFormatDate
       },
     });
 
-    const transformedData = response.data.map((bank: any) => ({
-      ...bank, 
-      batchDetailsId: bank.batchDetailsId === null ? "BankID-" + uuidv4() : bank.batchDetailsId, 
-
+    const transformedData: Bank[] = response.data.map((bank: any) => ({
+      ...bank,
+      batchDetailsId:
+        bank.batchDetailsId === null
+          ? "BankID-" + uuidv4()
+          : bank.batchDetailsId,
     }));
 
-    const copyAdyen: Bank[] = transformedData.filter((bank: Bank) => bank.bankTerminalName.includes("ADYEN"));
+    const grouped = Object.values(
+      transformedData.reduce((acc: Record<string, Bank[]>, bank) => {
+        const key = bank.bankTerminalName;
+        acc[key] = acc[key] ? [...acc[key], bank] : [bank];
+        return acc;
+      }, {})
+    );
 
-    if (copyAdyen.length >= 2) {
-      const newLineAdyen: Bank = {
-        bankTerminalId: copyAdyen[0].bankTerminalId,
-        bankTerminalName: copyAdyen[0].bankTerminalName,
-        batchClosureId: copyAdyen[0].batchClosureId,
-        batchDetailsId: copyAdyen[0].batchDetailsId,
-        difference: copyAdyen.reduce((acc, curr) => acc + curr.difference, 0),
-        totalBatch: copyAdyen.reduce((acc, curr) => acc + curr.totalBatch, 0),
-        totalPos: copyAdyen.reduce((acc, curr) => acc + curr.totalPos, 0),
+    const mergedBanks: Bank[] = [];
+    const bankCopy: Bank[] = [];
+
+    for (const group of grouped) {
+      if (group.length === 1) {
+        mergedBanks.push(group[0]);
+        continue;
+      }
+
+      bankCopy.push(...group);
+
+      const merged: Bank = {
+        ...group[0],
+        difference: group.reduce((a, b) => a + b.difference, 0),
+        totalBatch: group.reduce((a, b) => a + b.totalBatch, 0),
+        totalPos: group.reduce((a, b) => a + b.totalPos, 0),
+        totalCrc: group.reduce((a, b) => (a || 0) + (b.totalCrc || 0), 0),
         affiliationList: [],
-        totalCrc: copyAdyen.reduce((acc, curr) => (acc || 0) + (curr.totalCrc || 0), 0)
-      } 
-      const adyenAffiliations = copyAdyen.reduce((acc: Afilation[], curr: Bank) => acc.concat(curr.affiliationList), []);
-      const afiliations: Afilation = {
-        affiliationId: adyenAffiliations[0].affiliationId,
-        amount: adyenAffiliations.reduce((acc, curr) => acc + curr.amount, 0),
-        affiliation: adyenAffiliations[0].affiliation,
-        affiliationDetailsId: adyenAffiliations[0].affiliationDetailsId
+      };
 
+      const allAffiliations = group.flatMap(b => b.affiliationList ?? []);
+
+      if (allAffiliations.length) {
+        const mergedAffiliation: Afilation = {
+          ...allAffiliations[0],
+          amount: allAffiliations.reduce((a, b) => a + b.amount, 0),
+        };
+        merged.affiliationList.push(mergedAffiliation);
       }
-      newLineAdyen.affiliationList.push(afiliations);
-      const newLines = transformedData.filter((bank: Bank) => !bank.bankTerminalName.includes("ADYEN"));
-      newLines.push(newLineAdyen);
-      const bankUpdate: BankUpdate = {
-        bank: newLines,
-        bankCopy: copyAdyen
-      }
-      return bankUpdate;
-    } else {
-      const bankUpdate: BankUpdate = {
-        bank: transformedData,
-        bankCopy: []
-      }
-      return bankUpdate as BankUpdate;
+
+      mergedBanks.push(merged);
     }
+
+    return {
+      bank: mergedBanks,
+      bankCopy,
+    } as BankUpdate;
 
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
@@ -130,95 +139,113 @@ export const getBanks = async (cdcId: number, date:string) => {
   }
 };
 
-export const updateAdyenDistribution = (bankUpdate: BankUpdate): Bank[] => {
+export const updateBanksDistribution = (bankUpdate: BankUpdate): Bank[] => {
   try {    
     const { bank, bankCopy } = bankUpdate;
 
-    if (!bankCopy || bankCopy.length < 2) {
-      return bankUpdate.bank;
-    }
-    const unifiedAdyenIndex = bank.findIndex((bankItem: Bank) => 
-      bankItem.bankTerminalName.includes("ADYEN")
+    if (!bankCopy?.length) return bank;
+
+    const groupedCopies = Object.values(
+      bankCopy.reduce((acc: Record<string, Bank[]>, curr) => {
+        const key = curr.bankTerminalName;
+        acc[key] = acc[key] ? [...acc[key], curr] : [curr];
+        return acc;
+      }, {})
     );
 
-    if (unifiedAdyenIndex === -1) {
-      console.warn("No se encontró la línea unificada de Adyen");
-      return bankUpdate.bank;
-    }
+    let newBankArray = [...bank];
 
-    const unifiedAdyen = bank[unifiedAdyenIndex];
-    const modifiedCopies: Bank[] = [];
+    for (const copies of groupedCopies) {
+      if (copies.length < 2) continue;
 
-    if (unifiedAdyen.totalPos > unifiedAdyen.totalBatch) {
-      const firstCopy: Bank = {
-        ...bankCopy[0],
-        totalBatch: bankCopy[0].totalPos > unifiedAdyen.totalBatch ? unifiedAdyen.totalBatch : bankCopy[0].totalPos,
-        difference: bankCopy[0].totalPos > unifiedAdyen.totalBatch ?  unifiedAdyen.totalBatch - bankCopy[0].totalPos: 0
-      };
-      
-      const remainingAmount = unifiedAdyen.totalBatch - firstCopy.totalBatch;
-      const secondCopy: Bank = {
-        ...bankCopy[1],
-        totalBatch: remainingAmount > 0 ? remainingAmount : 0,
-        difference: remainingAmount !== 0 ? remainingAmount - bankCopy[1].totalPos : bankCopy[1].totalBatch - bankCopy[1].totalPos
-      };
-      modifiedCopies.push(firstCopy, secondCopy);
+      const bankName = copies[0].bankTerminalName;
 
-    } else if (unifiedAdyen.totalPos === unifiedAdyen.totalBatch) {
-      modifiedCopies.push(...bankCopy.map(copy => ({
+      const unifiedIndex = newBankArray.findIndex(
+        b => b.bankTerminalName === bankName
+      );
+
+      if (unifiedIndex === -1) continue;
+
+      const unifiedBank = newBankArray[unifiedIndex];
+
+      const totalBatchCents = Math.round(unifiedBank.totalBatch * 100);
+
+      const copiesWithCents = copies.map(copy => ({
         ...copy,
-        totalBatch: copy.totalPos,
-        difference: 0
-      })));
-    } else {
+        totalPosCents: Math.round((copy.totalPos || 0) * 100),
+      }));
 
-      modifiedCopies.push(...bankCopy);
-    }
+      const totalPosSumCents = copiesWithCents.reduce(
+        (acc, c) => acc + c.totalPosCents,
+        0
+      );
 
-    const updatedCopiesWithAffiliations = modifiedCopies.map((copy, index) => {
-      if (copy.affiliationList && copy.affiliationList.length > 0) {
-        const updatedAffiliationList = copy.affiliationList.map(affiliation => ({
-          ...affiliation,
-          amount: copy.totalBatch || 0
-        }));
+      let remainingBatchCents = totalBatchCents;
+
+      const modifiedCopies: Bank[] = copiesWithCents.map((copy, index) => {
+        const isLast = index === copiesWithCents.length - 1;
+
+        let proportionalCents = isLast
+          ? remainingBatchCents
+          : totalPosSumCents === 0
+            ? 0
+            : Math.floor(
+                (copy.totalPosCents / totalPosSumCents) * totalBatchCents
+              );
+
+        if (!isLast) remainingBatchCents -= proportionalCents;
+
+        const totalBatch = proportionalCents / 100;
+        const totalPos = copy.totalPosCents / 100;
+
         return {
           ...copy,
-          affiliationList: updatedAffiliationList
+          totalBatch,
+          difference: totalBatch - totalPos,
         };
-      }
-      return copy;
-    });
+      });
 
-    const newBankArray = bank.filter((bankItem: Bank) => 
-      bankItem.bankTerminalName !== "ADYEN"
-    );
+      const updatedCopiesWithAffiliations = modifiedCopies.map(copy => {
+        if (copy.affiliationList?.length) {
+          return {
+            ...copy,
+            affiliationList: copy.affiliationList.map(aff => ({
+              ...aff,
+              amount: copy.totalBatch || 0,
+            })),
+          };
+        }
+        return copy;
+      });
 
-    newBankArray.push(...updatedCopiesWithAffiliations);
+      newBankArray = newBankArray.filter(
+        b => b.bankTerminalName !== bankName
+      );
 
-    const updatedBankUpdate: BankUpdate = {
-      bank: newBankArray,
-      bankCopy: bankCopy 
-    };
+      newBankArray.push(...updatedCopiesWithAffiliations);
+    }
 
-    return updatedBankUpdate.bank;
+    return newBankArray;
 
   } catch (error) {
-    console.error("Error al actualizar la distribución de Adyen: ", error);
+    console.error("Error al actualizar la distribución por banco: ", error);
     return bankUpdate.bank;
   }
 };
 
 export const updateBankService = async (localBank: BankUpdateRequest) => {
-  try {    
-    const response = await api.post(CONFIRM_BATCH, localBank);
-    if (response.status === 200 && localBank.status === "Abierto") {
-      assembliesController(localBank.consumerCenterId, localBank.batchDate)
-    }
+  console.log("body",localBank);
+  
+  // try {    
+  //   const response = await api.post(CONFIRM_BATCH, localBank);
+  //   if (response.status === 200 && localBank.status === "Abierto") {
+  //     assembliesController(localBank.consumerCenterId, localBank.batchDate)
+  //   }
     
-  } catch (error) {
-    console.error("Error al obtener las Subsidiarias: ", error);
-    return [];
-  }
+  // } catch (error) {
+  //   console.error("Error al obtener las Subsidiarias: ", error);
+  //   return [];
+  // }
 };
 
 const assembliesController = async (cdcId: number, date: string) => {
