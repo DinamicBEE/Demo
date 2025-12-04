@@ -65,6 +65,7 @@ function PrepaidNewCustomer({
       isEdit: true,
       coupons: [],
       ticketId: 0,
+      idClient: selectedCustomer?.value || 0,
     };
     setSelectedCustomer(null);
     setAmount(0);
