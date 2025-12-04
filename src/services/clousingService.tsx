@@ -249,19 +249,19 @@ export const getSpecialCustomerClousing = async (
       })
     );
 
-    const newTotalPOS = lines
+    /* const newTotalPOS = lines
       .map((line: any) => Number(line.bill))
-      .reduce((acc: number, curr: number) => acc + curr, 0);
+      .reduce((acc: number, curr: number) => acc + curr, 0); */
     const newTotalFisico = lines
       .map((line: any) => Number(line.ammountMXN))
       .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newDiff = Number(newTotalFisico - newTotalPOS);
+    const newDiff = Number(newTotalFisico - response.data.totalPos);
 
     const data = {
       id: clousingId,
       total: {
         totalPOS: response.data.totalPos ?? 0,
-        totalPhysical: response.data.totalPhysical ?? 0,
+        totalPhysical: newTotalFisico ?? 0,
         difference: newDiff ?? 0,
       },
       lines: [...lines],
