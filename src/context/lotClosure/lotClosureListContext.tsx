@@ -1,6 +1,6 @@
 import { ReactNode, createContext, useContext, useState,
   useMemo, useCallback, useRef } from "react";
-import { getBanks, getLotsClosure, updateAdyenDistribution, updateBankService } from "@services/lotClosureService";
+import { getBanks, getLotsClosure, updateBanksDistribution, updateBankService } from "@services/lotClosureService";
 import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest, BankUpdate } from "@models/lotClosure.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
@@ -69,7 +69,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       setError("");
       setUpdateBankLoading(true);
       const updateBanks: Bank[] = [];
-      const splitedBanks = updateAdyenDistribution(localBank);
+      const splitedBanks = updateBanksDistribution(localBank);
       updateBanks.push(...splitedBanks);
       try {
         const body: BankUpdateRequest = {
