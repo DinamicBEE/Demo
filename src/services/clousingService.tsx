@@ -252,6 +252,7 @@ export const getSpecialCustomerClousing = async (
     /* const newTotalPOS = lines
       .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0); */
+      
     const newTotalFisico = lines
       .map((line: any) => Number(line.ammountMXN))
       .reduce((acc: number, curr: number) => acc + curr, 0);
