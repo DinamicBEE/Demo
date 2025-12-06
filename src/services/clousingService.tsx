@@ -245,13 +245,14 @@ export const getSpecialCustomerClousing = async (
       (line: any) => ({
         ...line,
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
-        couponPrice: 0,
+        //couponPrice: 0,
       })
     );
 
     /* const newTotalPOS = lines
       .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0); */
+      
     const newTotalFisico = lines
       .map((line: any) => Number(line.ammountMXN))
       .reduce((acc: number, curr: number) => acc + curr, 0);
