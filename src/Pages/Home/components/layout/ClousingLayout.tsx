@@ -56,7 +56,8 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
 
       tabs.setValue(CLOUSING_KEY.CASH);
 
-      try {        
+      try {
+      
         const [ customer, specialCustomer, prepaid, tdc,
         intercompany, employeeT, cash ] = await Promise.all([
           getCustomerData(employee.id),
