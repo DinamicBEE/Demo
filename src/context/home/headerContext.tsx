@@ -67,6 +67,8 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
 
     const differenceCuponsValue = actualDiffCupons != 0 ?
       (actualDiffCupons - (currentClousing.differenceCupons || 0)) + (differenceCupons || 0) : differenceCupons
+
+    const newdif = Number((newTotalClousing - lastTotalPOS).toFixed(2));
    
     const updatedHeader = {
       ...currentHeader,
@@ -81,12 +83,12 @@ export function HeadersProvider({ children }: { children: ReactNode }) {
             differenceCupons: differenceCupons
           },
         },
-        difference: newTotalClousing - lastTotalPOS,
+        difference: newdif,
         totalClousing: newTotalClousing,
         differenceCupons: differenceCuponsValue
       },
     };
-
+    //console.log('Updated Header:', updatedHeader);
     updateHeaderState(updatedHeader);
 
   },[]);
