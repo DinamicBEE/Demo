@@ -157,7 +157,7 @@ function FooterClousing({
       });
       return;
     }
-    console.log('header[clousingId]?.difference', header[clousingId]?.difference);
+    //console.log('header[clousingId]?.difference', header[clousingId]?.difference);
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
 
       setOpenDialogDifference(true);
