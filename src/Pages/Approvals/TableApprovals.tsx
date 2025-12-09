@@ -61,6 +61,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
         setConfirmData(null);
         onClose();
+        
       }
     }
   );
