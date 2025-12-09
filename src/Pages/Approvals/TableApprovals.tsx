@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Badge, Table, useDisclosure } from "@chakra-ui/react";
+import { Badge, Table, Text, Textarea, useDisclosure } from "@chakra-ui/react";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
@@ -61,6 +61,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
         setConfirmData(null);
         onClose();
+        
       }
     }
   );
@@ -109,7 +110,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                 <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
                 <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
-                <Table.Cell textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Table.Cell>
+                {/* <Table.Cell textAlign="center"><Textarea disabled autoresize resize={"none"} variant={"flushed"} width={"250px"}>{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Textarea></Table.Cell> */}
+                <Table.Cell textAlign="center"><Text w={"250px"} lineClamp="3">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Text></Table.Cell>
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
                     {statusLabels[item.status]}
