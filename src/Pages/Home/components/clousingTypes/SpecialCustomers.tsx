@@ -134,7 +134,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
             {visibleItems?.map((item: SpecialCustomerLines) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
-                  <Text>{item.check}</Text>
+                  <Text>{item.guestCheckId}</Text>
                 </Table.Cell>
 
                 <Table.Cell textAlign="end">
