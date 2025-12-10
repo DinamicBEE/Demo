@@ -21,6 +21,7 @@ export interface SpecialCustomerContext {
 export interface SpecialCustomerLines {
   id: number;
   check: number;
+  guestCheckId: number;
   bill: number;
   couponPrice: number;
   difference: number;
