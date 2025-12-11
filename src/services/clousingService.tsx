@@ -678,7 +678,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         ...rest,
         id: typeof rest.id === "number" ? rest.id : null,
         POS: rest.pos,
-        physical: rest.vouchers.reduce((acc,current) => current.status===true ? acc + current.amount : acc, 0),
+        physical: rest.vouchers.reduce((acc,current) => current.status===true ? acc + current.amountConversion : acc, 0),
         voucherAmountDisplay: rest.vouchers.reduce((acc,current) => current.status===true ? acc + 1 : acc, 0),
         vouchers: rest.vouchers.map((voucher) => ({
           ...voucher
