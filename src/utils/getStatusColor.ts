@@ -5,7 +5,7 @@ export const getStatusColor = (status: STATUS) => {
     case STATUS.Close:
       return "meraInfo";
     case STATUS.CLOSED_STARBUCKS:
-      return "meraSecondary";
+      return "meraInfo";
     case STATUS.RECLOSED:
       return "meraInfo";
     case STATUS.REOPENED:
