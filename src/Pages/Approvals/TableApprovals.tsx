@@ -92,9 +92,10 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         <Table.Root variant="outline">
           <Table.Header>
             <Table.Row>
+              <Table.ColumnHeader textAlign="center">Fecha solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Fecha</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">Fecha corte</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Tipo de Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Motivo de Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
@@ -105,9 +106,10 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
           <Table.Body>
             {approvalsList.map((item: Approval) => (
               <Table.Row key={item.idRequest}>
+                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
                 <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
                 <Table.Cell textAlign="center">{item.employee}</Table.Cell>
-                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
+                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.dateCdc)}</Table.Cell>
                 <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
                 {/* <Table.Cell textAlign="center"><Textarea disabled autoresize resize={"none"} variant={"flushed"} width={"250px"}>{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Textarea></Table.Cell> */}
