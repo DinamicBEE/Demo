@@ -12,6 +12,7 @@ import { useApi } from "@hooks/useApi";
 import { HiCheck, HiX } from "react-icons/hi";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
+import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 
 
 export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, onClose }) => {
@@ -93,7 +94,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
                 <DataList.Root orientation='horizontal'>
                   <DataList.Item>
                     <DataList.ItemLabel>Fecha</DataList.ItemLabel>
-                    <DataList.ItemValue>{dataApproval.date}</DataList.ItemValue>
+                    <DataList.ItemValue>{formatToDDMMYYYYstring(dataApproval.date)}</DataList.ItemValue>
                   </DataList.Item>
 
                   <DataList.Item>
