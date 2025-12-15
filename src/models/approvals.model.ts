@@ -5,6 +5,7 @@ export interface Approval {
   employee: string,
   idCashBatch?: number;
   date: string;
+  dateCdc:string;
   state: string;
   typeRequest: string;
   reason: string;
