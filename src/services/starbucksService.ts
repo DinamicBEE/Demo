@@ -438,4 +438,5 @@ export const cxcData = [
     isOpen: false,
     originalCurrency: 0,
   }
+  
 ]
