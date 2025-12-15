@@ -1,11 +1,17 @@
 import { Box, Grid, Group, InputAddon, Skeleton, Input, GridItem } from "@chakra-ui/react";
 import { CurrencyInput } from "@components/NumericInput";
 import { useClousing } from "@context/home/clousingContext";
-import { GeneralInfoProps } from "@models/common.clousing.model";
+import { GeneralInfoProps, HeaderClousingModel } from "@models/common.clousing.model";
+import { useEffect, useState } from "react";
 
 function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
 
     const { loading, header } = useClousing();
+    const [localHeader, setLocalHeader] = useState({} as HeaderClousingModel)
+
+    useEffect(() => {
+        setLocalHeader(header);
+    }, [header])
 
     return (
         <Box>
@@ -44,7 +50,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                         <Input
                             disabled
                             placeholder="No seleccionada"
-                            defaultValue={header.date}
+                            defaultValue={localHeader.date}
                         />
                         </Skeleton>
                     </Group>
@@ -54,24 +60,24 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                         <Input
                             disabled
                             placeholder="No seleccionada"
-                            defaultValue={header.time}
+                            defaultValue={localHeader.time}
                         />
                         </Skeleton>
                     </Group>
 
                     <CurrencyInput
                         name={"Total POS"}
-                        value={header.totalPOS}
+                        value={localHeader.totalPOS}
                         loading={loading}
                     />
                     <CurrencyInput
                         name={"Total Físico"}
-                        value={header.totalPhysical}
+                        value={localHeader.totalPhysical}
                         loading={loading}
                     />
                     <CurrencyInput
                         name={"Diferencia"}
-                        value={header.difference}
+                        value={localHeader.difference}
                         loading={loading}
                     />
 

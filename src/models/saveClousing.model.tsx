@@ -80,6 +80,7 @@ interface Customer {
 }
 
 interface SpecialCustomerLine extends LineBase {
+  guestCheckId: number;
   Check: number;
   consumption: number;
   priceCuopon: number;

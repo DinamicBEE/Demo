@@ -35,13 +35,13 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       locationId: number[],
       isRefresh?: boolean
     ) => {
-      if (
+      /* if (
         lostClosureCache.current[date] &&
         !isRefresh 
       ) {
         filterDataLots(date, locationId);
         return;
-      }
+      } */
       setLoading(true);
       try {
         if (isRefresh) {
@@ -98,7 +98,8 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
 
   const fetchBanks = useCallback(
     async (cdcId: number, date:string) => {
-      if (bankCache.current[cdcId]) return bankCache.current[cdcId] as BankUpdate; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
+      
+      // if (bankCache.current[cdcId]) return bankCache.current[cdcId] as BankUpdate; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
       setLoadingBanks(true);
       try {
         const response: BankUpdate = await getBanks(cdcId, date);

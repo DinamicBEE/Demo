@@ -62,8 +62,7 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     ) => {
       try {
         setError('');
-        const queryKey = `${store}-${startDate.toISOString()}-${endDate.toISOString()}`;
-
+        const queryKey = `${store}-${startDate.toISOString()}-${endDate.toISOString()}`; 
         const pageKey = `${queryKey}-page-${page}`;
 
         if (isSearch) {

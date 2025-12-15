@@ -145,7 +145,7 @@ function FooterClousing({
     }
 
     const allHaveCoupons = ref != undefined ? ref.lines.every(
-      (line) => line.coupons.length > 0 || line.isEdit
+      (line) => line.coupons.length > 0 || line.isEdit || line.supplementsQuantity > 0
     ) : false;
 
     if (!allHaveCoupons && isConfirm === false && ref != undefined && ref.lines.length > 0) {
@@ -157,7 +157,7 @@ function FooterClousing({
       });
       return;
     }
-    console.log('header[clousingId]?.difference', header[clousingId]?.difference);
+    //console.log('header[clousingId]?.difference', header[clousingId]?.difference);
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
 
       setOpenDialogDifference(true);
