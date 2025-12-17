@@ -40,7 +40,8 @@ export interface StarbucksTableRow {
   data: HeaderDetailsInfoModel;
   cash: CashStarbucksModel[];
   tdc: TDCStarbucksModel[];
-  cxc: CXCModel[]
+  //cxc: CXCModel[]
+  cxcAmount: number;
 }
 
 export interface HeaderDetailsInfoModel {

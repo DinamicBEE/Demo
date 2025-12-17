@@ -211,15 +211,15 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       voucher: []
     });
 
-    let cxcDataDummy = [...cxcData];
-    cxcDataDummy.push({
-      id: 3,
-      currency: "Total (MXN)",
-      total: 0,
-      exchangeRate: 0,
-      isOpen: line.status === "Abierto" ? true : false,
-      originalCurrency: cxcTotal,
-    });
+    // let cxcDataDummy = [...cxcData];
+    // cxcDataDummy.push({
+    //   id: 3,
+    //   currency: "Total (MXN)",
+    //   total: 0,
+    //   exchangeRate: 0,
+    //   isOpen: line.status === "Abierto" ? true : false,
+    //   originalCurrency: cxcTotal,
+    // });
     const header: HeaderDetailsInfoModel = {
       date: line.date,
       cdc: line.cdc,
@@ -235,7 +235,8 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       data: header,
       cash: cashModified,
       tdc: creditCardDataDummy,
-      cxc: cxcDataDummy
+      //cxc: cxcDataDummy,
+      cxcAmount: response.data.cxcAmount || 0, //TODO: ingresar cxc
     }
 
     return starbucksData;

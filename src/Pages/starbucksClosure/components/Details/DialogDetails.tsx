@@ -43,7 +43,7 @@ import { HStack } from '@chakra-ui/react';
 function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDetailsProps) {
   const [cashRows, setCashRows] = useState<CashStarbucksModel[]>([]);
   const [tdcRows, setTdcRows] = useState<TDCStarbucksModel[]>([]);
-  const [cxcRows, setCxcRows] = useState<CXCModel[]>([]);
+  const [cxcRows, setCxcRows] = useState<number>(0) //<CXCModel[]>([]);
   const [generalData, setGeneralData] = useState<HeaderDetailsInfoModel>(
     {} as HeaderDetailsInfoModel
   );
@@ -68,7 +68,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
       setGeneralData(data.data);
       setCashRows(data.cash);
       setTdcRows(data.tdc);
-      setCxcRows(data.cxc);
+      //setCxcRows(data.cxc);
 
       setDialogLoading(false);
     }
@@ -144,19 +144,19 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
     [tdcRows]
   );
 
-  const totalCXC = useMemo(
-    () =>
-      cxcRows.reduce(
-        (acc, row) =>
-          row.currency !== "Total (MXN)" ? acc + row.originalCurrency : acc,
-        0
-      ),
-    [cxcRows]
-  );
+  // const totalCXC = useMemo(
+  //   () =>
+  //     cxcRows.reduce(
+  //       (acc, row) =>
+  //         row.currency !== "Total (MXN)" ? acc + row.originalCurrency : acc,
+  //       0
+  //     ),
+  //   [cxcRows]
+  // );
 
   const totalGlobal = useMemo(
-    () => totalCash + totalTDC + totalCXC,
-    [totalCash, totalTDC, totalCXC]
+    () => totalCash + totalTDC + cxcRows,
+    [totalCash, totalTDC, cxcRows]
   );
 
   useEffect(() => {
@@ -210,42 +210,45 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
             }
       );
       setTdcRows(newTdcRows);
-    } else if (keyValue && keyValue[0] === "CXC" && keyValue.length > 1) {
-      const exchangeRate =
-        cxcRows.find((item) => item.id === id)?.exchangeRate || 0;
-      newValue =
-        keyValue[1] === "total"
-          ? parseFloat(value)
-          : parseFloat(value) / exchangeRate;
-      newValueOriginalCurrency =
-        keyValue[1] === "total"
-          ? parseFloat(value) * exchangeRate
-          : parseFloat(value);
-      const updatedCxcRows = cxcRows.map((item: CXCModel) =>
-        item.id === id
-          ? {
-              ...item,
-              total: newValue,
-              originalCurrency: newValueOriginalCurrency,
-            }
-          : item
-      );
-      const totalCXC = updatedCxcRows.reduce(
-        (acc, row) =>
-          row.currency != "Total (MXN)" ? acc + row.originalCurrency : acc,
-        0
-      );
-      const newCxcRows = updatedCxcRows.map((row) =>
-        row.currency != "Total (MXN)"
-          ? row
-          : {
-              ...row,
-
-              originalCurrency: totalCXC,
-            }
-      );
-      setCxcRows(newCxcRows);
+    } else if (keyValue && keyValue[0] === "CXC"){
+      setCxcRows(parseFloat(value));
     }
+    // else if (keyValue && keyValue[0] === "CXC" && keyValue.length > 1) {
+    //   const exchangeRate =
+    //     cxcRows.find((item) => item.id === id)?.exchangeRate || 0;
+    //   newValue =
+    //     keyValue[1] === "total"
+    //       ? parseFloat(value)
+    //       : parseFloat(value) / exchangeRate;
+    //   newValueOriginalCurrency =
+    //     keyValue[1] === "total"
+    //       ? parseFloat(value) * exchangeRate
+    //       : parseFloat(value);
+    //   const updatedCxcRows = cxcRows.map((item: CXCModel) =>
+    //     item.id === id
+    //       ? {
+    //           ...item,
+    //           total: newValue,
+    //           originalCurrency: newValueOriginalCurrency,
+    //         }
+    //       : item
+    //   );
+    //   const totalCXC = updatedCxcRows.reduce(
+    //     (acc, row) =>
+    //       row.currency != "Total (MXN)" ? acc + row.originalCurrency : acc,
+    //     0
+    //   );
+    //   const newCxcRows = updatedCxcRows.map((row) =>
+    //     row.currency != "Total (MXN)"
+    //       ? row
+    //       : {
+    //           ...row,
+
+    //           originalCurrency: totalCXC,
+    //         }
+    //   );
+    //   setCxcRows(newCxcRows);
+    // }
   }
 
   async function sendClousing(isConfirm: boolean) {
@@ -253,17 +256,18 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
 
     const cashTotalIndex = cashRows.findIndex(row => row.currency === "Total (MXN)");
     const tdcTotalIndex = tdcRows.findIndex(row => row.nameBank === "Total (MXN)");
-    const cxcTotalIndex = cxcRows.findIndex(row => row.currency === "Total (MXN)");
+    //const cxcTotalIndex = cxcRows.findIndex(row => row.currency === "Total (MXN)");
     
     cashRows.splice(cashTotalIndex, 1);
     tdcRows.splice(tdcTotalIndex, 1);
-    cxcRows.splice(cxcTotalIndex, 1);
+    //cxcRows.splice(cxcTotalIndex, 1);
     
     const body:StarbucksTableRow = {
       data: generalData,
       cash: cashRows,
       tdc: tdcRows,
-      cxc: cxcRows
+      //cxc: cxcRows,
+      cxcAmount: cxcRows
     }
 
     try {
@@ -544,20 +548,33 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
                         <Table.ColumnHeader textAlign="center">
                           Importe
                         </Table.ColumnHeader>
-                        <Table.ColumnHeader textAlign="center">
+                        {/* <Table.ColumnHeader textAlign="center">
                           Tasa de cambio
                         </Table.ColumnHeader>
                         <Table.ColumnHeader textAlign="center">
                           Monto MXN
-                        </Table.ColumnHeader>
+                        </Table.ColumnHeader> */}
                       </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
-                      {cxcRows.length > 0 &&
-                        cxcRows.map((row: CXCModel, index:number) => (
-                          <Table.Row key={index}>
+                      {cxcRows  &&
+                        // cxcRows.map((row: CXCModel, index:number) => (
+                          <Table.Row key={0}>
                             <Table.Cell textAlign="center">
+                              <Text> CXC </Text>
+                            </Table.Cell>
+                            <Table.Cell textAlign="center">
+                               <TableInput
+                                  id={0}
+                                  disabled={!tdcRows[0].isOpen}
+                                  value={cxcRows}
+                                  currency={true}
+                                  keyValue={"CXC"}
+                                  onChange={updateAmmount}
+                                />
+                            </Table.Cell>
+                            {/* <Table.Cell textAlign="center">
                               <Text>
                                 {row.currency != "Total (MXN)"
                                   ? "CXC - " + row.currency
@@ -579,8 +596,8 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
                                   ""
                                 )}
                               </Text>
-                            </Table.Cell>
-                            <Table.Cell textAlign="center">
+                            </Table.Cell> */}
+                            {/* <Table.Cell textAlign="center">
                               <Text>
                                 {row.currency != "Total (MXN)" ? (
                                   <FormatNumber
@@ -612,9 +629,10 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
                                   />
                                 )}
                               </Text>
-                            </Table.Cell>
+                            </Table.Cell> */}
                           </Table.Row>
-                        ))}
+                        // ))
+                        }
                     </Table.Body>
                   </Table.Root>
                 </Table.ScrollArea>
