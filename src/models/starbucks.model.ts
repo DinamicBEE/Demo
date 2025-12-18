@@ -40,7 +40,8 @@ export interface StarbucksTableRow {
   data: HeaderDetailsInfoModel;
   cash: CashStarbucksModel[];
   tdc: TDCStarbucksModel[];
-  cxc: CXCModel[]
+  //cxc: CXCModel[]
+  cxcAmount: number;
 }
 
 export interface HeaderDetailsInfoModel {
@@ -143,6 +144,7 @@ export interface ClousingSaveStarbucksModel {
     total: TotalModel;
     lines: StarbucksToSend[];
   }
+  cxcAmount: number;
 }
 
 export interface StarbucksBanksModel {

@@ -152,7 +152,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
           creditCardDataDummy.push({
             id: 796,
             nameBank: "Santander",
-            idBank: 670,
+            idBank: 43,
             total: 0,
             pos:0,
             currencyExternalId: 5,
@@ -169,19 +169,19 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         let bankId: number = 0;
         switch (bank.bankName) {
           case "Banamex - CITI":
-            bankId = 656;
+            bankId = 28;
             break;
           case "BBVA Bancomer":
-            bankId = 660;
+            bankId = 4;
             break;
           case "BBVA Bancomer USD":
-            bankId = 662;
+            bankId = 13;
             break;
           case "Santander":
-            bankId = 670;
+            bankId = 43;
             break;
           case "Amexco":
-            bankId = 653;
+            bankId = 3;
             break;
         }
         return {
@@ -211,15 +211,15 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       voucher: []
     });
 
-    let cxcDataDummy = [...cxcData];
-    cxcDataDummy.push({
-      id: 3,
-      currency: "Total (MXN)",
-      total: 0,
-      exchangeRate: 0,
-      isOpen: line.status === "Abierto" ? true : false,
-      originalCurrency: cxcTotal,
-    });
+    // let cxcDataDummy = [...cxcData];
+    // cxcDataDummy.push({
+    //   id: 3,
+    //   currency: "Total (MXN)",
+    //   total: 0,
+    //   exchangeRate: 0,
+    //   isOpen: line.status === "Abierto" ? true : false,
+    //   originalCurrency: cxcTotal,
+    // });
     const header: HeaderDetailsInfoModel = {
       date: line.date,
       cdc: line.cdc,
@@ -235,7 +235,8 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
       data: header,
       cash: cashModified,
       tdc: creditCardDataDummy,
-      cxc: cxcDataDummy
+      //cxc: cxcDataDummy,
+      cxcAmount: response.data.cxcAmount || 0, //TODO: ingresar cxc
     }
 
     return starbucksData;
@@ -405,6 +406,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
         }
       })
     },
+    cxcAmount: data.cxcAmount
   }
 
   const response = await api.post(

@@ -246,9 +246,9 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                     <Table.ColumnHeader textAlign="center">
                       No. Cheque
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="end">
+                    {/*<Table.ColumnHeader textAlign="end">
                       Importe original
-                    </Table.ColumnHeader>
+                    </Table.ColumnHeader>*/}
                     <Table.ColumnHeader textAlign="end">
                       Importe convertido
                     </Table.ColumnHeader>
@@ -273,7 +273,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                         <Text>{item.check}</Text>
                       </Table.Cell>
 
-                      <Table.Cell textAlign="end">
+                      {/* <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
                             value={item.amount}
@@ -281,7 +281,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                             currency="USD"
                           />
                         </Text>
-                      </Table.Cell>
+                      </Table.Cell> */}
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber
