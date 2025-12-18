@@ -68,7 +68,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
       setGeneralData(data.data);
       setCashRows(data.cash);
       setTdcRows(data.tdc);
-      //setCxcRows(data.cxc);
+      setCxcRows(data.cxcAmount);
 
       setDialogLoading(false);
     }
@@ -558,8 +558,6 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
                     </Table.Header>
 
                     <Table.Body>
-                      {cxcRows  &&
-                        // cxcRows.map((row: CXCModel, index:number) => (
                           <Table.Row key={0}>
                             <Table.Cell textAlign="center">
                               <Text> CXC </Text>
@@ -567,72 +565,14 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
                             <Table.Cell textAlign="center">
                                <TableInput
                                   id={0}
-                                  disabled={!tdcRows[0].isOpen}
+                                  disabled={!cashRows[0]?.isOpen}
                                   value={cxcRows}
                                   currency={true}
                                   keyValue={"CXC"}
                                   onChange={updateAmmount}
                                 />
                             </Table.Cell>
-                            {/* <Table.Cell textAlign="center">
-                              <Text>
-                                {row.currency != "Total (MXN)"
-                                  ? "CXC - " + row.currency
-                                  : row.currency}
-                              </Text>
-                            </Table.Cell>
-                            <Table.Cell textAlign="center">
-                              <Text>
-                                {row.currency != "Total (MXN)" ? (
-                                  <TableInput
-                                    disabled={!row.isOpen}
-                                    value={row.total}
-                                    id={row.id || 0}
-                                    currency={true}
-                                    keyValue={"CXC-total"}
-                                    onChange={updateAmmount}
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                              </Text>
-                            </Table.Cell> */}
-                            {/* <Table.Cell textAlign="center">
-                              <Text>
-                                {row.currency != "Total (MXN)" ? (
-                                  <FormatNumber
-                                    value={row.exchangeRate}
-                                    style="currency"
-                                    currency="USD"
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                              </Text>
-                            </Table.Cell>
-                            <Table.Cell textAlign="center">
-                              <Text textAlign={row.currency != "Total (MXN)" ? "center": "right"}>
-                                {row.currency != "Total (MXN)" ? (
-                                  <TableInput
-                                    disabled={!row.isOpen}
-                                    value={row.originalCurrency}
-                                    id={row.id || 0}
-                                    currency={true}
-                                    keyValue={"CXC-original"}
-                                    onChange={updateAmmount}
-                                  />
-                                ) : (
-                                  <FormatNumber
-                                    value={row.originalCurrency}
-                                    style="currency"
-                                    currency="USD"
-                                  />
-                                )}
-                              </Text>
-                            </Table.Cell> */}
                           </Table.Row>
-                        // ))
-                        }
                     </Table.Body>
                   </Table.Root>
                 </Table.ScrollArea>

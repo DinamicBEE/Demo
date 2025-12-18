@@ -46,12 +46,12 @@ export default defineConfig({
   // server: {
   //   proxy:{
   //     "/api":{
-  //       target: "http://mera-sandbox-alb-39209089.us-east-2.elb.amazonaws.com/",
+  //       target: "http://18.188.99.249:8085/",
   //       changeOrigin: true,
   //       rewrite: (path) => path.replace(/^\/api/, ''),
   //       secure: false,
   //     }
   //   }
   // }
-  
+
 });

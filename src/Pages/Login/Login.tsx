@@ -105,8 +105,7 @@ function Login() {
         <Box className="login-aside">
           <VStack className="aside-items-container">
             <Text className="login-phrase">
-              Corte de caja Mera <span style={{ color: "red" }}> VERSION DE PRUEBA</span>. <br />
-              Si desea ingresar a la versión completa, ingrese en: <br /> <a style={{ color: "red" }} href="https://mera-corte-caja.vercel.app/"> Mera-corte-caja </a>
+              Connecting people, enriching lives, inspiring new horizons.
             </Text>
           </VStack>
         </Box>

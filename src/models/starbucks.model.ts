@@ -144,6 +144,7 @@ export interface ClousingSaveStarbucksModel {
     total: TotalModel;
     lines: StarbucksToSend[];
   }
+  cxcAmount: number;
 }
 
 export interface StarbucksBanksModel {

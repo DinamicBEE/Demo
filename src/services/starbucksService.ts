@@ -406,6 +406,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
         }
       })
     },
+    cxcAmount: data.cxcAmount
   }
 
   const response = await api.post(
