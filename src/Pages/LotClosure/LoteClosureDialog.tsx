@@ -147,7 +147,7 @@ function LoteClosureDialog({
                           />
                           <CurrencyInput
                             name={"Corte caja"}
-                            value={bank.totalCrc}
+                            value={bank.totalPos}
                             loading={false}
                           />
                           <CurrencyInput
