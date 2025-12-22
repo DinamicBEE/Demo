@@ -830,7 +830,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         },
         tdc: tdcStarbucks,
         cash: cashStarbucks,
-        cxc: []
+        cxcAmount: 0
       }
       saveStarbucksClousing(dataService.clousingId, starbucksBody, isConfirm);
     }
