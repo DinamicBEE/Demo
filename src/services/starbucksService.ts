@@ -150,7 +150,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         const isSantanderPresent = creditCardDataDummy.some((card) => card.nameBank === "Santander");
         if (!isSantanderPresent) {
           creditCardDataDummy.push({
-            id: 796,
+            id: 669,
             nameBank: "Santander",
             idBank: 43,
             total: 0,
@@ -169,20 +169,21 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
         let bankId: number = 0;
         switch (bank.bankName) {
           case "Banamex - CITI":
-            bankId = 28;
+            bankId = 656;
             break;
           case "BBVA Bancomer":
-            bankId = 4;
+            bankId = 660;
             break;
           case "BBVA Bancomer USD":
-            bankId = 13;
+            bankId = 662;
             break;
           case "Santander":
-            bankId = 43;
+            bankId = 669;
             break;
           case "Amexco":
-            bankId = 3;
+            bankId = 706;
             break;
+            
         }
         return {
           id: null,
