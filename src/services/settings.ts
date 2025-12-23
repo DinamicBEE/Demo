@@ -21,7 +21,7 @@ export const REFRESH = `${AUTH_BASE}/v1/auth/refresh`;
 export const CLIENTSLIST = `${API_BASE}/clients/list`;
 
 export const CLIENTSPREPAY = `${API_BASE}/clients/clientPrepago`;
-export const GET_INTERCOMP_EMP_LIST = `/crc/cash-register-closure/crcproc/employees/employeeListInter`;
+export const GET_INTERCOMP_EMP_LIST = `${CRCPROC_BASE}/employees/employeeListInter`;
 export const GET_SUBS_LIST = `${API_BASE}/subsidiaria/subEmploye`;
 export const SENDCASHCLOUSING = `${API_BASE}/closure/save`;
 //Cierrre de Lote

@@ -5,6 +5,8 @@ import { TotalModel } from '@models/common.clousing.model';
 import { Employee } from '@models/employee.model';
 import { getListEmployesIntercompany, getSubsidiariesList } from '@services/intercompanyServices';
 import { SubsidiaryModal } from '@models/common.model';
+import { CLOUSING_KEY } from '@models/common.const';
+import { useHeaders } from '@context/home/headerContext';
 
 const intercompanyContext = createContext<IntercompanyContextType>({} as IntercompanyContextType);
 
@@ -16,6 +18,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 	const [employeeList, setEmployeeList] = useState<Employee[]>();
 	const [subsidiariesList, setSubsidiariesList] = useState<SubsidiaryModal[]>()
 	const intercompanyRef = useRef<IntercompanyContext>(intercompany);
+  const { updateTotal } = useHeaders();
 
 	const getIntercompanyData = useCallback(async (clousingId: number) => {
 
@@ -150,7 +153,7 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 
 			intercompanyRef.current = updateData;
 			setIntercompany(updateData)
-
+      updateTotal(newTotal.totalPhysical, clousingId, CLOUSING_KEY.INTERCOMPANY);
 		}, 
 		[intercompany]
 	);

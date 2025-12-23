@@ -164,7 +164,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
         item.id === itemId
           ? {
               ...item,
-              physicalAmount: parseFloat(value),
+              physicalAmount: parseFloat(value) || 0,
             }
           : item
     );

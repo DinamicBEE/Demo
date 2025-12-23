@@ -477,16 +477,15 @@ export const getIntercompanyClousing = async (
     const response = await api.get(INTERCOMPANY, {
       params: { idCashRegisterClosure: clousingId },
     });
-
-    const totalPhysical = response.data.reduce(
+    const totalPhysical = response.data.response.reduce(
       (acc: number, curr: any) => acc + Number(curr.physicalAmount),
       0
     );
-    const totalPOS = response.data.reduce(
-      (acc: number, curr: any) => acc + Number(curr.amount),
+    const totalPOS = response.data.response.reduce(
+      (acc: number, curr: any) => acc + Number(curr.amountPos),
       0
     );
-    const difference = totalPhysical - totalPOS;
+    const difference = totalPhysical - totalPOS;    
 
     const responseCopy = {
       id: clousingId,
@@ -496,9 +495,9 @@ export const getIntercompanyClousing = async (
         totalPhysical: totalPhysical,
         difference: difference,
       },
-      lines: response.data.map((line: any) => ({
+      lines: response.data.response.map((line: any) => ({
         ...line,
-        amount: Number(line.amount),
+        amount: Number(line.amountPos),
         physicalAmount: Number(line.physicalAmount),
         // Generate new UUID for null IDs, otherwise keep existing ID
         id: line.id === null ? "intercompany-" + uuidv4() : line.id,
@@ -830,7 +829,7 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         },
         tdc: tdcStarbucks,
         cash: cashStarbucks,
-        cxc: []
+        cxcAmount: 0
       }
       saveStarbucksClousing(dataService.clousingId, starbucksBody, isConfirm);
     }
