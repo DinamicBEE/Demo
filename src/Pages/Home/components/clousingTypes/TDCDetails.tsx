@@ -282,6 +282,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
                           />
                         </Text>
                       </Table.Cell> */}
+                      
                       <Table.Cell textAlign="end">
                         <Text>
                           <FormatNumber

@@ -157,7 +157,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         supplementsQuantity: 0,
         unitPrice: couponModel.amount,
         client: couponModel.clientCustom.toLocaleUpperCase(),
-        idClient: 3,
+        idClient: couponModel.clientId || 0,
         physical: couponModel.amount,
         totalPOS: couponModel.amount * 1,
         difference: 0,
@@ -292,7 +292,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                 "Cantidad",
                 "Cant. Complementos",
                 "Precio unitario",
-                "Total POS",
+                // "Total POS",
                 "Total físico",
                 "Diferencia",
               ].map((h) => (
@@ -361,7 +361,9 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                 </Table.Cell>
 
                 {/* Totales */}
-                {[item.totalPOS, item.physical, item.difference].map(
+                {[
+                  //item.totalPOS, 
+                  item.physical, item.difference].map(
                   (val, idx) => (
                     <Table.Cell key={idx} textAlign="end">
                       <FormatNumber
