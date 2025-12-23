@@ -182,8 +182,7 @@ export const getDetailStarbucks = async (line: StarbucksTableModel, banks: Starb
             break;
           case "Amexco":
             bankId = 706;
-            break;
-            
+            break;  
         }
         return {
           id: null,
