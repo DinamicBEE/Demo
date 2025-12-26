@@ -34,7 +34,6 @@ import {
   CustomersClousingProps,
 } from "@models/customer.model";
 import { CLOUSING_KEY } from "@models/common.const";
-import { useHeaders } from "@context/home/headerContext";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
@@ -45,7 +44,7 @@ import { handleErrorMessage } from "@utils/getValidationsError";
 
 const pageSize = 10;
 
-function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
+function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingProps) {
   const [currenciesForSelect, setcurrenciesForSelect] =
     useState<ListCollection>();
   const [currencies, setCurrencies] = useState<CurrencyModel[]>();
@@ -302,6 +301,7 @@ function CustomersClousing({ data, subsidiary }: CustomersClousingProps) {
         setCustomersData={setCustomersData}
         idCurrency={subsidiary.idCurrency}
         idClousing={data?.id ?? 0}
+        isStarbucks={isStarbucks}
       />
     </>
   );

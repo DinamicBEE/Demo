@@ -8,7 +8,6 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { Voucher, BankLineModel, TDCModel } from "@models/tdc.model";
 import { CLOUSING_KEY } from "@models/common.const";
 import Loading from "@components/Loading";
-import { useHeaders } from "@context/home/headerContext";
 import { CurrencyInputNumber } from "@components/NumericInput";
 import { useTDC } from "@hooks/tdcClousing/useTDC";
 
@@ -24,7 +23,6 @@ function TDCClousing({ data, idCurrency, isStarbucks }: any) {
 
   const { setFooterData } = useFooter();
   const { getTDCData, tdc, tdcLoading } = useTDCContext();
-  const { updateTotal } = useHeaders();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<BankLineModel[]>([]);
 

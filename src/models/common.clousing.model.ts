@@ -308,6 +308,7 @@ export interface CustomerClousingFormProps {
   title?: string;
   idCurrency: number;
   idClousing: number;
+  isStarbucks: boolean;
 }
 
 export interface GeneralInfoProps {

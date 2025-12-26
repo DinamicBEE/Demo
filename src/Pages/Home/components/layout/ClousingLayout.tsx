@@ -300,6 +300,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                     <CustomersClousing
                       data={employee}
                       subsidiary={subsidiary}
+                      isStarbucks={isStarbucks}
                     />
                   </Suspense>
                 )}

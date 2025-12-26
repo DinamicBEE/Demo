@@ -5,6 +5,7 @@ import { SubsidiaryModal } from "./common.model";
 export interface CustomersClousingProps {
   data: ClousingLinesModel | null;
   subsidiary: SubsidiaryModal;
+  isStarbucks: boolean;
 }
 
 export interface CustomerContextType {

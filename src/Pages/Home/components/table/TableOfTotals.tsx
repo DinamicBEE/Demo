@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
@@ -29,6 +29,12 @@ function TableOfTotals({
     useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
+
+  //TODO: eliminar SOLO USO DE DEBUG
+  // useEffect(()=>{
+  //   const ids = data.map(d=>d.id)
+  //   console.log(ids)
+  // },[data])
 
   function handleExportCSV() {
 
