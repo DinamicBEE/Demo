@@ -113,6 +113,14 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const couponsList = await getCouponData(cdc, data?.closingStartDate);
 
+      //TODO: Filtro para test cupones 
+
+      const cupfilt = couponsList.filter(c => c.clientCustom.toLowerCase().includes("mobility")).map(c => c )
+      console.log("Cupones filtrados: ", cupfilt);
+      const red = couponsList.reduce((acc, c) => acc + c.amount, 0);
+      console.log("Total cupones filtrados: ", red);
+
+
       setPrepaid(prepaidData);
       setCoupons(couponsList);
 
@@ -188,11 +196,16 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     clientLine.coupons.push(couponModel);
     clientLine.couponsSelected?.push(couponModel);
+    console.log("linea", clientLine)
 
     const couponPhysicalValue = getCouponPhysicalValue(clientLine.coupons);
+    //console.log("suma de cupone", couponPhysicalValue)
     const supplementsValue =
       (clientLine.supplementsQuantity || 0) * (clientLine.unitPrice || 0);
     const newTotalFisico = couponPhysicalValue + supplementsValue;
+    //console.log("Total fisico + complementos",newTotalFisico)
+    console.log("totalpos guardado", clientLine!.totalPOS )
+    console.log("largo", clientLine!.coupons.filter((c) => !c.isExpired).length)
 
     const updatePrepaid: PrepaidLineModel[] = prepaid.lines.map((item) =>
       item.id === clientLine!.id
@@ -203,7 +216,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
             physical: newTotalFisico,
             totalPOS:
               clientLine!.coupons.filter((c) => !c.isExpired).length *
-              (clientLine?.totalPOS || 0),
+              (clientLine?.unitPrice || 0),
             difference:  newTotalFisico - (clientLine!.totalPOS || 0),
             edit:
               clientLine!.coupons.some((c) => c.isExpired) ||
