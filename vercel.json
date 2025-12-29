@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/:path*", "destination": "http://18.188.99.249:8085/:path*" },
+    { "source": "/api/:path*", "destination": "http://mera-sandbox-alb-39209089.us-east-2.elb.amazonaws.com/:path*" },
     { "source": "/(.*)", "destination": "/" }
   ]
 }
