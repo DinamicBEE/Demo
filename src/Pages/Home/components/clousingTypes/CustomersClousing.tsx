@@ -116,7 +116,9 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
       }
 
     }
-    fetchCustomers();
+    if(!data?.closingConfirmation){
+      fetchCustomers();
+    }
   }, []);
   
 
