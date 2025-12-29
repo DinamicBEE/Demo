@@ -203,7 +203,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
             physical: newTotalFisico,
             totalPOS:
               clientLine!.coupons.filter((c) => !c.isExpired).length *
-              (clientLine?.totalPOS || 0),
+              (clientLine?.unitPrice || 0),
             difference:  newTotalFisico - (clientLine!.totalPOS || 0),
             edit:
               clientLine!.coupons.some((c) => c.isExpired) ||
