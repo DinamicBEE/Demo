@@ -8,7 +8,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -1093,3 +1093,32 @@ export const processFiles = async (
     };
   }
 };
+
+export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue: number) => {
+  try {
+
+    const startDateFormat = format(startDate, "yyyy-MM-dd");
+    const endDateFormat = format(endDate, "yyyy-MM-dd");
+
+    const response = await api.get(UPDATE_SALESTICKET,
+      {
+        params: {
+          start:startDateFormat,
+          end:endDateFormat,
+          revenue:revenue
+        }
+      }
+    )
+
+    if(response.status === 200){
+      return true
+    }
+    
+    return false;
+
+  } catch (error) {
+
+    return false;
+    
+  }
+}

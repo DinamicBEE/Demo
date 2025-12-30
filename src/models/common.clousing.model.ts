@@ -62,6 +62,7 @@ export interface ClousingLinesModel {
   isRoleEditable?: boolean;
   modificationUser: string;
   zone: string;
+  revenueId?: number;
 }
 
 export type ClousingLinesTotals =
@@ -135,6 +136,7 @@ export interface ClousingContextType {
   header: HeaderClousingModel;
   data: ClousingLinesModel[];
   totals: TotalsModel;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   error: string;
   tdcHeader: TDC[];
