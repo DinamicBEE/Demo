@@ -1112,9 +1112,7 @@ export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue:
 
     if(response.status === 200){
       return true
-    }
-    
-    return false;
+    } 
 
   } catch (error) {
 

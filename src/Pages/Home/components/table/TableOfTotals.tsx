@@ -13,6 +13,7 @@ import GeneralInfo from "./GeneralInfo";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
 import { updateSalesTicket } from "@services/clousingService";
+import { toast } from "@utils/Toast";
 
 function TableOfTotals({
   subsidiary,
@@ -89,13 +90,23 @@ function TableOfTotals({
   const updateticket = async () => {
     setLoading(true);
 
-    const response = await updateSalesTicket(startDate, endDate, sortedData[0].revenueId ||0);
-
-    if(response){
-      await getInfo( store.id, 0, startDate, endDate, true );
-    }
-
-    setLoading(false);
+    try {
+      
+      const response = await updateSalesTicket(startDate, endDate, sortedData[0].revenueId ||0);
+  
+      if(response){
+      
+        await getInfo( store.id, 0, startDate, endDate, true );
+      
+      } else {
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      toast("Error al actualizar el ticket", "error");
+      setLoading(false);
+    } 
   }
 
   return (
