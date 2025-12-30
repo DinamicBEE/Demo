@@ -13,6 +13,8 @@ import {
   CustomerModel,
 } from "@models/customer.model";
 import { ResponseModel } from "@models/common.clousing.model";
+import { FilterOption } from "@models/reports.model";
+import { getCustomers } from "@services/catalogService";
 
 const customerContext = createContext<CustomerContextType>(
   {} as CustomerContextType
@@ -26,6 +28,7 @@ export function CustomerClousingProvider({
   children: ReactNode;
 }) {
   const [customer, setCustomer] = useState<CustomerContext>({});
+  const [customerList, setCustomerList] = useState<FilterOption[]>([]);
   const [customerLoading, setCustomerLoading] = useState(false);
   const [error, setError] = useState("");
   const customerRef = useRef<CustomerContext>(customer);
@@ -83,6 +86,23 @@ export function CustomerClousingProvider({
     []
   );
 
+  const getCustomerList = useCallback(async () => {
+    
+    if(customerList.length > 0) {
+      return customerList;
+    }
+    
+    try {
+      const response = await getCustomers(true);
+
+      setCustomerList(response);
+      return response;
+      
+    } catch (error) {
+      return [] as FilterOption[];
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       customer,
@@ -91,8 +111,9 @@ export function CustomerClousingProvider({
       getCustomerData,
       setCustomerData,
       customerRef,
+      getCustomerList
     }),
-    [customer, customerLoading, error, getCustomerData, setCustomerData, customerRef]
+    [customer, customerLoading, error, getCustomerData, setCustomerData, customerRef, getCustomerList]
   );
 
   return (

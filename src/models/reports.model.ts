@@ -43,7 +43,7 @@ export interface ReportFilterModel {
 }
 
 export interface FilterOption {
-  value: string;
+  value: number;
   label: string;
 }
 

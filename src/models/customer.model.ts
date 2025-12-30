@@ -1,5 +1,6 @@
 import { ClousingLinesModel, ResponseModel, TotalModel } from "./common.clousing.model";
 import { SubsidiaryModal } from "./common.model";
+import { FilterOption } from "./reports.model";
 
 
 export interface CustomersClousingProps {
@@ -14,6 +15,7 @@ export interface CustomerContextType {
     getCustomerData: (clousingId: number) => Promise<ResponseModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
     customerRef: React.MutableRefObject<CustomerContext>;
+    getCustomerList: () => Promise<FilterOption[]>;
 }
 
 export interface CustomerContext {

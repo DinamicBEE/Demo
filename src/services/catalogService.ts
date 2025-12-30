@@ -2,7 +2,7 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CLIENTSLIST, CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
+import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS, 
   ZONES} from "./settings";
 import Cookies from "js-cookie";
@@ -15,7 +15,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
     case "subsidiary":
       const subsidiaries = await getSubsidiaries();
       return subsidiaries.map(item => ({
-        value: item.id.toString(),
+        value: item.id,
         label: item.name
       }));
     case "customer":
@@ -96,7 +96,7 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async (isGeneral: boolean) => {
+export const getCustomers = async (isGeneral: boolean): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
       { params: { clientType: isGeneral ? "general" : "especial" } }
@@ -110,7 +110,7 @@ export const getCustomers = async (isGeneral: boolean) => {
         
     return transformedData;
   } catch (error) {
-    return [];
+    return [] as FilterOption[];
   }
 };
 
