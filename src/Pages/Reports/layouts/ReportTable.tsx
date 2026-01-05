@@ -12,6 +12,8 @@ import { selectOption } from "@models/common.model";
 import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import { IoPlay } from "react-icons/io5";
 import { Tooltip } from "@components/ui/tooltip"
+import useSortableTable from "@hooks/useSortableTable/useSortableTable";
+import { SortableHeader } from "@utils/table";
 
 
 function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
@@ -21,6 +23,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     const [pageSize, setPageSize] = useState<number>(100)
     const { reportData, loading } = useReportsContext();
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+    const { sortedData, handleSort, getSortIcon } = useSortableTable<ReportTypeMap[K][]>(reportData);
 
     const [page, setPage] = useState<number>(1);
     const startRange = (page - 1) * pageSize;
@@ -47,14 +50,15 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             const isException = REPORT_EXECPTION.includes(currentReport);
             let items: any;
             if(isException){
+                //TODO falta cambio y manejo de interfaces
                 items = reportData?.summary?.slice(startRange, endRange);
             } else {
-                items = reportData?.slice(startRange, endRange);
+                items = sortedData?.slice(startRange, endRange);
             }
             setVisibleItems(items || []);
             setCountTable(reportData?.length);
         }
-    }, [page, reportData, pageSize]);
+    }, [page, reportData, pageSize, sortedData]);
 
     function renderCellContent(key: keyof ReportTypeMap[K], value: any, index:number) {
         const isNumberExceptions = NUMBERTYPE_EXECPTION.includes(key.toString().toLocaleLowerCase())
@@ -126,7 +130,8 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                             <Table.Row>
 
                               {headers.map((header) => (
-                                <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
+                                <SortableHeader key={String(header.key)} columnKey={String(header.key)} label={header.label} handleSort={handleSort} getSortIcon={getSortIcon} />
+                                // <Table.ColumnHeader key={String(header.key)}>{header.label}</Table.ColumnHeader>
                               ))}
                             </Table.Row>
                           </Table.Header>
