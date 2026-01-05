@@ -8,6 +8,8 @@ import { getCDCStarbucks, getStarbucksData } from "@services/starbucksService";
 import Loading from "@components/Loading";
 import StarbucksTable from "./components/Tables/StarbucksTable";
 import { StarbucksTableDataModel, StarbucksTableHeader } from "@models/starbucks.model";
+import { toast } from "@utils/Toast";
+import { updateSalesTicket } from "@services/clousingService";
 
 
 function StarbucksClosure() {
@@ -74,6 +76,28 @@ function StarbucksClosure() {
         return foundItem ? foundItem.label : "";
     }
 
+    const updateticket = async () => {
+    setLoading(true);
+
+    try {
+        if(startDate == null || endDate == null) return
+        const response = await updateSalesTicket(startDate, endDate, data.lines[0].revenueId ||0);
+    
+        if(response){
+        
+        await getTableData();
+        
+        } else {
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+        }
+        
+        setLoading(false);
+    } catch (error) {
+        toast("Error al actualizar el ticket", "error");
+        setLoading(false);
+    } 
+    }
+
     return (
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
             <VStack align="start">
@@ -126,7 +150,7 @@ function StarbucksClosure() {
                             />
                         </Field.Root>
 
-                        <GridItem colSpan={1} />
+                        {/* <GridItem colSpan={1} /> */}
 
                         <Button
                             colorPalette="meraInfo"
@@ -141,6 +165,21 @@ function StarbucksClosure() {
                             }
                             >
                             Buscar
+                        </Button>
+
+
+                        <Button
+                            colorPalette="meraInfo"
+                            onClick={() => updateticket()}
+                            disabled={
+                                selectedCDC !== 0 &&
+                                startDate !== null &&
+                                endDate !== null
+                                ? false
+                                : true
+                            }
+                        >
+                            Actualizar ventas
                         </Button>
                         
                     </Grid>
