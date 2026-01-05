@@ -484,7 +484,7 @@ export const getReports = async (request: ReporGeneralRequesttModel): Promise<an
     }) : await api.get(reportConfig.url)
 
     response = reportConfig.handleData != null
-      ? reportConfig.handleData(responseData.data)
+      ? reportConfig.handleData(responseData.data, request.filterOpction)
       : responseData.data
     return response
   

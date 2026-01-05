@@ -2,11 +2,12 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, LOCATIONS,
+import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GETALLSTORES, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS, 
   ZONES} from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
+import { ERROR_TYPES } from "@models/const/reports.const";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -20,6 +21,14 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
       }));
     case "customer":
       return await getCustomers(false);
+    case "errorType":
+      return ERROR_TYPES.map(item => ({
+        value: item.value,
+        label: item.label
+      }));
+
+    case "stores":
+      return await getAllStores();
   
     default:
       return [];
@@ -314,3 +323,21 @@ export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
   }
 }
 
+const getAllStores = async (): Promise<FilterOption[]> => {
+
+  try {
+    const response = await api.get(GETALLSTORES);
+    const transformedData = response.data.map((store: any) => {
+      return {
+        value: store.id,
+        label: store.cdcName,
+      };
+    });
+
+    return transformedData;
+
+  } catch (error ) {
+    return [] as FilterOption[];
+  }
+  
+}

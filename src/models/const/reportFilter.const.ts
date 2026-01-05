@@ -4,13 +4,15 @@ export const REPORT_CONFIG = [
   {
     report: REPORT_KEY.REPSYNC_ERRORS,
     name: REPORT_NAME.REPSYNC_ERRORS,
-    date: false,
+    date: true,
     dateRange: false,
     subsidiary: false,
     zone: false,
     cdc: false,
     multicdc: false,
     customer: false,
+    errorType: true,
+    stores: true
   },
   {
     report: REPORT_KEY.REPDES_01,
@@ -22,6 +24,8 @@ export const REPORT_CONFIG = [
     multicdc: true,
     cdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPMIX_01,
@@ -33,6 +37,8 @@ export const REPORT_CONFIG = [
     multicdc: true,
     cdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPMIX_02,
@@ -44,6 +50,8 @@ export const REPORT_CONFIG = [
     zone: true,
     cdc: true,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPVEN_01,
@@ -55,6 +63,8 @@ export const REPORT_CONFIG = [
     multicdc: true,
     cdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPVEN_02,
@@ -66,6 +76,8 @@ export const REPORT_CONFIG = [
     zone: true,
     cdc: true,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPVEN_03,
@@ -77,6 +89,8 @@ export const REPORT_CONFIG = [
     multicdc: true,
     cdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPVEN_04,
@@ -88,6 +102,8 @@ export const REPORT_CONFIG = [
     multicdc: true,
     cdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPVOI_01,
@@ -99,6 +115,8 @@ export const REPORT_CONFIG = [
     zone: true,
     cdc: true,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPCUP_01,
@@ -110,6 +128,8 @@ export const REPORT_CONFIG = [
     cdc: false,
     multicdc: true,
     customer: true,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPBAN_01,
@@ -121,6 +141,8 @@ export const REPORT_CONFIG = [
     cdc: false,
     multicdc: true,
     customer: false,
+    errorType: false,
+    stores: false
   },
   {
     report: REPORT_KEY.REPBAN_02,
@@ -132,6 +154,8 @@ export const REPORT_CONFIG = [
     cdc: false,
     multicdc: true,
     customer: false,
+    errorType: false,
+    stores: false
   },
 ];
 
@@ -151,7 +175,9 @@ export const FILTER_LABELS = {
   items: 'Artículos',
   paymentMethod: 'Método de pago',
   currency: 'Moneda',
-  exchangeRate: 'Tipo de cambio'
+  exchangeRate: 'Tipo de cambio',
+  errorType: 'Tipo de error',
+  stores: 'Centros de consumo',
 };
 
 export type FilterKey = keyof Omit<typeof REPORT_CONFIG[0], 'report' | 'name'>;

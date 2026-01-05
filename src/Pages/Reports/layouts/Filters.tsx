@@ -46,6 +46,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [selectedCDC, setSelectedCDC] = useState<number[]>([]);
   const [zone, setZone] = useState<ListCollection<selectOption>>(createListCollection<selectOption>({ items: [] }));
   const [selectedZone, setSelectedZone] = useState<number[]>([])
+  const [selectedStore, setSelectedStore] = useState<number[]>([])
+  const [selectedErrorType, setSelectedErrorType] = useState<number[]>([])
   const [formattedDate, setFormattedDate] = useState<string>("");
 
   const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
@@ -78,6 +80,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     date: null,
     dateRange: null,
     subsidiary: [],
+    errorType: [],
+    stores: []
   }), []);
 
   const subsidiaries = useMemo(() =>
@@ -99,6 +103,8 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     cdc: false,
     multicdc: false,
     customer: false,
+    errorType: false,
+    stores: false
   };
 
   const filterConfig = useMemo(
@@ -172,12 +178,24 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     setSelectedCDC(ids);
     // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
+
+  const handleStoresChange = useCallback((ev: { value: string[] }) => {
+    const ids = ev.value.map(Number);
+    setSelectedStore(ids);
+    // setSelectedValues(prev => ({ ...prev, cdc: ids }));
+  }, []);
+
+  const handleErrorTypeChange = useCallback((ev: { value: string[] }) => {
+    const ids = ev.value.map(Number);
+    setSelectedErrorType(ids);
+    // setSelectedValues(prev => ({ ...prev, cdc: ids }));
+  }, []);
   
   // Cargar opciones de filtros
   const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: any) => {
     setLoadingFilters(prev => ({ ...prev, [filterKey]: true }));
     try {
-      if (currentReport === 100) return;
+      //if (currentReport === 100) return;
       const data = await getFilterOptions(filterKey, parentValue);
       setFilterData(prev => ({ ...prev, [filterKey]: data || [] }));
     } catch {
@@ -203,6 +221,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         allFilters.dateRange = startDate && endDate
           ? `${startDate.toISOString().split("T")[0]},${endDate.toISOString().split("T")[0]}`
           : null;
+      } else if (filterKey === "stores") {
+        allFilters.stores = filterData["stores"]?.filter(option => selectedStore.includes(option.value)).map(option => option.label);
+      } else if (filterKey === "errorType") {
+        allFilters.errorType = selectedErrorType;
       } else if (filterKey === "date") {
         allFilters.date = formattedDate
           ? `${new Date(formattedDate).toISOString().split("T")[0]}`
@@ -211,13 +233,13 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
     });
-
+    console.log(allFilters)
     await getReportData({
       report: currentReport ?? 0,
       filterOpction: allFilters
     });
     setLoading(false)
-  }, [filterConfig, selectedCDC, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);
+  }, [filterConfig, selectedCDC, selectedErrorType, selectedStore, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);
 
   const handleCleanSelects = (key: string, action: string) => {
     if (key === "subsidiary") {
@@ -247,6 +269,24 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         setSelectedCDC([]);
       }
     }
+    if (key === "stores") {
+      if (action === "all") {
+        const allIds = filterData["stores"]?.map(item => item.value as number);
+        if (allIds.length === selectedStore.length) return;
+        setSelectedStore(allIds);
+      } else {
+        setSelectedStore([]);
+      }
+    }
+    if (key === "errorType") {
+      if (action === "all") {
+        const allIds = filterData["errorType"]?.map(item => item.value as number);
+        if (allIds.length === selectedErrorType.length) return;
+        setSelectedErrorType(allIds);
+      } else {
+        setSelectedErrorType([]);
+      }
+    }
   }
 
   // Exportar CSV
@@ -271,7 +311,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (filterKey === "date") {
       return (
         <Field.Root w="100%">
-          <Field.Label>{FILTER_LABELS[filterKey]}</Field.Label>
+          <Field.Label>{FILTER_LABELS[filterKey]}{currentReport===100? "/Hora transacción" : ""}</Field.Label>
           <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate} />
         </Field.Root>
       );
@@ -333,7 +373,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     if (filterKey === "cdc" || filterKey === "multicdc") {
       return (
         <SelectRoot
-          multiple={filterKey === "multicdc"}
+          multiple={filterKey !== "cdc"}
           collection={cdc}
           onValueChange={handleCDCChange}
           value={selectedCDC}
@@ -356,6 +396,61 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         </SelectRoot>
       );
     }
+
+    if (filterKey === "errorType") {
+      return (
+        <SelectRoot
+          multiple={true}
+          collection={createListCollection({ items: filterData[filterKey] || [] })}
+          onValueChange={handleErrorTypeChange}
+          value={selectedErrorType}
+          disabled={filterData["errorType"]?.length === 0}
+        >
+          <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
+          <SelectTrigger clearable={true}>
+            <SelectValueText placeholder={filterData["errorType"]?.length === 0 ? "Sin datos" : "Selecciona"} />
+          </SelectTrigger>
+          <SelectContent>
+            {<Box>
+              {renderSelectAllButton(filterKey)}
+            </Box>}
+            {(filterData["errorType"] || []).map((option) => (
+              <SelectItem key={option.value} item={option}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
+      );
+    }
+
+    if (filterKey === "stores") {
+      return (
+        <SelectRoot
+          multiple={true}
+          collection={createListCollection({ items: filterData[filterKey] || [] })}
+          onValueChange={handleStoresChange}
+          value={selectedStore}
+          disabled={filterData["stores"]?.length === 0}
+        >
+          <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
+          <SelectTrigger clearable={true}>
+            <SelectValueText placeholder={filterData["stores"]?.length === 0 ? "Sin datos" : "Selecciona"} />
+          </SelectTrigger>
+          <SelectContent>
+            {<Box>
+              {renderSelectAllButton(filterKey)}
+            </Box>}
+            {(filterData["stores"] || []).map((option) => (
+              <SelectItem key={option.value} item={option}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
+      );
+    }
+
     // Otros filtros
     return (
       <SelectRoot

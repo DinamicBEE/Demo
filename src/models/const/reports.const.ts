@@ -87,4 +87,33 @@ export const MENU_CONFIG = [
 
 ];
 
-
+export const ERROR_TYPES = [
+  {
+    value: 1,
+    label: "PRODUCTO NO REGISTRADO"
+  },
+  {
+    value: 2,
+    label: "TENDER MEDIA NO REGISTRADO"
+  },
+  {
+    value: 3,
+    label: "DESCUENTO NO REGISTRADO"
+  },
+  {
+    value: 4,
+    label: "MONEDA NO REGISTRADA"
+  },
+  {
+    value: 5,
+    label: "EMPLEADO NO REGISTRADO"
+  },
+  {
+    value: 6,
+    label: "CENTRO DE CONSUMO NO REGISTRADO"
+  },
+  {
+    value: 7,
+    label: "Componentes"
+  },
+]

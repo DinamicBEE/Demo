@@ -83,6 +83,8 @@ export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
+export const GETALLSTORES = `${API_BASE}/subsidiaria/cdc`;
+
 // * Starbucks
 export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
 export const GET_BANKS = `${API_BASE}/starbucks/filters/bank`;
