@@ -34,7 +34,6 @@ import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
 import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import Loading from "@components/Loading";
-import { toast } from "@utils/Toast";
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -161,30 +160,10 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   }, [selectedZone]);
 
   // Manejo de selects
-  const handleSubsidiariesChange = useCallback((ev: { value: string[] }) => {
+  const handleSelectsChange = useCallback((setValues: React.Dispatch<React.SetStateAction<number[]>>, ev: { value: string[]}) =>{
     const ids = ev.value.map(Number);
-    setSelectedSubIds(ids);
-  }, []);
-
-  const handleZoneChange = useCallback((ev: { value: string[] }) => {
-    const ids = ev.value.map(Number);
-    setSelectedZone(ids);
-  }, []);
-
-  const handleCDCChange = useCallback((ev: { value: string[] }) => {
-    const ids = ev.value.map(Number);
-    setSelectedCDC(ids);
-  }, []);
-
-  const handleStoresChange = useCallback((ev: { value: string[] }) => {
-    const ids = ev.value.map(Number);
-    setSelectedStore(ids);
-  }, []);
-
-  const handleErrorTypeChange = useCallback((ev: { value: string[] }) => {
-    const ids = ev.value.map(Number);
-    setSelectedErrorType(ids);
-  }, []);
+    setValues(ids);
+  },[])
   
   // Cargar opciones de filtros
   const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: any) => {
@@ -325,7 +304,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         <SelectRoot
           multiple={true}
           collection={subsidiaries}
-          onValueChange={handleSubsidiariesChange}
+          onValueChange={ev => handleSelectsChange(setSelectedSubIds, ev)}
           value={selectedSubIds}
           
         >
@@ -351,7 +330,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         <SelectRoot
           multiple={true}
           collection={zone}
-          onValueChange={handleZoneChange}
+          onValueChange={ev => handleSelectsChange(setSelectedZone, ev)}
           value={selectedZone}
           disabled={selectedSubIds.length === 0}
         >
@@ -378,7 +357,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         <SelectRoot
           multiple={filterKey !== "cdc"}
           collection={cdc}
-          onValueChange={handleCDCChange}
+          onValueChange={ev => handleSelectsChange(setSelectedCDC, ev)}
           value={selectedCDC}
           disabled={selectedZone.length === 0}
         >
@@ -405,7 +384,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         <SelectRoot
           multiple={true}
           collection={createListCollection({ items: filterData[filterKey] || [] })}
-          onValueChange={handleErrorTypeChange}
+          onValueChange={ev => handleSelectsChange(setSelectedErrorType, ev)}
           value={selectedErrorType}
           disabled={filterData["errorType"]?.length === 0}
         >
@@ -432,7 +411,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         <SelectRoot
           multiple={true}
           collection={createListCollection({ items: filterData[filterKey] || [] })}
-          onValueChange={handleStoresChange}
+          onValueChange={ev => handleSelectsChange(setSelectedStore, ev)}
           value={selectedStore}
           disabled={filterData["stores"]?.length === 0}
         >
