@@ -34,6 +34,7 @@ import { fetchAndSetData } from "../../../utils/selectManagement";
 import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
 import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import Loading from "@components/Loading";
+import { toast } from "@utils/Toast";
 
 function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -50,11 +51,11 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const [selectedErrorType, setSelectedErrorType] = useState<number[]>([])
   const [formattedDate, setFormattedDate] = useState<string>("");
 
-  const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
+  const [initialDate, setInitialDate] = useState<Date>(new Date());
   const { getReportData, reportData } = useReportsContext();
 
   const [actualReport, setActualReport] = useState<number>();
-
+  //TODO: Usar Loading para bloquar busqueda sino se tiene fecha/rango y zonas (casos especiales error sinc y cupones)
   const [loading, setLoading] = useState<boolean>(false);
 
   const parseDateStringToLocalDate = (dateString: string): Date => {
@@ -70,7 +71,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   
   }, [formattedDate])
   
-
   const resetValues = useMemo<ReportFilterModel>(() => ({
     categories: null,
     zone: [],
@@ -118,16 +118,15 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
     [filterConfig]
   );
 
-  // Cargar datos iniciales
   useEffect(() => {
     if (actualReport === currentReport) return;
     if (!currentReport) return;
     setSelectedCDC([]);
     setSelectedZone([]);
     setSelectedSubIds([]);
+    setSelectedStore([]);
     setSelectedValues(resetValues);
     setDateRange([null, null]);
-    setFormattedDate('');
     setSelectedValues(resetValues);
     reportName(filterConfig.name || "");
 
@@ -165,7 +164,6 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const handleSubsidiariesChange = useCallback((ev: { value: string[] }) => {
     const ids = ev.value.map(Number);
     setSelectedSubIds(ids);
-    // setSelectedValues(prev => ({ ...prev, subsidiary: ids }));
   }, []);
 
   const handleZoneChange = useCallback((ev: { value: string[] }) => {
@@ -176,26 +174,22 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
   const handleCDCChange = useCallback((ev: { value: string[] }) => {
     const ids = ev.value.map(Number);
     setSelectedCDC(ids);
-    // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
 
   const handleStoresChange = useCallback((ev: { value: string[] }) => {
     const ids = ev.value.map(Number);
     setSelectedStore(ids);
-    // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
 
   const handleErrorTypeChange = useCallback((ev: { value: string[] }) => {
     const ids = ev.value.map(Number);
     setSelectedErrorType(ids);
-    // setSelectedValues(prev => ({ ...prev, cdc: ids }));
   }, []);
   
   // Cargar opciones de filtros
   const loadFilterData = useCallback(async (filterKey: FilterKey, parentValue?: any) => {
     setLoadingFilters(prev => ({ ...prev, [filterKey]: true }));
     try {
-      //if (currentReport === 100) return;
       const data = await getFilterOptions(filterKey, parentValue);
       setFilterData(prev => ({ ...prev, [filterKey]: data || [] }));
     } catch {
@@ -218,11 +212,20 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
       }  else if (filterKey === "multicdc") {
         allFilters.multicdc = selectedCDC;
       } else if (filterKey === "dateRange") {
-        allFilters.dateRange = startDate && endDate
-          ? `${startDate.toISOString().split("T")[0]},${endDate.toISOString().split("T")[0]}`
-          : null;
+        if (startDate === null) {
+          allFilters.dateRange = null;
+        } else {
+
+          const effectiveEndDate = endDate || startDate;
+          
+          allFilters.dateRange = `${startDate.toISOString().split("T")[0]},${effectiveEndDate.toISOString().split("T")[0]}`;
+
+          if (endDate === null) {
+            setDateRange([startDate, startDate]);
+          }
+        }
       } else if (filterKey === "stores") {
-        allFilters.stores = filterData["stores"]?.filter(option => selectedStore.includes(option.value)).map(option => option.label);
+        allFilters.stores = filterData["stores"]?.filter(option => selectedStore.includes(option.value)).map(option => option.label) || [];
       } else if (filterKey === "errorType") {
         allFilters.errorType = selectedErrorType;
       } else if (filterKey === "date") {
@@ -233,7 +236,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
     });
-    console.log(allFilters)
+    //console.log(allFilters)
     await getReportData({
       report: currentReport ?? 0,
       filterOpction: allFilters
