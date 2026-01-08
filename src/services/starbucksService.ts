@@ -342,7 +342,7 @@ const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): C
       difference: 0,
       exchangeRate: Number(base.currency.exchange) || 0,
       originalCurrency: 0,
-      isOpen: lines[0].isOpen,
+      isOpen: lines[0]?.isOpen || true,
     };
   });
 }
