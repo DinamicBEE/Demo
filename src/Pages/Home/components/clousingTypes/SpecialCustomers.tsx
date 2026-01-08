@@ -195,7 +195,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                         customer.value
                       );
                     }}
-                    disabled={false}
+                    disabled={data?.closingConfirmation}
                   ></FilterCustomer>
                 </Table.Cell>
 

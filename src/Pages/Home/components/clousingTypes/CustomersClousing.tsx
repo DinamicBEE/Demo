@@ -40,6 +40,7 @@ import Loading from "@components/Loading";
 import { getCustomers } from "@services/catalogService";
 import { selectOption } from "@models/common.model";
 import { handleErrorMessage } from "@utils/getValidationsError";
+import FilterCustomer from "@components/FilterCustomer";
 
 
 const pageSize = 10;
@@ -167,25 +168,13 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
               {visibleItems?.map((item: CustomerLines, index: number) => (
                 <Table.Row key={item.id}>
                   <Table.Cell textAlign="center">
-                    <SelectRoot
-                      collection={customers || createListCollection<selectOption>({ items: [] })}
-                      onValueChange={(e) => handleChangeCustomer(e, item.id)}
+                    <FilterCustomer
+                      customers={customers?.items || []}
+                      label={false}
+                      customerSelect={item.nameClient}
+                      onSelect={(e) => handleChangeCustomer(e, item.id)}
                       disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}
-                    >
-                      <SelectTrigger>
-                        <SelectValueText
-                          placeholder={item.nameClient || "Seleccionar cliente"}
-                        />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {customers && 
-                          customers.items.map((item) => (
-                          <SelectItem key={item.value} item={item}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </SelectRoot>
+                    ></FilterCustomer>
                   </Table.Cell>
 
                   <Table.Cell textAlign="center">

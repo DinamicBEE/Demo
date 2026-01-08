@@ -10,6 +10,7 @@ import {
   CustomerModel,
 } from "@models/customer.model";
 import { v4 as uuidv4 } from "uuid";
+import { selectOption } from "@models/common.model";
 
 export const useHandleCustomer = (
   customerData: CustomerModel,
@@ -126,14 +127,14 @@ export const useHandleCustomer = (
     updateContext(updatedCurrencies);
   }
 
-  function handleChangeCustomer( event: any, id: number | string) {
+  function handleChangeCustomer( event: selectOption, id: number | string) {
     const updateCustomer = customerData.lines.map(
       (item: CustomerLines) =>
         item.id === id
           ? {
               ...item,
-              idClient: event.items[0].value,
-              nameClient: event.items[0].label,
+              idClient: event.value,
+              nameClient: event.label,
             }
           : item
     )

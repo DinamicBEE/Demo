@@ -1,15 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { CustomerFilter, EmployeeFilterProps } from "@models/employee.model";
-import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
-import { SelectValueChangeDetails } from '@chakra-ui/react';
 import {
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-  SelectContent,
-  SelectItem,
-} from "@components/ui/select";
+  Box,
+  FieldLabel,
+  FieldRoot,
+  useFilter,
+  useListCollection,
+} from "@chakra-ui/react";
+import {
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxRoot,
+} from "./ui/combobox";
 
 function FilterCustomer({
   customers,
@@ -19,86 +24,56 @@ function FilterCustomer({
   onSelect,
   disabled,
 }: CustomerFilter) {
-  //
+  const [value, setValue] = useState<string[]>([]);
+  const { contains } = useFilter({ sensitivity: "base" });
+  const { collection, filter } = useListCollection({
+    initialItems: customers,
+    filter: contains,
+    limit: 30,
+  });
 
-  const [searchQuery, setSearchQuery] = useState<string>("Selecciona cliente");
-  const [filteredCustomer, setFilteredCustomer] = useState<ListCollection<{ label: string; value: any }>>(
-    createListCollection<{ label: string; value: any }>({ items: [] })
-  );
-  const searchRef = useRef<string>("");
-
-  useEffect(() => {
-    const employeeCollection = createListCollection({
-      items: customers.map((customer) => ({
-        label: `${customer.label}`,
-        value: customer.value,
-      })),
-    });
-
-    setFilteredCustomer(employeeCollection);
-  }, [customers]);
-
-  function handleSearch(event: string) {
-    let query: string = "";
-    if (event.toLowerCase() === "backspace") {
-      query = searchRef.current.slice(0, -1);
-    } else if (event.length == 1) {
-      query = searchRef.current + event.toLowerCase();
-    } else {
-      query = searchRef.current;
+  const handleInputChange = (e: any) => {
+    setValue(e.value);
+    if (e.items && e.items.length > 0) { 
+      onSelect({
+          label: e.items[0].label,
+          value: e.items[0].value,
+        });
     }
-    setSearchQuery(query);
-    searchRef.current = query;
-
-    const filtered = customers.filter((customer) =>
-      customer.label.toLowerCase().includes(query)
-    );
-
-    const employeeCollection = createListCollection({
-      items: filtered.map((customer) => ({
-        label: customer.label,
-        value: customer.value,
-      })),
-    });
-
-    setFilteredCustomer(employeeCollection);
-  }
-
-  function handleSelect(event: SelectValueChangeDetails<any>) {
-    const selectedId = Number(event.value[0]);
-
-    const customerSelect = customers.find(
-      (customer) => customer.value === selectedId
-    );
-
-    if (customerSelect && itemId === undefined) {
-      onSelect(customerSelect);
-    } else if (customerSelect && itemId != undefined) {
-      onSelect(customerSelect, itemId);
-    }
-  }
+  };
 
   return (
     <Box>
-      <SelectRoot
-        collection={filteredCustomer}
-        onKeyUp={(e) => handleSearch(e.key)}
-        onValueChange={(event) => handleSelect(event)}
-        disabled={disabled || false}
-      >
-        {label && <SelectLabel>Cliente</SelectLabel>}
-        <SelectTrigger>
-          <SelectValueText placeholder={customerSelect || searchQuery} />
-        </SelectTrigger>
-
-        <SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
-          {filteredCustomer.items.map((item) => (
-            <SelectItem item={item} key={item.value}>
-              {item.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </SelectRoot>
+      <FieldRoot>
+        {label && <FieldLabel>Cliente</FieldLabel>}
+        <ComboboxRoot
+          size={"sm"}
+          openOnClick
+          collection={collection}
+          onInputValueChange={(e) => filter(e.inputValue)}
+          value={value}
+          onValueChange={handleInputChange}
+          w={"100%"}
+          disabled={disabled}
+        >
+          <ComboboxControl clearable={label}>
+            <ComboboxInput
+              placeholder={customerSelect || "Seleccione un cliente"}
+              
+            />
+          </ComboboxControl>
+          <ComboboxContent>
+            <ComboboxEmpty px={4} py={2}>
+              No se encontraron clientes
+            </ComboboxEmpty>
+            {collection.items.map((item) => (
+              <ComboboxItem item={item} key={item.value}>
+                {item.label}
+              </ComboboxItem>
+            ))}
+          </ComboboxContent>
+        </ComboboxRoot>
+      </FieldRoot>
     </Box>
   );
 }
