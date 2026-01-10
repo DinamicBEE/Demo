@@ -39,6 +39,8 @@ function TableOfTotals({
   //   console.log(ids)
   // },[data])
 
+  
+
   function handleExportCSV() {
 
     const dataWithTotals = [...data];
