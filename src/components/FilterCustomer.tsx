@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CustomerFilter, EmployeeFilterProps } from "@models/employee.model";
+import { CustomerFilter } from "@models/employee.model";
 import {
   Box,
   FieldLabel,
@@ -29,7 +29,7 @@ function FilterCustomer({
   const { collection, filter } = useListCollection({
     initialItems: customers,
     filter: contains,
-    limit: 30,
+    // limit: 30,
   });
 
   const handleInputChange = (e: any) => {

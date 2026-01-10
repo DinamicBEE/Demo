@@ -34,6 +34,8 @@ import Loading from "@components/Loading";
 import { v4 as uuidv4 } from "uuid";
 import PrepaidNewCustomer from "./PrepaidNewCustomer";
 import { toast } from "@utils/Toast";
+import { Tooltip } from "@components/ui/tooltip";
+import { TiDelete } from "react-icons/ti";
 
 const pageSize = 10;
 
@@ -63,9 +65,10 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
   const updateData = (updatePrepaid: PrepaidLineModel[]) => {
     const newTotalComp = updatePrepaid.reduce(
-      (sum, i) => sum + (i.supplementsQuantity || 0) * (i.unitPrice || 0),
+      (sum, i) => sum + ((i.supplementsQuantity || 0) * (i.unitPrice || 0)),
       0
     );
+    
     const newTotalFisico = updatePrepaid.reduce(
       (sum, i) => sum + i.physical,
       0
@@ -77,6 +80,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       totalPhysical: newTotalFisico + newTotalComp,
       difference: newDifference,
     };
+    
 
     const updated: PrepaidModel = {
       ...prepaid,
@@ -85,9 +89,9 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     };
     setPrepaid(updated);
     setPrepaidData(data.id, updated);
-
+    
     updateTotal(
-      newDifference >= 0 ? newTotalFisico : prepaid.total.totalPOS,
+      newDifference >= 0 ? prepaid.total.totalPOS : (newTotalFisico + newTotalComp),
       data.id,
       CLOUSING_KEY.PREPAID
     );
@@ -143,8 +147,9 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   }, [page, prepaid]);
 
   // Ingreso de cupones
-  const handleCoupon = (coupon: string) => {
-    if (!coupon) return;
+  const handleCoupon = (rawCode: string) => {
+    if (!rawCode) return;
+    const coupon = rawCode.replace(/^\*|\*$/g, '');
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
@@ -267,6 +272,16 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     updateData(updatePrepaid);
   }
 
+  const onDelete = (index: number) => {
+    const newArray = prepaid.lines.filter((_, i) => i !== index);
+    updateData(newArray);
+    toast(
+      "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
+      "warning",
+      "Cliente eliminado"
+    );
+  }
+
   return (
     <Box>
       <Toaster />
@@ -314,10 +329,13 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                   {h}
                 </Table.ColumnHeader>
               ))}
+              {(!data.closingConfirmation || prepaid?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
+
+              </Table.ColumnHeader>}
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {visibleItems.map((item) => (
+            {visibleItems.map((item, index) => (
               <Table.Row key={item.id}>
                 {/* Cliente */}
                 <Table.Cell textAlign="center">
@@ -388,6 +406,19 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                     </Table.Cell>
                   )
                 )}
+                {/* Botón de eliminado */}
+                {(!data.closingConfirmation || prepaid?.isRoleEditable === false) && <Table.Cell textAlign="center">
+                  <Text color="red.500" cursor="pointer" textStyle="lg" onClick={() => onDelete(index)}>
+                    
+                    <Tooltip
+                      content={`Eliminar cupones de ${item.client}`}
+                      positioning={{ placement: "right-end" }}
+                    >
+                      <TiDelete />
+                      
+                    </Tooltip>
+                  </Text>
+                </Table.Cell>}
               </Table.Row>
             ))}
           </Table.Body>
