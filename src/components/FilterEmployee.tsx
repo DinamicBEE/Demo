@@ -26,7 +26,7 @@ function FilterEmployee({
 }: EmployeeFilterProps) {
   const [value, setValue] = useState<string[]>([]);
 
-  const employeeOptions = useMemo(() => {
+  const employeeOptions = useMemo(() => {    
     return employees.map((employee) => ({
       label: employee.name,
       value: employee.id.toString(),
@@ -38,8 +38,12 @@ function FilterEmployee({
   const { collection, filter } = useListCollection({
     initialItems: employeeOptions,
     filter: contains,
-    // limit: 30,
+    limit: 200,
   });
+
+  useEffect(() => {
+    collection.setItems(employeeOptions);
+  }, [employees]);
 
   useEffect(() => {
     if (employeeToEdit?.id) {
@@ -74,6 +78,10 @@ function FilterEmployee({
           onValueChange={handleValueChange}
           width="100%"
           disabled={disabled}
+          key={collection.items.length}
+          onOpenChange={(e) => {
+            if (e.open) filter("");
+          }}
         >
           <ComboboxControl clearable>
             <ComboboxInput
@@ -82,14 +90,16 @@ function FilterEmployee({
           </ComboboxControl>
 
           <ComboboxContent>
-            <ComboboxEmpty px={4} py={2}>
-              No se encontraron empleados
-            </ComboboxEmpty>
-            {collection.items.map((item) => (
-              <ComboboxItem item={item} key={item.value}>
-                {item.label}
-              </ComboboxItem>
-            ))}
+            {collection.items.length > 0 ?
+              (collection.items.map((item) => (
+                <ComboboxItem item={item} key={item.value}>
+                  {item.label}
+                </ComboboxItem>
+              ))) : (
+                <ComboboxEmpty px={4} py={2}>
+                  No se encontraron empleados
+                </ComboboxEmpty>
+              )}
           </ComboboxContent>
         </ComboboxRoot>
       </FieldRoot>
