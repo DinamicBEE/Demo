@@ -37,10 +37,9 @@ import { CLOUSING_KEY } from "@models/common.const";
 import { Button } from "@components/ui/button";
 import { CustomerClousingForm } from "./CustomerClousingForm";
 import Loading from "@components/Loading";
-import { getCustomers } from "@services/catalogService";
-import { selectOption } from "@models/common.model";
 import { handleErrorMessage } from "@utils/getValidationsError";
 import FilterCustomer from "@components/FilterCustomer";
+import { FilterOption } from "@models/reports.model";
 
 
 const pageSize = 10;
@@ -52,7 +51,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const [CustomersData, setCustomersData] = useState<CustomerModel>(
     {} as CustomerModel
   );
-  const [customers, setCustomers] = useState<ListCollection>();
+  const [customersItems, setCustomersItems] = useState<FilterOption[]>([]);
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading, getCustomerList } = useCustomerContext();
   const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer } = useHandleCustomer(
@@ -108,19 +107,15 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   useEffect(() => {
     async function fetchCustomers() {
       const customersList = await getCustomerList();
-
       if (customersList) {
-        setCustomers(createListCollection<selectOption>({items: customersList}));
-        
-      } else {
-        setCustomers(createListCollection<selectOption>({ items: [] }));
+        setCustomersItems(customersList);
       }
 
     }
     if(!data?.closingConfirmation){
       fetchCustomers();
     }
-  }, []);
+  }, [getCustomerList, data?.closingConfirmation]);
   
 
   useEffect(() => {
@@ -169,7 +164,8 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
                 <Table.Row key={item.id}>
                   <Table.Cell textAlign="center">
                     <FilterCustomer
-                      customers={customers?.items || []}
+                      key={`${item.id}-${customersItems.length}`}
+                      customers={customersItems}
                       label={false}
                       customerSelect={item.nameClient}
                       onSelect={(e) => handleChangeCustomer(e, item.id)}
