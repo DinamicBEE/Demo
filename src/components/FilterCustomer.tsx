@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomerFilter } from "@models/employee.model";
 import {
   Box,
@@ -32,6 +32,10 @@ function FilterCustomer({
     // limit: 30,
   });
 
+  useEffect(() => {    
+    collection.setItems(customers);
+  }, [customers]);  
+
   const handleInputChange = (e: any) => {
     setValue(e.value);
     if (e.items && e.items.length > 0) { 
@@ -55,6 +59,9 @@ function FilterCustomer({
           onValueChange={handleInputChange}
           w={"100%"}
           disabled={disabled}
+          onOpenChange={(e) => {
+            if (e.open) filter("");
+          }}
         >
           <ComboboxControl clearable={label}>
             <ComboboxInput
@@ -63,14 +70,17 @@ function FilterCustomer({
             />
           </ComboboxControl>
           <ComboboxContent>
-            <ComboboxEmpty px={4} py={2}>
-              No se encontraron clientes
-            </ComboboxEmpty>
-            {collection.items.map((item) => (
-              <ComboboxItem item={item} key={item.value}>
-                {item.label}
-              </ComboboxItem>
-            ))}
+            
+            {collection.items.length > 0 ?
+              (collection.items.map((item) => (
+                <ComboboxItem item={item} key={item.value}>
+                  {item.label}
+                </ComboboxItem>
+              ))) : (
+                <ComboboxEmpty px={4} py={2}>
+                  No se encontraron clientes
+                </ComboboxEmpty>
+              )}
           </ComboboxContent>
         </ComboboxRoot>
       </FieldRoot>
