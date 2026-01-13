@@ -155,7 +155,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
     if (!couponModel) {
       setLoadingAdded(false)
-      return toast("Cupón inválido", "error")
+      return toast("Cupón inválido o expirado", "error")
     };
 
     let clientLine = prepaid.lines.find(
