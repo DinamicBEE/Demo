@@ -45,6 +45,7 @@ import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
 import { toast } from "@utils/Toast";
 import { getTicketListClousing } from "@services/catalogService";
+import { FilterOption } from "@models/reports.model";
 
 function AddEmployee({
   clousingId,
@@ -89,10 +90,7 @@ function AddEmployee({
     const fetchData = async () => { 
       if (isOpen) {
         setCatalogLoading(true);
-  
-        const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
-        setEmployees(employeeList);
-        
+
         const reasonsListResponse: ReasonsModel[] = await getReasonsList(subsidiaryId, cdc);
         const reasonCollection = createListCollection({
           items: reasonsListResponse.map((reason) => ({
@@ -116,7 +114,7 @@ function AddEmployee({
         if (data !== null) {
           setIsEdited(true);
   
-          const employeeToEdit = employeeList.find(
+          const employeeToEdit = employees.find(
             (emp) => emp.name === data.employeeName
           );
 
@@ -160,6 +158,16 @@ function AddEmployee({
 
     fetchData();
   }, [getEmployeeList, getReasonsList, getTicketsList, subsidiaryId, cdc, isOpen, data]);
+
+  useEffect(() => {
+    async function fetchEmployees() {
+      const employeeList: Employee[] = await getEmployeeList(subsidiaryId, cdc);
+      if (employeeList) {
+        setEmployees(employeeList);
+      }};
+    fetchEmployees();
+  }, [getEmployeeList])
+  
 
   useEffect(() => {
     const selectedReason = reasonsList.find(item => item.id === Number(reason[0]));
