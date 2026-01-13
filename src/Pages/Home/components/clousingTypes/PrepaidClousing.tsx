@@ -408,16 +408,16 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                 )}
                 {/* Botón de eliminado */}
                 {(!data.closingConfirmation || prepaid?.isRoleEditable === false) && <Table.Cell textAlign="center">
-                  <Text color="red.500" cursor="pointer" textStyle="lg" onClick={() => onDelete(index)}>
+                  <Box color="red.500"  textStyle="lg" >
                     
                     <Tooltip
                       content={`Eliminar cupones de ${item.client}`}
                       positioning={{ placement: "right-end" }}
                     >
-                      <TiDelete />
+                      <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
                       
                     </Tooltip>
-                  </Text>
+                  </Box>
                 </Table.Cell>}
               </Table.Row>
             ))}
