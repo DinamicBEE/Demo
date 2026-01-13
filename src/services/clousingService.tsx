@@ -394,8 +394,8 @@ export const getCouponCatalog = async (
       validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
       isExpired: isBefore(
         // Compare only the date part by setting both dates to start of day
-        startOfDay(new Date(item.validityDate)),
-        startOfDay(new Date(dateClousing))
+        (new Date(item.validityDate)),
+        startOfDay(new Date())
       ),
     }));
 
