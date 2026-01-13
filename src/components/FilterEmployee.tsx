@@ -78,7 +78,6 @@ function FilterEmployee({
           onValueChange={handleValueChange}
           width="100%"
           disabled={disabled}
-          key={collection.items.length}
           onOpenChange={(e) => {
             if (e.open) filter("");
           }}
