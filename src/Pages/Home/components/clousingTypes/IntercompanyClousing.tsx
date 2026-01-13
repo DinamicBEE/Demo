@@ -253,12 +253,11 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                 <Table.Cell textAlign="center">
                   <FilterEmployee
                     employees={employees}
-                    employeeSelect={item.employeeName}
                     label={false}
                     itemId={item.id}
                     onSelect={handleEmployeeData}
                     disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
-                    employeeToEdit={null}
+                    employeeToEdit={{name:item.employeeName, id: item.employeeId}}
                   />
                 </Table.Cell>
 
