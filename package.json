@@ -1,7 +1,7 @@
 {
   "name": "mera-corte-caja",
   "private": true,
-  "version": "1.1.6",
+  "version": "1.1.7",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -17,7 +17,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.29.0",
     "@emotion/react": "^11.14.0",
-    "@js-temporal/polyfill": "^0.5.1",
+    "@js-Q/polyfill": "^0.5.1",
     "@types/node": "^24.10.4",
     "axios": "^1.13.2",
     "buffer": "^6.0.3",
