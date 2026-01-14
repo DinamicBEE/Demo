@@ -149,7 +149,9 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   // Ingreso de cupones
   const handleCoupon = (rawCode: string) => {
     if (!rawCode) return;
-    const coupon = rawCode.replace(/^\*|\*$/g, '');
+    
+    const coupon = rawCode.trim().replace(/^\*|\*$/g, '');
+    
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
