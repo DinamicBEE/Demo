@@ -17,7 +17,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@components/ui/pagination";
-import { toaster, Toaster } from "@components/ui/toaster";
+import { Toaster } from "@components/ui/toaster";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHeaders } from "@context/home/headerContext";
@@ -117,15 +117,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const couponsList = await getCouponData(cdc, data?.closingStartDate);
 
-      // //TODO: Filtro para test cupones 
-
-      // const cupfilt = couponsList.filter(c => c.clientCustom.toLowerCase().includes("mobility")).map(c => c )
-      // console.log("Cupones filtrados: ", cupfilt);
-      // const red = couponsList.reduce((acc, c) => acc + c.amount, 0);
-      // console.log("Total cupones filtrados: ", red);
-
-      // //TODO: Filtro para test cupones 
-
       setPrepaid(prepaidData);
       setCoupons(couponsList);
 
@@ -150,8 +141,10 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   const handleCoupon = (rawCode: string) => {
     if (!rawCode) return;
     
-    const coupon = rawCode.trim().replace(/^\*|\*$/g, '');
-    
+    const coupon = rawCode
+      .trim()
+      .replace(/[^0-9]+/g, '');      
+
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
