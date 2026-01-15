@@ -8,7 +8,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -1033,6 +1033,32 @@ export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue:
           start:startDateFormat,
           end:endDateFormat,
           revenue:revenue
+        }
+      }
+    )
+
+    if(response.status === 200){
+      return true
+    } 
+
+  } catch (error) {
+
+    return false;
+    
+  }
+}
+
+export const updateSalesTicketCDC = async (startDate: string, cdc: number, id: number) => {
+  try {
+
+    const startDateFormat = startDate.split("/");
+
+    const response = await api.get(UPDATE_SALESTICKETCDC,
+      {
+        params: {
+          date:`${startDateFormat[2]}-${startDateFormat[1]}-${startDateFormat[0]}`,
+          employee:id,
+          revenue:cdc
         }
       }
     )

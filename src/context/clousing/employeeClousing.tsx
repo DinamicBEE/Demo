@@ -40,10 +40,10 @@ export function EmployeeClousingProvider({
   const employeeRef = useRef<EmployeeContext>(employee);
 
   const getEmployeetData = useCallback(
-    async (clousingId: number) => {
+    async (clousingId: number, isRefresh: boolean) => {
       setEmployeeLoading(true);
 
-      if (employee[clousingId]) {
+      if (employee[clousingId] && !isRefresh) {
         setEmployeeLoading(false);
         return employee[clousingId];
       }

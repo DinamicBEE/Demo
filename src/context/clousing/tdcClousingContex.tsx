@@ -28,10 +28,10 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
         tdcDetailsRef.current = newDetails;
     }
 
-    const getTDCData = useCallback( async(clousingId:number, idCurrency: number, isStarbucks: boolean)=>{
+    const getTDCData = useCallback( async(clousingId:number, idCurrency: number, isStarbucks: boolean, isRefresh: boolean)=>{
         setTDCLoading(true);
 
-        if(tdcRef.current[clousingId]) {
+        if(tdcRef.current[clousingId] && !isRefresh) {
             setTDCLoading(false);
             return tdcRef.current[clousingId];
         }

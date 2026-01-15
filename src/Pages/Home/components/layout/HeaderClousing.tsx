@@ -1,27 +1,31 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Box, Grid, Group, Input, InputAddon, Button, Skeleton } from "@chakra-ui/react";
 import { useHeaders } from "@context/home/headerContext";
-import { HeaderData } from "@models/common.clousing.model";
+import { ClousingHeadersProps, HeaderData } from "@models/common.clousing.model";
 import { CurrencyInput, EditableCurrencyInput } from "@components/NumericInput";
 import { useClousing } from "@context/home/clousingContext";
+import { toast } from "@utils/Toast";
+import { updateSalesTicketCDC } from "@services/clousingService";
+import { useClosing } from "@hooks/useClosing";
+import Loading from "@components/Loading";
 
 function HeaderClousing({
   id,
   closingConfirmation,
   location,
   subsidiary,
-  zone
-}: {
-  id: number;
-  closingConfirmation: boolean;
-  location: string;
-  subsidiary: string;
-  zone: string;
-}) {
+  zone,
+  startDate,
+  idCurrency,
+  isStarbucks,
+  employeId
+}: ClousingHeadersProps ) {
   const { dataRow } = useClousing();
   const { getHeader, header, updateHeaderState } = useHeaders();
   const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
   const [discountValue, setDiscountValue] = useState(0);
+  const { executeUpdateSections } = useClosing();
+  const [loading, setLoading] = useState(false);
 
   const currentHeader = useMemo(() => header[id], [header, id]);
 
@@ -63,89 +67,116 @@ function HeaderClousing({
     differenceCupons: localHeader?.differenceCupons ? Number(localHeader.differenceCupons.toFixed(2)) : 0,
   }), [localHeader, discountValue]);
 
+  const updateticket = async () => {
+    setLoading(true);
+
+    try {
+      
+      const response = await updateSalesTicketCDC(startDate, location.id, employeId);
+      
+      if(response){
+        await  executeUpdateSections(id, startDate, idCurrency, isStarbucks, true)
+      } else {
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      toast("Error al actualizar el ticket", "error");
+      setLoading(false);
+    } 
+  }
+
   return (
-    <Box>
-      <Grid
-        templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
-        gap={4}
-        mb={4}
-      >
-        <Group>
-          <InputAddon>CDC</InputAddon>
-          <Skeleton loading={false} width={"100%"}>
-            <Input value={location || ""} placeholder="CDC" readOnly />
-          </Skeleton>
-        </Group>
-
-        <Group>
-          <InputAddon>Zona</InputAddon>
-          <Skeleton loading={false} width={"100%"}>
-            <Input value={zone || ""} placeholder="Zona" readOnly />
-          </Skeleton>
-        </Group>
-
-        <Group>
-          <InputAddon>Subsidiaria</InputAddon>
-          <Skeleton loading={false} width={"100%"}>
-            <Input value={subsidiary || ""} placeholder="Subsidiaria" readOnly />
-          </Skeleton>
-        </Group>
-
-        <Group>
-          <InputAddon>Fecha</InputAddon>
-          <Skeleton loading={false} width={"100%"}>
-            <Input value={memoizedHeaderProps.date} placeholder="Fecha" readOnly />
-          </Skeleton>
-        </Group>
-
-        {/* Inputs de moneda */}
-        <CurrencyInput
-          value={memoizedHeaderProps.totalPOS}
-          name={"Corte POS"}
-          loading={false}
-        />
-
-        <CurrencyInput
-          value={memoizedHeaderProps.totalClousing}
-          name={"Corte físico"}
-          loading={false}
-        />
-
-        <CurrencyInput
-          value={memoizedHeaderProps.difference}
-          name={"Diferencia"}
-          loading={false}
-        />
-
-        <CurrencyInput
-          name={"Dif. cupones"}
-          value={memoizedHeaderProps?.differenceCupons ?? 0}
-          loading={false}
-        />
-
-        <CurrencyInput 
-          value={memoizedHeaderProps.discountClousing}
-          name={"Descuento POS"}
-          loading={false} 
-        />
-
-        <EditableCurrencyInput 
-          value={memoizedHeaderProps.discountPhysical || 0} 
-          name={"Descuento físico"} 
-          disabled={closingConfirmation}
-          onChange={handleDiscountInputChange}
-          loading={false} 
-        />
-
-        {/* <Button
-          size="sm"
-          colorPalette="meraInfo"
-          disabled={closingConfirmation}
+    <>
+      <Box>
+        <Grid
+          templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+          gap={4}
+          mb={4}
         >
-          Actualizar
-        </Button> */}
-      </Grid>
-    </Box>
+          <Group>
+            <InputAddon>CDC</InputAddon>
+            <Skeleton loading={false} width={"100%"}>
+              <Input value={location?.name || ""} placeholder="CDC" readOnly />
+            </Skeleton>
+          </Group>
+
+          <Group>
+            <InputAddon>Zona</InputAddon>
+            <Skeleton loading={false} width={"100%"}>
+              <Input value={zone || ""} placeholder="Zona" readOnly />
+            </Skeleton>
+          </Group>
+
+          <Group>
+            <InputAddon>Subsidiaria</InputAddon>
+            <Skeleton loading={false} width={"100%"}>
+              <Input value={subsidiary || ""} placeholder="Subsidiaria" readOnly />
+            </Skeleton>
+          </Group>
+
+          <Group>
+            <InputAddon>Fecha</InputAddon>
+            <Skeleton loading={false} width={"100%"}>
+              <Input value={memoizedHeaderProps.date} placeholder="Fecha" readOnly />
+            </Skeleton>
+          </Group>
+
+          {/* Inputs de moneda */}
+          <CurrencyInput
+            value={memoizedHeaderProps.totalPOS}
+            name={"Corte POS"}
+            loading={false}
+          />
+
+          <CurrencyInput
+            value={memoizedHeaderProps.totalClousing}
+            name={"Corte físico"}
+            loading={false}
+          />
+
+          <CurrencyInput
+            value={memoizedHeaderProps.difference}
+            name={"Diferencia"}
+            loading={false}
+          />
+
+          <CurrencyInput
+            name={"Dif. cupones"}
+            value={memoizedHeaderProps?.differenceCupons ?? 0}
+            loading={false}
+          />
+
+          <CurrencyInput 
+            value={memoizedHeaderProps.discountClousing}
+            name={"Descuento POS"}
+            loading={false} 
+          />
+
+          <EditableCurrencyInput 
+            value={memoizedHeaderProps.discountPhysical || 0} 
+            name={"Descuento físico"} 
+            disabled={closingConfirmation}
+            onChange={handleDiscountInputChange}
+            loading={false} 
+          />
+
+          <Button
+            onClick={() => updateticket()}
+            colorPalette="meraInfo"
+            disabled={closingConfirmation}
+          >
+            Actualizar ventas
+          </Button>
+        </Grid>
+      </Box>
+      {loading && (
+        <Box position="fixed" top="50%" left="50%"  zIndex={1000}>
+          <Loading />
+        </Box>
+      )}
+    </>
   );
 }
 

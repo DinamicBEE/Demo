@@ -48,6 +48,7 @@ export interface ClousingLinesModel {
   specialCustomer: number;
   prepaid: number;
   employees: number;
+  employeId: number;
   intercompany: number;
   service?: number;
   discountPhysical?: number;
@@ -271,6 +272,18 @@ export interface ClousingLayoutProps {
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
   isStarbucks: boolean;
+}
+
+export interface ClousingHeadersProps {
+  id: number;
+  closingConfirmation: boolean;
+  location: location;
+  subsidiary: string;
+  zone: string;
+  startDate: string; 
+  idCurrency: number;
+  isStarbucks: boolean;
+  employeId: number;
 }
 
 export interface TableOfTotalsProps {

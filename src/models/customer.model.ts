@@ -12,7 +12,7 @@ export interface CustomersClousingProps {
 export interface CustomerContextType {
     customer: CustomerModel | {};
     customerLoading: boolean;
-    getCustomerData: (clousingId: number) => Promise<ResponseModel>;
+    getCustomerData: (clousingId: number, isRefresh: boolean) => Promise<ResponseModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
     customerRef: React.MutableRefObject<CustomerContext>;
     getCustomerList: () => Promise<FilterOption[]>;

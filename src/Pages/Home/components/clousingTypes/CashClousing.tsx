@@ -33,7 +33,7 @@ function CashClousing({ data, idCurrency }: any) {
   useEffect(() => {
     async function fetchData() {
       
-      const cashData = await getCashData(data.id, idCurrency);
+      const cashData = await getCashData(data.id, idCurrency, false);
       setTips(cashData.tips?.toString() || "0")
       
       if (cashData.total != undefined) {

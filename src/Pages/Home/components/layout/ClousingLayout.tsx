@@ -29,19 +29,19 @@ const PrepaidClousing = lazy(() => import("../clousingTypes/PrepaidClousing"));
 const EmployeesClousing = lazy(
   () => import("../clousingTypes/EmployeesClousing")
 );
-import { useHeaders } from "@context/home/headerContext";
+import { useClosing } from "@hooks/useClosing";
 
 function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks}: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
-  const { getCashData, cashRef } = useCashClousing();
-  const { getCustomerData, customerRef } = useCustomerContext();
-  const { getSpecialCustData, specialCustRef } = useSpecialCustContext();
-  const { setEmployee, employeeRef, getEmployeetData } = useEmployeeContext();
-  const { getPrepaidData, prepaidRef,setCoupons } = usePrepaidContext();
-  const { getTDCData, tdcRef } = useTDCContext();
-  const { getIntercompanyData, setIntercompany, intercompanyRef } = useIntercompanyContext();
-  const { headerRef, updateTotal } = useHeaders();
+  const { cashRef } = useCashClousing();
+  const { customerRef } = useCustomerContext();
+  const { specialCustRef } = useSpecialCustContext();
+  const {  employeeRef } = useEmployeeContext();
+  const { prepaidRef } = usePrepaidContext();
+  const { tdcRef } = useTDCContext();
+  const { intercompanyRef } = useIntercompanyContext();
+  const { executeUpdateSections } = useClosing();
 
   const tabs = useTabs({
     defaultValue: CLOUSING_KEY.CASH,
@@ -57,51 +57,9 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
       tabs.setValue(CLOUSING_KEY.CASH);
 
       try {
-      
-        const [ customer, specialCustomer, prepaid, tdc,
-        intercompany, employeeT, cash ] = await Promise.all([
-          getCustomerData(employee.id),
-          getSpecialCustData(employee.id, subsidiary.idCurrency),
-          getPrepaidData(employee.id, employee.closingStartDate ?? ""),
-          getTDCData(employee.id, subsidiary.idCurrency, isStarbucks),
-          getIntercompanyData(employee.id),
-          getEmployeetData(employee.id),
-          getCashData(employee.id, subsidiary.idCurrency),
-        ]);
-        const prepareUpdate = (data: any, key: string) => {
-          if (!data?.total) return null;
-          //console.log("Data to update", data);
-          const total = data.total.totalPhysical;
-          const differenceCupons = data.total.differenceCupons || 0;
-          
-          return {
-            newTotal: total,
-            clousingId: employee.id,
-            clousingType: key as CLOUSING_KEY,
-            differenceCupons: differenceCupons
-          };
-        };
-
-        const updates = [
-          prepareUpdate(cash, CLOUSING_KEY.CASH),
-          prepareUpdate(customer.data, CLOUSING_KEY.CUSTOMER),
-          prepareUpdate(specialCustomer.data, CLOUSING_KEY.SPECIALCUSTOMER),
-          prepareUpdate(prepaid.data, CLOUSING_KEY.PREPAID),
-          prepareUpdate(tdc, CLOUSING_KEY.TDC),
-          prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY),
-          prepareUpdate(employeeT, CLOUSING_KEY.EMPLOYEE),
-        ].filter(Boolean);
-
-
-        for (const update of updates) {
-          if (update) {
-            //console.log("updateTotal", update)
-            await updateTotal(update.newTotal, update.clousingId, update.clousingType, update.differenceCupons);
-          }
-        }
-
+        await  executeUpdateSections(employee.id, employee.closingStartDate ?? "", subsidiary.idCurrency, isStarbucks, false)
       } catch (error) {
-        console.error("Error fetching closing data:", error);        
+        console.error("Error fetching closing data:", error);
       }
 
     }
@@ -127,11 +85,15 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
             <DialogTitle>Corte de Caja {employee?.employe} {employee?.closingConfirmation ? " (Cerrado)" : " (Abierto)"} </DialogTitle>
             <Box>
               <HeaderClousing
-                location={location.name}
+                location={location}
                 subsidiary={subsidiary.name}
                 zone={employee?.zone ?? ""}
                 id={employee?.id ?? 0}
                 closingConfirmation={employee?.closingConfirmation ?? false}
+                startDate={employee.closingStartDate ?? ""}
+                idCurrency={subsidiary.idCurrency}
+                isStarbucks={isStarbucks}
+                employeId={employee.employeId}
               ></HeaderClousing>
             </Box>
           </DialogHeader>
@@ -384,18 +346,18 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         }}
         closeOnExit={() => {
           onClose(false);
-          if (employee && employee.id) {
-            delete cashRef.current[employee.id];
-            delete customerRef.current[employee.id];
-            delete specialCustRef.current[employee.id];
-            delete prepaidRef.current[employee.id];
-            delete tdcRef.current[employee.id];
-            delete headerRef.current[employee.id];
-            employee = {} as ClousingLinesModel;
-            setCoupons({} as any);
-            setEmployee({} as any);
-            setIntercompany({} as any);
-          }
+          // if (employee && employee.id) {
+          //   //delete cashRef.current[employee.id];
+          //   delete customerRef.current[employee.id];
+          //   delete specialCustRef.current[employee.id];
+          //   delete prepaidRef.current[employee.id];
+          //   delete tdcRef.current[employee.id];
+          //   delete headerRef.current[employee.id];
+          //   employee = {} as ClousingLinesModel;
+          //   setCoupons({} as any);
+          //   setEmployee({} as any);
+          //   setIntercompany({} as any);
+          // }
         }}
         isOpen={openDialogExit}
       ></ExitDialog>

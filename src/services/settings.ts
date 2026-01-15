@@ -94,5 +94,6 @@ export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
 
 export const UPDATE_SALESTICKET = `${CRC_BASE}/salesTicket/noProduct` 
+export const UPDATE_SALESTICKETCDC = `${CRC_BASE}/salesTicket/updateEmployee` 
 //export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 //export const MODE = import.meta.env.VITE_MODE;
