@@ -17,7 +17,7 @@ import {
   PaginationPrevTrigger,
   PaginationRoot,
 } from "@components/ui/pagination";
-import { toaster, Toaster } from "@components/ui/toaster";
+import { Toaster } from "@components/ui/toaster";
 import { usePrepaidContext } from "@context/clousing/prepaidClousingContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useHeaders } from "@context/home/headerContext";
@@ -150,8 +150,10 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   const handleCoupon = (rawCode: string) => {
     if (!rawCode) return;
     
-    const coupon = rawCode.trim().replace(/^\*|\*$/g, '');
-    
+    const coupon = rawCode
+      .trim()
+      .replace(/[^0-9]+/g, '');      
+
     setLoadingAdded(true);
 
     const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
