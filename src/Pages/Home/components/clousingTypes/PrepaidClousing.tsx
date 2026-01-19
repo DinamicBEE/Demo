@@ -341,7 +341,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
                 {/* Cantidad */}
                 <Table.Cell textAlign="center">
-                  {item.coupons.some((c) => !c.isExpired) ? (
+                  {item.coupons.some((c) => !c.isExpired) && item.quantity > 0 ? (
                     <Text
                       as="span"
                       cursor="pointer"
