@@ -17,7 +17,7 @@ const pageSize = 10;
 
 function CashClousing({ data, idCurrency }: any) {
   const [cashData, setCashData] = useState<CashModel>({} as CashModel);
-  const { cashLoading, getCashData, setCashClousingSelect } = useCashClousing();
+  const { cashLoading, getCashData, setCashClousingSelect, cashClousingSelect } = useCashClousing();
   const { handleChangeTips, handleInputChange } = useHandleCashData(cashData, setCashData, data?.id);
   const { setFooterData } = useFooter();
   const [page, setPage] = useState(1);
@@ -49,7 +49,7 @@ function CashClousing({ data, idCurrency }: any) {
     
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cashClousingSelect]);
 
   useEffect(() => {
     setPage(page);

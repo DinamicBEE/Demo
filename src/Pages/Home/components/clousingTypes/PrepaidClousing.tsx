@@ -197,16 +197,12 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     clientLine.coupons.push(couponModel);
     clientLine.couponsSelected?.push(couponModel);
-    //console.log("linea", clientLine)
 
     const couponPhysicalValue = getCouponPhysicalValue(clientLine.coupons);
-    //console.log("suma de cupone", couponPhysicalValue)
+
     const supplementsValue =
       (clientLine.supplementsQuantity || 0) * (clientLine.unitPrice || 0);
     const newTotalFisico = couponPhysicalValue + supplementsValue;
-    //console.log("Total fisico + complementos",newTotalFisico)
-    //console.log("totalpos guardado", clientLine!.totalPOS )
-    //console.log("largo", clientLine!.coupons.filter((c) => !c.isExpired).length)
 
     const updatePrepaid: PrepaidLineModel[] = prepaid.lines.map((item) =>
       item.id === clientLine!.id
@@ -230,7 +226,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       couponModel.isExpired ? "Cupón vencido" : "Cupón válido",
       couponModel.isExpired ? "warning" : "success"
     );
-    //console.log(updatePrepaid)
     updateData(updatePrepaid);
     setLoadingAdded(false);
   };
