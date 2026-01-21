@@ -74,6 +74,7 @@
   padding: 20px;
   background-color: #f4f4f4;
   overflow-y: auto;
+  margin-top: 60px;
   background: var(--background-color-mera);
 }
 
@@ -88,7 +89,9 @@ body {
   background: white;
   display: flex;
   flex-direction: row;
-  position:sticky;
+  position:fixed;
+  top: 0;
+  z-index: 1000;
   width: 100%;
   border-radius: 0 0 12px 12px;
 }

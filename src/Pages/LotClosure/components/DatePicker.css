@@ -1,3 +1,7 @@
+.react-datepicker-popper{
+  z-index: 10 !important;
+}
+
 /* Icono de X para borrar fechas */
 .react-datepicker__close-icon::after {
   background-color: rgba(0,0,0,0.2) !important;
