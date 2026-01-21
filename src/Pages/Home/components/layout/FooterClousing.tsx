@@ -186,7 +186,7 @@ function FooterClousing({
 
           <CurrencyInput
             name={"Diferencia"}
-            value={footer?.difference ?? 0}
+            value={clousingType === "customer" && footer?.totalPOS === footer?.totalPhysical ? 0 : footer?.difference ?? 0}
             loading={false}
           />
 
