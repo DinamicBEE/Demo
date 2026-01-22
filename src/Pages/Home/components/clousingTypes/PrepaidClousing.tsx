@@ -275,7 +275,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   }
 
   const updateCoupons = (updatedCoupons: CouponCatalogModel[]) => {
-    const updatedLine = {...prepaid.lines[clientIndex]};
+    const updatedLine = {...prepaidLocal.lines[clientIndex]};
     updatedLine.coupons = updatedCoupons;
     updatedLine.quantity = updatedCoupons.filter((c) => !c.isExpired).length;
     const couponPhysicalValue = getCouponPhysicalValue(updatedCoupons);
@@ -286,14 +286,14 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     updatedLine.totalPOS =
       updatedLine.quantity * (updatedLine.unitPrice || 0);
     updatedLine.difference = newTotalFisico - (updatedLine.totalPOS || 0);
-    const updatePrepaid: PrepaidLineModel[] = prepaid.lines.map((item, idx) =>
+    const updatePrepaid: PrepaidLineModel[] = prepaidLocal.lines.map((item, idx) =>
       idx === clientIndex
         ? updatedLine
         : item
     );
     
     if (updatedLine.quantity === 0) {
-      const newLines = prepaid.lines.filter((_, i) => i !== clientIndex)
+      const newLines = prepaidLocal.lines.filter((_, i) => i !== clientIndex)
       updateData(newLines);
     } else {
       updateData(updatePrepaid);
