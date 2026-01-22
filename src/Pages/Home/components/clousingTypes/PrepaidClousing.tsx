@@ -40,7 +40,7 @@ import { TiDelete } from "react-icons/ti";
 const pageSize = 10;
 
 function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
-  const [prepaid, setPrepaid] = useState<PrepaidModel>({} as PrepaidModel);
+  const [prepaidLocal, setPrepaidLocal] = useState<PrepaidModel>({} as PrepaidModel);
   const [coupons, setCoupons] = useState<CouponCatalogModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingAdded, setLoadingAdded] = useState(false);
@@ -54,7 +54,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
-  const { getPrepaidData, getCouponData, setPrepaidData } = usePrepaidContext();
+  const { getPrepaidData, getCouponData, setPrepaidData, prepaid } = usePrepaidContext();
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
@@ -74,24 +74,24 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       0
     );
     const newDifference =
-      (newTotalFisico + newTotalComp) - prepaid.total.totalPOS;
+      (newTotalFisico + newTotalComp) - prepaidLocal.total.totalPOS;
     const newTotal: TotalModel = {
-      totalPOS: prepaid.total.totalPOS,
+      totalPOS: prepaidLocal.total.totalPOS,
       totalPhysical: newTotalFisico + newTotalComp,
       difference: newDifference,
     };
     
 
     const updated: PrepaidModel = {
-      ...prepaid,
+      ...prepaidLocal,
       total: newTotal,
       lines: updatePrepaid,
     };
-    setPrepaid(updated);
+    setPrepaidLocal(updated);
     setPrepaidData(data.id, updated);
     
     updateTotal(
-      newDifference >= 0 ? prepaid.total.totalPOS : (newTotalFisico + newTotalComp),
+      newDifference >= 0 ? prepaidLocal.total.totalPOS : (newTotalFisico + newTotalComp),
       data.id,
       CLOUSING_KEY.PREPAID
     );
@@ -106,7 +106,8 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const response = await getPrepaidData(
         data?.id,
-        data?.closingStartDate
+        data?.closingStartDate,
+        false
       );
 
       if (!response.success) {
@@ -117,7 +118,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const couponsList = await getCouponData(cdc, data?.closingStartDate);
 
-      setPrepaid(prepaidData);
+      setPrepaidLocal(prepaidData);
       setCoupons(couponsList);
 
       if (prepaidData?.total)
@@ -129,13 +130,13 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     };
 
     fetchData();
-  }, []);
+  }, [prepaid]);
 
   // Paginación
   useEffect(() => {
     setPage(page);
-    setVisibleItems(prepaid?.lines?.slice(startRange, endRange) || []);
-  }, [page, prepaid]);
+    setVisibleItems(prepaidLocal?.lines?.slice(startRange, endRange) || []);
+  }, [page, prepaidLocal]);
 
   // Ingreso de cupones
   const handleCoupon = (rawCode: string) => {
@@ -153,7 +154,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       return toast("Cupón inválido o expirado", "error")
     };
 
-    let clientLine = prepaid.lines.find(
+    let clientLine = prepaidLocal.lines.find(
       (l) =>
         l.client?.toLowerCase() === couponModel.clientCustom.toLowerCase() &&
         l.isEdit === false
@@ -175,7 +176,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         isEdit: false,
         ticketId: couponModel.id,
       };
-      prepaid.lines.push(clientLine);
+      prepaidLocal.lines.push(clientLine);
     }
 
     
@@ -204,7 +205,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       (clientLine.supplementsQuantity || 0) * (clientLine.unitPrice || 0);
     const newTotalFisico = couponPhysicalValue + supplementsValue;
 
-    const updatePrepaid: PrepaidLineModel[] = prepaid.lines.map((item) =>
+    const updatePrepaid: PrepaidLineModel[] = prepaidLocal.lines.map((item) =>
       item.id === clientLine!.id
         ? {
             ...clientLine!,
@@ -231,7 +232,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   };
 
   function handleNewCustomer(line: PrepaidLineModel) {
-    const updatePrepaid = [...prepaid.lines, line];
+    const updatePrepaid = [...prepaidLocal.lines, line];
     updateData(updatePrepaid);
     setIsNewCustomerOpen(false);
   }
@@ -244,12 +245,12 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   ) {
     value = value.replace(/[^\d.]/g, "");
 
-    const itemToUpdate = prepaid.lines.find((item) => item.id === id);
+    const itemToUpdate = prepaidLocal.lines.find((item) => item.id === id);
     if (!itemToUpdate) return;
 
     const numericValue = parseFloat(value) || 0;
 
-    const updatePrepaid = prepaid.lines.map((item: PrepaidLineModel) =>
+    const updatePrepaid = prepaidLocal.lines.map((item: PrepaidLineModel) =>
       item.id === id
         ? {
             ...item,
@@ -263,7 +264,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   }
 
   const onDelete = (index: number) => {
-    const newArray = prepaid.lines.filter((_, i) => i !== index);
+    const newArray = prepaidLocal.lines.filter((_, i) => i !== index);
     updateData(newArray);
     toast(
       "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
@@ -287,7 +288,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                   e.currentTarget.value = "";
                 }
               }}
-              disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
+              disabled={data?.closingConfirmation || prepaidLocal?.isRoleEditable === false}
             />
           </Skeleton>
         </Group>
@@ -295,7 +296,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         <Button
           colorPalette="green.400"
           onClick={() => setIsNewCustomerOpen(true)}
-          disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
+          disabled={data?.closingConfirmation || prepaidLocal?.isRoleEditable === false}
         >
           Agregar Complementario
         </Button>
@@ -319,7 +320,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                   {h}
                 </Table.ColumnHeader>
               ))}
-              {(!data.closingConfirmation || prepaid?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
+              {(!data.closingConfirmation || prepaidLocal?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
 
               </Table.ColumnHeader>}
             </Table.Row>
@@ -368,7 +369,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                       currency={false}
                       keyValue="supplementsQuantity"
                       onChange={handleInputTextData}
-                      disabled={data?.closingConfirmation || prepaid?.isRoleEditable === false}
+                      disabled={data?.closingConfirmation || prepaidLocal?.isRoleEditable === false}
                     />
                   )}
                 </Table.Cell>
@@ -397,7 +398,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                   )
                 )}
                 {/* Botón de eliminado */}
-                {(!data.closingConfirmation || prepaid?.isRoleEditable === false) && <Table.Cell textAlign="center">
+                {(!data.closingConfirmation || prepaidLocal?.isRoleEditable === false) && <Table.Cell textAlign="center">
                   <Box color="red.500"  textStyle="lg" >
                     
                     <Tooltip
@@ -417,7 +418,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       {/* Paginación */}
       <PaginationRoot
-        count={prepaid?.lines?.length ?? 0}
+        count={prepaidLocal?.lines?.length ?? 0}
         pageSize={pageSize}
         page={page}
         onPageChange={(e) => setPage(e.page)}

@@ -6,7 +6,8 @@ export interface PrepaidContextType {
   error: string;
   getPrepaidData: (
     clousingId: number,
-    dateClousing: string
+    dateClousing: string,
+    isRefresh:  boolean
   ) => Promise<ResponseModel>;
   getCouponData: (
     clousingId: number,
