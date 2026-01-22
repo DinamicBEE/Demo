@@ -65,7 +65,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const updateBank = useCallback(
-    async (localBank: BankUpdate, localLotClosure: LotClosure) => {
+    async (localBank: BankUpdate, localLotClosure: LotClosure, isPresave: boolean) => {
       setError("");
       setUpdateBankLoading(true);
       const updateBanks: Bank[] = [];
@@ -84,7 +84,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           })),
         };
 
-        await updateBankService(body);
+        await updateBankService(body, isPresave);
 
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));

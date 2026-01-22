@@ -233,16 +233,23 @@ export const updateBanksDistribution = (bankUpdate: BankUpdate): Bank[] => {
   }
 };
 
-export const updateBankService = async (localBank: BankUpdateRequest) => {  
+export const updateBankService = async (localBank: BankUpdateRequest, isPresave: boolean):Promise<boolean> => {  
   try {    
-    const response = await api.post(CONFIRM_BATCH, localBank);
+    const response = await api.post(CONFIRM_BATCH, localBank,{
+      params: {
+        isPreguardado: isPresave
+      }
+    });
     if (response.status === 200 && localBank.status === "Abierto") {
       assembliesController(localBank.consumerCenterId, localBank.batchDate)
+      return true;
+    } else  {
+      return false;
     }
     
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
-    return [];
+    return false;;
   }
 };
 
