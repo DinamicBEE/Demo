@@ -70,4 +70,6 @@ export interface DialogCouponsProps {
   onClose: () => void;
   coupons: CouponCatalogModel[];
   client: string;
+  closingConfirmation: boolean;
+  onSaveCoupons: (counpons: CouponCatalogModel[]) => void;
 }

@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Flex,
   FormatNumber,
@@ -23,12 +24,17 @@ import {
 } from "@components/ui/dialog";
 import { CouponCatalogModel, DialogCouponsProps } from "@models/prepaid.model";
 import { useEffect, useState } from "react";
+import { TiDelete } from "react-icons/ti";
+import { Tooltip } from "@components/ui/tooltip";
+
 const pageSize = 10;
 function DialogCoupons({
   isOpen,
   onClose,
   coupons,
-  client
+  client,
+  closingConfirmation,
+  onSaveCoupons
 }: DialogCouponsProps) {
   const [visibleItems, setVisibleItems] = useState<CouponCatalogModel[]>([]);
   const [page, setPage] = useState(1);
@@ -41,6 +47,18 @@ function DialogCoupons({
       setVisibleItems(paginatedItems);
     }
   }, [coupons, page]);
+
+  const onDelete = (index: number) => {
+    const newCouponsArray = coupons.filter((_, i) => i !== index);
+    coupons.splice(0, coupons.length, ...newCouponsArray);
+    const paginatedItems = coupons.slice(startRange, endRange);
+    setVisibleItems(paginatedItems);
+  }
+
+  const onSave = () => {
+    onSaveCoupons(coupons);
+    onClose();
+  }
 
   return (
     <DialogRoot
@@ -69,11 +87,12 @@ function DialogCoupons({
                     Precio unitario
                   </Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="end">Fecha</Table.ColumnHeader>
+                   {(!closingConfirmation) && <Table.ColumnHeader textAlign="center"></Table.ColumnHeader>}
                 </Table.Row>
               </Table.Header>
 
               <Table.Body>
-                {visibleItems?.map((item) => (
+                {visibleItems?.map((item, index) => (
                   <Table.Row
                     key={`${item.folio}-${item.validityDate}-${item.consumeCenter}`}
                   >
@@ -94,6 +113,18 @@ function DialogCoupons({
                     <Table.Cell textAlign="end">
                       <Text>{item.validityDateCustom}</Text>
                     </Table.Cell>
+                    {(!closingConfirmation) && <Table.Cell textAlign="center">
+                      <Box color="red.500"  textStyle="lg" >
+                        
+                        <Tooltip
+                          content={`Eliminar cupones de ${item.client}`}
+                          positioning={{ placement: "right-end" }}
+                        >
+                          <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
+                          
+                        </Tooltip>
+                      </Box>
+                    </Table.Cell>}
                   </Table.Row>
                 ))}
               </Table.Body>
@@ -122,6 +153,14 @@ function DialogCoupons({
               }}
             >
               Cerrar
+            </Button>
+            <Button
+              colorPalette="meraSuccess"
+              onClick={() => {
+                onSave();
+              }}
+            >
+              Guardar
             </Button>
           </Flex>
         </DialogFooter>
