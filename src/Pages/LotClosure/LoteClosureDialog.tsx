@@ -20,6 +20,7 @@ function LoteClosureDialog({
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<BankUpdate>({ bank: [], bankCopy: []} as BankUpdate);
   const [openCloseLot, setOpenCloseLot] = useState(false);
+  const [isPresave, setIsPresave] = useState(false);
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
 
@@ -39,16 +40,18 @@ function LoteClosureDialog({
     );
   };
 
-  const handleOpenCloseLot = () => {
+  const handleOpenCloseLot = (isPresave: boolean) => {
     setOpenCloseLot(true);
+    setIsPresave(isPresave)
   };
 
   const handleSave = async () => {
-    await updateBank(localBanks, localLot);
+    await updateBank(localBanks, localLot, isPresave);
     if (error === "") {
       setOpenCloseLot(false);
       onClose(true);
-      toast("Lote cerrado correctamente", "success");
+      const message = isPresave ? "Lote guardado correctamente" : "Lote cerrado correctamente";
+      toast(message, "success");
     }
   };
 
@@ -267,15 +270,26 @@ function LoteClosureDialog({
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>
               <Button
+                colorPalette="meraWarning"
                 disabled={
                   lot.status === STATUS.Close ||
                   lot.status === STATUS.WITH_DIFFERENCE ||
                   localLot.isRoleEditable === false
                 }
-                onClick={() => handleOpenCloseLot()}
-                colorPalette="meraInfo"
+                onClick={() => handleOpenCloseLot(true)}
               >
-                Guardar
+                Guardar lote
+              </Button>
+              <Button
+                disabled={
+                  lot.status === STATUS.Close ||
+                  lot.status === STATUS.WITH_DIFFERENCE ||
+                  localLot.isRoleEditable === false
+                }
+                onClick={() => handleOpenCloseLot(false)}
+                colorPalette="meraPrimary"
+              >
+                Confirmar lote
               </Button>
             </Flex>
           </DialogFooter>
@@ -296,7 +310,7 @@ function LoteClosureDialog({
           </DialogHeader>
           <DialogBody>
             <p>
-              {localLot?.difference === 0
+              { isPresave ? "El lote se guardará con la información actual." : localLot?.difference === 0
                 ? "El lote se cerrará sin diferencias"
                 : "El lote se cerrará con diferencias"}
             </p>
@@ -317,7 +331,7 @@ function LoteClosureDialog({
                 colorPalette="meraPrimary"
                 width={"auto !important"}
               >
-                {updateBankLoading ? <Spinner color={"#fff"} /> : "Cerrar lote"}
+                {updateBankLoading ? <Spinner color={"#fff"} /> : isPresave ? "Guardar lote" : "Cerrar lote"}
               </Button>
             </Flex>
           </DialogFooter>
