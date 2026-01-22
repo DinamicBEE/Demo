@@ -31,7 +31,7 @@ const EmployeesClousing = lazy(
 );
 import { useClosing } from "@hooks/useClosing";
 
-function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks}: ClousingLayoutProps) {
+function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks, startDate, endDate}: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
   const { cashRef } = useCashClousing();
@@ -94,6 +94,8 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                 idCurrency={subsidiary.idCurrency}
                 isStarbucks={isStarbucks}
                 employeId={employee.employeId}
+                date={startDate}
+                endDate={endDate}
               ></HeaderClousing>
             </Box>
           </DialogHeader>

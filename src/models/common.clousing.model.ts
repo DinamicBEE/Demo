@@ -272,6 +272,8 @@ export interface ClousingLayoutProps {
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
   isStarbucks: boolean;
+  startDate: Date;
+  endDate: Date;
 }
 
 export interface ClousingHeadersProps {
@@ -284,6 +286,8 @@ export interface ClousingHeadersProps {
   idCurrency: number;
   isStarbucks: boolean;
   employeId: number;
+  date: Date;
+  endDate: Date;
 }
 
 export interface TableOfTotalsProps {

@@ -17,10 +17,10 @@ export function SpecialcustomerProvider({ children }: { children: ReactNode }) {
         specialCustRef.current = newCashData;
     };
 
-    const getSpecialCustData = useCallback(async (clousingId: number, idCurrency: number)=>{
+    const getSpecialCustData = useCallback(async (clousingId: number, idCurrency: number, isRefresh:  boolean)=>{
         setSpecialCustLoading(true);
 
-        if(specialCustRef.current[clousingId]){
+        if(specialCustRef.current[clousingId] && !isRefresh){
             setSpecialCustLoading(false);
             const response: ResponseModel = {
                 success: true,

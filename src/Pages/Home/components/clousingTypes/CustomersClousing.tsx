@@ -53,7 +53,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   );
   const [customersItems, setCustomersItems] = useState<FilterOption[]>([]);
   const { setFooterData } = useFooter();
-  const { getCustomerData, customerLoading, getCustomerList } = useCustomerContext();
+  const { getCustomerData, customerLoading, getCustomerList, customer } = useCustomerContext();
   const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer } = useHandleCustomer(
     CustomersData || ({} as CustomerModel),
     setCustomersData,
@@ -72,7 +72,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
     async function fetchData() {
       if (!data) return;
       
-      const customers: ResponseModel = await getCustomerData(data.id);
+      const customers: ResponseModel = await getCustomerData(data.id, false);
 
       if(!customers.success){
         handleErrorMessage(customers.error)
@@ -102,7 +102,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
     }
 
     fetchData();
-  }, []);
+  }, [customer]);
 
   useEffect(() => {
     async function fetchCustomers() {

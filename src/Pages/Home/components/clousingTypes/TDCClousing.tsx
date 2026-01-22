@@ -33,7 +33,7 @@ function TDCClousing({ data, idCurrency, isStarbucks }: any) {
 
   useEffect(() => {
     async function fetchData() {
-      const tdc: TDCModel = await getTDCData(data?.id, idCurrency, isStarbucks);   
+      const tdc: TDCModel = await getTDCData(data?.id, idCurrency, isStarbucks, false);   
       if (tdc?.total) {
         setFooterData(tdc.total, data.id, CLOUSING_KEY.TDC);
       }
