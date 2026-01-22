@@ -84,7 +84,9 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           })),
         };
 
-        await updateBankService(body, isPresave);
+        const response = await updateBankService(body, isPresave);
+
+        !response ? setError("Error al actualizar detalles de Lotes") : null;
 
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));

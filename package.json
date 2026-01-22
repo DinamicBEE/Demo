@@ -1,7 +1,7 @@
 {
   "name": "mera-corte-caja",
   "private": true,
-  "version": "2.01.00",
+  "version": "2.01.01",
   "license": "MIT",
   "type": "module",
   "scripts": {

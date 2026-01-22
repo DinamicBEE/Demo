@@ -50,7 +50,8 @@ function LoteClosureDialog({
     if (error === "") {
       setOpenCloseLot(false);
       onClose(true);
-      toast("Lote cerrado correctamente", "success"); //TODO: cambiar mensaje 
+      const message = isPresave ? "Lote guardado correctamente" : "Lote cerrado correctamente";
+      toast(message, "success");
     }
   };
 
@@ -309,7 +310,7 @@ function LoteClosureDialog({
           </DialogHeader>
           <DialogBody>
             <p>
-              {localLot?.difference === 0
+              { isPresave ? "El lote se guardará con la información actual." : localLot?.difference === 0
                 ? "El lote se cerrará sin diferencias"
                 : "El lote se cerrará con diferencias"}
             </p>
