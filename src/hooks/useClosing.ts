@@ -14,9 +14,11 @@ interface ClosingUpdate {
   clousingId: number;
   clousingType: CLOUSING_KEY;
   differenceCupons: number;
+  totalPOS: number;
 }
 
 export const useClosing = () => {
+
   const { getCashData } = useCashClousing();
   const { getCustomerData } = useCustomerContext();
   const { getSpecialCustData } = useSpecialCustContext();
@@ -24,7 +26,7 @@ export const useClosing = () => {
   const { getPrepaidData } = usePrepaidContext();
   const { getTDCData } = useTDCContext();
   const { getIntercompanyData } = useIntercompanyContext();
-  const { updateTotal } = useHeaders();
+  const { updateTotal, header, updateHeaderState } = useHeaders();
 
   const prepareUpdate = useCallback((
     data: any, 
@@ -34,13 +36,15 @@ export const useClosing = () => {
     if (!data?.total) return null;
     
     const total = data.total.totalPhysical;
+    const totalPOS = data.total.totalPOS;
     const differenceCupons = data.total.differenceCupons || 0;
     
     return {
       newTotal: total,
       clousingId: employeeId,
       clousingType: key as CLOUSING_KEY,
-      differenceCupons: differenceCupons
+      differenceCupons: differenceCupons,
+      totalPOS: totalPOS
     };
   }, []);
 
@@ -59,8 +63,8 @@ export const useClosing = () => {
 
       const [customer, specialCustomer, prepaid, tdc, intercompany, employeeT, cash] = await Promise.all([
         getCustomerData(employeeId, isRefresh),
-        getSpecialCustData(employeeId, idCurrency),
-        getPrepaidData(employeeId, closingStartDate ?? ""),
+        getSpecialCustData(employeeId, idCurrency, isRefresh),
+        getPrepaidData(employeeId, closingStartDate ?? "", isRefresh),
         getTDCData(employeeId, idCurrency, isStarbucks, isRefresh),
         getIntercompanyData(employeeId, isRefresh),
         getEmployeetData(employeeId, isRefresh),
@@ -76,6 +80,20 @@ export const useClosing = () => {
         prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY, employeeId),
         prepareUpdate(employeeT, CLOUSING_KEY.EMPLOYEE, employeeId),
       ].filter(Boolean) as ClosingUpdate[];
+      
+      if(isRefresh) {
+        const currentHeader = header[employeeId];
+        
+        const totalPOS = updates.reduce((acc, curr) => acc + curr.totalPOS, 0);
+        if(currentHeader) {
+          const updatedHeader ={
+            ...currentHeader,
+            totalPOS: totalPOS
+          };
+
+          updateHeaderState({ ...header, [employeeId]: updatedHeader }, employeeId);
+        }
+      }
 
       for (const update of updates) {
         await updateTotal(

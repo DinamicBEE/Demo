@@ -44,13 +44,25 @@ function PrepaidNewCustomer({
   >([]);
   const [quantity, setQuantity] = useState<number>(1);
   const [amount, setAmount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    if (isOpen) fetchData();
+    if (!isOpen) {
+      setCustomers([]);
+      setSelectedCustomer(null);
+    };
+
+    setIsLoading(true);
+
+    getCustomersPrepaid()
+      .then((customer) => {
+        setCustomers(customer ?? []);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [isOpen]);
 
-  async function fetchData() {
-    setCustomers(await getCustomersPrepaid());
-  }
 
   function handleAddCustomer() {
     const newLine: PrepaidLineModel = {
@@ -94,15 +106,11 @@ function PrepaidNewCustomer({
               <FieldLabel>Cliente</FieldLabel>
               <Box w={"full"}>
                 <FilterCustomer
-                  disabled={false}
-                  customers={customers}
-                  customerSelect={
-                    selectedCustomer?.label || "Selecciona cliente"
-                  }
+                  disabled={isLoading}
+                  customers={customers || []}
+                  customerSelect={selectedCustomer?.label || "Selecciona cliente"}
                   label={false}
-                  onSelect={(customer) => {
-                    setSelectedCustomer(customer);
-                  }}
+                  onSelect={(customer) => setSelectedCustomer(customer)}
                 />
               </Box>
             </FieldRoot>
@@ -117,6 +125,7 @@ function PrepaidNewCustomer({
                 defaultValue={"1"}
                 value={quantity.toString()}
                 onValueChange={(ev) => setQuantity(Number(ev.value))}
+                disabled={isLoading}
               >
                 <NumberInputControl />
                 <NumberInputInput />
@@ -133,10 +142,11 @@ function PrepaidNewCustomer({
                 defaultValue={"0"}
                 value={amount.toString()}
                 onValueChange={(ev) => setAmount(Number(ev.value))}
+                disabled={isLoading}
               >
                 <NumberInputControl />
                 <InputGroup startElement={<BiDollar />}>
-                  <NumberInputInput />
+                  <NumberInputInput disabled={isLoading}/>
                 </InputGroup>
               </NumberInputRoot>
             </FieldRoot>

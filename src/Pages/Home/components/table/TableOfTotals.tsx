@@ -386,6 +386,8 @@ function TableOfTotals({
         subsidiary={subsidiary}
         isEdit={isEdit}
         isStarbucks={isStarbucks}
+        startDate={startDate}
+        endDate={endDate}
       ></ClousingLayout>
     </>
   );

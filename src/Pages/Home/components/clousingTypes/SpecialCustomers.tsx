@@ -37,7 +37,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
     []
   );
   const { setFooterData } = useFooter();
-  const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
+  const { getSpecialCustData, specialCustLoading, specialCust } = useSpecialCustContext();
   const { handleInputTextData, handleUpdateAmountMXN } =
     useHandleSpecialCustomer(
       specialCustomer || ({} as SpecialCustomerModel),
@@ -55,7 +55,8 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
   
       const specialCustomer: ResponseModel = await getSpecialCustData(
         data?.id,
-        subsidiary.idCurrency
+        subsidiary.idCurrency,
+        false
       );
       const customersApi = await getCustomers(false);
       if(!specialCustomer.success){
@@ -74,7 +75,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
     }
 
     fetchData();
-  }, []);
+  }, [specialCust]);
 
   useEffect(() => {
     setPage(page);

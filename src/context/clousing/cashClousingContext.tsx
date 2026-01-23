@@ -15,7 +15,6 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
     const [cashClousingSelect, setCashClousingSelect] = useState<any>({});
 
     const updateCashData = (newCashData: CashContext) => {
-        console.log("pre", newCashData)
         setCashClousing(newCashData);
         cashRef.current = newCashData
     }
@@ -23,9 +22,8 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
     const getCashData = useCallback(async (clousingId: number, idCurrency: number, isRefresh: boolean) => {
 
         setCashLoading(true);
-        console.log(clousingId, isRefresh, cashRef.current[clousingId])
+        
         if (cashRef.current[clousingId] && !isRefresh) {
-            console.log("cache")
             setCashLoading(false);
             return cashRef.current[clousingId];
         }

@@ -18,9 +18,11 @@ function HeaderClousing({
   startDate,
   idCurrency,
   isStarbucks,
-  employeId
+  employeId,
+  date,
+  endDate
 }: ClousingHeadersProps ) {
-  const { dataRow } = useClousing();
+  const { dataRow, getInfo } = useClousing();
   const { getHeader, header, updateHeaderState } = useHeaders();
   const [localHeader, setLocalHeader] = useState<HeaderData | undefined>();
   const [discountValue, setDiscountValue] = useState(0);
@@ -76,6 +78,7 @@ function HeaderClousing({
       
       if(response){
         await  executeUpdateSections(id, startDate, idCurrency, isStarbucks, true)
+        getInfo(location.id, 0, date, endDate, true);
       } else {
         toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
       }
