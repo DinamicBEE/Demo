@@ -32,8 +32,6 @@ function HeaderClousing({
   const currentHeader = useMemo(() => header[id], [header, id]);
 
   const fetchHeader = useCallback(async () => {
-    console.log("HeaderClousing - fetchHeader - currentHeader:", currentHeader);
-    console.log("HeaderClousing - fetchHeader - currentHeader:", header);
     if (!currentHeader) {
       const headerData = await getHeader(dataRow);
       setLocalHeader(headerData);

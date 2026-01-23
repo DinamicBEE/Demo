@@ -33,7 +33,6 @@ function CashClousing({ data, idCurrency }: any) {
   useEffect(() => {
     
     async function fetchData() {
-      console.log("entre")
       const cashData = await getCashData(data.id, idCurrency, false);
       setTips(cashData.tips?.toString() || "0")
       

@@ -26,6 +26,7 @@ import { CouponCatalogModel, DialogCouponsProps } from "@models/prepaid.model";
 import { useEffect, useState } from "react";
 import { TiDelete } from "react-icons/ti";
 import { Tooltip } from "@components/ui/tooltip";
+import { toast } from "@utils/Toast";
 
 const pageSize = 10;
 function DialogCoupons({
@@ -57,6 +58,10 @@ function DialogCoupons({
 
   const onSave = () => {
     onSaveCoupons(coupons);
+    toast(
+      "Guardar o Confirmar el corte para que los cambios se apliquen correctamente",
+      "warning",
+      "Cupón eliminado");
     onClose();
   }
 

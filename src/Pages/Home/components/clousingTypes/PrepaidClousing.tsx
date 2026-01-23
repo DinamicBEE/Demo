@@ -117,10 +117,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const prepaidData = response.data as PrepaidModel;
 
-      const couponsList = await getCouponData(cdc, data?.closingStartDate);
-
       setPrepaidLocal(prepaidData);
-      setCoupons(couponsList);
 
       if (prepaidData?.total)
         setFooterData(prepaidData.total, data.id, CLOUSING_KEY.PREPAID);
@@ -132,6 +129,17 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     fetchData();
   }, [prepaid]);
+
+  useEffect(() => {
+    const fetchCoupons = async() => {
+      const couponsList = await getCouponData(cdc, data?.closingStartDate);
+      setCoupons(couponsList);
+    }
+    if (!data?.closingConfirmation) {
+      fetchCoupons();
+    }
+  }, [getCouponData, data?.closingConfirmation])
+  
 
   // Paginación
   useEffect(() => {
