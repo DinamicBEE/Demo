@@ -20,6 +20,8 @@ export const getStatusColor = (status: STATUS) => {
       return "meraSecondary";
     case STATUS.INACTIVE:
       return "meraInfo";
+    case STATUS.IN_CORRECTION:
+      return "meraWarning";
     default:
       return "meraSecondary";
   }

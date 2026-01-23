@@ -41,9 +41,7 @@ export function CustomerClousingProvider({
   const getCustomerData = useCallback(
     async (clousingId: number, isRefresh: boolean) => {
       setCustomerLoading(true);
-      console.log(customerRef.current[clousingId], isRefresh)
       if (customerRef.current[clousingId] && !isRefresh) {
-        console.log("entre")
         setCustomerLoading(false);
         const response: ResponseModel = {
           success: true,

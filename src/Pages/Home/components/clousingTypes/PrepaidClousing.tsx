@@ -51,6 +51,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
   const [isNewCustomerOpen, setIsNewCustomerOpen] = useState(false);
   const [couponsSelectedList, setCouponsSelectedList] = useState<CouponCatalogModel[]>([]);
   const [client, setClient] = useState("");
+  const [clientIndex, setClientIndex] = useState<number>(0);
 
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
@@ -116,10 +117,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       const prepaidData = response.data as PrepaidModel;
 
-      const couponsList = await getCouponData(cdc, data?.closingStartDate);
-
       setPrepaidLocal(prepaidData);
-      setCoupons(couponsList);
 
       if (prepaidData?.total)
         setFooterData(prepaidData.total, data.id, CLOUSING_KEY.PREPAID);
@@ -131,6 +129,17 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     fetchData();
   }, [prepaid]);
+
+  useEffect(() => {
+    const fetchCoupons = async() => {
+      const couponsList = await getCouponData(cdc, data?.closingStartDate);
+      setCoupons(couponsList);
+    }
+    if (!data?.closingConfirmation) {
+      fetchCoupons();
+    }
+  }, [getCouponData, data?.closingConfirmation])
+  
 
   // Paginación
   useEffect(() => {
@@ -157,7 +166,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     let clientLine = prepaidLocal.lines.find(
       (l) =>
         l.client?.toLowerCase() === couponModel.clientCustom.toLowerCase() &&
-        l.isEdit === false
+        l.isEdit === false && (l.unitPrice === couponModel.amount)
     );
 
     if (!clientLine) {      
@@ -186,14 +195,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     ) {
       setLoadingAdded(false);
       return toast("Cupón duplicado", "warning");
-    }
-
-    if (
-      clientLine.coupons.length &&
-      clientLine.coupons[0].amount !== couponModel.amount
-    ) {
-      setLoadingAdded(false);
-      return toast("Monto diferente", "warning");
     }
 
     clientLine.coupons.push(couponModel);
@@ -273,6 +274,37 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     );
   }
 
+  const updateCoupons = (updatedCoupons: CouponCatalogModel[]) => {
+    const updatedLine = {...prepaidLocal.lines[clientIndex]};
+    updatedLine.coupons = updatedCoupons;
+    updatedLine.quantity = updatedCoupons.filter((c) => !c.isExpired).length;
+    const couponPhysicalValue = getCouponPhysicalValue(updatedCoupons);
+    const supplementsValue =
+      (updatedLine.supplementsQuantity || 0) * (updatedLine.unitPrice || 0);
+    const newTotalFisico = couponPhysicalValue + supplementsValue;
+    updatedLine.physical = newTotalFisico;
+    updatedLine.totalPOS =
+      updatedLine.quantity * (updatedLine.unitPrice || 0);
+    updatedLine.difference = newTotalFisico - (updatedLine.totalPOS || 0);
+    const updatePrepaid: PrepaidLineModel[] = prepaidLocal.lines.map((item, idx) =>
+      idx === clientIndex
+        ? updatedLine
+        : item
+    );
+    
+    if (updatedLine.quantity === 0) {
+      const newLines = prepaidLocal.lines.filter((_, i) => i !== clientIndex)
+      updateData(newLines);
+    } else {
+      updateData(updatePrepaid);
+    }
+
+
+
+    setClientIndex(0);
+    setClient("");
+  }
+
   return (
     <Box>
       <Toaster />
@@ -331,7 +363,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                 {/* Cliente */}
                 <Table.Cell textAlign="center">
                   <Text>
-                    {item.client} {item.isEdit && "(Complementario)"}{" "}
+                    {item.client} {item.supplementsQuantity > 0 && "(Complementario)"}
                   </Text>
                 </Table.Cell>
 
@@ -345,6 +377,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
                       color="blue.500"
                       onClick={() => {
                         setClient(item.client ?? "");
+                        setClientIndex(index);
                         setCouponsSelectedList(
                           item.coupons.filter((c) => !c.isExpired)
                         );
@@ -435,7 +468,9 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         coupons={couponsSelectedList}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        closingConfirmation={data.closingConfirmation}
         client={client}
+        onSaveCoupons={updateCoupons}
       />
       <PrepaidNewCustomer
         isOpen={isNewCustomerOpen}
