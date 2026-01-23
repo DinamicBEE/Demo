@@ -1,3 +1,5 @@
+import { ROLES } from "./menu.consts";
+
 export enum REPORT_KEY {
   REPDES_01 = 1,
   REPMIX_01 = 2,
@@ -39,12 +41,14 @@ export const MENU_CONFIG = [
       //{ id: 2, name: REPORT_NAME.REPMIX_02, reportCode: REPORT_KEY.REPMIX_02 },
     ],
     reportCode: null,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER] //TODO: Agregar rol generico
   },
   {
     id: 2,
     categoryName: REPORT_NAME.REPDES_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPDES_01,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER]
   },
   {
     id: 3,
@@ -56,18 +60,21 @@ export const MENU_CONFIG = [
       { id: 4, name: REPORT_NAME.REPVEN_04, reportCode: REPORT_KEY.REPVEN_04 },
     ],
     reportCode: null,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER]
   },
   {
     id: 4,
     categoryName: REPORT_NAME.REPVOI_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPVOI_01,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER]
   },
   {
     id: 5,
     categoryName: REPORT_NAME.REPCUP_01,
     subCategories: null,
     reportCode: REPORT_KEY.REPCUP_01,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER]
   },
   {
     id: 6,
@@ -76,13 +83,15 @@ export const MENU_CONFIG = [
       { id: 1, name: REPORT_NAME.REPBAN_01, reportCode: REPORT_KEY.REPBAN_01 },
       { id: 2, name: REPORT_NAME.REPBAN_02, reportCode: REPORT_KEY.REPBAN_02 },
     ],
-    reportCode: null
+    reportCode: null,
+    roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER]
   },
   {
     id: 100,
     categoryName: REPORT_NAME.REPSYNC_ERRORS,
     subCategories: null,
     reportCode: REPORT_KEY.REPSYNC_ERRORS,
+    roles: [ROLES.ADMIN,]
   },
 
 ];
