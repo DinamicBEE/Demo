@@ -32,11 +32,6 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
 
             const response = await getCashClousing(clousingId, idCurrency);
 
-            // if (!response.success) {
-            //     setCashLoading(false);
-            //     return {} as CashModel;
-            // }
-
             const updateCash: CashContext = { ...cashRef.current, [clousingId]: response.data };
 
             updateCashData(updateCash)

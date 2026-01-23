@@ -4,12 +4,16 @@ import { ReportsPropsModel } from "@models/reports.model";
 import { MENU_CONFIG } from "@models/const/reports.const";
 import { MdChevronRight } from "react-icons/md";
 import { RiMenuUnfold3Line, RiCloseLargeFill } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import { loadData } from "../../../indexedDB/localDB";
+import { ROLES } from "@models/const/menu.consts";
 
 
 function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel) {
   const activeBg = useColorModeValue('green.50', 'green.900');
   const activeColor = useColorModeValue('green.700', 'green.200');
   const inactiveColor = useColorModeValue('rgb(45, 55, 72)', 'gray.200');
+  const [localMenu, setLocalMenu] = useState(MENU_CONFIG)
 
   const handleClick = (reportCode: number) => {
     onReportClick(reportCode);
@@ -19,6 +23,20 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
   const isActive = (reportCode: number | null) => {
     return reportCode !== null && reportCode === currentReport;
   };
+
+  useEffect(() => {
+    
+    async function filterMenu(){
+      const userRole = await loadData.userData.get("userRole");
+      if(userRole){
+        const filteredMenu = MENU_CONFIG.filter(item => item.roles.includes(userRole.value as ROLES))
+        setLocalMenu(filteredMenu);
+      }
+    }
+
+    filterMenu();
+
+  },[])
 
   return (
     <Drawer.Root
@@ -60,7 +78,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
             </Drawer.Header>
             <Drawer.Body>
               <VStack p={4} align={"flex-start"} width={"full"} gap={4}>
-                {MENU_CONFIG.map((item) => (
+                {localMenu.map((item) => (
                   <Box key={item.id} width="full">
                     {item.subCategories === null ? (
                       <HStack 

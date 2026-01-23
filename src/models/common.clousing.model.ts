@@ -38,6 +38,7 @@ export interface ClousingLinesModel {
   difference: number;
   diferenciaCupones?: number;
   status: string;
+  statusId: number;
   extra: number;
   mxm?: number;
   usd?: number;
@@ -84,7 +85,7 @@ export interface TotalsModel extends Omit<ClousingLinesModel, "id" | "employe" |
 | "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva"> {};
 
 export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" | "employe" | "creationDate" | "extra"
-| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm"> {
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm" | "statusId"> {
   id?: number,
   ubicacion: string,
   subsidiariaId: number,
@@ -223,6 +224,7 @@ export interface FooterClousing {
   idCurrency: number;
   isRoleEditable?: boolean;
   isStarbucks: boolean;
+  statusId: number;
 }
 
 export interface TotalModel {
@@ -274,6 +276,7 @@ export interface ClousingLayoutProps {
   isStarbucks: boolean;
   startDate: Date;
   endDate: Date;
+  statusId: number;
 }
 
 export interface ClousingHeadersProps {
@@ -362,4 +365,5 @@ export interface DataServiceModel {
     idCurrency: number;
     discountPhysical: number;
     employee: EmployeeModel;
+    statusId: number;
 }

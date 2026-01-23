@@ -197,14 +197,6 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
       return toast("Cupón duplicado", "warning");
     }
 
-    /* if (
-      clientLine.coupons.length &&
-      clientLine.coupons[0].amount !== couponModel.amount
-    ) {
-      setLoadingAdded(false);
-      return toast("Monto diferente", "warning");
-    } */
-
     clientLine.coupons.push(couponModel);
     clientLine.couponsSelected?.push(couponModel);
 

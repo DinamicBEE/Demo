@@ -31,13 +31,6 @@ function TableOfTotals({
     useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
-  //const [updateLoading, setUpdateLoading] = useState(false);
-
-  //TODO: eliminar SOLO USO DE DEBUG
-  // useEffect(()=>{
-  //   const ids = data.map(d=>d.id)
-  //   console.log(ids)
-  // },[data])
 
   function handleExportCSV() {
 
@@ -388,6 +381,7 @@ function TableOfTotals({
         isStarbucks={isStarbucks}
         startDate={startDate}
         endDate={endDate}
+        statusId={selectedEmployee.statusId}
       ></ClousingLayout>
     </>
   );
