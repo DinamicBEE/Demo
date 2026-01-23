@@ -687,8 +687,10 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         total: curr.totalFisico || 0
       }))
     }
+    console.log(dataService.statusId)
     const body: ClousingSave = {
       id: dataService.clousingId,
+      statusId: dataService.statusId,
       discountPhysical: dataService.discountPhysical || 0,
       cash: {
         idCurrencySub: dataService.idCurrency,

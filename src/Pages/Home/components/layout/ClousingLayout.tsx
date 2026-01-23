@@ -31,7 +31,7 @@ const EmployeesClousing = lazy(
 );
 import { useClosing } from "@hooks/useClosing";
 
-function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks, startDate, endDate}: ClousingLayoutProps) {
+function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStarbucks, startDate, endDate, statusId}: ClousingLayoutProps) {
   const [value, setValue] = useState<CLOUSING_KEY>(CLOUSING_KEY.CASH);
   const [openDialogExit, setOpenDialogExit] = useState(false);
   const { cashRef } = useCashClousing();
@@ -336,6 +336,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               idCurrency={subsidiary.idCurrency}
               isRoleEditable={employee?.isRoleEditable}
               isStarbucks={isStarbucks}
+              statusId={statusId}
             />
           </DialogFooter>
 
@@ -348,18 +349,6 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         }}
         closeOnExit={() => {
           onClose(false);
-          // if (employee && employee.id) {
-          //   //delete cashRef.current[employee.id];
-          //   delete customerRef.current[employee.id];
-          //   delete specialCustRef.current[employee.id];
-          //   delete prepaidRef.current[employee.id];
-          //   delete tdcRef.current[employee.id];
-          //   delete headerRef.current[employee.id];
-          //   employee = {} as ClousingLinesModel;
-          //   setCoupons({} as any);
-          //   setEmployee({} as any);
-          //   setIntercompany({} as any);
-          // }
         }}
         isOpen={openDialogExit}
       ></ExitDialog>
