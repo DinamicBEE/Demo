@@ -144,7 +144,7 @@ function FooterClousing({
       return;
     }
 
-    const allHaveCoupons = ref != undefined ? ref.lines.every(
+    /* const allHaveCoupons = ref != undefined ? ref.lines.every(
       (line) => line.coupons.length > 0 || line.isEdit || line.supplementsQuantity > 0
     ) : false;
 
@@ -156,7 +156,7 @@ function FooterClousing({
         type: "error",
       });
       return;
-    }
+    } */
     //console.log('header[clousingId]?.difference', header[clousingId]?.difference);
     if (header[clousingId]?.difference && header[clousingId]?.difference <= 0 && isConfirm === false) {
 
