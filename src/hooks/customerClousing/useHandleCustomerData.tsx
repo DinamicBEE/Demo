@@ -211,5 +211,5 @@ export const useHandleCustomer = (
     setCustomerData(updateCustomerData, clousingId);
   }
 
-  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer };
+  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer, updateContext };
 };
