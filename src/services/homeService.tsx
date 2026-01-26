@@ -71,6 +71,7 @@ export const getGeneralInfo = async (
         totalPhysical: line.totalPhysical,
         difference: line.totalPhysical - line.totalPOS,
         status: isStarbucks && line.status === "Cerrado Starbucks" ? STATUS.Open : getStatus(line.status),
+        statusId: line.statusId,
         extra: line.exta,
         customer: line.customer,
         specialCustomer: line.specialCustomer,

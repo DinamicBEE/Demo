@@ -26,7 +26,8 @@ function FooterClousing({
   closingConfirmation,
   idCurrency,
   isRoleEditable,
-  isStarbucks
+  isStarbucks,
+  statusId
 }: FooterClousing) {
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
@@ -77,7 +78,8 @@ function FooterClousing({
       clousingId,
       idCurrency,
       discountPhysical: headerRef.current[clousingId]?.discountPhysical || 0,
-      employee
+      employee,
+      statusId
     }
 
     const response: any = await sendCashClousing(dataService, isConfirm, isStarbucks);
