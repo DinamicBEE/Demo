@@ -16,12 +16,8 @@ export const formatToYYYYMMDD = (date: Date): string => {
 };
 
 export const formatToYYYYMMDDstring = (date: string): string => {
-  const dateObj = new Date(date);
-  const day = String(dateObj.getDate()).padStart(2, "0");
-  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const year = dateObj.getFullYear();
-
-  return `${year}-${month}-${day}`;
+  const [dia, mes, anio] = date.split('/');
+  return `${anio}-${mes}-${dia}`;
 };
 
 export const formatToDDMMYYYYstring = (date: string): string => {

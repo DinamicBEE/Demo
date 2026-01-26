@@ -16,6 +16,7 @@ import { ClousingSave } from "@models/saveClousing.model";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
+import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
 
 /**
  * This function gets the information
@@ -379,8 +380,10 @@ export const getCouponCatalog = async (
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_COUPONS, {
       params: { consumer: clousingId },
-    });    
+    });
 
+    const dateToCompare = formatToYYYYMMDDstring(dateClousing)+"T00:00:00";
+    
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
@@ -389,13 +392,12 @@ export const getCouponCatalog = async (
         .replace(/^\d+\s+/, "") // Remove leading numbers and spaces
         .toLowerCase() // Convert all to lowercase
         .replace(/^(.)/, (match) => match.toUpperCase()), // Eliminar números al inicio
-      validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
+      validityDateCustom: format(new Date(item.validityDate), "dd/MM/yyyy"),
       isExpired: isBefore(
-        // Compare only the date part by setting both dates to start of day
         (new Date(item.validityDate)),
-        startOfDay(new Date())
+        startOfDay(new Date(dateToCompare))
       ),
-    }));
+    }));    
     
     return transformedData;
   } catch (error) {
