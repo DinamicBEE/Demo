@@ -74,9 +74,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         size="full"
         open={isOpen}
         onOpenChange={() => setOpenDialogExit(
-          (employee?.statusId == 1 || employee?.statusId == 7) && employee.isRoleEditable
-            ? true
-            : false)
+          ((employee?.statusId == 1 || employee?.statusId == 7) && employee.isRoleEditable) || false)
           }
         closeOnEscape={false}
         closeOnInteractOutside={false}
