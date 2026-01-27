@@ -71,12 +71,14 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
                 ammount: newValue,
                 ammountUSD: newValueUSD,
                 ammountMXN: newAmount,
+                couponPrice: newAmount,
+                difference: newAmount - item.bill,
               }
             : item
       );
 
       specialCustomerData.lines = updatedCurrencies;
-
+      console.log(specialCustomerData)
       setSpecialCustomer({ ...specialCustomerData });
       specialCustRef.current = specialCustomerData;
       updateContext(updatedCurrencies);
@@ -86,7 +88,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
     function updateContext(updateLines: SpecialCustomerLines[]){
 
         const newTotalFisico: number = updateLines.reduce(
-            (acc: number, curr: { ammountMXN: number; }) => Number(acc) + Number(curr.ammountMXN),
+            (acc: number, curr: { bill: number; }) => Number(acc) + Number(curr.bill),//Number(curr.ammountMXN),
             0
         );
         

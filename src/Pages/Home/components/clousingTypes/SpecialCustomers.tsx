@@ -52,13 +52,18 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
 
   useEffect(() => {
     async function fetchData() {
-  
       const specialCustomer: ResponseModel = await getSpecialCustData(
         data?.id,
         subsidiary.idCurrency,
         false
       );
-      const customersApi = await getCustomers(false);
+
+      if(customers.length === 0){
+        const customersApi = await getCustomers(false);
+        setCustomers(customersApi);
+      }
+
+      
       if(!specialCustomer.success){
         handleErrorMessage(specialCustomer.error)
       }
@@ -69,15 +74,16 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
           CLOUSING_KEY.SPECIALCUSTOMER
         );
       setSpecialCustomer(specialCustomer.data);
-      setCustomers(customersApi);
+      
       const items = specialCustomer?.data.lines?.slice(startRange, endRange);
       setVisibleItems(items);
     }
 
     fetchData();
-  }, [specialCust]);
+  }, [specialCust]); //
 
   useEffect(() => {
+    console.log("Prueba de tiempo: ",specialCustomer)
     setPage(page);
     const items = specialCustomer?.lines?.slice(startRange, endRange) || [];
     setVisibleItems(items);
@@ -85,7 +91,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
 
   return (
     <Box>
-      {/* <Toaster /> */}
 
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
@@ -181,9 +186,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
                 </Table.Cell>
 
                 <Table.Cell textAlign="center">
-                  {/*  <Text>
-                    {item.client}
-                  </Text> */}
                   <FilterCustomer
                     customers={customers}
                     customerSelect={item.client}
