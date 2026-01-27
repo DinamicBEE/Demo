@@ -195,8 +195,10 @@ export const useHandleCustomer = (
 
     const newTotal: TotalModel = {
       totalPOS: customerData.total.totalPOS,
-      totalPhysical: newTotalFisico > customerData.total.totalPOS ? customerData.total.totalPOS : newTotalFisico,
-      difference: newDifference,
+      totalPhysical: newTotalFisico > customerData.total.totalPOS 
+        ? customerData.total.totalPOS
+        : newTotalFisico,
+      difference: newDifference > 0 ? 0 : newDifference,
       differenceCupons: newTotalFisico > customerData.total.totalPOS ? newDifference : 0
     };
 
