@@ -307,6 +307,7 @@ export interface ConfirmDialogProps {
   closeDialog: () => void;
   sendData: (isConfirm: boolean) => void;
   isConfirm: boolean;
+  isCorrection?: boolean;
 }
 
 export interface ExitDialogProps {
