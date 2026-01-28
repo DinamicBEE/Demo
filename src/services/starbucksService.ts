@@ -427,10 +427,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
 export const correctStarbucksClosing = async (closingId: number): Promise<AxiosResponse> => {
   if (!closingId) {
     throw new Error("El ID de cierre es requerido.");
-  }
-
-  console.log(closingId);
-  
+  }  
 
   try {
     const response = await api.post(CORRECT_STARBUCKS_CLOSING, null, {
