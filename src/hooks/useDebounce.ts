@@ -29,17 +29,14 @@ export function useDebounce<T extends (...args: any[]) => any>(
       
       const shouldCallNow = leading && !timeoutRef.current;
       
-      // Limpiar timeouts existentes
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
       
-      // Ejecución inmediata (leading)
       if (shouldCallNow) {
         callbackRef.current(...args);
       }
-      
-      // Timeout normal
+
       timeoutRef.current = setTimeout(() => {
         if (trailing && lastArgsRef.current) {
           callbackRef.current(...lastArgsRef.current);
@@ -49,7 +46,6 @@ export function useDebounce<T extends (...args: any[]) => any>(
         lastArgsRef.current = null;
       }, delay);
       
-      // Max wait (para evitar delays muy largos)
       if (maxWait && !maxTimeoutRef.current) {
         maxTimeoutRef.current = setTimeout(() => {
           if (lastArgsRef.current) {
@@ -69,7 +65,6 @@ export function useDebounce<T extends (...args: any[]) => any>(
     [delay, leading, trailing, maxWait]
   );
   
-  // Limpiar timeouts al desmontar
   useEffect(() => {
     return () => {
       if (timeoutRef.current) {

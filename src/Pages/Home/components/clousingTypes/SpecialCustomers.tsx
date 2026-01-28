@@ -37,7 +37,7 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
     []
   );
   const { setFooterData } = useFooter();
-  const { getSpecialCustData, specialCustLoading, specialCust } = useSpecialCustContext();
+  const { getSpecialCustData, specialCustLoading } = useSpecialCustContext();
   const { handleInputTextData, handleUpdateAmountMXN } =
     useHandleSpecialCustomer(
       specialCustomer || ({} as SpecialCustomerModel),
@@ -83,7 +83,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
   }, []); //specialCust
 
   useEffect(() => {
-    console.log("Prueba de tiempo: ",specialCustomer)
     setPage(page);
     const items = specialCustomer?.lines?.slice(startRange, endRange) || [];
     setVisibleItems(items);
@@ -93,183 +92,191 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
   const renderRows = useMemo(() => {
     return visibleItems?.map((item: SpecialCustomerLines) => (
       <Table.Row key={item.id}>
-       <Table.Cell textAlign="center">
-                  <Text>{item.check}</Text>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <Text>{item.check}</Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      //value={item.couponPrice}
-                      value={item.bill}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              //value={item.couponPrice}
+              value={item.bill}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Input
-                    textAlign="center"
-                    value={item.couponPrice}
-                    onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "couponPrice")
-                      }
-                    disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                  />
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              //value={item.couponPrice}
+              value={item.couponPrice}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+          {/* <Input
+            textAlign="center"
+            value={item.couponPrice}
+            onChange={(e) =>
+                handleInputTextData(e.target.value, item.id, "couponPrice")
+              }
+            disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+          /> */}
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.difference}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.difference}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.exchangeRate}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.exchangeRate}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                  <FilterCustomer
-                    customers={customers}
-                    customerSelect={item.client}
-                    label={false}
-                    onSelect={(customer: { value: number; label: string }) => {
-                      handleInputTextData(
-                        customer.label,
-                        item.id,
-                        "client", 
-                        customer.value
-                      );
-                    }}
-                    disabled={data?.closingConfirmation}
-                  ></FilterCustomer>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <FilterCustomer
+            customers={customers}
+            customerSelect={item.client}
+            label={false}
+            onSelect={(customer: { value: number; label: string }) => {
+              handleInputTextData(
+                customer.label,
+                item.id,
+                "client", 
+                customer.value
+              );
+            }}
+            disabled={data?.closingConfirmation}
+          ></FilterCustomer>
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                    <Input
-                      textAlign="center"
-                      value={item.pax}
-                      type="number"
-                      onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "pax")
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+            <Input
+              textAlign="center"
+              value={item.pax}
+              type="number"
+              onChange={(e) =>
+                handleInputTextData(e.target.value, item.id, "pax")
+              }
+              disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+            />
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.couponFolio}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "couponFolio"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <Text>
+            <Input
+              textAlign="center"
+              value={item.couponFolio}
+              onChange={(e) =>
+                handleInputTextData(
+                  e.target.value,
+                  item.id,
+                  "couponFolio"
+                )
+              }
+              disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.couponFolioUSD}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "couponFolioUSD"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <Text>
+            <Input
+              textAlign="center"
+              value={item.couponFolioUSD}
+              onChange={(e) =>
+                handleInputTextData(
+                  e.target.value,
+                  item.id,
+                  "couponFolioUSD"
+                )
+              }
+              disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <TableInput
-                      value={item.ammount}
-                      id={item.id}
-                      currency={true}
-                      keyValue={"ammount"}
-                      onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <TableInput
+              value={item.ammount}
+              id={item.id}
+              currency={true}
+              keyValue={"ammount"}
+              onChange={handleUpdateAmountMXN}
+              disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <TableInput
-                      value={item.ammountUSD}
-                      id={item.id}
-                      currency={true}
-                      keyValue={"ammountUSD"}
-                      onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <TableInput
+              value={item.ammountUSD}
+              id={item.id}
+              currency={true}
+              keyValue={"ammountUSD"}
+              onChange={handleUpdateAmountMXN}
+              disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.flight}
-                      onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "flight")
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <Text>
+            <Input
+              textAlign="center"
+              value={item.flight}
+              onChange={(e) =>
+                handleInputTextData(e.target.value, item.id, "flight")
+              }
+              disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.passengerName}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "passengerName"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="center">
+          <Text>
+            <Input
+              textAlign="center"
+              value={item.passengerName}
+              onChange={(e) =>
+                handleInputTextData(
+                  e.target.value,
+                  item.id,
+                  "passengerName"
+                )
+              }
+              disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
 
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.ammountMXN}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.ammountMXN}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
       </Table.Row>
     ));
-  }, [visibleItems, handleUpdateAmountMXN, data?.closingConfirmation, specialCustomer?.isRoleEditable]);
+  }, [visibleItems, handleUpdateAmountMXN, handleInputTextData, data?.closingConfirmation, specialCustomer?.isRoleEditable]);
 
   return (
     <Box>
@@ -320,184 +327,6 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
           </Table.Header>
           <Table.Body>
             {renderRows}
-            {/* {visibleItems?.map((item: SpecialCustomerLines) => (
-              <Table.Row key={item.id}>
-                <Table.Cell textAlign="center">
-                  <Text>{item.check}</Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      //value={item.couponPrice}
-                      value={item.bill}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Input
-                    textAlign="center"
-                    value={item.couponPrice}
-                    onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "couponPrice")
-                      }
-                    disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                  />
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.difference}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.exchangeRate}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <FilterCustomer
-                    customers={customers}
-                    customerSelect={item.client}
-                    label={false}
-                    onSelect={(customer: { value: number; label: string }) => {
-                      handleInputTextData(
-                        customer.label,
-                        item.id,
-                        "client", 
-                        customer.value
-                      );
-                    }}
-                    disabled={data?.closingConfirmation}
-                  ></FilterCustomer>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                    <Input
-                      textAlign="center"
-                      value={item.pax}
-                      type="number"
-                      onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "pax")
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.couponFolio}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "couponFolio"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.couponFolioUSD}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "couponFolioUSD"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <TableInput
-                      value={item.ammount}
-                      id={item.id}
-                      currency={true}
-                      keyValue={"ammount"}
-                      onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <TableInput
-                      value={item.ammountUSD}
-                      id={item.id}
-                      currency={true}
-                      keyValue={"ammountUSD"}
-                      onChange={handleUpdateAmountMXN}
-                      disabled={data?.closingConfirmation || !specialCustomer?.isRoleEditable}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.flight}
-                      onChange={(e) =>
-                        handleInputTextData(e.target.value, item.id, "flight")
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="center">
-                  <Text>
-                    <Input
-                      textAlign="center"
-                      value={item.passengerName}
-                      onChange={(e) =>
-                        handleInputTextData(
-                          e.target.value,
-                          item.id,
-                          "passengerName"
-                        )
-                      }
-                      disabled={data?.closingConfirmation || specialCustomer?.isRoleEditable === false}
-                    />
-                  </Text>
-                </Table.Cell>
-
-                <Table.Cell textAlign="end">
-                  <Text>
-                    <FormatNumber
-                      value={item.ammountMXN}
-                      style="currency"
-                      currency="USD"
-                    />
-                  </Text>
-                </Table.Cell>
-              </Table.Row>
-            ))} */}
           </Table.Body>
         </Table.Root>
       </Table.ScrollArea>

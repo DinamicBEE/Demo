@@ -53,98 +53,76 @@ function EditableCurrencyInput({ name, value, loading, onChange, disabled }: Cur
     );
 }
 
-// function TableInput({ value, id, currency, keyValue, onChange, disabled }: TableInputProps) {
-//     return (
-//         <NumericFormat
-//             disabled={disabled || false}
-//             customInput={Input}
-//             thousandSeparator=","
-//             decimalSeparator="."
-//             prefix={currency ? "$ " : ""}
-//             textAlign="end"
-//             decimalScale={currency ? 2 : 0} fixedDecimalScale
-//             value={value || 0}
-//             onValueChange={(event) => {
-//                 if (onChange) {
-//                     const eventValue = event.value;
-//                     onChange(id, eventValue, keyValue);
-//                 }
-//             }
-//             }
-//             isAllowed={(values) => {
-//                 const { floatValue } = values;
-//                 return floatValue === undefined || floatValue >= 0;
-//             }}
-//         />
-//     );
-// }
-const TableInput = memo(function TableInput({ 
-  value, 
-  id, 
-  currency, 
-  keyValue, 
-  onChange, 
-  disabled 
-}: TableInputProps) {
-
+const TableInput = memo(function TableInput({ value, id, currency, keyValue, onChange, disabled }: TableInputProps) {
+    
     const [localValue, setLocalValue] = useState(value?.toString() || '0');
+    const [isTyping, setIsTyping] = useState(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    setLocalValue(value?.toString() || '0');
-  }, [value]);
+    useEffect(() => {
+        if (!isTyping) {
+            setLocalValue(value?.toString() || '0');
+        }
+    }, [value, isTyping]);
   
-//   const handleChange = (event: any) => {
-//     if (onChange && event.value !== undefined) {
-//       onChange(id, event.value, keyValue);
-//     }
-//   };
-
-  const debouncedOnChange = useCallback((newValue: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    const debouncedOnChange = useCallback((newValue: string) => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
     
-    timeoutRef.current = setTimeout(() => {
-      if (onChange) {
-        onChange(id, newValue, keyValue);
-      }
-    }, 100);
-  }, [id, keyValue, onChange]);
+        timeoutRef.current = setTimeout(() => {
+            if (onChange) {
+                onChange(id, newValue, keyValue);
+            }
+        }, 100);
+    }, [id, keyValue, onChange]);
 
-  const handleLocalChange = (event: any) => {
-    const newValue = event.value || '0';
-    setLocalValue(newValue);
-    debouncedOnChange(newValue);
-  };
+    const handleLocalChange = (event: any) => {
+        const newValue = event.value || '0';
+        setLocalValue(newValue);
+        setIsTyping(true);
+
+        debouncedOnChange(newValue);
+    };
+
+    const handleBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+        setIsTyping(false);
+        
+        if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+        }
+        
+        const currentValue = localValue || '0';
+        if (onChange) {
+            onChange(id, currentValue, keyValue);
+        }
+    }, [localValue, id, keyValue, onChange]);
 
     useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
 
-  return (
-    <NumericFormat
-      disabled={disabled || false}
-      customInput={Input}
-      thousandSeparator=","
-      decimalSeparator="."
-      prefix={currency ? "$ " : ""}
-      textAlign="end"
-      decimalScale={currency ? 2 : 0}
-      fixedDecimalScale
-      value={localValue}
-      onValueChange={handleLocalChange}
-      // Evita re-render innecesarios
-    //   isAllowed={(values) => {
-    //     const { floatValue } = values;
-    //     return floatValue === undefined || floatValue >= 0;
-    //   }}
-    />
-  );
+    return (
+        <NumericFormat
+            disabled={disabled || false}
+            customInput={Input}
+            thousandSeparator=","
+            decimalSeparator="."
+            prefix={currency ? "$ " : ""}
+            textAlign="end"
+            decimalScale={currency ? 2 : 0}
+            fixedDecimalScale
+            value={localValue}
+            onValueChange={handleLocalChange}
+            onBlur={handleBlur}
+            allowNegative={false}
+        />
+    );
 });
 
 function CurrencyInputNumber({
