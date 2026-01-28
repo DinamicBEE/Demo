@@ -243,7 +243,7 @@ function FooterClousing({
             )
           }
 
-          { !isStarbucks || statusId !== 2 && (
+          { statusId !== 2 && (
               <><Button
               loading={loading || buttonLoading}
               colorPalette="meraWarning"
