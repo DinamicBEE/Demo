@@ -11,13 +11,19 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
   const specialCustRef = useRef(specialCustomerData);
 
+  useEffect(() => {
+    specialCustRef.current = specialCustomerData;
+  }, [specialCustomerData]);
+
   const { updateTotal } = useHeaders();
   const { setFooterData } = useFooter();
   const { setSpecialCustData } = useSpecialCustContext();
 
   const updateContext = useCallback (() => {
-    if (!specialCustomerData) return;
+    if (!specialCustRef.current) return;
 
+    const specialCustomerData = specialCustRef.current;
+    
     const newTotalFisico: number = specialCustomerData.lines.reduce(
         (acc: number, curr: { bill: number; }) => Number(acc) + Number(curr.bill),//Number(curr.ammountMXN),
         0
@@ -42,7 +48,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
       setSpecialCustData(updateCustomerData, clousingId)
     ]);
 
-  }, [specialCustomerData, clousingId, updateTotal, setFooterData, setSpecialCustData]);
+  }, []);//specialCustomerData, clousingId, updateTotal, setFooterData, setSpecialCustData
   
   const debouncedUpdateContext = useDebounce(
     updateContext,
@@ -121,7 +127,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     debouncedUpdateContext();
   
-  }, [setSpecialCustomer, debouncedUpdateContext]);
+  }, []);//setSpecialCustomer, debouncedUpdateContext
 
   return {handleInputTextData, handleUpdateAmountMXN}
 }

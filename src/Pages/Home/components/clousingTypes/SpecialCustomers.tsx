@@ -30,7 +30,7 @@ import { handleErrorMessage } from "@utils/getValidationsError";
 
 const pageSize = 10;
 
-function SpecialCustomersClousing({ data, subsidiary }: any) {
+function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
   const [specialCustomer, setSpecialCustomer] =
     useState<SpecialCustomerModel>();
   const [customers, setCustomers] = useState<{ value: number; label: string }[]>(
@@ -79,8 +79,11 @@ function SpecialCustomersClousing({ data, subsidiary }: any) {
       setVisibleItems(items);
     }
 
-    fetchData();
-  }, []); //specialCust
+    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer){
+      console.log(tabs.value)
+      fetchData();
+    }
+  }, [tabs]); //specialCust
 
   useEffect(() => {
     setPage(page);

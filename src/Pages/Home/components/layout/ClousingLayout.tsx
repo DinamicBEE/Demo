@@ -277,6 +277,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                     <SpecialCustomersClousing
                       data={employee}
                       subsidiary={subsidiary}
+                      tabs={tabs}
                     />
                   </Suspense>
                 )}
