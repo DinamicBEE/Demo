@@ -92,6 +92,7 @@ export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/sear
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
 export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
+export const CORRECT_STARBUCKS_CLOSING = `${API_BASE}/registerclosure/starbucks/revertToStarbucks`
 
 export const UPDATE_SALESTICKET = `${CRC_BASE}/salesTicket/noProduct` 
 export const UPDATE_SALESTICKETCDC = `${CRC_BASE}/salesTicket/updateEmployee` 

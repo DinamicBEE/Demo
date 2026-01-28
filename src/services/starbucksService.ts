@@ -2,12 +2,13 @@ import { location } from "@models/common.model";
 import { CashStarbucksModel, ClousingSaveStarbucksModel, HeaderDetailsInfoModel, StarbucksBanksModel, StarbucksTableDataModel, StarbucksTableHeader, StarbucksTableModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
 import api from "../api/index";
 import { getStatus } from "@utils/getStatus";
-import { GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDENOMINATIONS, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
+import { CORRECT_STARBUCKS_CLOSING, GET_BANKS, GET_STARBUCKSCDC, GET_STARBUCKSCLOUSING, GET_STARBUCKSDENOMINATIONS, GET_STARBUCKSDETAIL, SENDCASHCLOUSING, SENDCASHCLOUSING_STARBUCKS } from "./settings";
 import { formatToYYYYMMDD } from "@utils/dateFormatter";
 import { loadData } from "../indexedDB/localDB";
 import { TDCModel, Voucher } from "@models/tdc.model";
 import { TotalModel } from "@models/common.clousing.model";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
+import { AxiosError, AxiosResponse } from "axios";
 
 export const getCDCStarbucks = async (): Promise<location[]> => {
   try {
@@ -422,6 +423,27 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
   return response.data;
 
 }
+
+export const correctStarbucksClosing = async (closingId: number): Promise<AxiosResponse> => {
+  if (!closingId) {
+    throw new Error("El ID de cierre es requerido.");
+  }
+
+  console.log(closingId);
+  
+
+  try {
+    const response = await api.post(CORRECT_STARBUCKS_CLOSING, null, {
+      params: { crcId: closingId }
+    });
+    
+    return response;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error("Error al corregir el cierre de Starbucks:", axiosError.message);
+    throw axiosError;
+  }
+};
 
 export const cxcData = [
   {

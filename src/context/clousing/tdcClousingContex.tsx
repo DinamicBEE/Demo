@@ -46,7 +46,6 @@ export function TDCClousingProvider({ children }: { children: ReactNode }) {
                     ...preDataStarbucks,
                     total: preDataMera.total
                 }
-                console.log(data);
 
             } else {
                 data = await getTDCClousing(clousingId, idCurrency);

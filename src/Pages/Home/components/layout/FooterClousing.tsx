@@ -18,6 +18,9 @@ import Loading from "@components/Loading";
 import { PrepaidModel } from "@models/prepaid.model";
 import ErrorDialog from "../notifications/ErrorDialog";
 import { toaster } from "@components/ui/toaster";
+import { correctStarbucksClosing } from "@services/starbucksService";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast } from "@utils/Toast";
 
 function FooterClousing({
   clousingType,
@@ -32,6 +35,8 @@ function FooterClousing({
   const [buttonLoading, setButtonLoading] = useState(false);
   const [openDialogDifference, setOpenDialogDifference] = useState(false);
   const [USDmenssage, setUSDmenssage] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [openCorrectDialog, setOpenCorrectDialog] = useState(false);
 
   const [loading, setloading] = useState(false);
   const [footer, setFooter] = useState<TotalModel | null>(null);
@@ -113,6 +118,7 @@ function FooterClousing({
   }
 
   const handleDialogConfirm = async (isConfirm: boolean) => {
+    setButtonLoading(true);
 
     // const isUSD = cashRef.current[clousingId].currencies.some((line) => line.currency === "USD");
 
@@ -166,9 +172,33 @@ function FooterClousing({
       return;
     }
 
-    setButtonLoading(true);
+    setOpenConfirmDialog(true);
     setIsConfirm(isConfirm);
   };
+
+  const handleOpenCorrectionDialog = () => {
+    setOpenCorrectDialog(true);
+    setButtonLoading(true);
+  };
+
+  const handleConfirmCorrection = async () => {
+    setOpenCorrectDialog(false);
+    setloading(true);
+    try {
+      const response: AxiosResponse = await correctStarbucksClosing(clousingId);
+      if (response.status === 200) {
+        closeDialog(true);
+        toast("Corte enviado a corrección exitosamente", "success", "¡Enviado!");
+      }
+    }
+    catch (e){
+      const error = e as any;
+      console.error(error.response?.data?.detail);
+    } finally {
+      setButtonLoading(false);
+      setloading(false);
+    }
+  }
 
   return (
     <>
@@ -200,35 +230,62 @@ function FooterClousing({
             />
           )}
 
-          <Button
-            loading={loading || buttonLoading}
-            colorPalette="meraWarning"
-            onClick={async () => {
-              handleDialogConfirm(true);
-            }}
-            disabled={closingConfirmation || (!isRoleEditable) || loading}
-          >
-            Guardar Corte
-          </Button>
+          {
+            isStarbucks && statusId === 2 && (
+              <Button
+                loading={buttonLoading}
+                colorPalette="meraWarning"
+                onClick={handleOpenCorrectionDialog}
+                disabled={ !closingConfirmation || (!isRoleEditable) || loading}
+              >
+                En Corrección
+              </Button>
+            )
+          }
 
-          <Button
-            loading={loading || buttonLoading}
-            colorPalette="meraPrimary"
-            onClick={async () => {
-              handleDialogConfirm(false);
-            }}
-            disabled={closingConfirmation || (!isRoleEditable) || loading}
-          >
-            Confirmar Corte
-          </Button>
+          { !isStarbucks || statusId !== 2 && (
+              <><Button
+              loading={loading || buttonLoading}
+              colorPalette="meraWarning"
+              onClick={async () => {
+                handleDialogConfirm(true);
+              } }
+              disabled={closingConfirmation || (!isRoleEditable) || loading}
+            >
+              Guardar Corte
+            </Button><Button
+              loading={loading || buttonLoading}
+              colorPalette="meraPrimary"
+              onClick={async () => {
+                handleDialogConfirm(false);
+              } }
+              disabled={closingConfirmation || (!isRoleEditable) || loading}
+            >
+                Confirmar Corte
+              </Button></>
+            )
+          }
         </Flex>
 
         <Flex></Flex>
       </Box>
 
       <ConfirmDialog
-        isOpen={buttonLoading}
-        closeDialog={() => setButtonLoading(false)}
+        isOpen={openCorrectDialog}
+        closeDialog={() => {
+          setOpenCorrectDialog(false);
+          setButtonLoading(false)
+        }}
+        sendData={handleConfirmCorrection}
+        isConfirm={isConfirm}
+        isCorrection={true}
+      />
+      <ConfirmDialog
+        isOpen={openConfirmDialog}
+        closeDialog={() => {
+          setOpenConfirmDialog(false);
+          setButtonLoading(false)
+        }}
         sendData={sendClousing}
         isConfirm={isConfirm}
       />
@@ -236,7 +293,11 @@ function FooterClousing({
       <ErrorDialog
         isOpen={openDialogDifference}
         usdMessage={USDmenssage}
-        closeDialog={() => setOpenDialogDifference(false)}
+        closeDialog={() => {
+            setOpenDialogDifference(false)
+            setButtonLoading(false)
+          }
+        }
       />
     </>
   );
