@@ -168,7 +168,7 @@ function HeaderClousing({
           <Button
             onClick={() => updateticket()}
             colorPalette="meraInfo"
-            disabled //</Grid>={closingConfirmation}
+            disabled={closingConfirmation}
           >
             Actualizar ventas
           </Button>
