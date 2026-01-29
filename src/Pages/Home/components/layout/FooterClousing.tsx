@@ -203,15 +203,15 @@ function FooterClousing({
   return (
     <>
       <Box p={4} mb={2} mt={4} gap="4" flexDir={{ base: "column", md: "row" }}>
-        <Flex gap="4" flexDir={{ base: "column", md: "row" }}>
+        <Flex gap="3" flexDir={{ base: "column", md: "row" }}>
           <CurrencyInput
-            name={"Total POS"}
+            name={isStarbucks ? "T.POS" : "Total POS"}
             value={footer?.totalPOS ?? 0}
             loading={false}
           />
 
           <CurrencyInput
-            name={"Total físico"}
+            name={isStarbucks ? "T.Físico" : "Total Físico"}
             value={footer?.totalPhysical ?? 0}
             loading={false}
           />
@@ -224,47 +224,44 @@ function FooterClousing({
 
           {clousingType === "customer" && (
             <CurrencyInput
-              name={"Dif. cupones"}
+              name={"Dif.Cupones"}
               value={footer?.differenceCupons ?? 0}
               loading={false}
             />
           )}
 
           {
-            isStarbucks && statusId === 2 && (
+            isStarbucks && (
               <Button
                 loading={buttonLoading}
                 colorPalette="meraWarning"
                 onClick={handleOpenCorrectionDialog}
-                disabled={ !closingConfirmation || (!isRoleEditable) || loading}
+                disabled={ closingConfirmation || (!isRoleEditable) || loading}
               >
-                En Corrección
+                {isStarbucks ? "Corrección" : "En Corrección"}
               </Button>
             )
           }
-
-          { statusId !== 2 && (
-              <><Button
-              loading={loading || buttonLoading}
-              colorPalette="meraWarning"
-              onClick={async () => {
-                handleDialogConfirm(true);
-              } }
-              disabled={closingConfirmation || (!isRoleEditable) || loading}
-            >
-              Guardar Corte
-            </Button><Button
-              loading={loading || buttonLoading}
-              colorPalette="meraPrimary"
-              onClick={async () => {
-                handleDialogConfirm(false);
-              } }
-              disabled={closingConfirmation || (!isRoleEditable) || loading}
-            >
-                Confirmar Corte
-              </Button></>
-            )
-          }
+          <Button
+            loading={loading || buttonLoading}
+            colorPalette="meraWarning"
+            onClick={async () => {
+              handleDialogConfirm(true);
+            } }
+            disabled={closingConfirmation || (!isRoleEditable) || loading}
+          >
+            {isStarbucks ? "Guardar" : "Guardar Corte"}
+          </Button>
+          <Button
+            loading={loading || buttonLoading}
+            colorPalette="meraPrimary"
+            onClick={async () => {
+              handleDialogConfirm(false);
+            } }
+            disabled={closingConfirmation || (!isRoleEditable) || loading}
+          >
+              {isStarbucks ? "Confirmar" : "Confirmar Corte"}
+          </Button>
         </Flex>
 
         <Flex></Flex>
