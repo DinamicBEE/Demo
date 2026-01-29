@@ -79,11 +79,10 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
       setVisibleItems(items);
     }
 
-    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer){
-      console.log(tabs.value)
+    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer){ //TODO: agrgar un estado para validar que se esta ejecutando solo una vez
       fetchData();
     }
-  }, [tabs]); //specialCust
+  }, [tabs]);
 
   useEffect(() => {
     setPage(page);

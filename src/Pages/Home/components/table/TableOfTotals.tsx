@@ -134,6 +134,7 @@ function TableOfTotals({
             </Button>
 
             <Button
+              disabled
               colorPalette="meraInfo"
               onClick={() => updateticket()}
             >
