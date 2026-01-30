@@ -192,7 +192,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                       prepaidRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical.toFixed(2)
-                        : "$ " + 0}
+                        : "$ 0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
