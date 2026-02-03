@@ -80,7 +80,11 @@ function CashClousing({ data, idCurrency }: any) {
   };
 
   useEffect(() => {
-    handleChangeTips(tips);
+    const handler = setTimeout(() => {
+      handleChangeTips(tips);
+    }, 500);
+
+    return () => clearTimeout(handler);
   }, [tips])
 
   return (
@@ -99,9 +103,9 @@ function CashClousing({ data, idCurrency }: any) {
 
           <EditableCurrencyInput
             name={"Propina de fondo"}
-            value={Number(tips)}
+            value={Number(tips || 0)}
             loading={cashLoading}
-            onChange={setTips}
+            onChange={e => setTips(e || "0.00")}
             disabled={data?.status === "Cerrado" || !cashData.isRoleEditable ? true : false}
           />
         </Grid>
