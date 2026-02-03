@@ -12,7 +12,6 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { CLOUSING_KEY } from "@models/common.const";
 import { Employee } from "@models/employee.model";
 import { TableInput } from "@components/NumericInput";
-//import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
 import { TotalModel } from "@models/common.clousing.model";
 import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
@@ -64,14 +63,13 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
       setIntercompany(intercompanyData);
       setEmployees(employeeList);
 
-      // Inicializar las subsidiarias por fila
       const initialSubsidiariesByRow: {
         [key: number | string]: ListCollection<any>;
       } = {};
 
       intercompanyData.lines.forEach((line) => {
         initialSubsidiariesByRow[line.id] = createListCollection<any>({
-          items: [], // Inicialmente vacío
+          items: [],
         });
       });
 
@@ -253,12 +251,11 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                 <Table.Cell textAlign="center">
                   <FilterEmployee
                     employees={employees}
-                    employeeSelect={item.employeeName}
                     label={false}
                     itemId={item.id}
                     onSelect={handleEmployeeData}
                     disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
-                    employeeToEdit={null}
+                    employeeToEdit={{name:item.employeeName, id: item.employeeId}}
                   />
                 </Table.Cell>
 

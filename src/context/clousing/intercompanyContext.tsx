@@ -20,9 +20,9 @@ export function IntercompanyClousingProvider({ children }: { children: ReactNode
 	const intercompanyRef = useRef<IntercompanyContext>(intercompany);
   const { updateTotal } = useHeaders();
 
-	const getIntercompanyData = useCallback(async (clousingId: number) => {
+	const getIntercompanyData = useCallback(async (clousingId: number, isRefresh: boolean) => {
 
-		if (intercompany[clousingId]) {
+		if (intercompany[clousingId] && !isRefresh) {
 			return intercompany[clousingId];
 		}
 

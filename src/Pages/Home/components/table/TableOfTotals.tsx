@@ -12,6 +12,8 @@ import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
+import { updateSalesTicket } from "@services/clousingService";
+import { toast } from "@utils/Toast";
 
 function TableOfTotals({
   subsidiary,
@@ -22,19 +24,13 @@ function TableOfTotals({
   isStarbucks
 }: TableOfTotalsProps) {
   
-  const { data, totals, loading, error, header, getInfo, setDataRow,
+  const { data, totals, setLoading, loading, error, header, getInfo, setDataRow,
     tdcHeader, currHeader } = useClousing();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] =
     useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
-
-  //TODO: eliminar SOLO USO DE DEBUG
-  // useEffect(()=>{
-  //   const ids = data.map(d=>d.id)
-  //   console.log(ids)
-  // },[data])
 
   function handleExportCSV() {
 
@@ -84,6 +80,28 @@ function TableOfTotals({
     return getStatusColor(status);
   }
 
+  const updateticket = async () => {
+    setLoading(true);
+
+    try {
+      
+      const response = await updateSalesTicket(startDate, endDate, sortedData[0].revenueId ||0);
+  
+      if(response){
+      
+        await getInfo( store.id, 0, startDate, endDate, true );
+      
+      } else {
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      toast("Error al actualizar el ticket", "error");
+      setLoading(false);
+    } 
+  }
+
   return (
     <>
       {error && <Alert status="error">{error}</Alert>}
@@ -117,17 +135,9 @@ function TableOfTotals({
 
             <Button
               colorPalette="meraInfo"
-              onClick={() => {
-                getInfo(
-                  store.id,
-                  0,
-                  startDate,
-                  endDate,
-                  true
-                );
-              }}
+              onClick={() => updateticket()}
             >
-              Actualizar Información
+              Actualizar ventas
             </Button>
           </Grid>
         </Box>
@@ -368,6 +378,9 @@ function TableOfTotals({
         subsidiary={subsidiary}
         isEdit={isEdit}
         isStarbucks={isStarbucks}
+        startDate={startDate}
+        endDate={endDate}
+        statusId={selectedEmployee.statusId}
       ></ClousingLayout>
     </>
   );

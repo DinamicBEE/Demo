@@ -84,7 +84,7 @@ const routesConfig = [
     {
       path: '/reports',
       element: lazy(() => import('../Pages/Reports/Reports')),
-      roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER],
+      roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER, ROLES.ADMIN_REPORTS],
       wrapper: (Component: React.ComponentType) => (
         <ReportsProvider>
           <Component />

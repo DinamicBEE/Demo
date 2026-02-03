@@ -34,6 +34,7 @@ export interface StarbucksTableModel {
     cxc: number,
     modificationUser: string;
     fgUpt?: boolean,
+    revenueId: number
 }
 
 export interface StarbucksTableRow {

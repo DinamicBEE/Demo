@@ -30,6 +30,8 @@ export interface ReportFilterModel {
   cdc: number[] | [],
   multicdc: number[] | [],
   customer: number | null,
+  errorType: number[] | [],
+  stores: number[] | []
 };
   
   export interface ReportContextType {
@@ -61,10 +63,12 @@ export interface FilterConfigModel {
     cdc: boolean,
     multicdc: boolean,
     customer: boolean,
+    errorType: boolean,
+    stores: boolean
   }
   
 export type AppliedFilters = {
-  [key in FilterKey]?: string | number | null | number[];
+  [key in FilterKey]?: string | number | null | number[] | string[];
 };
 
 export interface DiscountReportModel {

@@ -63,11 +63,13 @@ export const GET_BATCH = `${BATCH_BASE}/getBatchClosures`;
 export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchClosureDetails`;
 //export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatchClosure`;
 export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatch`;
+export const UPDATE_BATCH = `${BATCH_BASE}/updateBatch`;
+
+// * Reportes
 
 export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
-
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const CHANGE_REPORTSTATUS = `${CRC_BASE}/administration/panel/delete`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
@@ -83,6 +85,8 @@ export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
+export const GETALLSTORES = `${API_BASE}/subsidiaria/cdc`;
+
 // * Starbucks
 export const GET_STARBUCKSCDC = `${API_BASE}/starbucks/filters/cdc`;
 export const GET_BANKS = `${API_BASE}/starbucks/filters/bank`;
@@ -90,6 +94,9 @@ export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/sear
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
 export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
+export const CORRECT_STARBUCKS_CLOSING = `${API_BASE}/registerclosure/starbucks/revertToStarbucks`
 
+export const UPDATE_SALESTICKET = `${CRC_BASE}/salesTicket/noProduct` 
+export const UPDATE_SALESTICKETCDC = `${CRC_BASE}/salesTicket/updateEmployee` 
 //export const IS_STATIC = import.meta.env.VITE_STATIC_DATA === true;
 //export const MODE = import.meta.env.VITE_MODE;

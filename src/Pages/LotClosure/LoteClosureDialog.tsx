@@ -9,6 +9,7 @@ import { Bank, BankUpdate, LotClosure, LotClosureDialogProps } from "@models/lot
 import { STATUS } from "@models/const/status.const";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
+import { updateBatchClosing } from "@services/lotClosureService";
 
 function LoteClosureDialog({
   isOpen,
@@ -20,8 +21,10 @@ function LoteClosureDialog({
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<BankUpdate>({ bank: [], bankCopy: []} as BankUpdate);
   const [openCloseLot, setOpenCloseLot] = useState(false);
+  const [isPresave, setIsPresave] = useState(false);
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUpdateBankAfilations = (
     id: number | string,
@@ -39,18 +42,33 @@ function LoteClosureDialog({
     );
   };
 
-  const handleOpenCloseLot = () => {
+  const handleOpenCloseLot = (isPresave: boolean) => {
     setOpenCloseLot(true);
+    setIsPresave(isPresave)
   };
 
   const handleSave = async () => {
-    await updateBank(localBanks, localLot);
+    await updateBank(localBanks, localLot, isPresave);
     if (error === "") {
       setOpenCloseLot(false);
       onClose(true);
-      toast("Lote cerrado correctamente", "success");
+      const message = isPresave ? "Lote guardado correctamente" : "Lote cerrado correctamente";
+      toast(message, "success");
     }
   };
+
+  const handleUpdateBatch = async () => {
+    setIsLoading(true);
+    const batchId = localBanks?.bank[0]?.batchClosureId;
+    const responseStatus = await updateBatchClosing(batchId);
+    if (responseStatus) {
+      toast("Lote actualizado, volver a abrir el diálogo para ver los cambios", "success");
+      onClose(true);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -130,6 +148,22 @@ function LoteClosureDialog({
                       value={localLot?.difference}
                       loading={false}
                     />
+                    <Button
+                      onClick={handleUpdateBatch}
+                      loading={isLoading}
+                      colorPalette="meraWarning"
+                      disabled={
+                        localBanks.bank.length === 0
+                        || localBanks.bank[0].batchClosureId === null
+                        || localBanks.bank[0].affiliationList.length === 0
+                        || loadingBanks
+                        || isLoading
+                        || localLot.status === STATUS.Close
+                        || localLot.status === STATUS.WITH_DIFFERENCE
+                        || localLot.isRoleEditable === false }
+                    >
+                      Actualizar Lote
+                    </Button>
                   </Flex>
                   {localBanks.bank.length > 0 &&
                     !loadingBanks &&
@@ -267,15 +301,32 @@ function LoteClosureDialog({
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>
               <Button
+                colorPalette="meraWarning"
                 disabled={
+                  isLoading ||
                   lot.status === STATUS.Close ||
                   lot.status === STATUS.WITH_DIFFERENCE ||
-                  localLot.isRoleEditable === false
+                  localLot.isRoleEditable === false ||
+                  localBanks.bank.length === 0 ||
+                  localBanks.bank[0].affiliationList.length === 0
                 }
-                onClick={() => handleOpenCloseLot()}
-                colorPalette="meraInfo"
+                onClick={() => handleOpenCloseLot(true)}
               >
-                Guardar
+                Guardar lote
+              </Button>
+              <Button
+                disabled={
+                  isLoading ||
+                  lot.status === STATUS.Close ||
+                  lot.status === STATUS.WITH_DIFFERENCE ||
+                  localLot.isRoleEditable === false ||
+                  localBanks.bank.length === 0 ||
+                  localBanks.bank[0].affiliationList.length === 0
+                }
+                onClick={() => handleOpenCloseLot(false)}
+                colorPalette="meraPrimary"
+              >
+                Confirmar lote
               </Button>
             </Flex>
           </DialogFooter>
@@ -296,7 +347,7 @@ function LoteClosureDialog({
           </DialogHeader>
           <DialogBody>
             <p>
-              {localLot?.difference === 0
+              { isPresave ? "El lote se guardará con la información actual." : localLot?.difference === 0
                 ? "El lote se cerrará sin diferencias"
                 : "El lote se cerrará con diferencias"}
             </p>
@@ -317,7 +368,7 @@ function LoteClosureDialog({
                 colorPalette="meraPrimary"
                 width={"auto !important"}
               >
-                {updateBankLoading ? <Spinner color={"#fff"} /> : "Cerrar lote"}
+                {updateBankLoading ? <Spinner color={"#fff"} /> : isPresave ? "Guardar lote" : "Cerrar lote"}
               </Button>
             </Flex>
           </DialogFooter>

@@ -11,7 +11,7 @@ export interface IntercompanyClousingProps {
 export interface IntercompanyContextType {
     intercompany: IntercompanyModel | {};
     error: string;
-    getIntercompanyData: (clousingId: number) => Promise<IntercompanyModel>;
+    getIntercompanyData: (clousingId: number, isRefresh: boolean) => Promise<IntercompanyModel>;
     setIntercompanyData: (intercompanyData: IntercompanyModel, clousingId:number) => void;
     getEmployeesList: () => Promise<Employee[]>;
     getSubsidiaries: (idEmployee: string) => Promise<SubsidiaryModal[]>;

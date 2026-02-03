@@ -10,7 +10,7 @@ export interface EmployeeContextType {
     employee: EmployeeModel | {};
     employeeLoading: boolean;
     error: string;
-    getEmployeetData: ( clousingId: number ) => Promise<EmployeeModel>;
+    getEmployeetData: ( clousingId: number, isRefresh: boolean ) => Promise<EmployeeModel>;
     getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
     getReasonsList: ( subsidiary: number, cdc: number ) => Promise<ReasonsModel[]>;
     getTicketsList: ( cdc: number ) => Promise<TicketModel[]>;

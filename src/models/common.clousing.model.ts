@@ -38,6 +38,7 @@ export interface ClousingLinesModel {
   difference: number;
   diferenciaCupones?: number;
   status: string;
+  statusId: number;
   extra: number;
   mxm?: number;
   usd?: number;
@@ -48,6 +49,7 @@ export interface ClousingLinesModel {
   specialCustomer: number;
   prepaid: number;
   employees: number;
+  employeId: number;
   intercompany: number;
   service?: number;
   discountPhysical?: number;
@@ -62,6 +64,7 @@ export interface ClousingLinesModel {
   isRoleEditable?: boolean;
   modificationUser: string;
   zone: string;
+  revenueId?: number;
 }
 
 export type ClousingLinesTotals =
@@ -82,7 +85,7 @@ export interface TotalsModel extends Omit<ClousingLinesModel, "id" | "employe" |
 | "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva"> {};
 
 export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" | "employe" | "creationDate" | "extra"
-| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm"> {
+| "closingStartDate" | "closingEndtDate" | "closingConfirmation" | "service" | "discount" | "iva" | "tdc" | "mxm" | "statusId"> {
   id?: number,
   ubicacion: string,
   subsidiariaId: number,
@@ -135,6 +138,7 @@ export interface ClousingContextType {
   header: HeaderClousingModel;
   data: ClousingLinesModel[];
   totals: TotalsModel;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   loading: boolean;
   error: string;
   tdcHeader: TDC[];
@@ -220,6 +224,7 @@ export interface FooterClousing {
   idCurrency: number;
   isRoleEditable?: boolean;
   isStarbucks: boolean;
+  statusId: number;
 }
 
 export interface TotalModel {
@@ -269,6 +274,23 @@ export interface ClousingLayoutProps {
   subsidiary: SubsidiaryModal;
   isEdit?: boolean;
   isStarbucks: boolean;
+  startDate: Date;
+  endDate: Date;
+  statusId: number;
+}
+
+export interface ClousingHeadersProps {
+  id: number;
+  closingConfirmation: boolean;
+  location: location;
+  subsidiary: string;
+  zone: string;
+  startDate: string; 
+  idCurrency: number;
+  isStarbucks: boolean;
+  employeId: number;
+  date: Date;
+  endDate: Date;
 }
 
 export interface TableOfTotalsProps {
@@ -285,6 +307,7 @@ export interface ConfirmDialogProps {
   closeDialog: () => void;
   sendData: (isConfirm: boolean) => void;
   isConfirm: boolean;
+  isCorrection?: boolean;
 }
 
 export interface ExitDialogProps {
@@ -343,4 +366,5 @@ export interface DataServiceModel {
     idCurrency: number;
     discountPhysical: number;
     employee: EmployeeModel;
+    statusId: number;
 }

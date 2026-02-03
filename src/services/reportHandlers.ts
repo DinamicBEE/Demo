@@ -1,5 +1,6 @@
 import * as ReportsModels from "@models/reports.model";
 import { GUIDE_TO_BANKING_BANAMEX } from "@models/const/reportBanck.const";
+import { ERROR_TYPES } from "@models/const/reports.const";
 
 export const handleDiscountData = (rowData: any[]): ReportsModels.DiscountReportModel[] => {
 
@@ -122,13 +123,39 @@ export const handlePMIXGeneralData = (rowData: any[]): ReportsModels.PMixGeneral
 
 }
 
-export const handleSyncErrorsData = (rowData: any[]): ReportsModels.SyncErrorsModel[] => {
+export const handleSyncErrorsData = (rowData: any[], FilterOptions?: any): ReportsModels.SyncErrorsModel[] => {
   const exceptionsStatus = ["PRODUCTO NO REGISTRADO", "TENDER MEDIA NO REGISTRADO", "DESCUENTO NO REGISTRADO"]
-  
-  return rowData.map(item => {
+
+  const types = FilterOptions?.errorType?.map((type:any) => ERROR_TYPES.find(item => item.value === type)?.label || "").filter(Boolean) || "notType";
+  const DataFilteredByType = types.length > 0 ? rowData.filter(item => 
+    types.some((type: string) =>
+      item.type.toLowerCase().includes(type.toLowerCase()))
+    )
+     : rowData;
+
+  const DataFilteredByCDC = FilterOptions?.stores.length > 0 ? DataFilteredByType.filter(item =>
+    FilterOptions.stores.some((cdc: string) =>
+      item.onCDC.toLowerCase().includes(cdc.toLowerCase()))
+    )  
+    : DataFilteredByType;
+
+  const dataFilteredByDate = FilterOptions?.date 
+    ? DataFilteredByCDC.filter(item => {
+      const itemDate = item.creationDate.split('T')[0];
+      return itemDate === FilterOptions.date;
+    }).sort((a,b) =>{
+      const dateA = new Date(a.creationDate);
+      const dateB = new Date(b.creationDate);
+      return dateB.getTime() - dateA.getTime();
+    }) : DataFilteredByCDC.sort((a,b) =>{
+      const dateA = new Date(a.creationDate);
+      const dateB = new Date(b.creationDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+  return dataFilteredByDate.map(item => {
     const isException = exceptionsStatus.includes(item.type.toUpperCase());
 
-     
     let statusID = 0;
     let textTool = ""
     

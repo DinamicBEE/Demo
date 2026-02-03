@@ -3,12 +3,14 @@ import { LotClosure, Bank, BankUpdateRequest, Afilation, BankUpdate } from "@mod
 import Cookies from "js-cookie";
 import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
   GET_BATCH_DETAILS, CONFIRM_BATCH, 
-  ASSEMBLIESCONTROLLER_NS} from "./settings";
+  ASSEMBLIESCONTROLLER_NS,
+  UPDATE_BATCH} from "./settings";
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
+import { toast } from "@utils/Toast";
 
 export const getLotsClosure = async (
   date: string
@@ -233,16 +235,23 @@ export const updateBanksDistribution = (bankUpdate: BankUpdate): Bank[] => {
   }
 };
 
-export const updateBankService = async (localBank: BankUpdateRequest) => {  
+export const updateBankService = async (localBank: BankUpdateRequest, isPresave: boolean):Promise<boolean> => {  
   try {    
-    const response = await api.post(CONFIRM_BATCH, localBank);
+    const response = await api.post(CONFIRM_BATCH, localBank,{
+      params: {
+        isPreguardado: isPresave
+      }
+    });
     if (response.status === 200 && localBank.status === "Abierto") {
       assembliesController(localBank.consumerCenterId, localBank.batchDate)
+      return true;
+    } else  {
+      return false;
     }
     
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
-    return [];
+    return false;;
   }
 };
 
@@ -261,5 +270,27 @@ const assembliesController = async (cdcId: number, date: string) => {
   } catch (error) {
     console.error("Error al manejar los assemblies: ", error)
     return [];
+  }
+}
+
+export const updateBatchClosing = async (batchId: number) => {
+  try {
+    if (!batchId) {
+      toast("Error al actualizar el lote", "error")
+      throw new Error('Se requiere BatchID');
+    };
+
+    const response = await api.post(UPDATE_BATCH, null, {
+      params: {
+        batchId: batchId
+      }
+    });
+    if (response.status === 200) {
+      return true;
+    }
+  }
+  catch (e) {
+    console.error("Error al actualizar lote: ", e);
+    return false;
   }
 }

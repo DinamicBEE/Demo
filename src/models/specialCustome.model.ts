@@ -5,7 +5,8 @@ export interface specialCustContextType {
   specialCustLoading: boolean;
   getSpecialCustData: (
     clousingId: number,
-    idCurrency: number
+    idCurrency: number,
+    isRefresh: boolean
   ) => Promise<ResponseModel>;
   setSpecialCustData: (
     specialCustLine: SpecialCustomerModel,

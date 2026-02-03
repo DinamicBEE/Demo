@@ -53,7 +53,7 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
       setSubsidiariesByRow(initialSubsidiariesByRow);
 
       const ticketsList: TicketModel[] = await getTicketsList(clousingId);
-     
+      
       const ticketIntercompany: TicketModel[] = ticketsList.filter(ticket => 
       ticket.paymentTypeResponse.some(payment => 
         payment.paymentMethod == "INTERCOMPANY" 

@@ -93,7 +93,7 @@ export interface LotClosureContextType {
     isRefresh?: boolean
   ) => Promise<void>;
   fetchBanks: (cdcId: number, date: string) => Promise<BankUpdate>;
-  updateBank: (banks: BankUpdate, lot: LotClosure) => Promise<void>;
+  updateBank: (banks: BankUpdate, lot: LotClosure, isPresave: boolean) => Promise<void>;
 }
 
 export interface LotCatalogContextType {

@@ -38,10 +38,10 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
   };
 
   const getPrepaidData = useCallback(
-    async (clousingId: number, dateClousing: string) => {
+    async (clousingId: number, dateClousing: string, isRefresh:  boolean) => {
       setPrepaidLoading(true);
       
-      if (prepaidRef.current[clousingId]) {
+      if (prepaidRef.current[clousingId] && !isRefresh) {
         setPrepaidLoading(false);
         return {
           success: true,
@@ -76,21 +76,21 @@ export function PrepaidClousingProvider({ children }: { children: ReactNode }) {
 
   const getCouponData = useCallback(
     async (clousingId: number, dateClousing: string) => {
-      if (coupons[clousingId]) {
+      /* if (coupons[clousingId]) {
         return coupons[clousingId];
-      }
+      } */
 
       try {
-        const data = await getCouponCatalog(clousingId, dateClousing);
-
-        const updatePrepaid = {
+        const datetocompare = await getCouponCatalog(clousingId, dateClousing);
+        
+        /* const updatePrepaid = {
           coupons,
           [clousingId]: data,
         };
 
-        setCoupons(updatePrepaid);
+        setCoupons(updatePrepaid); */
 
-        return data;
+        return datetocompare;
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 

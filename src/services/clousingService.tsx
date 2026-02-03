@@ -8,7 +8,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -16,8 +16,7 @@ import { ClousingSave } from "@models/saveClousing.model";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
-import { saveStarbucksClousing } from "./starbucksService";
-import { CashStarbucksModel, StarbucksTableRow, TDCStarbucksModel } from "@models/starbucks.model";
+import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
 
 /**
  * This function gets the information
@@ -381,8 +380,10 @@ export const getCouponCatalog = async (
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
     const response = await api.get(GET_COUPONS, {
       params: { consumer: clousingId },
-    });    
+    });
 
+    const dateToCompare = formatToYYYYMMDDstring(dateClousing)+"T00:00:00";
+    
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
@@ -391,14 +392,12 @@ export const getCouponCatalog = async (
         .replace(/^\d+\s+/, "") // Remove leading numbers and spaces
         .toLowerCase() // Convert all to lowercase
         .replace(/^(.)/, (match) => match.toUpperCase()), // Eliminar números al inicio
-      validityDateCustom: format(item.validityDate, "dd/MM/yyyy"),
+      validityDateCustom: format(new Date(item.validityDate), "dd/MM/yyyy"),
       isExpired: isBefore(
-        // Compare only the date part by setting both dates to start of day
-        startOfDay(new Date(item.validityDate)),
-        startOfDay(new Date(dateClousing))
+        (new Date(item.validityDate)),
+        startOfDay(new Date(dateToCompare))
       ),
-    }));
-
+    }));    
     
     return transformedData;
   } catch (error) {
@@ -670,8 +669,6 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
           })
         }
       })
-
-      //console.log(first)
       
       return first.map(({ ...rest }) => ({
         ...rest,
@@ -692,8 +689,10 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
         total: curr.totalFisico || 0
       }))
     }
+    // console.log(dataService.statusId)
     const body: ClousingSave = {
       id: dataService.clousingId,
+      statusId: dataService.statusId,
       discountPhysical: dataService.discountPhysical || 0,
       cash: {
         idCurrencySub: dataService.idCurrency,
@@ -767,74 +766,6 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
       },
       currencies:  mapCurrLines(dataService.cash.currencies ?? []),
     };
-    
-
-    // if(isStarbucks){
-
-    //   const cashTotal = dataService.cash.currencies.reduce((acc:number, curr:any) => acc + curr.totalFisico, 0);
-    //   const creditCardTotal = dataService.tdc.lines
-    //     .filter((item: any) => item.bank !== "No encontrado/No identificado")
-    //     .reduce((acc:number, curr:any) => acc + curr.physical, 0);
-
-    //   const total =  cashTotal + creditCardTotal;
-
-    //   const cashTotalPos = dataService.cash.currencies.reduce((acc:number, curr:any) => acc + curr.pos, 0);
-    //   const creditCardTotalPos = dataService.tdc.lines
-    //     .filter((item: any) => item.bank !== "No encontrado/No identificado")
-    //     .reduce((acc:number, curr:any) => acc + curr.pos, 0);
-
-    //   const totalPos =  cashTotalPos + creditCardTotalPos;
-
-    //   const tdcStarbucks: TDCStarbucksModel[] = dataService.tdc.lines.filter((item: BankLineModel) => item.bank !== "No encontrado/No identificado").map((item: BankLineModel) => ({
-    //       id: typeof item.id === "number" ? item.id : 0,
-    //       nameBank: item.bank,
-    //       idBank: item.idBank,
-    //       total: item.physical,
-    //       pos: item.pos,
-    //       currencyExternalId: 0,
-    //       exchangeRate: 0,
-    //       isOpen: true,
-    //       originalCurrency: item.pos,
-    //       voucher: item.vouchers
-    //     }))
-
-    //   const cashStarbucks: CashStarbucksModel[] = dataService.cash.currencies.map(currency =>{
-    //     return {
-    //       id: typeof currency.id === "number" ? currency.id : 0,
-    //       currency: currency.currency,
-    //       idCurrency: currency.idCurrency,
-    //       total: currency.totalFisico,
-    //       pos: currency.totalPOS,
-    //       exchangeRate: currency.exchangeRate,
-    //       originalCurrency: currency.originalCurrency,
-    //       isOpen: true,
-    //       denominations: currency.denominations.map((denomination:any) =>{
-    //         return {
-    //           ...denomination,
-    //           subtotal: denomination.denomination.toLowerCase() === "cambio" ? denomination.amount : denomination.amount * parseFloat(denomination.denomination),
-    //         }
-    //       })
-    //     }
-    //   })
-    //   const starbucksBody: StarbucksTableRow ={
-    //     data:{
-    //       date: "",
-    //       cdc: "",
-    //       total: total,
-    //       totalPOS: totalPos,
-    //       totalPOSTDC: dataService.tdc.total.totalPOS,
-    //       electronicTips: dataService.cash.electronicTips,
-    //       tips: dataService.cash.tips || 0,
-    //       idCurrencySub: dataService.idCurrency,
-    //     },
-    //     tdc: tdcStarbucks,
-    //     cash: cashStarbucks,
-    //     cxcAmount: 0
-    //   }
-    //   const response = await saveStarbucksClousing(dataService.clousingId, starbucksBody, isConfirm);
-
-    //   return response;
-    // }
 
     const response = await api.post(
       SENDCASHCLOUSING,
@@ -1093,3 +1024,56 @@ export const processFiles = async (
     };
   }
 };
+
+export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue: number) => {
+  try {
+
+    const startDateFormat = format(startDate, "yyyy-MM-dd");
+    const endDateFormat = format(endDate, "yyyy-MM-dd");
+
+    const response = await api.get(UPDATE_SALESTICKET,
+      {
+        params: {
+          start:startDateFormat,
+          end:endDateFormat,
+          revenue:revenue
+        }
+      }
+    )
+
+    if(response.status === 200){
+      return true
+    } 
+
+  } catch (error) {
+
+    return false;
+    
+  }
+}
+
+export const updateSalesTicketCDC = async (startDate: string, cdc: number, id: number) => {
+  try {
+
+    const startDateFormat = startDate.split("/");
+
+    const response = await api.get(UPDATE_SALESTICKETCDC,
+      {
+        params: {
+          date:`${startDateFormat[2]}-${startDateFormat[1]}-${startDateFormat[0]}`,
+          employee:id,
+          revenue:cdc
+        }
+      }
+    )
+
+    if(response.status === 200){
+      return true
+    } 
+
+  } catch (error) {
+
+    return false;
+    
+  }
+}

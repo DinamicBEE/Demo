@@ -92,13 +92,13 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
           </DialogHeader>
 
           <DialogBody>
-            <Stack gap="4">
+            <Stack gap="4" w={"100%"}>
               {/*   <Field label="Nombre del Cliente:">
                 <Input {...register('nameClient', { required: 'Este campo es requerido' })} />
                 {errors.nameClient && <Text color="red" textStyle='xs'>{errors.nameClient?.message}</Text>}
               </Field> */}
               <FilterCustomer
-                customers={customer}
+                customers={customer || []}
                 label={true}
                 onSelect={setSelectClient}
                 disabled={false}

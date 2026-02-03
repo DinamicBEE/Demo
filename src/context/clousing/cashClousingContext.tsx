@@ -19,11 +19,11 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         cashRef.current = newCashData
     }
 
-    const getCashData = useCallback(async (clousingId: number, idCurrency: number) => {
+    const getCashData = useCallback(async (clousingId: number, idCurrency: number, isRefresh: boolean) => {
 
         setCashLoading(true);
-
-        if (cashRef.current[clousingId]) {
+        
+        if (cashRef.current[clousingId] && !isRefresh) {
             setCashLoading(false);
             return cashRef.current[clousingId];
         }
@@ -31,11 +31,6 @@ export function CashClousingProvider({ children }: { children: ReactNode }) {
         try {
 
             const response = await getCashClousing(clousingId, idCurrency);
-
-            // if (!response.success) {
-            //     setCashLoading(false);
-            //     return {} as CashModel;
-            // }
 
             const updateCash: CashContext = { ...cashRef.current, [clousingId]: response.data };
 

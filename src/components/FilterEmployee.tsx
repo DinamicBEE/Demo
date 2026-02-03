@@ -1,109 +1,107 @@
-import { useEffect, useRef, useState } from "react";
-import { EmployeeFilterProps } from "@models/employee.model";
-import { Box, createListCollection, ListCollection } from "@chakra-ui/react";
-import { SelectLabel, SelectRoot, SelectTrigger, SelectValueText, SelectContent, SelectItem, } from "@components/ui/select"
-import { ValueChangeDetails } from "node_modules/@chakra-ui/react/dist/types/components/select/namespace";
+import { useEffect, useState, useMemo } from "react";
+import { Employee, EmployeeFilterProps } from "@models/employee.model";
+import {
+  Box,
+  FieldLabel,
+  FieldRoot,
+  useFilter,
+  useListCollection,
+} from "@chakra-ui/react";
+import {
+  ComboboxContent,
+  ComboboxControl,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxRoot,
+} from "./ui/combobox";
 
-function FilterEmployee({ employees, label, itemId, employeeSelect, onSelect, disabled, employeeToEdit }: EmployeeFilterProps) {//
+function FilterEmployee({
+  employees,
+  label,
+  itemId,
+  onSelect,
+  disabled,
+  employeeToEdit,
+}: EmployeeFilterProps) {
+  const [value, setValue] = useState<string[]>([]);
 
-  const [searchQuery, setSearchQuery] = useState<string>('Selecciona empleado');
-  const [filteredEmpleados, setFilteredEmpleados] = useState<ListCollection>(createListCollection({ items: [] }));
-  const searchRef = useRef<string>('');
+  const employeeOptions = useMemo(() => {    
+    return employees.map((employee) => ({
+      label: employee.name,
+      value: employee.id.toString(),
+    }));
+  }, [employees]);
+
+  const { contains } = useFilter({ sensitivity: "base" });
+
+  const { collection, filter } = useListCollection({
+    initialItems: employeeOptions,
+    filter: contains,
+    limit: 200,
+  });
 
   useEffect(() => {
-
-    const employeeCollection = createListCollection({
-      items: employees.map(employee => (
-        {
-          label: ` ${employee.name}`,
-          value: employee.id
-        }
-      ))
-    });
-
-    setFilteredEmpleados(employeeCollection)
-
-  }, [employees])
-
+    collection.setItems(employeeOptions);
+  }, [employees]);
 
   useEffect(() => {
-    if (employeeToEdit != null && employeeToEdit != undefined) {
-      handleSelect(employeeToEdit?.id!.toString() || '');
-      setSearchQuery(employeeToEdit.name || '');
+    if (employeeToEdit?.id) {
+      setValue([employeeToEdit.id.toString()]);
     } else {
-      setSearchQuery("Selecciona empleado");
+      setValue([]);
     }
-  }, [employeeToEdit])
+  }, [employeeToEdit]);
 
-  function handleSearch(event: string) {
-
-    let query: string = '';
-    if (event.toLowerCase() === 'backspace') {
-      query = searchRef.current.slice(0, -1);
-    } else if (event.length == 1) {
-      query = searchRef.current + event.toLowerCase();
-    } else {
-      query = searchRef.current;
+  const handleValueChange = (e: any) => {
+    setValue(e.value);
+    if (e.items && e.items.length > 0) {
+      const employeeSelect = employees.find(
+        (employee) => employee.id === Number(e.value[0])
+      );
+      onSelect(
+        employeeSelect ? employeeSelect : ({ id: 0, name: "" } as Employee)
+      );
     }
-    setSearchQuery(query);
-    searchRef.current = query
-
-    const filtered = employees.filter(
-      (employee) => employee.name.toLowerCase().includes(query) || employee?.employeeNumber.toLowerCase().includes(query)
-    );
-
-    const employeeCollection = createListCollection({
-      items: filtered.map(employee => ({
-        label: employee.name,
-        value: employee.id
-      })
-      )
-    })
-
-    setFilteredEmpleados(employeeCollection);
-  }
-
-  
-
-  function handleSelect(event: ValueChangeDetails<any> | number) {
-    const selectedId = Object.hasOwn(event, "value") ? Number(event.value[0]) : Number(event);
-    // const selectedId = Number(event.value[0]);
-    
-    const employeeSelect = employees.find((employee) => employee.id === selectedId);
-
-    if (employeeToEdit != null && employeeToEdit != undefined) {
-      setSearchQuery(employeeSelect?.name!);
-    } 
-    // else { setSearchQuery("") }
-    
-
-    if (employeeSelect && itemId === undefined) {
-      onSelect(employeeSelect);
-    } else if (employeeSelect && itemId != undefined) {
-      onSelect(employeeSelect, itemId);
-    }
-
-  }
+  };
 
   return (
     <Box>
-      <SelectRoot collection={filteredEmpleados} onKeyUp={(e) => handleSearch(e.key)}
-        onValueChange={(event) => handleSelect(event)} disabled={disabled || false}>
+      <FieldRoot>
+        {label && <FieldLabel>Empleado</FieldLabel>}
+        <ComboboxRoot
+          size="sm"
+          openOnClick
+          collection={collection}
+          onInputValueChange={(e) => filter(e.inputValue)}
+          value={value}
+          onValueChange={handleValueChange}
+          width="100%"
+          disabled={disabled}
+          onOpenChange={(e) => {
+            if (e.open) filter("");
+          }}
+        >
+          <ComboboxControl clearable>
+            <ComboboxInput
+              placeholder={employeeToEdit?.name || "Seleccione un empleado"}
+            />
+          </ComboboxControl>
 
-        {label && <SelectLabel>Empleado</SelectLabel>}
-        <SelectTrigger>
-          <SelectValueText placeholder={employeeSelect || searchQuery} />
-        </SelectTrigger>
-
-        <SelectContent style={{ maxHeight: "200px", overflowY: "auto" }}>
-          {filteredEmpleados.items.map((movie) => (
-            <SelectItem item={movie} key={movie.value} >
-              {movie.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-
-      </SelectRoot>
+          <ComboboxContent>
+            {collection.items.length > 0 ?
+              (collection.items.map((item) => (
+                <ComboboxItem item={item} key={item.value}>
+                  {item.label}
+                </ComboboxItem>
+              ))) : (
+                <ComboboxEmpty px={4} py={2}>
+                  No se encontraron empleados
+                </ComboboxEmpty>
+              )}
+          </ComboboxContent>
+        </ComboboxRoot>
+      </FieldRoot>
     </Box>
   );
 }

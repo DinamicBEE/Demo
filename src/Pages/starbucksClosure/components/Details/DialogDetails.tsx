@@ -64,7 +64,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
       }
       
       const data = await getDetailStarbucks(newLine, banks, idCurrency);
-      
+      console.log(data);
       setGeneralData(data.data);
       setCashRows(data.cash);
       setTdcRows(data.tdc);
@@ -127,7 +127,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
 
   const totalCash = useMemo(
     () =>
-      cashRows.reduce(
+      cashRows?.reduce(
         (acc, row) => (row.currency !== "Total (MXN)" ? acc + row.total : acc),
         0
       ),
@@ -136,7 +136,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
  
   const totalTDC = useMemo(
     () =>
-      tdcRows.reduce(
+      tdcRows?.reduce(
         (acc, row) =>
           row.nameBank !== "Total (MXN)" ? acc + row.total : acc,//originalCurrency
         0

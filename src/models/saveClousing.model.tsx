@@ -152,6 +152,7 @@ interface Intercompany {
 // Interface principal que agrupa todo
 export interface ClousingSave {
   id: number;
+  statusId: number;
   discountPhysical: number,
   cash: Cash;
   tdc: TDC;
