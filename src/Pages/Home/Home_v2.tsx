@@ -347,7 +347,16 @@ function Home_v2() {
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
-                <GridItem colSpan={1} />
+                {/* <GridItem colSpan={1} /> */}
+
+                <Button
+                  colorPalette="meraPrimary"
+                  // onClick={() => {
+                  //   handleExportCSV();
+                  // }}
+                >
+                  Exportar a CSV
+                </Button>
 
                 <Button
                     disabled={formattedDate != '' && selectedZonesIds.length === 0}

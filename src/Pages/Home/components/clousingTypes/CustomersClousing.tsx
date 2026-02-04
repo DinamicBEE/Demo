@@ -40,6 +40,9 @@ import Loading from "@components/Loading";
 import { handleErrorMessage } from "@utils/getValidationsError";
 import FilterCustomer from "@components/FilterCustomer";
 import { FilterOption } from "@models/reports.model";
+import { toast } from "@utils/Toast";
+import { Tooltip } from "@components/ui/tooltip";
+import { TiDelete } from "react-icons/ti";
 
 
 const pageSize = 10;
@@ -54,7 +57,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const [customersItems, setCustomersItems] = useState<FilterOption[]>([]);
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading, getCustomerList, customer } = useCustomerContext();
-  const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer } = useHandleCustomer(
+  const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer, updateContext } = useHandleCustomer(
     CustomersData || ({} as CustomerModel),
     setCustomersData,
     data?.id ?? 0
@@ -177,6 +180,17 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
     onOpen();
   };
 
+  const onDelete = (index: number) => {
+    const newArray = CustomersData.lines.filter((_, i) => i !== index);
+    setCustomersData({ ...CustomersData, lines: newArray });
+    updateContext(); //TODO: Validar metodo de guradado de cambio => Por endpoint o Por preguardado
+    toast(
+      "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
+      "warning",
+      "Cliente eliminado"
+    );
+  }
+  
   const selectItems = useMemo(() => {
     if (!currenciesForSelect) return [];
     
@@ -192,7 +206,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
       return null;
     }
 
-    return  visibleItems?.map((item: CustomerLines) => (
+    return  visibleItems?.map((item: CustomerLines, index: number) => (
       <Table.Row key={item.id}>
         <Table.Cell textAlign="center">
           <FilterCustomer
@@ -289,6 +303,18 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
             />
           </Text>
         </Table.Cell>
+        {(!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
+          <Box color="red.500"  textStyle="lg" >
+            
+            <Tooltip
+              content={`Eliminar cliente: ${item.nameClient}`}
+              positioning={{ placement: "right-end" }}
+            >
+              <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
+              
+            </Tooltip>
+          </Box>
+        </Table.Cell>}
       </Table.Row>
     ))
   }, [    visibleItems, 
@@ -330,6 +356,9 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
                 <Table.ColumnHeader textAlign="center">
                   Monto MXN
                 </Table.ColumnHeader>
+                { (!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
+                  </Table.ColumnHeader>
+                }
               </Table.Row>
             </Table.Header>
             <Table.Body>
@@ -429,6 +458,18 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
                       />
                     </Text>
                   </Table.Cell>
+                  {(!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
+                    <Box color="red.500"  textStyle="lg" >
+                      
+                      <Tooltip
+                        content={`Eliminar cliente: ${item.nameClient}`}
+                        positioning={{ placement: "right-end" }}
+                      >
+                        <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
+                        
+                      </Tooltip>
+                    </Box>
+                  </Table.Cell>}
                 </Table.Row>
               ))} */}
               {renderRows}

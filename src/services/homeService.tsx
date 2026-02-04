@@ -122,7 +122,6 @@ export function exportCSV(data: any, header: any, tdcHeader: TDC[], currHeader: 
       "Total Físico",
       "Diferencia",
       "Estatus",
-      "Extras",
       currHeader.map((item) => item.symbol).join(","),
       "Clientes General",
       "Clientes Especiales",

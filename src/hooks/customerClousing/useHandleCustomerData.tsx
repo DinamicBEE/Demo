@@ -345,5 +345,5 @@ export const useHandleCustomer = (
     debouncedUpdateContext();
   }, [setCustomer, debouncedUpdateContext])
 
-  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer };
+  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer, updateContext };
 };

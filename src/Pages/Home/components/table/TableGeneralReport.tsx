@@ -48,12 +48,14 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
 
     return (
         <Box>
-            <Table.ScrollArea rounded="md" borderWidth="1px">
-                <Table.Root size="sm" variant="outline">
+            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
+                <Table.Root size="sm" variant="outline" stickyHeader
+                
+                >
                     <Table.Header>
-                        <Table.Row>
-                            <SortableHeader columnKey="ubicacion" label="Ubicación" handleSort={handleSort} getSortIcon={getSortIcon} />
-                            <SortableHeader columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
+                        <Table.Row zIndex={1}>
+                            <SortableHeader columnProps={{left: "0px", position: "sticky"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnProps={{left: "294px", position: "sticky"}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -96,8 +98,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Body>
                         {sortedData.map((row) => (
                             <Table.Row key={row.id}>
-                                <Table.Cell><Text> {row.ubicacion} </Text></Table.Cell>
-                                <Table.Cell>
+                                <Table.Cell css={{position:"sticky"}} left="0"><Text> {row.ubicacion} </Text></Table.Cell>
+                                <Table.Cell css={{position:"sticky"}} left="294px">
                                     <Text
                                         as="span"
                                         cursor="pointer"
@@ -227,9 +229,9 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                             </ Table.Row >
                         ))}
 
-                        <Table.Row>
-                            <Table.Cell />
-                            <Table.Cell><Text> Totales </Text></Table.Cell>
+                        <Table.Row bg="gray.100" fontWeight="bold">
+                            <Table.Cell css={{position:"sticky"}} left="0"/>
+                            <Table.Cell css={{position:"sticky"}} left="294"><Text> Totales </Text></Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.totalPOS} style="currency" currency="USD" />
                             </Table.Cell>
@@ -355,6 +357,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <PaginationPrevTrigger />
                     <PaginationItems />
                     <PaginationNextTrigger />
+                    <span> Mostrando 1 a {DataReport.length} de {DataReport.length} Registros </span>
                 </HStack>
             </PaginationRoot>
         </Box>

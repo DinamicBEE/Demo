@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
+import { Box, Button, FormatNumber, Grid, GridItem, Sticky, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
@@ -144,14 +144,14 @@ function TableOfTotals({
 
         {sortedData.length >= 1 && (
           <Box>
-            <Table.ScrollArea rounded="md" borderWidth="1px">
-              <Table.Root size="sm" variant="outline">
+            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
+              <Table.Root size="sm" variant="outline" stickyHeader >
                 <Table.Header>
-                  <Table.Row>
-                    <Table.ColumnHeader textAlign="center">
+                  <Table.Row zIndex={1}>
+                    <Table.ColumnHeader textAlign="center" css={{position:"sticky"}} left="0">
                       Fecha
                     </Table.ColumnHeader>
-                    <SortableHeader columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnProps={{left: "87px", position: "sticky"}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -192,10 +192,10 @@ function TableOfTotals({
                 <Table.Body>
                   {sortedData.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
-                      <Table.Cell textAlign="center">
+                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="0" >
                         <Text>{item.closingStartDate}</Text>
                       </Table.Cell>
-                      <Table.Cell textAlign="center">
+                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="87px">
                         <Text
                           as="span"
                           cursor="pointer"
@@ -273,7 +273,7 @@ function TableOfTotals({
                             currency="USD"
                           />
                         </Text>
-                     </Table.Cell>
+                    </Table.Cell>
 
                         
 
@@ -364,6 +364,7 @@ function TableOfTotals({
                 </Table.Body>
               </Table.Root>
             </Table.ScrollArea>
+            <span> Mostrando 1 a {data.length} de {data.length} Registros </span>
           </Box>
         )}
 

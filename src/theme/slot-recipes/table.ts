@@ -21,7 +21,8 @@ export const tableSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       padding: "12px 0",
       borderBottom: "1px solid",
-      borderColor: "#EDF2F7"
+      borderColor: "#EDF2F7",
+      bg: "bg"
     },
     columnHeader: {
       fontWeight: "700",
@@ -60,7 +61,7 @@ export const tableSlotRecipe = defineSlotRecipe({
           "& :where(tr)": {
             top: "var(--table-sticky-offset, 0)",
             position: "sticky",
-            zIndex: 1,
+            //zIndex: 1,
           },
         },
       },
@@ -103,7 +104,7 @@ export const tableSlotRecipe = defineSlotRecipe({
       outline: {
         root: {
           boxShadow: "0 0 0 1px {colors.border}",
-          overflow: "hidden",
+          //overflow: "hidden",
         },
         columnHeader: {
           borderBottomWidth: "1px",
