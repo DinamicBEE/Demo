@@ -4,11 +4,13 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
+import { DetailApprovals } from "./DetailApprovals";
 
 const Approvals: React.FC = () => {
 
 	const { setDataApproval } = useApprovalsList();
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
 	const openDialog = useCallback(() => setIsDialogOpen(true), []);
 
@@ -16,7 +18,10 @@ const Approvals: React.FC = () => {
 
 	const openDialogEdit = useCallback((approval: Approval) => {
 		setDataApproval(approval);
+		setIsDialogEditOpen(true);
 	}, []);
+
+	const closeDialogEdit = useCallback(() => setIsDialogEditOpen(false), []);
 
 	return (
 		<>
@@ -39,6 +44,8 @@ const Approvals: React.FC = () => {
 			</Box>
 
 			<RegisterApprovals isOpen={isDialogOpen} onClose={closeDialog} />
+
+			<DetailApprovals isOpen={isDialogEditOpen} onClose={closeDialogEdit} />
 			
 		</>
 	)
