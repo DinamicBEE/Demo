@@ -124,22 +124,14 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
       setVisibleItems(prepaidData?.lines?.slice(startRange, endRange) || []);
 
+      const couponsList = await getCouponData(cdc, data?.closingStartDate);
+      setCoupons(couponsList);
+
       setLoading(false);
     };
 
     fetchData();
-  }, [prepaid]);
-
-  useEffect(() => {
-    const fetchCoupons = async() => {
-      const couponsList = await getCouponData(cdc, data?.closingStartDate);
-      setCoupons(couponsList);
-    }
-    if (!data?.closingConfirmation) {
-      fetchCoupons();
-    }
-  }, [getCouponData, data?.closingConfirmation])
-  
+  }, []);
 
   // Paginación
   useEffect(() => {
@@ -157,11 +149,18 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
     setLoadingAdded(true);
 
-    const couponModel = coupons.find((c) => c.barCode === coupon && !c.isExpired);
+    const couponModel = coupons.find((c) => c.barCode === coupon);
     if (!couponModel) {
-      setLoadingAdded(false)
-      return toast("Cupón inválido o expirado", "error")
+      setLoadingAdded(false);
+      toast("Cupón inválido", "error");
+      return;
     };
+
+    if (couponModel.isExpired) {
+      setLoadingAdded(false);
+      toast("Cupón expirado", "warning");
+      return;
+    }
 
     let clientLine = prepaidLocal.lines.find(
       (l) =>

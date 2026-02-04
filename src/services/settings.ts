@@ -63,11 +63,13 @@ export const GET_BATCH = `${BATCH_BASE}/getBatchClosures`;
 export const GET_BATCH_DETAILS = `${BATCH_BASE}/getBatchClosureDetails`;
 //export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatchClosure`;
 export const CONFIRM_BATCH = `${BATCH_BASE}/confirmBatch`;
+export const UPDATE_BATCH = `${BATCH_BASE}/updateBatch`;
+
+// * Reportes
 
 export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
-
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const CHANGE_REPORTSTATUS = `${CRC_BASE}/administration/panel/delete`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;
@@ -92,6 +94,7 @@ export const GET_STARBUCKSCLOUSING = `${API_BASE}/registerclosure/starbucks/sear
 export const GET_STARBUCKSDETAIL = `${API_BASE}/registerclosure/starbucks/getCashRegisterClosure`;
 export const GET_STARBUCKSDENOMINATIONS = `${API_BASE}/currency/starbucks`;
 export const SENDCASHCLOUSING_STARBUCKS = `${API_BASE}/registerclosure/starbucks/save`;
+export const CORRECT_STARBUCKS_CLOSING = `${API_BASE}/registerclosure/starbucks/revertToStarbucks`
 
 export const UPDATE_SALESTICKET = `${CRC_BASE}/salesTicket/noProduct` 
 export const UPDATE_SALESTICKETCDC = `${CRC_BASE}/salesTicket/updateEmployee` 

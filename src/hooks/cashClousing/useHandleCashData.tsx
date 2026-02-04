@@ -54,32 +54,35 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
     setCashData(cashRef.current, clousingId);
   }
 
-  function handleChangeTips(value: string) {
-    if (isFirstLoad.current) {
-      isFirstLoad.current = false;
-      return;
-    }
-    const preTotalPhysical = cashData.currencies.reduce((acc: number, curr: { totalFisico: number }) => acc + (curr.totalFisico), 0);
-    const newTotalPhysical = preTotalPhysical - parseFloat(value);
+function handleChangeTips(value: string) {
+  const sanitizedValue = value.replace(/[^\d.]/g, "");
+  const newTipAmount = parseFloat(sanitizedValue) || 0;
 
-    const updateCashdata = { 
-      ...cashData, 
-      tips: parseFloat(value), 
-      total: { 
-        totalPhysical: newTotalPhysical,
-        totalPOS: cashData.total?.totalPOS ?? 0,
-        difference: newTotalPhysical - (cashData.total?.totalPOS ?? 0),
-      } 
-    }
+  const sumOfCurrencies = cashData.currencies.reduce(
+    (acc, curr) => acc + (Number(curr.totalFisico) || 0), 
+    0
+  );
 
-    setData(updateCashdata);
+  const finalPhysical = sumOfCurrencies - newTipAmount;
 
-    cashRef.current = updateCashdata
+  const updatedTotal = { 
+    totalPhysical: finalPhysical,
+    totalPOS: cashData.total?.totalPOS ?? 0,
+    difference: finalPhysical - (cashData.total?.totalPOS ?? 0),
+  };
 
-    updateTotal(updateCashdata.total.totalPhysical, clousingId, CLOUSING_KEY.CASH);
-    setFooterData(updateCashdata.total, clousingId, CLOUSING_KEY.CASH);
-    setCashData(cashRef.current, clousingId);
-  }
+  const updatedCashData = { 
+    ...cashData, 
+    tips: newTipAmount, 
+    total: updatedTotal 
+  };
+
+  cashRef.current = updatedCashData;
+
+  setCashData(updatedCashData, clousingId); 
+  setFooterData(updatedTotal, clousingId, CLOUSING_KEY.CASH);
+  updateTotal(finalPhysical, clousingId, CLOUSING_KEY.CASH);
+}
 
   function showToast(alertModel: AlertClousing, error: string | null) {
     toaster.create({

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Table,
@@ -71,55 +71,104 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!data) return;
-      
-      const customers: ResponseModel = await getCustomerData(data.id, false);
+  const fetchCustomerData = useCallback(async () => {
+    if (!data) return;
+    
+    const customers: ResponseModel = await getCustomerData(data.id, false);
 
-      if(!customers.success){
-        handleErrorMessage(customers.error)
-      }
-
-      if (customers?.data.total)
-        setFooterData(customers.data.total, data.id, CLOUSING_KEY.CUSTOMER);
-      
-      setCustomersData(customers.data);
-
-      const items = customers?.data.lines?.slice(startRange, endRange);      
-      setVisibleItems(items);
-      
-      const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
-
-      if (!currencies) {
-        setcurrenciesForSelect(
-          createListCollection<CurrencyModel>({ items: [] })
-        );
-      } else {
-        let createCurrenciList = createListCollection({ items: currencies });
-        setcurrenciesForSelect(createCurrenciList);
-      }
-
-      setCurrencies(currencies);
-
+    if(!customers.success){
+      handleErrorMessage(customers.error);
+      return;
     }
 
-    fetchData();
-  }, [customer]);
+    if (customers?.data.total) {
+      setFooterData(customers.data.total, data.id, CLOUSING_KEY.CUSTOMER);
+    }
+    
+    setCustomersData(customers.data);
+
+    const items = customers?.data.lines?.slice(startRange, endRange) || [];      
+    setVisibleItems(items);
+    
+    const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
+
+    if (!currencies) {
+      setcurrenciesForSelect(
+        createListCollection<CurrencyModel>({ items: [] })
+      );
+    } else {
+      let createCurrenciList = createListCollection({ items: currencies });
+      setcurrenciesForSelect(createCurrenciList);
+    }
+
+    setCurrencies(currencies);
+  }, [data, subsidiary.idCurrency, getCustomerData, setFooterData, startRange, endRange]);
 
   useEffect(() => {
-    async function fetchCustomers() {
-      const customersList = await getCustomerList();
-      if (customersList) {
-        setCustomersItems(customersList);
-      }
+    fetchCustomerData();
+  }, []);
 
+  const fetchCustomersList = useCallback(async () => {
+    if (data?.closingConfirmation) return;
+    
+    const customersList = await getCustomerList();
+    if (customersList) {
+      setCustomersItems(customersList);
     }
-    if(!data?.closingConfirmation){
-      fetchCustomers();
-    }
-  }, [getCustomerList, data?.closingConfirmation]);
-  
+  }, [data?.closingConfirmation, getCustomerList]);
+
+  useEffect(() => {
+    fetchCustomersList();
+  }, []);
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     if (!data) return;
+      
+  //     const customers: ResponseModel = await getCustomerData(data.id, false);
+
+  //     if(!customers.success){
+  //       handleErrorMessage(customers.error)
+  //     }
+
+  //     if (customers?.data.total)
+  //       setFooterData(customers.data.total, data.id, CLOUSING_KEY.CUSTOMER);
+      
+  //     setCustomersData(customers.data);
+
+  //     const items = customers?.data.lines?.slice(startRange, endRange);      
+  //     setVisibleItems(items);
+      
+  //     const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
+
+  //     if (!currencies) {
+  //       setcurrenciesForSelect(
+  //         createListCollection<CurrencyModel>({ items: [] })
+  //       );
+  //     } else {
+  //       let createCurrenciList = createListCollection({ items: currencies });
+  //       setcurrenciesForSelect(createCurrenciList);
+  //     }
+
+  //     setCurrencies(currencies);
+
+  //   }
+
+  //   fetchData();
+  // }, []);//customer
+
+  // useEffect(() => {
+  //   async function fetchCustomers() {
+  //     const customersList = await getCustomerList();
+  //     if (customersList) {
+  //       setCustomersItems(customersList);
+  //     }
+
+  //   }
+  //   if(!data?.closingConfirmation){
+  //     fetchCustomers();
+  //   }
+  // }, [getCustomerList, data?.closingConfirmation]);
 
   useEffect(() => {
     setPage(page);
@@ -133,13 +182,150 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
 
   const onDelete = (index: number) => {
     const newArray = CustomersData.lines.filter((_, i) => i !== index);
-    updateContext(newArray); //TODO: Validar metodo de guradado de cambio => Por endpoint o Por preguardado
+    setCustomersData({ ...CustomersData, lines: newArray });
+    updateContext(); //TODO: Validar metodo de guradado de cambio => Por endpoint o Por preguardado
     toast(
       "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
       "warning",
       "Cliente eliminado"
     );
   }
+  
+  const selectItems = useMemo(() => {
+    if (!currenciesForSelect) return [];
+    
+    return Array.from(currenciesForSelect).map((item) => (
+      <SelectItem item={item} key={item.value}>
+        {item.label}
+      </SelectItem>
+    ));
+  }, []);
+
+  const renderRows = useMemo(() => {
+    if (!visibleItems || visibleItems.length === 0) {
+      return null;
+    }
+
+    return  visibleItems?.map((item: CustomerLines, index: number) => (
+      <Table.Row key={item.id}>
+        <Table.Cell textAlign="center">
+          <FilterCustomer
+            key={`${item.id}-${customersItems.length}`}
+            customers={customersItems}
+            label={false}
+            customerSelect={item.nameClient}
+            onSelect={(e) => handleChangeCustomer(e, item.id)}
+            disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}
+          ></FilterCustomer>
+        </Table.Cell>
+
+        <Table.Cell textAlign="center">
+          <Text>
+            <TableInput
+              value={item.coupons}
+              id={item.id}
+              currency={false}
+              onChange={handleCoupons}
+              disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
+
+        <Table.Cell textAlign="center">
+          <SelectRoot
+            collection={
+              currenciesForSelect ||
+              createListCollection<CurrencyModel>({ items: [] })
+            }
+            onValueChange={(e) =>
+              selectCurrency(e.value, item.id, currencies)
+            }
+            disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+          >
+            <SelectTrigger>
+              <SelectValueText
+                placeholder={
+                  item.currencyLabel || "Seleccionar moneda"
+                }
+              />
+            </SelectTrigger>
+
+            <SelectContent>
+              {/* {currenciesForSelect &&
+                Array.from(currenciesForSelect).map((item) => (
+                  <SelectItem item={item} key={item.value}>
+                    {item.label}
+                  </SelectItem>
+                ))} */}
+              {selectItems}
+            </SelectContent>
+          </SelectRoot>
+        </Table.Cell>
+
+        <Table.Cell textAlign="end">
+          <Text>
+            <TableInput
+              value={item.pax}
+              id={item.id}
+              currency={true}
+              onChange={handleAmountPAX}
+              disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+            />
+          </Text>
+        </Table.Cell>
+
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.amount}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
+
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.exchangeRate}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
+
+        <Table.Cell textAlign="end">
+          <Text>
+            <FormatNumber
+              value={item.amountMXN}
+              style="currency"
+              currency="USD"
+            />
+          </Text>
+        </Table.Cell>
+        {(!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
+          <Box color="red.500"  textStyle="lg" >
+            
+            <Tooltip
+              content={`Eliminar cliente: ${item.nameClient}`}
+              positioning={{ placement: "right-end" }}
+            >
+              <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
+              
+            </Tooltip>
+          </Box>
+        </Table.Cell>}
+      </Table.Row>
+    ))
+  }, [    visibleItems, 
+    customersItems,
+    handleChangeCustomer,
+    handleCoupons,
+    selectCurrency,
+    handleAmountPAX,
+    data?.closingConfirmation,
+    CustomersData?.isRoleEditable,
+    ])
   
   return (
     <>
@@ -176,7 +362,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {visibleItems?.map((item: CustomerLines, index: number) => (
+              {/* {visibleItems?.map((item: CustomerLines) => (
                 <Table.Row key={item.id}>
                   <Table.Cell textAlign="center">
                     <FilterCustomer
@@ -285,7 +471,8 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
                     </Box>
                   </Table.Cell>}
                 </Table.Row>
-              ))}
+              ))} */}
+              {renderRows}
             </Table.Body>
           </Table.Root>
         </Table.ScrollArea>

@@ -51,6 +51,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
   });
 
   useEffect(() => {
+    
     const run = async () => {
       if (!isOpen || !employee?.id || !subsidiary?.idCurrency) return;
 
@@ -73,9 +74,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         size="full"
         open={isOpen}
         onOpenChange={() => setOpenDialogExit(
-          (employee?.status == "Abierto" || employee?.status == "Reabierto") && employee.isRoleEditable
-            ? true
-            : false)
+          ((employee?.statusId == 1 || employee?.statusId == 7 || employee?.statusId == 6) && employee.isRoleEditable) || false)
           }
         closeOnEscape={false}
         closeOnInteractOutside={false}
@@ -193,7 +192,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                       prepaidRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " + prepaidRef.current[employee.id].total?.totalPhysical.toFixed(2)
-                        : "$ " + 0}
+                        : "$ 0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
@@ -278,6 +277,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                     <SpecialCustomersClousing
                       data={employee}
                       subsidiary={subsidiary}
+                      tabs={tabs}
                     />
                   </Suspense>
                 )}
@@ -344,14 +344,14 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
         </DialogContent>
       </DialogRoot>
         <ExitDialog
-        closeDialog={() => {
-          setOpenDialogExit(false);
-        }}
-        closeOnExit={() => {
-          onClose(false);
-        }}
-        isOpen={openDialogExit}
-      ></ExitDialog>
+          closeDialog={() => {
+            setOpenDialogExit(false);
+          }}
+          closeOnExit={() => {
+            onClose(false);
+          }}
+          isOpen={openDialogExit}
+        ></ExitDialog>
     </>
   );
 }

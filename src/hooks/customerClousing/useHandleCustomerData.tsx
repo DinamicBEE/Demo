@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useHeaders } from "@context/home/headerContext";
 import { useFooter } from "@context/home/footerClousingContext";
 import { useCustomerContext } from "@context/clousing/customerClousingContext";
@@ -11,125 +11,231 @@ import {
 } from "@models/customer.model";
 import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
+import { useDebounce } from "@hooks/useDebounce";
 
 export const useHandleCustomer = (
   customerData: CustomerModel,
   setCustomer: any,
   clousingId: number
 ) => {
-  const customerRef = useRef(customerData);
 
-  const { updateTotal } = useHeaders();
-  const { setFooterData } = useFooter();
-  const { setCustomerData } = useCustomerContext();
+  const updateTotalRef = useRef(useHeaders().updateTotal);
+  const setFooterDataRef = useRef(useFooter().setFooterData);
+  const setCustomerDataRef = useRef(useCustomerContext().setCustomerData);
 
-  function selectCurrency(
+  const customerRef = useRef<CustomerModel>(customerData);
+
+  useEffect(() => {
+    customerRef.current = customerData;
+  }, [customerData]);
+
+  // const { updateTotal } = useHeaders();
+  // const { setFooterData } = useFooter();
+  // const { setCustomerData } = useCustomerContext();
+
+  const updateContext = useCallback(() => {
+    if(!customerRef.current) return;
+
+    const currentData = customerRef.current;
+
+    const newTotalFisico = currentData.lines.reduce(
+      (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
+      0
+    );
+    
+    const newDifference = newTotalFisico - currentData.total.totalPOS;
+
+    const newTotal: TotalModel = {
+      totalPOS: currentData.total.totalPOS,
+      totalPhysical: newTotalFisico > currentData.total.totalPOS ? currentData.total.totalPOS : newTotalFisico,
+      difference: newDifference,
+      differenceCupons: newTotalFisico > currentData.total.totalPOS ? newDifference : 0
+    };
+
+    const updateCustomerData = { ...currentData, total: newTotal };
+
+    customerRef.current = updateCustomerData;
+
+    Promise.all([
+      updateTotalRef.current(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER, newTotal.differenceCupons),
+      setFooterDataRef.current(newTotal, clousingId, CLOUSING_KEY.CUSTOMER),
+      setCustomerDataRef.current(updateCustomerData, clousingId)
+    ])
+
+  },[clousingId]);
+
+  const debouncedUpdateContext = useDebounce(
+    updateContext,
+    300,
+    { maxWait: 1500 }
+  );
+
+  const selectCurrency = useCallback((
     value: any,
     id: number | string,
     currencies: CurrencyModel[] | undefined
-  ) {
+  ) => {
     const selectValue = value[0];
-    const newCurrencyId =
-      currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]
-        ?.value || "";
-    const newCurrency =
-      currencies?.filter(
-        (currency: CurrencyModel) => currency.value === selectValue
-      )[0]?.label || "";
-    const newExchangeRage =
-      currencies?.filter(
-        (currency: CurrencyModel) => currency.value === selectValue
-      )[0]?.exchangeRate || 0;
-
-    if (!customerData) return;
-
-    const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            currency: newCurrencyId.toString(),
-            currencyId: Number(newCurrencyId),
-            exchangeRate: newExchangeRage,
-            currencyLabel: newCurrency,
-            amountMXN:
-              item.amount > 0 ? newExchangeRage * item.amount : item.amountMXN,
-          }
-        : item
+    // const newCurrencyId =
+    //   currencies?.filter((item: CurrencyModel) => item.value === selectValue)[0]
+    //     ?.value || "";
+    // const newCurrency =
+    //   currencies?.filter(
+    //     (currency: CurrencyModel) => currency.value === selectValue
+    //   )[0]?.label || "";
+    // const newExchangeRage =
+    //   currencies?.filter(
+    //     (currency: CurrencyModel) => currency.value === selectValue
+    //   )[0]?.exchangeRate || 0;
+    const currency = currencies?.find(
+      (item: CurrencyModel) => item.value === selectValue
     );
+    
+    const newCurrencyId = currency?.value || "";
+    const newCurrency = currency?.label || "";
+    const newExchangeRage = currency?.exchangeRate || 0;
+    
+    setCustomer((prev: CustomerModel) => {
+      if (!prev) return prev;
 
-    const updateCustomerData = { ...customerData, lines: updatedCurrencies };
+      const updatedCurrencies = prev.lines.map((item: CustomerLines) =>
+        item.id === id
+          ? {
+              ...item,
+              currency: newCurrencyId.toString(),
+              currencyId: Number(newCurrencyId),
+              exchangeRate: newExchangeRage,
+              currencyLabel: newCurrency,
+              amountMXN:
+                item.amount > 0 
+                  ? newExchangeRage * item.amount 
+                  : item.amountMXN,
+            }
+          : item
+      );
 
-    setCustomer(updateCustomerData);
-    customerRef.current = updateCustomerData;
+      return {
+        ...prev,
+        lines: updatedCurrencies,
+      };
+    });
 
-    setCustomerData(customerRef.current, clousingId);
-    updateContext(updatedCurrencies);
-  }
+    // Usar debounce en lugar de llamada inmediata
+    debouncedUpdateContext();
 
-  function handleCoupons(id: number | string, value: string) {
-    value = value.replace(/[^\d.]/g, "");
+    // if (!customerData) return;
 
-    if (!value || isNaN(parseFloat(value))) return;
+    // const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
+    //   item.id === id
+    //     ? {
+    //         ...item,
+    //         currency: newCurrencyId.toString(),
+    //         currencyId: Number(newCurrencyId),
+    //         exchangeRate: newExchangeRage,
+    //         currencyLabel: newCurrency,
+    //         amountMXN:
+    //           item.amount > 0 ? newExchangeRage * item.amount : item.amountMXN,
+    //       }
+    //     : item
+    // );
 
-    if (!customerData) return;
+    // const updateCustomerData = { ...customerData, lines: updatedCurrencies };
 
-    const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            coupons: parseFloat(value),
-            amount: item.pax > 0 ? parseFloat(value) * item.pax : item.amount,
-            amountMXN:
-              item.pax > 0 && item.exchangeRate > 0
-                ? parseFloat(value) * item.pax * item.exchangeRate
-                : item.amountMXN,
-          }
-        : item
-    );
+    // setCustomer(updateCustomerData);
+    // //customerRef.current = updateCustomerData;
 
-    customerData.lines = updatedCurrencies;
+    // setCustomerData(customerRef.current, clousingId);
+    // updateContext();
+  }, [setCustomer, debouncedUpdateContext])
 
-    setCustomer({ ...customerData });
+  const handleCoupons = useCallback((id: number | string, value: string) => {
+    // value = value.replace(/[^\d.]/g, "");
 
-    customerRef.current = customerData;
+    // if (!value || isNaN(parseFloat(value))) return;
 
-    updateContext(updatedCurrencies);
-  }
+    // if (!customerData) return;
+    const numericValue = parseFloat(value.replace(/[^\d.]/g, ""));
 
-  function handleAmountPAX(id: number | string, value: string) {
-    value = value.replace(/[^\d.]/g, "");
+    if (isNaN(numericValue) || numericValue <= 0) return;
 
-    if (!value || isNaN(parseFloat(value))) return;
+    setCustomer((prev: CustomerModel) => {
+      if (!prev) return prev;
 
-    if (!customerData) return;
+      const updatedCurrencies = prev.lines.map((item: CustomerLines) =>
+        item.id === id
+          ? {
+              ...item,
+              coupons: parseFloat(value),
+              amount: item.pax > 0 ? parseFloat(value) * item.pax : item.amount,
+              amountMXN:
+                item.pax > 0 && item.exchangeRate > 0
+                  ? parseFloat(value) * item.pax * item.exchangeRate
+                  : item.amountMXN,
+            }
+          : item
+      );
+      
+      return {
+        ...prev,
+        lines: updatedCurrencies
+      }
+    })
 
-    const updatedCurrencies = customerData.lines.map((item: CustomerLines) =>
-      item.id === id
-        ? {
-            ...item,
-            pax: parseFloat(value),
-            amount:
-              item.coupons > 0 ? parseFloat(value) * item.coupons : item.amount,
-            amountMXN:
-              item.coupons > 0 && item.exchangeRate > 0
-                ? parseFloat(value) * item.coupons * item.exchangeRate
-                : item.amountMXN,
-          }
-        : item
-    );
 
-    customerData.lines = updatedCurrencies;
+    // customerData.lines = updatedCurrencies;
 
-    setCustomer({ ...customerData });
+    // setCustomer({ ...customerData });
 
-    customerRef.current = customerData;
+    // customerRef.current = customerData;
+    debouncedUpdateContext();
+    //updateContext();
+  },[setCustomer, debouncedUpdateContext])
 
-    updateContext(updatedCurrencies);
-  }
+  const handleAmountPAX = useCallback((id: number | string, value: string) => {
+    const numericValue = parseFloat(value.replace(/[^\d.]/g, ""));
 
-  function handleChangeCustomer( event: selectOption, id: number | string) {
-    const updateCustomer = customerData.lines.map(
-      (item: CustomerLines) =>
+    if (isNaN(numericValue) || numericValue <= 0) return;
+
+    //if (!customerData) return;
+
+    setCustomer((prev: CustomerModel) =>{
+      if (!prev) return prev;
+
+      const updatedCurrencies = prev.lines.map((item: CustomerLines) =>
+        item.id === id
+          ? {
+              ...item,
+              pax: parseFloat(value),
+              amount:
+                item.coupons > 0 ? parseFloat(value) * item.coupons : item.amount,
+              amountMXN:
+                item.coupons > 0 && item.exchangeRate > 0
+                  ? parseFloat(value) * item.coupons * item.exchangeRate
+                  : item.amountMXN,
+            }
+          : item
+      );
+      return {
+        ...prev,
+        lines: updatedCurrencies,
+      };
+    })
+
+    //customerData.lines = updatedCurrencies;
+
+    //setCustomer({ ...customerData });
+
+    //customerRef.current = customerData;
+    debouncedUpdateContext();
+    //updateContext();
+  },[setCustomer, debouncedUpdateContext])
+
+  const handleChangeCustomer = useCallback(( event: selectOption, id: number | string) => {
+    
+    setCustomer((prev: CustomerModel) => {
+      if (!prev) return prev;
+
+      const updatedCustomer = prev.lines.map((item: CustomerLines) =>
         item.id === id
           ? {
               ...item,
@@ -137,79 +243,107 @@ export const useHandleCustomer = (
               nameClient: event.label,
             }
           : item
-    )
-    customerData.lines = updateCustomer;
-    setCustomer({ ...customerData});
-    customerRef.current = customerData;
-    setCustomerData(customerRef.current, clousingId);
-    updateContext(updateCustomer);
-  }
+      );
+      
+      return {
+        ...prev,
+        lines: updatedCustomer,
+      };
+    });
 
-  function addCustomerRecord(
+    debouncedUpdateContext();
+    // const updateCustomer = customerData.lines.map(
+    //   (item: CustomerLines) =>
+    //     item.id === id
+    //       ? {
+    //           ...item,
+    //           idClient: event.value,
+    //           nameClient: event.label,
+    //         }
+    //       : item
+    // )
+    // customerData.lines = updateCustomer;
+    // setCustomer({ ...customerData});
+    // //customerRef.current = customerData;
+    // setCustomerData(customerRef.current, clousingId);
+    // updateContext();
+  },[setCustomer, debouncedUpdateContext])
+
+  // function addCustomerRecord(
+  //   newCustomer: CustomerForm,
+  //   currencies: CurrencyModel[] | undefined
+  // ) {
+  //   if (!customerData) return;
+
+  //   const currency = currencies?.find(
+  //     (item) => item.value === Number(newCustomer.currency)
+  //   );
+  //   const exchangeRate = currency?.exchangeRate || 1;
+
+  //   const newRecord: CustomerLines = {
+  //     id: "customer-" + uuidv4(),
+  //     idClient: newCustomer.idClient,
+  //     // Generar un ID temporal
+  //     currency: currency?.value.toString() || "",
+  //     currencyId: Number(currency?.value) || 0,
+  //     currencyLabel: currency?.label || "",
+  //     exchangeRate,
+  //     coupons: newCustomer.coupons,
+  //     pax: newCustomer.pax,
+  //     amount: newCustomer.coupons * newCustomer.pax,
+  //     amountMXN: newCustomer.coupons * newCustomer.pax * exchangeRate,
+  //     nameClient: newCustomer.nameClient,
+  //   };
+
+  //   const updatedCustomerData = {
+  //     ...customerData,
+  //     lines: [...customerData.lines, newRecord],
+  //   };
+
+  //   setCustomer(updatedCustomerData);
+
+  //   //customerRef.current = updatedCustomerData;
+
+  //   setCustomerData(updatedCustomerData, clousingId);
+
+  //   updateContext();
+  // }
+
+  const addCustomerRecord = useCallback((
     newCustomer: CustomerForm,
     currencies: CurrencyModel[] | undefined
-  ) {
-    if (!customerData) return;
+  ) => {
+    setCustomer((prev: CustomerModel) => {
+      if (!prev) return prev;
 
-    const currency = currencies?.find(
-      (item) => item.value === Number(newCustomer.currency)
-    );
-    const exchangeRate = currency?.exchangeRate || 1;
+      const currency = currencies?.find(
+        (item) => item.value === Number(newCustomer.currency)
+      );
+      const exchangeRate = currency?.exchangeRate || 1;
 
-    const newRecord: CustomerLines = {
-      id: "customer-" + uuidv4(),
-      idClient: newCustomer.idClient,
-      // Generar un ID temporal
-      currency: currency?.value.toString() || "",
-      currencyId: Number(currency?.value) || 0,
-      currencyLabel: currency?.label || "",
-      exchangeRate,
-      coupons: newCustomer.coupons,
-      pax: newCustomer.pax,
-      amount: newCustomer.coupons * newCustomer.pax,
-      amountMXN: newCustomer.coupons * newCustomer.pax * exchangeRate,
-      nameClient: newCustomer.nameClient,
-    };
+      const newRecord: CustomerLines = {
+        id: "customer-" + uuidv4(),
+        idClient: newCustomer.idClient,
+        currency: currency?.value.toString() || "",
+        currencyId: Number(currency?.value) || 0,
+        currencyLabel: currency?.label || "",
+        exchangeRate,
+        coupons: newCustomer.coupons,
+        pax: newCustomer.pax,
+        amount: newCustomer.coupons * newCustomer.pax,
+        amountMXN: newCustomer.coupons * newCustomer.pax * exchangeRate,
+        nameClient: newCustomer.nameClient,
+      };
 
-    const updatedCustomerData = {
-      ...customerData,
-      lines: [...customerData.lines, newRecord],
-    };
+      return {
+        ...prev,
+        lines: [...prev.lines, newRecord],
+      };
+    });
 
-    setCustomer(updatedCustomerData);
-
-    customerRef.current = updatedCustomerData;
-
-    setCustomerData(updatedCustomerData, clousingId);
-
-    updateContext(updatedCustomerData.lines);
-  }
-
-  function updateContext(updatedCurrencies: CustomerLines[]) {
-    const newTotalFisico = updatedCurrencies.reduce(
-      (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
-      0
-    );
-    
-    const newDifference = newTotalFisico - customerData.total.totalPOS;
-
-    const newTotal: TotalModel = {
-      totalPOS: customerData.total.totalPOS,
-      totalPhysical: newTotalFisico > customerData.total.totalPOS ? customerData.total.totalPOS : newTotalFisico,
-      difference: newDifference,
-      differenceCupons: newTotalFisico > customerData.total.totalPOS ? newDifference : 0
-    };
-
-    const updateCustomerData = { ...customerRef.current, total: newTotal };
-
-    if (newTotalFisico > 0) {
-      updateTotal(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER, newTotal.differenceCupons);
-    }
-
-    setFooterData(newTotal, clousingId, CLOUSING_KEY.CUSTOMER);
-
-    setCustomerData(updateCustomerData, clousingId);
-  }
+    // Usar debounce también para agregar registros
+    debouncedUpdateContext();
+  }, [setCustomer, debouncedUpdateContext])
 
   return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer, updateContext };
 };
