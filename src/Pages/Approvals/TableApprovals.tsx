@@ -11,6 +11,8 @@ import { useApi } from "@hooks/useApi";
 import Loading from "@components/Loading";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
+import { SortableHeader } from "@utils/table";
+import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
@@ -25,6 +27,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
   const { open, onOpen, onClose } = useDisclosure();
   const { approvalsList, fectApprovals, shouldRefetch, triggerRefresh } = useApprovalsList();
 
+  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
+  
   const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
     dependencies: [shouldRefetch],
     onSuccess: (data) => {
@@ -92,7 +96,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         <Table.Root variant="outline">
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader textAlign="center">Fecha solicitud</Table.ColumnHeader>
+              <SortableHeader columnKey="date" label="Fecha solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
               <Table.ColumnHeader textAlign="center">Solicitud</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
               <Table.ColumnHeader textAlign="center">Fecha corte</Table.ColumnHeader>
@@ -104,7 +108,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {approvalsList.map((item: Approval) => (
+            {sortedData.map((item: Approval) => (
               <Table.Row key={item.idRequest}>
                 <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
                 <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
