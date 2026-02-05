@@ -376,7 +376,10 @@ function TableOfTotals({
 
       <CheckDetailsDialog
         isOpen={isOpenDialogCheck}
-        closeDialog={() => setIsOpenDialogCheck(false)}
+        closeDialog={(e: boolean) => {
+          setIsOpenDialogCheck(false);
+          closeDialog(e);
+       }}
         idCashRegisterClosure={selectedEmployee.id || 0}
       ></CheckDetailsDialog>
 

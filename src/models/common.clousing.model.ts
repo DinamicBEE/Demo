@@ -312,7 +312,7 @@ export interface ConfirmDialogProps {
 
 export interface CheckDetailsDialogProps {
   isOpen: boolean;
-  closeDialog: () => void;
+  closeDialog: (e: boolean) => void;
   idCashRegisterClosure: number;
 }
 
