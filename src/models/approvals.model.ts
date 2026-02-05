@@ -11,7 +11,10 @@ export interface Approval {
   reason: string;
   comment: string; //en esta atributo se guardaria el comentario del supervisor
   commentSupervisor?: string;
-  status: number
+  status: number;
+  zone?: string;
+  cdc?: string;
+  closingEmployee?:string;
 }
 
 export interface RequestOpeningForm {

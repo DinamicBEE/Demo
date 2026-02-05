@@ -97,10 +97,15 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
           <Table.Header>
             <Table.Row>
               {ROLES_APPROVALS.includes(role as ROLES || '') && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
+
+              {/* <SortableHeader columnKey="zone" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="cdc" label="Centro de consumo" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="closingEmployee" label="Empleado Corte" handleSort={handleSort} getSortIcon={getSortIcon} /> */}
+
               <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="date" label="Fecha solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="idRequest" label="Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
-              <SortableHeader columnKey="employee" label="Empleado" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="employee" label="Empleado solicitante" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="dateCdc" label="Fecha corte" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="typeRequest" label="Tipo de Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="reason" label="Motivo de Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -142,6 +147,11 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                     </Button>
                   </Table.Cell>
                 )}
+                
+                {/* <Table.Cell textAlign="center">{item.zone}</Table.Cell>
+                <Table.Cell textAlign="center">{item.cdc}</Table.Cell>
+                <Table.Cell textAlign="center">{item.closingEmployee}</Table.Cell> */}
+
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
                     {statusLabels[item.status]}
