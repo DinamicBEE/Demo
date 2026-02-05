@@ -10,8 +10,8 @@ export const approvalsServices = {
     try {
 
       const response = await api.get(GETLISTAPPROVALS);
-      const list = response.data.sort((a: any, b: any) => a.idRequest - b.idRequest);
-      
+      const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
+      //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
       return list;
 
     } catch (error) {
