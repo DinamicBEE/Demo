@@ -145,13 +145,13 @@ function TableOfTotals({
         {sortedData.length >= 1 && (
           <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
-              <Table.Root size="sm" variant="outline" stickyHeader >
+              <Table.Root size="sm" variant="outline" stickyHeader>
                 <Table.Header>
                   <Table.Row zIndex={1}>
                     <Table.ColumnHeader textAlign="center" css={{position:"sticky"}} left="0">
                       Fecha
                     </Table.ColumnHeader>
-                    <SortableHeader columnProps={{left: "87px", position: "sticky"}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnProps={{position: "sticky"}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -189,7 +189,7 @@ function TableOfTotals({
                     
                   </Table.Row>
                 </Table.Header>
-                <Table.Body>
+                <Table.Body  css={{position:"relative !important"}}>
                   {sortedData.map((item: ClousingLinesModel) => (
                     <Table.Row key={item.id}>
                       <Table.Cell textAlign="center" css={{position:"sticky"}} left="0" >

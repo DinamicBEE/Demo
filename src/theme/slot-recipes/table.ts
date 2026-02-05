@@ -12,6 +12,12 @@ export const tableSlotRecipe = defineSlotRecipe({
       verticalAlign: "top",
     },
     row: {
+      "& tr": {
+        _hover: {
+          bg: "#EDF2F7",
+          transition: "background 0.2s"
+        },
+      },
       _selected: {
         bg: "colorPalette.subtle",
       },
@@ -22,7 +28,12 @@ export const tableSlotRecipe = defineSlotRecipe({
       padding: "12px 0",
       borderBottom: "1px solid",
       borderColor: "#EDF2F7",
-      bg: "bg"
+      bg: "bg",
+      _hover: {
+        bg: "#EDF2F7",
+        transition: "background 0.2s"
+      },
+
     },
     columnHeader: {
       fontWeight: "700",
@@ -49,7 +60,7 @@ export const tableSlotRecipe = defineSlotRecipe({
           "& tr": {
             _hover: {
               bg: "#EDF2F7",
-              transition: "backgorund 0.2s"
+              transition: "background 0.2s"
             },
           },
         },

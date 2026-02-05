@@ -49,13 +49,11 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
     return (
         <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
-                <Table.Root size="sm" variant="outline" stickyHeader
-                
-                >
+                <Table.Root size="sm" variant="outline" stickyHeader>
                     <Table.Header>
                         <Table.Row zIndex={1}>
-                            <SortableHeader columnProps={{left: "0px", position: "sticky"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
-                            <SortableHeader columnProps={{left: "294px", position: "sticky"}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnProps={{left: "0px", position: "sticky", zIndex:11, minW:"294px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon}/>
+                            <SortableHeader columnProps={{left: "294px", position: "sticky", zIndex: 11, minW: "250px",}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -98,12 +96,15 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Body>
                         {sortedData.map((row) => (
                             <Table.Row key={row.id}>
-                                <Table.Cell css={{position:"sticky"}} left="0"><Text> {row.ubicacion} </Text></Table.Cell>
-                                <Table.Cell css={{position:"sticky"}} left="294px">
+                                <Table.Cell css={{left: "0px", position: "sticky", minW:"294px"}} ><Text> {row.ubicacion} </Text></Table.Cell> {}
+                                <Table.Cell css={{left: "294px", position: "sticky", minW: "250px"}}>
                                     <Text
                                         as="span"
                                         cursor="pointer"
-                                        textDecoration="underline"
+                                        _hover={{
+                                          textDecoration:"underline"
+
+                                        }}
                                         color="blue.500"
                                         onClick={() => {
                                             getDetailsCDC(row.cdcId);
@@ -229,9 +230,12 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                             </ Table.Row >
                         ))}
 
-                        <Table.Row bg="gray.100" fontWeight="bold">
-                            <Table.Cell css={{position:"sticky"}} left="0"/>
-                            <Table.Cell css={{position:"sticky"}} left="294"><Text> Totales </Text></Table.Cell>
+
+                    </Table.Body>
+                    <Table.Footer css={{position:"sticky", bottom:0}}>
+                        <Table.Row fontWeight="bold" bg={"bg.subtle"}>
+                            <Table.Cell css={{position:"sticky", left:0}} bg={"bg.subtle"}/>
+                            <Table.Cell css={{position:"sticky", left:"294px"}} bg={"bg.subtle"}><Text> Totales </Text></Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.totalPOS} style="currency" currency="USD" />
                             </Table.Cell>
@@ -342,8 +346,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                                 <FormatNumber value={Totals.tips} style="currency" currency="USD" />
                             </Table.Cell>
                         </ Table.Row >
-
-                    </Table.Body>
+                    </Table.Footer>
                 </Table.Root>
             </Table.ScrollArea>
             <PaginationRoot

@@ -5,7 +5,7 @@ function TotalsRow(){
     const { tdcHeader, totals, currHeader } = useClousing();
 
     return(
-      <Table.Row bg="gray.100" fontWeight="bold">
+      <Table.Row bg="gray.100" fontWeight="bold" css={{position:"sticky !important", bottom:0}}>
         <Table.Cell textAlign="center" css={{position:"sticky"}} left="0"></Table.Cell>
         <Table.Cell textAlign="center" css={{position:"sticky"}} left="87px">Totales</Table.Cell>
         <Table.Cell textAlign="end">
