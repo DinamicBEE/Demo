@@ -55,6 +55,7 @@ export const GET_CLOUSINGS = `${API_BASE}/registerclosure/search`;
 export const GET_COUPONS = `${API_BASE}/prepaid/coupons`;
 export const GET_PREPAID = `${API_BASE}/prepaid/get`;
 export const GET_EXTRAINFO = `${API_BASE}/registerclosure/info-colum` // Descuentos y taxes de CRC
+export const GET_CHECKS_DETAILS = `${API_BASE}/registerclosure/check-open`
 
 // * Cierrre de Lote
 //export const GET_BATCH = `${BATCH_BASE}/getBatchByDates`;

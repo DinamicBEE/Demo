@@ -14,9 +14,11 @@ export const getStatus = (status: string) => {
       return STATUS.RECLOSED;
     case "Cerrado Starbucks":
       return STATUS.CLOSED_STARBUCKS
-    case "En corrección":
-      return STATUS.IN_CORRECTION
-    default:
+      case "En corrección":
+        return STATUS.IN_CORRECTION
+      case "Cheque abierto":
+        return STATUS.OPEN_CHECK
+      default:
       return STATUS.Open;
   }
 };
