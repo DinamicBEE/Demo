@@ -47,14 +47,19 @@ function CheckDetailsDialog({
     <>
       <DialogRoot
         open={isOpen}
-        onOpenChange={closeDialog}
+        onOpenChange={() => {
+          closeDialog(checksList.length != 0 ? false : true);
+        }}
         size={"md"}
         scrollBehavior="inside"
         closeOnInteractOutside={false}
       >
         <DialogBackdrop />
         <DialogContent>
-          <DialogCloseTrigger onClick={() => setChecksList([])} />
+          <DialogCloseTrigger onClick={() => {
+            closeDialog(checksList.length != 0 ? false : true);
+            }}
+          />
           <DialogHeader>
             <DialogTitle>Detalles</DialogTitle>
           </DialogHeader>
@@ -108,7 +113,7 @@ function CheckDetailsDialog({
               loading={loading}
               colorPalette="meraSecondary"
               onClick={() => {
-                closeDialog();
+                closeDialog(checksList.length != 0 ? false : true);
               }}
             >
               Aceptar
