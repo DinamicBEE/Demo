@@ -32,6 +32,7 @@ function CheckDetailsDialog({
 
     const fetchDetails = async () => {
       setLoading(true);
+      setChecksList([]);
       const dataResponse = await getCheckDetails(idCashRegisterClosure);
       if (dataResponse) {
         setChecksList(dataResponse);
