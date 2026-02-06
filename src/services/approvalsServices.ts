@@ -1,6 +1,11 @@
-import { AprovalsClousureList, AprovalsReason, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
+import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import api from "../api/index";
 import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
+
+export const getRequestList = async (filterOptions?: filterOptionsProps): Promise<Approval[]> => {
+
+  return [] as Approval[];
+}
 
 export const approvalsServices = {
 

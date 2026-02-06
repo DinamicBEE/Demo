@@ -69,3 +69,13 @@ export interface ClosingListSelectProps {
   register: UseFormRegister<any>; // Tipo genérico para `useForm`
   errors: FieldErrors<any>; // Manejo de errores de `useForm`
 }
+
+export interface filterOptionsProps {
+  cdc: number[];
+  employeeId: number;
+  requestDateStart: Date;
+  requestDateEnd: Date;
+  closingDateStart: Date;
+  closingDateEnd: Date;
+  status: string;
+}
