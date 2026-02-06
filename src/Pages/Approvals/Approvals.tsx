@@ -11,7 +11,6 @@ const Approvals: React.FC = () => {
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		console.log("modal detalles|")
 		setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
