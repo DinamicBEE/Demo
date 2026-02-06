@@ -65,9 +65,10 @@ function TableOfTotals({
     item.closingConfirmation = STATUS_CLOSED_DIALOG_EXCEPTIONS.includes(item.status.toLowerCase()) ? false : true;
         
     setSelectedEmployee(item);
-    item.statusId === 8
+    setIsDialogOpen(true);
+    /* item.statusId === 8
       ? setIsOpenDialogCheck(true)
-      : setIsDialogOpen(true);
+      : setIsDialogOpen(true); */
     setIsEdit(true);
     setDataRow(item);
   };
@@ -245,7 +246,8 @@ function TableOfTotals({
                         <Tag.Root
                           colorPalette={statusColor(item.status as STATUS)}
                         >
-                          <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto" : item.status}</Tag.Label>
+                          <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto": item.status === "Cheque abierto" ? "Abierto" : item.status}</Tag.Label>
+                          {/* <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto" : item.status}</Tag.Label> */}
                         </Tag.Root>
                       </Table.Cell>
 

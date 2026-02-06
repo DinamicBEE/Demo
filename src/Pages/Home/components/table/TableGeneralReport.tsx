@@ -122,7 +122,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                                   <Tag.Root
                                     colorPalette={statusColor(row.status as STATUS)}
                                   >
-                                    <Tag.Label>{row.status}</Tag.Label>
+                                    <Tag.Label>{row.status === "Cheque abierto" ? "Abierto" : row.status}</Tag.Label>
+                                    {/* <Tag.Label>{row.status}</Tag.Label> */}
                                   </Tag.Root>
                                 </Table.Cell>
                                 <Table.Cell>
