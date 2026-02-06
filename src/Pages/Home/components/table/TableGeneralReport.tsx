@@ -8,6 +8,7 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { STATUS } from "@models/const/status.const";
 import { getStatusColor } from "@utils/getStatusColor";
 import { SortableHeader } from "@utils/table";
+import "./TableStyle.css";
 
 
 function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
@@ -95,21 +96,19 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     </Table.Header>
                     <Table.Body>
                         {sortedData.map((row) => (
-                            <Table.Row key={row.id}>
-                                <Table.Cell css={{left: "0px", position: "sticky", minW:"294px"}} ><Text> {row.ubicacion} </Text></Table.Cell> {}
-                                <Table.Cell css={{left: "294px", position: "sticky", minW: "250px"}}>
+                            <Table.Row key={row.id} className="row_bg">
+                                <Table.Cell className="row_bg_column1" ><Text> {row.ubicacion} </Text></Table.Cell> {}
+                                <Table.Cell className="row_bg_column2">
                                     <Text
                                         as="span"
                                         cursor="pointer"
                                         _hover={{
                                           textDecoration:"underline"
-
                                         }}
                                         color="blue.500"
                                         onClick={() => {
                                             getDetailsCDC(row.cdcId);
                                         }}
-
                                     > {row.cdc} </Text>
                                 </Table.Cell>
                                 <Table.Cell>
@@ -227,10 +226,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                                 <Table.Cell>
                                     <FormatNumber value={row.tips} style="currency" currency="USD" />
                                 </Table.Cell>
-                            </ Table.Row >
+                            </ Table.Row>
                         ))}
-
-
                     </Table.Body>
                     <Table.Footer css={{position:"sticky", bottom:0}}>
                         <Table.Row fontWeight="bold" bg={"bg.subtle"}>
@@ -345,7 +342,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                             <Table.Cell>
                                 <FormatNumber value={Totals.tips} style="currency" currency="USD" />
                             </Table.Cell>
-                        </ Table.Row >
+                        </Table.Row>
                     </Table.Footer>
                 </Table.Root>
             </Table.ScrollArea>

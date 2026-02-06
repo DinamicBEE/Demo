@@ -1,0 +1,30 @@
+.row_bg {
+  background: white;
+}
+.row_bg_column1 {
+  left: 0px;
+  position: sticky;
+  min-width: 294px;
+}
+.row_bg_column2 {
+  left: 294px;
+  position: sticky;
+  min-width: 250px;
+}
+
+.row_bg td {
+  background: white;
+}
+.row_bg:hover td {
+  background: #EDF2F7 !important;
+}
+
+.row_bg_column2::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  box-shadow: inset -2px 0 5px -2px rgba(0,0,0,0.2) !important;
+}
