@@ -7,7 +7,7 @@ import { ROLES } from '@models/const/menu.consts';
 
 const routesConfig = [
     {
-      path: '/home',
+      path: '/homeV1',
       element: lazy(() => import('../Pages/Home/Home')),
       roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER],
       wrapper: (Component: React.ComponentType) => (
@@ -17,7 +17,7 @@ const routesConfig = [
       ),
     },
     {
-      path: '/homeV2',
+      path: '/home',
       element: lazy(() => import('../Pages/Home/Home_v2')),
       roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER],
       wrapper: (Component: React.ComponentType) => (
@@ -27,7 +27,7 @@ const routesConfig = [
       ),
     },
         {
-      path: '/homeV3',
+      path: '/sellers',
       element: lazy(() => import('../Pages/Home/Home_v3')),
       roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER],
       wrapper: (Component: React.ComponentType) => (

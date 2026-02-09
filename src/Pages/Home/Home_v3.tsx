@@ -15,7 +15,7 @@ function Home_v3() {
     useEffect(() => {
 
       if (!homeParams || !homeParams.subsidiary || !homeParams.store || !homeParams.date) {
-        navigate("/homeV2");
+        navigate("/home");
       } else {
         getInfo(homeParams.store?.id ?? 0, 0, new Date(homeParams.date + "T00:00:00"), new Date(homeParams.date + "T00:00:00"), true, homeParams.isStarbucks)
       }
@@ -26,7 +26,7 @@ function Home_v3() {
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
       <VStack align={"start"} gap={1} flexDirection="row" alignItems="center" mb={4}>
 
-        <IconButton aria-label="Call support" variant="ghost" colorPalette="meraWarning" onClick={() => navigate("/homeV2")}>
+        <IconButton aria-label="Call support" variant="ghost" colorPalette="meraWarning" onClick={() => navigate("/home")}>
           <IoReturnUpBack />
         </IconButton>
 

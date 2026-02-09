@@ -17,14 +17,14 @@ export const ROLE_PATHS = {
   ADMIN_REPORTS: '/reports', //TODO: Cambiar por el nombre del rol correcto
 } 
 
-export const DEFAULT_PATH = '/homeV2';
+export const DEFAULT_PATH = '/home';
 
 export const ROLES_EDIT = [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER];
 export const ROLES_APPROVALS = [ROLES.ADMIN, ROLES.COMPTROLLER, ROLES.REVENUE_MANAGER];
 
 export const menuItems = [
   //{ name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja', path: '/homeV2', icon:<PiCashRegisterLight />, roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER] },//, ROLES.GENERAL_ZONE
+  { name: 'Corte de caja', path: '/home', icon:<PiCashRegisterLight />, roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER] },//, ROLES.GENERAL_ZONE
   { name: 'Cierre de lotes', path: '/lotClosure', icon:<LuContainer />, roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER] },//, ROLES.GENERAL_ZONE
   { name: 'Solicitud de ajuste', path: '/requests', icon:<LuClipboardCheck />, roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC] },//, ROLES.GENERAL_ZONE
   { name: 'Aprobación de solicitud', path: '/approvals', icon:<LuClipboardList />, roles: [ROLES.ADMIN, ROLES.COMPTROLLER, ROLES.REVENUE_MANAGER] },
