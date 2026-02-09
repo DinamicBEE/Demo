@@ -363,7 +363,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       tips: data.data.tips,
       total:{
         totalPhysical: cashPhysical,
-        totalPOS: cashPOS,
+        totalPOS: cashPhysical,//cashPOS,
         difference: cashPOS - cashPhysical
       },
       lines: data.cash.map(line => {
@@ -389,7 +389,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       idCurrencySub: data.data.idCurrencySub,
       total:{
         totalPhysical: tdcPhysical,
-        totalPOS: tdcPOS,
+        totalPOS: tdcPhysical,//tdcPOS,
         difference: tdcPhysical - tdcPOS
       },
       lines: data.tdc.map(line => {
