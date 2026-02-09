@@ -4,7 +4,6 @@ import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, filterOptionsProps } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { DetailApprovals } from "./DetailApprovals";
-
 import { getRequestList } from "@services/approvalsServices";
 import DatePicker from "../LotClosure/components/DatePicker";
 
@@ -12,16 +11,11 @@ function Approvals() {
 
 	const { setDataApproval } = useApprovalsList();
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
-	const [requestDateRange, setRequestDateRange] = useState<[Date | null, Date | null]>([
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
         null,
         null,
     ]);
-	// const [closingDateRange, setClosingDateRange] = useState<[Date | null, Date | null]>([
-    //     null,
-    //     null,
-    // ]);
-	const [requestStartDate, requestEndDate] = requestDateRange;
-	//const [closingStartDate, closingEndDate] = closingDateRange;
+    const [startDate, endDate] = dateRange;
 
 	const openDialogEdit = useCallback((approval: Approval) => {
 		setDataApproval(approval);
@@ -31,12 +25,12 @@ function Approvals() {
 	const closeDialogEdit = useCallback(() => setIsDialogEditOpen(false), []);
 
 	const habdleSearch = useCallback( async () => {
-		console.log(requestDateRange)
-		if (requestStartDate == null || requestEndDate === null) return; // || closingStartDate == null || closingEndDate === null
+		console.log(dateRange)
+		if (startDate == null || endDate === null) return; // || closingStartDate == null || closingEndDate === null
 
 		const filterSelected: filterOptionsProps = {
-			requestDateStart: requestStartDate,
-			requestDateEnd: requestEndDate,
+			requestDateStart: startDate,
+			requestDateEnd: endDate,
 			closingDateStart: new Date(), //closingStartDate,
 			closingDateEnd: new Date()//closingEndDate
 		}
@@ -60,15 +54,17 @@ function Approvals() {
 					alignItems="end"
 				>
 
-					<Field.Root>
-						<Field.Label>Fechas de solicitud</Field.Label>
-							<DatePicker startDate={requestStartDate} endDate={requestEndDate} onChange={setRequestDateRange} />
-					</Field.Root>
-
-					{/* <Field.Root>
-						<Field.Label>Fechas de corte</Field.Label>
-							<DatePicker startDate={closingStartDate} endDate={closingEndDate} onChange={setClosingDateRange} />
-					</Field.Root> */}
+                        <Field.Root>
+                            <Field.Label>Rango de fechas</Field.Label>
+                            <DatePicker
+                                startDate={startDate}
+                                endDate={endDate}
+                                onChange={(e) => {
+									//console.log(e)
+									setDateRange(e)
+								}}
+                            />
+                        </Field.Root>
 
 					<Button
 						colorPalette="meraInfo"
