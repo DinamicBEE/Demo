@@ -2,9 +2,30 @@ import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, Req
 import api from "../api/index";
 import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
 
-export const getRequestList = async (filterOptions?: filterOptionsProps): Promise<Approval[]> => {
+export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
-  return [] as Approval[];
+  try {
+
+    const response = await api.get(GETLISTAPPROVALS,{
+      params: {
+        cdc: filterOptions.cdc,
+        employeeId: filterOptions.employeeId,
+        requestDateStart: filterOptions.requestDateStart,
+        requestDateEnd: filterOptions.requestDateEnd,
+        closingDateStart: filterOptions.closingDateStart,
+        closingDateEnd: filterOptions.closingDateEnd,
+        status: filterOptions.status
+      }
+    });
+    const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
+    //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
+    return list;
+
+  } catch (error) {
+    console.error(error);
+    return [] as Approval[];
+  }
+
 }
 
 export const approvalsServices = {
