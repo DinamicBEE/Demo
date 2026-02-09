@@ -29,12 +29,12 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
   const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
   
-  const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
-    dependencies: [shouldRefetch],
-    onSuccess: (data) => {
-      fectApprovals(data);
-    }
-  });
+  // const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
+  //   dependencies: [shouldRefetch],
+  //   onSuccess: (data) => {
+  //     fectApprovals(data);
+  //   }
+  // });
 
   const { refetch, isLoading: isLoadingEdit } = useApi(
     () => {
@@ -90,7 +90,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
       />
 
-      {isLoading && <Loading />}
+      {/* {isLoading && <Loading />} */}
 
       <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
         <Table.Root variant="outline">
@@ -126,7 +126,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           rounded="full"
                           marginRight='5px'
                           onClick={() => handleOpenConfirm(item, true)}
-                          loading={isLoading}
+                          //loading={isLoading}
                         >
                           Aprobar
                         </Button>
@@ -136,7 +136,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           variant="surface"
                           rounded="full"
                           onClick={() => handleOpenConfirm(item, false)}
-                          loading={isLoading}
+                          //loading={isLoading}
                         >
                           Rechazar
                         </Button>

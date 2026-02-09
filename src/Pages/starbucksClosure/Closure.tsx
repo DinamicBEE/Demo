@@ -77,25 +77,25 @@ function StarbucksClosure() {
     }
 
     const updateticket = async () => {
-    setLoading(true);
+        setLoading(true);
 
-    try {
-        if(startDate == null || endDate == null) return
-        const response = await updateSalesTicket(startDate, endDate, data.lines[0].revenueId ||0);
-    
-        if(response){
+        try {
+            if(startDate == null || endDate == null) return
+            const response = await updateSalesTicket(startDate, endDate, data.lines[0].revenueId ||0);
         
-        await getTableData();
-        
-        } else {
-        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
-        }
-        
-        setLoading(false);
-    } catch (error) {
-        toast("Error al actualizar el ticket", "error");
-        setLoading(false);
-    } 
+            if(response){
+            
+            await getTableData();
+            
+            } else {
+            toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+            }
+            
+            setLoading(false);
+        } catch (error) {
+            toast("Error al actualizar el ticket", "error");
+            setLoading(false);
+        } 
     }
 
     return (
