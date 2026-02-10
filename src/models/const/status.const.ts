@@ -12,5 +12,5 @@ export enum STATUS {
     OPEN_CHECK = "Cheque abierto"
 }
 
-// export const STATUS_CLOSED_DIALOG_EXCEPTIONS = ["abierto", "open", "reabierto", "cerrado starbucks", "en corrección", "cheque abierto"];
-export const STATUS_CLOSED_DIALOG_EXCEPTIONS = ["abierto", "open", "reabierto", "cerrado starbucks", "en corrección"];
+export const STATUS_CLOSED_DIALOG_EXCEPTIONS = ["abierto", "open", "reabierto", "cerrado starbucks", "en corrección", "cheque abierto"];
+// export const STATUS_CLOSED_DIALOG_EXCEPTIONS = ["abierto", "open", "reabierto", "cerrado starbucks", "en corrección"];
