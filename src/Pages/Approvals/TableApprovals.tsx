@@ -11,6 +11,8 @@ import { useApi } from "@hooks/useApi";
 import Loading from "@components/Loading";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
+import { SortableHeader } from "@utils/table";
+import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
@@ -25,6 +27,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
   const { open, onOpen, onClose } = useDisclosure();
   const { approvalsList, fectApprovals, shouldRefetch, triggerRefresh } = useApprovalsList();
 
+  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
+  
   const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
     dependencies: [shouldRefetch],
     onSuccess: (data) => {
@@ -92,33 +96,25 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         <Table.Root variant="outline">
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader textAlign="center">Fecha solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Empleado</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Fecha corte</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Tipo de Solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Motivo de Solicitud</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">{ROLES_APPROVALS.includes(role as ROLES || '') ? "Comentario Cajero" : "Comentario Supervisor"}</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">Estatus</Table.ColumnHeader>
               {ROLES_APPROVALS.includes(role as ROLES || '') && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
+
+              {/* <SortableHeader columnKey="zone" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="cdc" label="Centro de consumo" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="closingEmployee" label="Empleado Corte" handleSort={handleSort} getSortIcon={getSortIcon} /> */}
+
+              <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="date" label="Fecha solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="idRequest" label="Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="employee" label="Empleado solicitante" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="dateCdc" label="Fecha corte" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="typeRequest" label="Tipo de Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="reason" label="Motivo de Solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey={ROLES_APPROVALS.includes(role as ROLES || '') ? "comment" : "commentSupervisor"} label={ROLES_APPROVALS.includes(role as ROLES || '') ? "Comentario Cajero" : "Comentario Supervisor"} handleSort={handleSort} getSortIcon={getSortIcon} />
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {approvalsList.map((item: Approval) => (
+            {sortedData.map((item: Approval) => (
               <Table.Row key={item.idRequest}>
-                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
-                <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
-                <Table.Cell textAlign="center">{item.employee}</Table.Cell>
-                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.dateCdc)}</Table.Cell>
-                <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
-                <Table.Cell textAlign="center">{item.reason}</Table.Cell>
-                {/* <Table.Cell textAlign="center"><Textarea disabled autoresize resize={"none"} variant={"flushed"} width={"250px"}>{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Textarea></Table.Cell> */}
-                <Table.Cell textAlign="center"><Text w={"250px"} lineClamp="3">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Text></Table.Cell>
-                <Table.Cell textAlign="center">
-                  <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
-                    {statusLabels[item.status]}
-                  </Badge>
-                </Table.Cell>
                 {ROLES_APPROVALS.includes(role as ROLES || '') && (
                   <Table.Cell textAlign="center">
                     {item.status === 3 && (
@@ -151,6 +147,24 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                     </Button>
                   </Table.Cell>
                 )}
+                
+                {/* <Table.Cell textAlign="center">{item.zone}</Table.Cell>
+                <Table.Cell textAlign="center">{item.cdc}</Table.Cell>
+                <Table.Cell textAlign="center">{item.closingEmployee}</Table.Cell> */}
+
+                <Table.Cell textAlign="center">
+                  <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
+                    {statusLabels[item.status]}
+                  </Badge>
+                </Table.Cell>
+                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
+                <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
+                <Table.Cell textAlign="center">{item.employee}</Table.Cell>
+                <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.dateCdc)}</Table.Cell>
+                <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
+                <Table.Cell textAlign="center">{item.reason}</Table.Cell>
+                {/* <Table.Cell textAlign="center"><Textarea disabled autoresize resize={"none"} variant={"flushed"} width={"250px"}>{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Textarea></Table.Cell> */}
+                <Table.Cell textAlign="center"><Text w={"250px"} lineClamp="3">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Text></Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

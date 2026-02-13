@@ -53,8 +53,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                 <Table.Root size="sm" variant="outline" stickyHeader>
                     <Table.Header>
                         <Table.Row zIndex={1}>
-                            <SortableHeader columnProps={{left: "0px", position: "sticky", zIndex:11, maxWidth:"250px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon}/>
-                            <SortableHeader columnProps={{left: "250px", position: "sticky", zIndex: 11, maxWidth: "250px",}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnProps={{left: "0px", position: "sticky", minW: "294px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnProps={{left: "294px", position: "sticky"}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
