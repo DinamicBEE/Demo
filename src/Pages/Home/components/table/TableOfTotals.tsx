@@ -14,6 +14,8 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
 import { updateSalesTicket } from "@services/clousingService";
 import { toast } from "@utils/Toast";
+import "./TableStyle.css";
+
 
 function TableOfTotals({
   subsidiary,
@@ -148,10 +150,10 @@ function TableOfTotals({
               <Table.Root size="sm" variant="outline" stickyHeader>
                 <Table.Header>
                   <Table.Row zIndex={1}>
-                    <Table.ColumnHeader textAlign="center" css={{position:"sticky"}} left="0">
+                    <Table.ColumnHeader textAlign="center" css={{left: "0px", position: "sticky", zIndex:11, minW:"100px"}} left="0">
                       Fecha
                     </Table.ColumnHeader>
-                    <SortableHeader columnProps={{position: "sticky"}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnProps={{left: "100px", position: "sticky", zIndex: 11, minW: "250px",}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -191,15 +193,18 @@ function TableOfTotals({
                 </Table.Header>
                 <Table.Body  css={{position:"relative !important"}}>
                   {sortedData.map((item: ClousingLinesModel) => (
-                    <Table.Row key={item.id}>
-                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="0" >
+                    <Table.Row key={item.id} className="row_bg">
+                      <Table.Cell textAlign="center" className="ToT_row_column1">
                         <Text>{item.closingStartDate}</Text>
                       </Table.Cell>
-                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="87px">
+                      <Table.Cell textAlign="center" className="ToT_row_column2">
                         <Text
+                          truncate
                           as="span"
                           cursor="pointer"
-                          textDecoration="underline"
+                          _hover={{
+                            textDecoration:"underline"
+                          }}
                           color="blue.500"
                           onClick={() => openDialog(item)}
                         >
@@ -360,8 +365,10 @@ function TableOfTotals({
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                  <TotalsRow></TotalsRow>
                 </Table.Body>
+                <Table.Footer>
+                  <TotalsRow />
+                </Table.Footer>
               </Table.Root>
             </Table.ScrollArea>
             <span> Mostrando 1 a {data.length} de {data.length} Registros </span>

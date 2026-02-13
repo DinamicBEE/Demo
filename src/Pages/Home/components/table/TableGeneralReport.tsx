@@ -53,8 +53,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                 <Table.Root size="sm" variant="outline" stickyHeader>
                     <Table.Header>
                         <Table.Row zIndex={1}>
-                            <SortableHeader columnProps={{left: "0px", position: "sticky", zIndex:11, minW:"294px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon}/>
-                            <SortableHeader columnProps={{left: "294px", position: "sticky", zIndex: 11, minW: "250px",}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
+                            <SortableHeader columnProps={{left: "0px", position: "sticky", zIndex:11, maxWidth:"250px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon}/>
+                            <SortableHeader columnProps={{left: "250px", position: "sticky", zIndex: 11, maxWidth: "250px",}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -97,9 +97,10 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Body>
                         {sortedData.map((row) => (
                             <Table.Row key={row.id} className="row_bg">
-                                <Table.Cell className="row_bg_column1" ><Text> {row.ubicacion} </Text></Table.Cell> {}
+                                <Table.Cell className="row_bg_column1" ><Text truncate> {row.ubicacion} </Text></Table.Cell> {}
                                 <Table.Cell className="row_bg_column2">
                                     <Text
+                                        truncate
                                         as="span"
                                         cursor="pointer"
                                         _hover={{
@@ -232,7 +233,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Footer css={{position:"sticky", bottom:0}}>
                         <Table.Row fontWeight="bold" bg={"bg.subtle"}>
                             <Table.Cell css={{position:"sticky", left:0}} bg={"bg.subtle"}/>
-                            <Table.Cell css={{position:"sticky", left:"294px"}} bg={"bg.subtle"}><Text> Totales </Text></Table.Cell>
+                            <Table.Cell css={{position:"sticky", left:"250px"}} bg={"bg.subtle"}><Text> Totales </Text></Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.totalPOS} style="currency" currency="USD" />
                             </Table.Cell>
