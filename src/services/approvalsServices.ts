@@ -1,6 +1,8 @@
 import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
-import api from "../api/index";
 import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
+import { STATUSLABELS } from "@models/const/approvals.const";
+import { location } from "@models/common.model";
+import api from "../api/index";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
@@ -26,6 +28,21 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
     return [] as Approval[];
   }
 
+}
+
+export const getStatus = async (): Promise<location[]> => {
+  try {
+    
+    const status = STATUSLABELS.map((stat: any) => ({
+      id: stat.id,
+      name: stat.label,
+    }));
+
+    return status;
+  } catch (error) {
+    console.error("Error al obtener los estados:", error);
+    return [];
+  }
 }
 
 export const approvalsServices = {

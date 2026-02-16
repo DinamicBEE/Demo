@@ -1,21 +1,64 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, Button, Field, Grid, Heading } from "@chakra-ui/react";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { Approval, filterOptionsProps } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { DetailApprovals } from "./DetailApprovals";
-import { getRequestList } from "@services/approvalsServices";
+import { getRequestList, getStatus } from "@services/approvalsServices";
 import DatePicker from "../LotClosure/components/DatePicker";
+import { createListCollection, ListCollection } from "@chakra-ui/react";
+import { selectOption } from "@models/common.model";
+import { fetchAndSetData } from "@utils/selectManagement";
+import { renderMultiSelectWithControls, handleMultiSelectChange } from "@utils/selectManagement";
+import FilterEmployee from "@components/FilterEmployee";
+import { Employee } from "@models/employee.model";
+import Loading from "@components/Loading";
 
 function Approvals() {
 
-	const { setDataApproval } = useApprovalsList();
+	const { setDataApproval, getEmployeeList } = useApprovalsList();
+
+	const [isLoading, setIsLoading] = useState<boolean>(false);	
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-        null,
-        null,
-    ]);
-    const [startDate, endDate] = dateRange;
+	const [requestRange, setRequestRange] = useState<[Date | null, Date | null]>([null, null]);
+	const [closingRange, setClosingRange] = useState<[Date | null, Date | null]>([null, null]);
+    const [requestStart, requestEnd] = requestRange;
+	const [closingStart, closingEnd] = closingRange;
+	const [status, setStatus] = useState<ListCollection<selectOption>>(
+    	createListCollection<selectOption>({ items: [] }));
+	const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
+	const [selectEmployee, setSelectEmployee] = useState<Employee>();
+	const [employees, setEmployees] = useState<Employee[]>([]);
+	
+	const handleStatusChange = (event: { items: selectOption[] }) => {
+		handleMultiSelectChange({
+			newItems: event.items,
+			currentSelected: selectedStatus,
+			setSelectedOptions: setSelectedStatus
+		});
+	}
+
+	useEffect( () => {
+		async function fetchData() {
+			
+			fetchAndSetData(getStatus, setStatus)
+
+		}
+
+		fetchData();
+	},[])
+
+	useEffect(() => {
+		async function fetchEmployees() {
+			setIsLoading(true);
+			const employeeList: Employee[] = await getEmployeeList(0, 0);
+			if (employeeList) {
+				setEmployees(employeeList);
+			}
+			setIsLoading(false);
+		};
+		fetchEmployees();
+	}, [getEmployeeList])
 
 	const openDialogEdit = useCallback((approval: Approval) => {
 		setDataApproval(approval);
@@ -24,25 +67,29 @@ function Approvals() {
 
 	const closeDialogEdit = useCallback(() => setIsDialogEditOpen(false), []);
 
-	const habdleSearch = useCallback( async () => {
-		console.log(dateRange)
-		if (startDate == null || endDate === null) return; // || closingStartDate == null || closingEndDate === null
+	const habdleSearch = async () => {
+
+		if (requestStart == null || requestEnd === null || closingStart == null || closingEnd == null) return; // || closingStartDate == null || closingEndDate === null
 
 		const filterSelected: filterOptionsProps = {
-			requestDateStart: startDate,
-			requestDateEnd: endDate,
-			closingDateStart: new Date(), //closingStartDate,
-			closingDateEnd: new Date()//closingEndDate
+			requestDateStart: requestStart,
+			requestDateEnd: requestEnd,
+			closingDateStart: closingStart,
+			closingDateEnd: closingEnd,
+			status: selectedStatus.map(option => option.value).join(','),
+			employeeId: selectEmployee ? selectEmployee.id : undefined
 		}
 
 		console.log( filterSelected )
 		const response = await getRequestList(filterSelected);
 
-	}, []);
+	};
 
 	return (
 		<>
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
+				
+				{isLoading && <Loading />}
 
 				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
 
@@ -54,17 +101,41 @@ function Approvals() {
 					alignItems="end"
 				>
 
-                        <Field.Root>
-                            <Field.Label>Rango de fechas</Field.Label>
-                            <DatePicker
-                                startDate={startDate}
-                                endDate={endDate}
-                                onChange={(e) => {
-									//console.log(e)
-									setDateRange(e)
-								}}
-                            />
-                        </Field.Root>
+					<FilterEmployee
+						employees={employees}
+						label={true}
+						onSelect={setSelectEmployee}
+						disabled={false}
+						employeeToEdit={null}
+					/>
+
+					<Field.Root>
+						<Field.Label>Fechas de solicitud</Field.Label>
+						<DatePicker
+							startDate={requestStart}
+							endDate={requestEnd}
+							onChange={setRequestRange}
+						/>
+					</Field.Root>
+
+					<Field.Root>
+						<Field.Label>Fechas de cierre</Field.Label>
+						<DatePicker
+							startDate={closingStart}
+							endDate={closingEnd}
+							onChange={setClosingRange}
+						/>
+					</Field.Root>
+
+					{renderMultiSelectWithControls(
+						status,
+						handleStatusChange,
+						"Estatus",
+						"Selecciona un estatus",
+						selectedStatus,
+						true
+						)
+					}
 
 					<Button
 						colorPalette="meraInfo"
