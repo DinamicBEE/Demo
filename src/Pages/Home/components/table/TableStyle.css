@@ -4,12 +4,12 @@
 .row_bg_column1 {
   left: 0px;
   position: sticky;
-  max-width: 250px !important;
+  max-width: 294px !important;
 }
 .row_bg_column2 {
-  left: 250px;
+  left: 294px;
   position: sticky;
-  width: 250px !important;
+  max-width: 294px !important;
 }
 .ToT_row_column1 {
   left: 0px;
