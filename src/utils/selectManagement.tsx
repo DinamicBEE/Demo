@@ -1,6 +1,7 @@
-import { createListCollection, ListCollection } from "@chakra-ui/react";
+import { createListCollection, ListCollection, useFilter, useListCollection } from "@chakra-ui/react";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
+import { ComboboxContent, ComboboxControl, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxRoot } from "@components/ui/combobox";
 import { SelectHandlerParams } from "@models/common.clousing.model";
 import { selectOption } from "@models/common.model";
 import { useEffect, useState } from "react";
@@ -162,4 +163,8 @@ const sortData = (data: any) => {
   return [...data].sort((a, b) =>
     a.label.localeCompare(b.label, "es", { sensitivity: "base" })
   )
+}
+
+export const selectCustomComboBox = () => {
+
 }

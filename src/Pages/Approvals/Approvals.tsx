@@ -101,13 +101,16 @@ function Approvals() {
 					alignItems="end"
 				>
 
-					<FilterEmployee
-						employees={employees}
-						label={true}
-						onSelect={setSelectEmployee}
-						disabled={false}
-						employeeToEdit={null}
-					/>
+					<Field.Root>
+						<Field.Label>Empleado solicitante</Field.Label>
+						<FilterEmployee
+							employees={employees}
+							label={false}
+							onSelect={setSelectEmployee}
+							disabled={false}
+							employeeToEdit={null}
+						/>
+					</Field.Root>
 
 					<Field.Root>
 						<Field.Label>Fechas de solicitud</Field.Label>
