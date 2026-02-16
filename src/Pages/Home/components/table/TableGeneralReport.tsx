@@ -233,7 +233,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Footer css={{position:"sticky", bottom:0}}>
                         <Table.Row fontWeight="bold" bg={"bg.subtle"}>
                             <Table.Cell css={{position:"sticky", left:0}} bg={"bg.subtle"}/>
-                            <Table.Cell css={{position:"sticky", left:"250px"}} bg={"bg.subtle"}><Text> Totales </Text></Table.Cell>
+                            <Table.Cell css={{position:"sticky", left:"294px"}} bg={"bg.subtle"}><Text> Totales </Text></Table.Cell>
                             <Table.Cell>
                                 <FormatNumber value={Totals.totalPOS} style="currency" currency="USD" />
                             </Table.Cell>
