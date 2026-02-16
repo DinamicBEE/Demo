@@ -33,7 +33,7 @@ function EmployeesClousing({ data, subsidiaryId, cdc }: EmployeeClousingProps) {
     async function fetchData() {      
       if (!data || !cdc || !subsidiaryId) return;
       
-      const employeeData: EmployeeModel = await getEmployeetData(data?.id);   
+      const employeeData: EmployeeModel = await getEmployeetData(data?.id, false);   
       if (employeeData) setFooterData(employeeData.total, data.id, CLOUSING_KEY.EMPLOYEE);
 
       setEmployee(employeeData)

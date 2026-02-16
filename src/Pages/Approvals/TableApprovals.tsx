@@ -13,11 +13,11 @@ import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 import { SortableHeader } from "@utils/table";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
+import { STATUSLABELS } from "@models/const/approvals.const";
 
 
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
 
-  const statusLabels: Record<number, string> = { 1: "Rechazado", 2: "Aprobado", 3: "En espera" };
   const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Cierre de Lote' };
 
   const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
@@ -154,7 +154,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
-                    {statusLabels[item.status]}
+                    {STATUSLABELS.find((status) => status.id === item.status)?.label}
                   </Badge>
                 </Table.Cell>
                 <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
