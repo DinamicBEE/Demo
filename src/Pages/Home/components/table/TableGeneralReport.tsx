@@ -10,7 +10,6 @@ import { getStatusColor } from "@utils/getStatusColor";
 import { SortableHeader } from "@utils/table";
 import "./TableStyle.css";
 
-
 function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClousingLinesModel[], Totals: ReportTotalsModel, date: string}) {
 
     const [page, setPage] = useState<number>(1);
@@ -37,7 +36,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
         }
 
         getInfo(homeParams.store?.id ?? 0, 0, new Date(date + "T00:00:00"), new Date(date + "T00:00:00"), true, homeParams.isStarbucks)
-        navigate("/homeV3",{
+        navigate("/sellers",{
             state: { homeParams }
         })
 
@@ -125,6 +124,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                                   <Tag.Root
                                     colorPalette={statusColor(row.status as STATUS)}
                                   >
+                                    {/* <Tag.Label>{row.status === "Cheque abierto" ? "Abierto" : row.status}</Tag.Label> */}
                                     <Tag.Label>{row.status}</Tag.Label>
                                   </Tag.Root>
                                 </Table.Cell>

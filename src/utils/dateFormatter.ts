@@ -28,3 +28,13 @@ export const formatToDDMMYYYYstring = (date: string): string => {
 
   return `${day}/${month}/${year}`;
 };
+
+/** Formato de fecha completa a DD/MM/YYYY HH:mm:ss
+ * @param completeDate - Fecha string en formato "YYYY-MM-DD HH:mm:ss"
+ * @return Fecha formateada en formato "DD/MM/YYYY HH:mm:ss"
+*/
+export const formatCompleteDate = (completeDate: string): string => {
+  const [date, time] = completeDate.split(' ');
+  const [year, month, day] = date.split('-');
+  return `${day}/${month}/${year} ${time}`;
+}

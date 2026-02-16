@@ -310,6 +310,18 @@ export interface ConfirmDialogProps {
   isCorrection?: boolean;
 }
 
+export interface CheckDetailsDialogProps {
+  isOpen: boolean;
+  closeDialog: (e: boolean) => void;
+  idCashRegisterClosure: number;
+}
+
+export interface checkDetails {
+  id: number;
+  checkNumber: string;
+  date: string;
+}
+
 export interface ExitDialogProps {
   isOpen: boolean;
   closeDialog: () => void;
