@@ -97,7 +97,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: ReportClous
                     <Table.Body>
                         {sortedData.map((row) => (
                             <Table.Row key={row.id} className="row_bg">
-                                <Table.Cell className="row_bg_column1" ><Text truncate> {row.ubicacion} </Text></Table.Cell> {}
+                                <Table.Cell className="row_bg_column1" ><Text truncate> {row.ubicacion} </Text></Table.Cell>
                                 <Table.Cell className="row_bg_column2">
                                     <Text
                                         truncate
