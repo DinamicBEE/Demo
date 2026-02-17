@@ -193,6 +193,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
               ...item,
               total: parseFloat(value),//newValue,
               originalCurrency: parseFloat(value),//newValueOriginalCurrency,
+              pos: parseFloat(value),
             }
           : item
       );
