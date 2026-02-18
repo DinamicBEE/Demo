@@ -13,6 +13,7 @@ import { renderMultiSelectWithControls, handleMultiSelectChange } from "@utils/s
 import FilterEmployee from "@components/FilterEmployee";
 import { Employee } from "@models/employee.model";
 import Loading from "@components/Loading";
+import ComboBoxCustom from "@components/ComboBoxCustom";
 
 function Approvals() {
 
@@ -100,6 +101,7 @@ function Approvals() {
 					w="100%"
 					alignItems="end"
 				>
+					<ComboBoxCustom options={status.items} label="Estatus" disableCondition={false}></ComboBoxCustom>
 
 					<Field.Root>
 						<Field.Label>Empleado solicitante</Field.Label>
