@@ -28,7 +28,6 @@ function CheckDetailsDialog({
   const [checksList, setChecksList] = useState<checkDetails[]>([]);
 
   useEffect(() => {
-    console.log(idCashRegisterClosure);
 
     const fetchDetails = async () => {
       setLoading(true);
