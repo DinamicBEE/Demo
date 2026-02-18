@@ -70,7 +70,8 @@ export const ComboboxInput = React.forwardRef<
       width="100%"
       _focusVisible={{ outline: "2px solid", outlineColor: "black" }}
       bg={"rgba(0,0,0,0)"}
-    />
+    >
+    </ChakraCombobox.Input>
   );
 });
 
