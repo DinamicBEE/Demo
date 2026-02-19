@@ -52,7 +52,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         ...line,
         id:line.crcId,
         employee: line.employe,
-        status: getStatus(line.status === "En corrección" ? "Close" : line.status),
+        status: getStatus(line.status === "En corrección" ? "Close" : line.status === "Cheque abierto" ? "Open" : line.status),
         date: line.closingStartDate,
         total: line.totalPhysical,
         creditCards: line.tdc,
