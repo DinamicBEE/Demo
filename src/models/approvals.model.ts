@@ -71,11 +71,11 @@ export interface ClosingListSelectProps {
 }
 
 export interface filterOptionsProps {
-  cdc?: number[];
-  employeeId?: number;
+  cdc: number[];
+  employeeId: number;
   requestDateStart: Date;
   requestDateEnd: Date;
   closingDateStart: Date;
   closingDateEnd: Date;
-  status?: string;
+  status: string;
 }

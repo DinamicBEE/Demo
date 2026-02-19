@@ -1,7 +1,9 @@
 import { createContext, ReactNode, useContext, useMemo, useState, useCallback } from "react";
 import { Approval } from "@models/approvals.model";
-import { getEmployees } from "@services/catalogService";
+import { getEmployees, getLocations, getZones } from "@services/catalogService";
 import { Employee } from "@models/employee.model";
+import { selectOption } from "@models/common.model";
+import { getCompanies } from "@services/lotClosureService";
 
 interface ApprovalsContextType {
   approvalsList: Approval[];
@@ -12,6 +14,9 @@ interface ApprovalsContextType {
   shouldRefetch: boolean;
   
   getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
+  getSubsidiaries: () => Promise<selectOption[]>;
+  getZoneList: (subIds: number[]) => Promise<selectOption[]>;
+  getCDCs: (zonesIds: number[]) => Promise<selectOption[]>;
 }
 
 const ApprovalsListContext = createContext<ApprovalsContextType | null>(null);
@@ -30,7 +35,10 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const [approvalsList, setApprovalsList] = useState<Approval[]>([]);
   const [shouldRefetch, setShouldRefetch] = useState(false);
   const [dataApproval, setDataApproval] = useState<Approval>({} as Approval);
-  const [employeeList, setEmployeeList] = useState<Employee[]>();
+  const [employeeList, setEmployeeList] = useState<Employee[]>([]);
+  const [subsidiaries, setSubsidiaries] = useState<selectOption[]>([]);
+  const [zones, setZones] = useState<selectOption[]>([]);
+  const [cdc, setCDC] = useState<selectOption[]>([]);
 
   const fectApprovals = (approvals: Approval[]) => {
     setApprovalsList(approvals); // ahora se reemplaza toda la lista para reflejar cambios nuevos
@@ -42,7 +50,8 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
 
   const getEmployeeList = useCallback(
     async (subsidiary: number, cdc: number) => {
-      if (employeeList) {
+      if (employeeList.length > 0) {
+        console.log("fetching")
         return employeeList;
       }
 
@@ -61,6 +70,89 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     [employeeList]
   );
   
+  const getSubsidiaries = useCallback(
+    async () => {
+      if (subsidiaries.length > 0) {
+        return subsidiaries;
+      }
+
+      try {
+        const response = await getCompanies();
+
+        const data = response.map((company: { id: any; name: any; }) =>{
+          return {
+            value: company.id,
+            label: company.name,
+          }
+        })
+
+        setSubsidiaries(data);
+
+        return data;
+      } catch (error) {
+        //setError(error instanceof Error ? error.message : String(error));
+
+        throw error;
+      }
+
+    }, [subsidiaries]
+  )
+
+  const getZoneList = useCallback(
+    async (subIds: number[]) => {
+      if (subIds.length === 0) {
+        return [];
+      }
+
+      try {
+        const response = await getZones(subIds);
+
+        const data = response.map((zone: { id: any; name: any; }) =>{
+          return {
+            value: zone.id,
+            label: zone.name,
+          }
+        })
+
+        setZones(data);
+
+        return data;
+      } catch (error) {
+        //setError(error instanceof Error ? error.message : String(error));
+
+        throw error;
+      }
+
+    }, [zones]
+  )
+
+  const getCDCs = useCallback(
+    async (zonesIds: number[]) => {
+      if (zonesIds.length === 0) {
+        return [];
+      }
+
+      try {
+        const response = await getLocations(zonesIds);
+
+        const data = response.map((cdc: { id: any; name: any; }) =>{
+          return {
+            value: cdc.id,
+            label: cdc.name,
+          }
+        })
+
+        setCDC(data);
+
+        return data;
+      } catch (error) {
+        //setError(error instanceof Error ? error.message : String(error));
+
+        throw error;
+      }
+
+    }, [cdc]
+  )
 
   const value = useMemo(() => ({
     approvalsList,
@@ -69,8 +161,11 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     setDataApproval,
     triggerRefresh,
     shouldRefetch,
-    getEmployeeList
-  }), [approvalsList, dataApproval, shouldRefetch, getEmployeeList]);
+    getEmployeeList,
+    getSubsidiaries,
+    getZoneList,
+    getCDCs
+  }), [approvalsList, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs]);
 
   return (
     <ApprovalsListContext.Provider value={value}>
