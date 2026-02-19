@@ -17,6 +17,7 @@ interface ApprovalsContextType {
   getSubsidiaries: () => Promise<selectOption[]>;
   getZoneList: (subIds: number[]) => Promise<selectOption[]>;
   getCDCs: (zonesIds: number[]) => Promise<selectOption[]>;
+  //getRequestsList: () => Promise<Approval[]>;
 }
 
 const ApprovalsListContext = createContext<ApprovalsContextType | null>(null);

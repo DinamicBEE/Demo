@@ -23,7 +23,7 @@ function Approvals() {
 		<>
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
 
-				<Header></Header>
+				<Header />
 				
 				<TableApprovals openEditDialog={openDialogEdit} />
 

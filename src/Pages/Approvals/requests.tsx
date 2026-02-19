@@ -5,6 +5,7 @@ import { Approval } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
 import { DetailApprovals } from "./DetailApprovals";
+import Header from "./Header";
 
 const Approvals: React.FC = () => {
 
@@ -27,7 +28,7 @@ const Approvals: React.FC = () => {
 		<>
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
 
-				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
+				<Header />
 
 				<Flex justifyContent='end'>
 
