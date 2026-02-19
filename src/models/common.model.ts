@@ -77,13 +77,13 @@ export interface ParametersSelectedModel {
   date?: string;
 }
 
-
-
-
-
-
-
-
+export interface ComboBoxCustomProps {
+    options: selectOption[];
+    label: string;
+    onValueChange: (ids: string[]) => void;
+    selectedValues: string[];
+    disableCondition: boolean;
+}
 
 
 

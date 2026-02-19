@@ -1,15 +1,10 @@
 import { useEffect, useState } from "react";
 import { Box, Button, HStack, useFilter, useListCollection } from "@chakra-ui/react";
 import { ComboboxContent, ComboboxControl, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxRoot, ComboboxLabel } from "@components/ui/combobox";
-import { selectOption } from "@models/common.model";
+import { ComboBoxCustomProps, selectOption } from "@models/common.model";
 
-interface ComboBoxCustomProps {
-    options: selectOption[],
-  label: string,
-  disableCondition: boolean
-}
 
-function ComboBoxCustom(  {options, label, disableCondition}: ComboBoxCustomProps  ){
+function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disableCondition}: ComboBoxCustomProps  ){
 
     const [value, setValue] = useState<string[]>([]);
     const { contains } = useFilter({ sensitivity: "base" });
@@ -24,8 +19,12 @@ function ComboBoxCustom(  {options, label, disableCondition}: ComboBoxCustomProp
         collection.setItems(options);
     }, [options]);
 
+    useEffect(()=>{
+        setValue(selectedValues);
+    },[selectedValues])
 
     const handleValueChange = (e: any) => {
+        onValueChange(e.value);
         setValue(e.value);
     };
 
@@ -33,9 +32,21 @@ function ComboBoxCustom(  {options, label, disableCondition}: ComboBoxCustomProp
         return value.some(selected => Number(selected) === item.value);
     };
 
+    const handleSelectAll = () => {
+    
+        if (value.length === collection.items.length) {
+            onValueChange([]);
+            setValue([]);
+        } else {
+            onValueChange(collection.items.map(item => item.value.toString()));
+            setValue(collection.items.map(item => item.value.toString()));
+        }
+    };
+
     return (
         <ComboboxRoot
             multiple
+            selectionBehavior="preserve"
             openOnClick
             collection={collection}
             onInputValueChange={(e) => filter(e.inputValue)}
@@ -62,6 +73,10 @@ function ComboBoxCustom(  {options, label, disableCondition}: ComboBoxCustomProp
                             size="sm"
                             colorPalette={value.length === collection.items.length ? 'meraWarning' : 'meraPrimary'}
                             variant="surface"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelectAll();
+                            }}
                         >
                             { value.length === collection.items.length ?
                                 "Borrar selección"
