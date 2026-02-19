@@ -51,7 +51,8 @@ function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogSta
     };
 
     function statusColor(status: STATUS) {
-        return getStatusColor(status);
+        const statusValie = (status as STATUS) === STATUS.IN_CORRECTION ? STATUS.Close : status as STATUS;
+        return getStatusColor(statusValie);
     }
 
     return (
