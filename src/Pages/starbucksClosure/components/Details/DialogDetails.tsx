@@ -103,8 +103,8 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
           denominations: denominations.denominations,
           total:
             row.currency === "MXN" ? newTotal : newTotal * row.exchangeRate,
-          pos:
-            row.currency === "MXN" ? newTotal : newTotal * row.exchangeRate,
+//           pos:
+//             row.currency === "MXN" ? newTotal : newTotal * row.exchangeRate,
           originalCurrency: newTotal,
         };
       }      
@@ -193,7 +193,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
               ...item,
               total: parseFloat(value),//newValue,
               originalCurrency: parseFloat(value),//newValueOriginalCurrency,
-              pos: parseFloat(value),
+              //pos: parseFloat(value),
             }
           : item
       );
