@@ -363,7 +363,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       tips: data.data.tips,
       total:{
         totalPhysical: cashPhysical,
-        totalPOS: cashPhysical,
+        totalPOS: cashPOS,
         difference: cashPOS - cashPhysical
       },
       lines: data.cash.map(line => {
@@ -371,7 +371,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
           id: line.id,
           idCurrency: line.idCurrency,
           currency: line.currency,
-          totalPOS: line.total,
+          totalPOS: line.pos,
           totalFisico: line.total,
           difference: line.pos - line.total,
           exchangeRate: line.exchangeRate,
@@ -389,7 +389,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       idCurrencySub: data.data.idCurrencySub,
       total:{
         totalPhysical: tdcPhysical,
-        totalPOS: tdcPhysical,
+        totalPOS: tdcPOS,
         difference: tdcPhysical - tdcPOS
       },
       lines: data.tdc.map(line => {
@@ -397,7 +397,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
           id: line.id,
           idBank: line.idBank,
           bank: line.nameBank,
-          POS: line.total,
+          POS: line.pos,
           physical: line.total,
           voucherAmount: line.voucher.length,
           vouchers: line.voucher,
