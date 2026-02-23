@@ -1,19 +1,19 @@
 import { createContext, ReactNode, useContext, useMemo, useState, useCallback } from "react";
-import { Approval } from "@models/approvals.model";
+import { Approval, filterOptionsProps } from "@models/approvals.model";
 import { getEmployees, getLocations, getZones } from "@services/catalogService";
 import { Employee } from "@models/employee.model";
 import { selectOption } from "@models/common.model";
 import { getCompanies } from "@services/lotClosureService";
-import { getStatus } from "@services/approvalsServices";
+import { getRequestList, getStatus } from "@services/approvalsServices";
 
 interface ApprovalsContextType {
   approvalsList: Approval[];
   dataApproval: Approval;
-  fectApprovals: (approvals: Approval[]) => void;
-  setDataApproval: (approval: Approval) => void;
+  //setDataApproval: (approval: Approval) => void;
   triggerRefresh: () => void;
   shouldRefetch: boolean;
   
+  fectApprovals: (filterSelected: filterOptionsProps, isRefresh: boolean) => void;
   getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
   getSubsidiaries: () => Promise<selectOption[]>;
   getZoneList: (subIds: number[]) => Promise<selectOption[]>;
@@ -23,7 +23,7 @@ interface ApprovalsContextType {
 
 const ApprovalsListContext = createContext<ApprovalsContextType | null>(null);
 
-export const useApprovalsList = () => {
+export const useApprovalContext = () => {
  
   const context = useContext(ApprovalsListContext);
  
@@ -43,16 +43,30 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const [cdc, setCDC] = useState<selectOption[]>([]);
   const [status, setStatus] = useState<selectOption[]>([]);
 
-  const fectApprovals = (approvals: Approval[]) => {
-    setApprovalsList(approvals); // ahora se reemplaza toda la lista para reflejar cambios nuevos
-  };
-
   const triggerRefresh = () => {
     setShouldRefetch(prev => !prev); // cambia valor para forzar refetch
   };
 
-  const getEmployeeList = useCallback(
-    async (subsidiary: number, cdc: number) => {
+  const fectApprovals = useCallback( async (filterSelected: filterOptionsProps, isRefresh: boolean) => {
+    if (approvalsList.length > 0 && !isRefresh) {
+      return approvalsList;
+    }
+    try {
+
+      const approvals = await getRequestList(filterSelected);
+      
+      setApprovalsList(approvals); 
+
+      return approvals;
+
+    } catch (error) {
+      throw error;
+    }
+
+  }, [approvalsList]);
+
+
+  const getEmployeeList = useCallback( async (subsidiary: number, cdc: number) => {
       if (employeeList.length > 0) {
         console.log("fetching")
         return employeeList;
@@ -73,8 +87,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     [employeeList]
   );
   
-  const getSubsidiaries = useCallback(
-    async () => {
+  const getSubsidiaries = useCallback( async () => {
       if (subsidiaries.length > 0) {
         return subsidiaries;
       }
@@ -101,8 +114,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     }, [subsidiaries]
   )
 
-  const getZoneList = useCallback(
-    async (subIds: number[]) => {
+  const getZoneList = useCallback( async (subIds: number[]) => {
       if (subIds.length === 0) {
         return [];
       }
@@ -129,8 +141,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     }, [zones]
   )
 
-  const getCDCs = useCallback(
-    async (zonesIds: number[]) => {
+  const getCDCs = useCallback( async (zonesIds: number[]) => {
       if (zonesIds.length === 0) {
         return [];
       }
@@ -189,7 +200,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     approvalsList,
     dataApproval,
     fectApprovals,
-    setDataApproval,
+    //setDataApproval,
     triggerRefresh,
     shouldRefetch,
     getEmployeeList,

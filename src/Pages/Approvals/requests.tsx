@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
@@ -9,7 +9,7 @@ import Header from "./Header";
 
 const Approvals: React.FC = () => {
 
-	const { setDataApproval } = useApprovalsList();
+	//const { setDataApproval } = useApprovalContext();
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
@@ -18,7 +18,7 @@ const Approvals: React.FC = () => {
 	const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		setDataApproval(approval);
+		//setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
 

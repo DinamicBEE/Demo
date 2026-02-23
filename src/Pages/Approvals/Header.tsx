@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Field, Grid, Heading, } from "@chakra-ui/react";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { selectOption } from "@models/common.model";
 import { Employee } from "@models/employee.model";
 import { filterOptionsProps } from "@models/approvals.model";
-import { getRequestList } from "@services/approvalsServices";
 import FilterEmployee from "@components/FilterEmployee";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 import  DatePicker from "../LotClosure/components/DatePicker";
@@ -12,7 +11,7 @@ import Loading from "@components/Loading";
 
 function Header() {
 
-    const { getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList } = useApprovalsList();
+    const { getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList, fectApprovals } = useApprovalContext();
 
     const [requestRange, setRequestRange] = useState<[Date | null, Date | null]>([null, null]);
 	const [closingRange, setClosingRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -37,7 +36,6 @@ function Header() {
 
             const statusData = await getStatusList();
             setStatus(statusData);
-            //fetchAndSetData(getStatus, setStatus)
 
             const employeeList: Employee[] = await getEmployeeList(0, 0);
             setEmployees(employeeList);
@@ -75,7 +73,8 @@ function Header() {
 
     const habdleSearch = async () => {
 
-        if (requestStart == null || requestEnd === null || closingStart == null || closingEnd == null) return; // || closingStartDate == null || closingEndDate === null
+        if (requestStart == null || requestEnd === null || closingStart == null || closingEnd == null) return;
+        setIsLoading(true);
 
         const filterSelected: filterOptionsProps = {
             requestDateStart: requestStart,
@@ -87,7 +86,9 @@ function Header() {
             cdc: cdcSelected.map(Number)
         }
         console.log(filterSelected);
-        const response = await getRequestList(filterSelected);
+        await fectApprovals(filterSelected, false);
+
+        setIsLoading(false);
 
     };
      
@@ -145,6 +146,7 @@ function Header() {
                 <Button
                     colorPalette="meraInfo"
                     onClick={() => habdleSearch()}
+                    disabled={ requestEnd == null || closingEnd == null || cdcSelected.length === 0}
                 >
                     Buscar
                 </Button>
