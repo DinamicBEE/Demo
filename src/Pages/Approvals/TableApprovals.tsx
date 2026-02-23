@@ -5,10 +5,9 @@ import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
-import Loading from "@components/Loading";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 import { SortableHeader } from "@utils/table";
@@ -20,22 +19,15 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
   const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Cierre de Lote' };
 
-  const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
-  const [message, setMessage] = React.useState<string>();
-
   const { role } = useApprovalsRolUser();
   const { open, onOpen, onClose } = useDisclosure();
-  const { approvalsList, fectApprovals, shouldRefetch, triggerRefresh } = useApprovalsList();
-
-  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
+  const { approvalsList, triggerRefresh } = useApprovalContext();
   
-  // const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
-  //   dependencies: [shouldRefetch],
-  //   onSuccess: (data) => {
-  //     fectApprovals(data);
-  //   }
-  // });
+  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
 
+  const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
+  const [message, setMessage] = React.useState<string>();
+  
   const { refetch, isLoading: isLoadingEdit } = useApi(
     () => {
       const dataEdit: RequestUpdateDetails = {

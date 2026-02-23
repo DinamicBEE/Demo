@@ -5,7 +5,7 @@ import { DialogContent, DialogRoot, DialogCloseTrigger, DialogHeader, DialogFoot
 import { Field } from "@components/ui/field";
 import { Button } from "@components/ui/button";
 import { Switch } from "@components/ui/switch";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { EditRequestForm, DetailApprovalsProps, RequestUpdateDetails } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { useApi } from "@hooks/useApi";
@@ -22,7 +22,7 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
 
   const [checked, setChecked] = useState<boolean>(false);
 
-  const { dataApproval, triggerRefresh } = useApprovalsList();
+  const { dataApproval, triggerRefresh } = useApprovalContext();
   const { open, onOpen: onOpenConfirm, onClose: onCloseConfir } = useDisclosure();
   const { register, handleSubmit, reset, formState: { errors }, getValues } = useForm<EditRequestForm>();
 
