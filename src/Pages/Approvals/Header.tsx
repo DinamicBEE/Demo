@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Field, Grid, createListCollection, Heading, ListCollection } from "@chakra-ui/react";
+import { Box, Button, Field, Grid, Heading, } from "@chakra-ui/react";
 import { useApprovalsList } from "@context/approvals/approvalsListContext";
 import { selectOption } from "@models/common.model";
 import { Employee } from "@models/employee.model";
 import { filterOptionsProps } from "@models/approvals.model";
-import { getRequestList, getStatus } from "@services/approvalsServices";
-import { fetchAndSetData, handleMultiSelectChange, renderMultiSelectWithControls } from "@utils/selectManagement";
+import { getRequestList } from "@services/approvalsServices";
 import FilterEmployee from "@components/FilterEmployee";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 import  DatePicker from "../LotClosure/components/DatePicker";
@@ -13,31 +12,32 @@ import Loading from "@components/Loading";
 
 function Header() {
 
-    const { getEmployeeList, getSubsidiaries, getZoneList, getCDCs } = useApprovalsList();
+    const { getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList } = useApprovalsList();
 
     const [requestRange, setRequestRange] = useState<[Date | null, Date | null]>([null, null]);
 	const [closingRange, setClosingRange] = useState<[Date | null, Date | null]>([null, null]);
     const [requestStart, requestEnd] = requestRange;
 	const [closingStart, closingEnd] = closingRange;
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [status, setStatus] = useState<ListCollection<selectOption>>(
-        createListCollection<selectOption>({ items: [] }));
-    const [selectedStatus, setSelectedStatus] = useState<selectOption[]>([]);
+    const [status, setStatus] = useState<selectOption[]>([]);
     const [selectEmployee, setSelectEmployee] = useState<Employee>();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [subsidiaries, setSubsidiaries] = useState<selectOption[]>([]);
     const [zones, setZones] = useState<selectOption[]>([]);
     const [cdc, setCDC] = useState<selectOption[]>([]);
-
+        
     const [subSelected, setSubSelected] = useState<string[]>([]);
     const [zonesSelected, setZonesSelected] = useState<string[]>([]);
     const [cdcSelected, setCDCSelected] = useState<string[]>([]);
-
+    const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+        
     useEffect( () => {
         async function fetchData() {
             setIsLoading(true);
 
-            fetchAndSetData(getStatus, setStatus)
+            const statusData = await getStatusList();
+            setStatus(statusData);
+            //fetchAndSetData(getStatus, setStatus)
 
             const employeeList: Employee[] = await getEmployeeList(0, 0);
             setEmployees(employeeList);
@@ -73,14 +73,6 @@ function Header() {
 
     },[zonesSelected])
 
-    const handleStatusChange = (event: { items: selectOption[] }) => {
-        handleMultiSelectChange({
-            newItems: event.items,
-            currentSelected: selectedStatus,
-            setSelectedOptions: setSelectedStatus
-        });
-    }
-
     const habdleSearch = async () => {
 
         if (requestStart == null || requestEnd === null || closingStart == null || closingEnd == null) return; // || closingStartDate == null || closingEndDate === null
@@ -90,16 +82,15 @@ function Header() {
             requestDateEnd: requestEnd,
             closingDateStart: closingStart,
             closingDateEnd: closingEnd,
-            status: selectedStatus.map(option => option.value).join(','),
+            status: selectedStatus.map(Number).join(','),
             employeeId: selectEmployee ? selectEmployee.id : 0,
             cdc: cdcSelected.map(Number)
         }
-
+        console.log(filterSelected);
         const response = await getRequestList(filterSelected);
 
     };
-    
-        
+     
     return (
         <Box p={6}>
             
@@ -149,15 +140,7 @@ function Header() {
                     />
                 </Field.Root>
 
-                {renderMultiSelectWithControls(
-                    status,
-                    handleStatusChange,
-                    "Estatus",
-                    "Selecciona un estatus",
-                    selectedStatus,
-                    true
-                    )
-                }
+                <ComboBoxCustom options={status} label="Estatus" onValueChange={setSelectedStatus} selectedValues={selectedStatus} disableCondition={false}></ComboBoxCustom>
 
                 <Button
                     colorPalette="meraInfo"

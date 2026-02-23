@@ -4,6 +4,7 @@ import { getEmployees, getLocations, getZones } from "@services/catalogService";
 import { Employee } from "@models/employee.model";
 import { selectOption } from "@models/common.model";
 import { getCompanies } from "@services/lotClosureService";
+import { getStatus } from "@services/approvalsServices";
 
 interface ApprovalsContextType {
   approvalsList: Approval[];
@@ -17,7 +18,7 @@ interface ApprovalsContextType {
   getSubsidiaries: () => Promise<selectOption[]>;
   getZoneList: (subIds: number[]) => Promise<selectOption[]>;
   getCDCs: (zonesIds: number[]) => Promise<selectOption[]>;
-  //getRequestsList: () => Promise<Approval[]>;
+  getStatusList: () => Promise<selectOption[]>;
 }
 
 const ApprovalsListContext = createContext<ApprovalsContextType | null>(null);
@@ -40,6 +41,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const [subsidiaries, setSubsidiaries] = useState<selectOption[]>([]);
   const [zones, setZones] = useState<selectOption[]>([]);
   const [cdc, setCDC] = useState<selectOption[]>([]);
+  const [status, setStatus] = useState<selectOption[]>([]);
 
   const fectApprovals = (approvals: Approval[]) => {
     setApprovalsList(approvals); // ahora se reemplaza toda la lista para reflejar cambios nuevos
@@ -155,6 +157,34 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     }, [cdc]
   )
 
+  const getStatusList = useCallback(
+    async () => {
+      if (status.length > 0) {
+        return status;
+      }
+
+      try {
+        const response = await getStatus();
+
+        const data = response.map((status: { id: any; name: any; }) =>{
+          return {
+            value: status.id,
+            label: status.name,
+          }
+        })
+
+        setStatus(data);
+
+        return data;
+      } catch (error) {
+        //setError(error instanceof Error ? error.message : String(error));
+
+        throw error;
+      }
+
+    }, [status]
+  )
+
   const value = useMemo(() => ({
     approvalsList,
     dataApproval,
@@ -165,8 +195,9 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     getEmployeeList,
     getSubsidiaries,
     getZoneList,
-    getCDCs
-  }), [approvalsList, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs]);
+    getCDCs,
+    getStatusList
+  }), [approvalsList, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
 
   return (
     <ApprovalsListContext.Provider value={value}>
