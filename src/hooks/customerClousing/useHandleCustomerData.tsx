@@ -25,7 +25,7 @@ export const useHandleCustomer = (
 
   const customerRef = useRef<CustomerModel>(customerData);
 
-  useEffect(() => {
+  useEffect(() => {    
     customerRef.current = customerData;
   }, [customerData]);
 
@@ -33,34 +33,43 @@ export const useHandleCustomer = (
   // const { setFooterData } = useFooter();
   // const { setCustomerData } = useCustomerContext();
 
+  const handleDeleteCustomer = (index: number) => {
+    const newArray = customerData.lines.filter((_, i) => i !== index);    
+    customerRef.current = { ...customerData, lines: newArray };
+    debouncedUpdateContext();
+  }
+
   const updateContext = useCallback(() => {
-    if(!customerRef.current) return;
+    if(!customerData) return;    
 
     const currentData = customerRef.current;
 
-    const newTotalFisico = currentData.lines.reduce(
-      (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
+    const newTotalFisico = currentData?.lines.reduce(
+      (acc: number, curr: { amountMXN: number }) => acc + (curr.amountMXN || 0),
       0
-    );
+    ) || 0;
     
-    const newDifference = newTotalFisico - currentData.total.totalPOS;
+    const newDifference = newTotalFisico - (currentData.total?.totalPOS || 0);
 
     const newTotal: TotalModel = {
-      totalPOS: currentData.total.totalPOS,
-      totalPhysical: newTotalFisico > currentData.total.totalPOS ? currentData.total.totalPOS : newTotalFisico,
+      totalPOS: (currentData.total?.totalPOS || 0),
+      totalPhysical: newTotalFisico > (currentData.total?.totalPOS || 0) ? (currentData.total?.totalPOS || 0) : newTotalFisico,
       difference: newDifference,
-      differenceCupons: newTotalFisico > currentData.total.totalPOS ? newDifference : 0
-    };
+      differenceCupons: newTotalFisico > (currentData.total?.totalPOS || 0) ? newDifference : 0
+    };    
 
     const updateCustomerData = { ...currentData, total: newTotal };
-
     customerRef.current = updateCustomerData;
+    setCustomer(updateCustomerData);
+    
 
     Promise.all([
       updateTotalRef.current(newTotal.totalPhysical, clousingId, CLOUSING_KEY.CUSTOMER, newTotal.differenceCupons),
       setFooterDataRef.current(newTotal, clousingId, CLOUSING_KEY.CUSTOMER),
       setCustomerDataRef.current(updateCustomerData, clousingId)
-    ])
+    ]).then(() => {
+      
+    })
 
   },[clousingId]);
 
@@ -345,5 +354,5 @@ export const useHandleCustomer = (
     debouncedUpdateContext();
   }, [setCustomer, debouncedUpdateContext])
 
-  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer, updateContext };
+  return { selectCurrency, handleCoupons, handleAmountPAX, addCustomerRecord, handleChangeCustomer, updateContext, handleDeleteCustomer };
 };
