@@ -48,21 +48,21 @@ export const getStatus = async (): Promise<location[]> => {
 export const approvalsServices = {
 
   //obtiene toda los registros de las solicitudes.
-  async getListApprovalsUser(): Promise<any> {
+  // async getListApprovalsUser(): Promise<any> {
 
-    try {
+  //   try {
 
-      const response = await api.get(GETLISTAPPROVALS);
-      const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
-      //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
-      return list;
+  //     const response = await api.get(GETLISTAPPROVALS);
+  //     const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
+  //     //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
+  //     return list;
 
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+  //   } catch (error) {
+  //     console.error(error);
+  //     return [];
+  //   }
 
-  },
+  // },
 
   //Guarda un nueva solicitud
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {

@@ -9,12 +9,12 @@ import { ROLES } from "@models/const/menu.consts";
 
 function Approvals() {
 
-	//const { setDataApproval } = useApprovalContext();
+	const { setDataApproval } = useApprovalContext();
 
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		//setDataApproval(approval);
+		setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
 
