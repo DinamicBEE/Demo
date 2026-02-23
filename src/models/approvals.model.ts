@@ -1,4 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { ROLES } from "./const/menu.consts";
 
 export interface Approval {
   idRequest: number;
@@ -59,6 +60,7 @@ export interface RegisterApprovalsProps {
 
 export interface TableApprovalsProps {
   openEditDialog: (dataApproval: Approval) => void;
+  role: ROLES;
 }
 
 export interface StateApprovalsProps {

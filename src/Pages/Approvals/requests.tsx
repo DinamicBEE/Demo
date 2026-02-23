@@ -6,6 +6,7 @@ import { TableApprovals } from "./TableApprovals";
 import { RegisterApprovals } from "./RegisterApprovals";
 import { DetailApprovals } from "./DetailApprovals";
 import Header from "./Header";
+import { ROLES } from "@models/const/menu.consts";
 
 const Approvals: React.FC = () => {
 
@@ -40,7 +41,7 @@ const Approvals: React.FC = () => {
 
 				</Flex>
 
-				<TableApprovals openEditDialog={openDialogEdit} />
+				<TableApprovals openEditDialog={openDialogEdit} role={ROLES.GENERAL_ZONE} />
 
 			</Box>
 

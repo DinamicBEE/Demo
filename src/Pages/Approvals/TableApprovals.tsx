@@ -4,7 +4,6 @@ import { Toaster, toaster } from "@components/ui/toaster";
 import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { approvalsServices } from "@services/approvalsServices";
-import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
 import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
@@ -15,11 +14,10 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { STATUSLABELS } from "@models/const/approvals.const";
 
 
-export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
+export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog, role }) => {
 
   const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Cierre de Lote' };
 
-  const { role } = useApprovalsRolUser();
   const { open, onOpen, onClose } = useDisclosure();
   const { approvalsList, triggerRefresh } = useApprovalContext();
   
