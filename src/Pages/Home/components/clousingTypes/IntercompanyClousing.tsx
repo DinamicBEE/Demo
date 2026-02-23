@@ -17,6 +17,9 @@ import { useHeaders } from "@context/home/headerContext";
 import Loading from "@components/Loading";
 import FilterEmployee from "@components/FilterEmployee";
 import AddIntercompany from "./AddIntercompany";
+import { Tooltip } from "@components/ui/tooltip";
+import { TiDelete } from "react-icons/ti";
+import { toast } from "@utils/Toast";
 
 const pageSize = 10;
 
@@ -49,7 +52,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
       if (!data) return;
       setLoading(true);
       const intercompanyData: IntercompanyModel = await getIntercompanyData(
-        data?.id
+        data?.id, false
       );
       const employeeList: Employee[] = await getEmployeesList();
 
@@ -84,7 +87,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
     }
 
     fetchData();
-  }, [intercompany]);
+  }, []);
 
   useEffect(() => {
     setPage(page);
@@ -220,6 +223,16 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
     setDialog(false);
   }
 
+  const onDelete = (index: number) => {
+    const updatedLines = intercompanyLocal.lines.filter((_, i) => i !== index);
+    updateIntercompany(updatedLines);
+    toast(
+          "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
+          "warning",
+          "Cliente eliminado"
+        );
+  }
+
   return (
     <Box>
 
@@ -246,7 +259,7 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
           </Table.Header>
 
           <Table.Body>
-            {visibleItems?.map((item: IntercompanyLine) => (
+            {visibleItems?.map((item: IntercompanyLine, index: number) => (
               <Table.Row key={item.id}>
                 <Table.Cell textAlign="center">
                   <FilterEmployee
@@ -306,6 +319,20 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
                     disabled={data?.closingConfirmation || intercompanyLocal?.isRoleEditable === false}
                   />
                 </Table.Cell>
+                {/* Botón de eliminado */}
+                {(!data?.closingConfirmation) && <Table.Cell textAlign="center"> {  /* || intercompany?.isRoleEditable === false */ }
+                  <Box color="red.500"  textStyle="lg" >
+                    
+                    <Tooltip
+                      content={`Eliminar cupones de ${item.employeeName}`}
+                      positioning={{ placement: "right-end" }}
+                    >
+                      <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
+                      
+                    </Tooltip>
+                  </Box>
+                </Table.Cell>}
+
               </Table.Row>
             ))}
           </Table.Body>
