@@ -7,13 +7,13 @@ import { getCompanies } from "@services/lotClosureService";
 import { getRequestList, getStatus } from "@services/approvalsServices";
 
 interface ApprovalsContextType {
-  approvalsList: Approval[];
-  dataApproval: Approval;
-  //setDataApproval: (approval: Approval) => void;
   triggerRefresh: () => void;
   shouldRefetch: boolean;
   
   fectApprovals: (filterSelected: filterOptionsProps, isRefresh: boolean) => void;
+  approvalsList: Approval[];
+  setDataApproval: (approval: Approval) => void;
+  dataApproval: Approval;
   getEmployeeList: ( subsidiary: number, cdc: number ) => Promise<Employee[]>;
   getSubsidiaries: () => Promise<selectOption[]>;
   getZoneList: (subIds: number[]) => Promise<selectOption[]>;
@@ -200,7 +200,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     approvalsList,
     dataApproval,
     fectApprovals,
-    //setDataApproval,
+    setDataApproval,
     triggerRefresh,
     shouldRefetch,
     getEmployeeList,
@@ -208,7 +208,7 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     getZoneList,
     getCDCs,
     getStatusList
-  }), [approvalsList, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
+  }), [approvalsList, setDataApproval, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
 
   return (
     <ApprovalsListContext.Provider value={value}>

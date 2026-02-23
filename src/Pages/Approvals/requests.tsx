@@ -9,7 +9,7 @@ import Header from "./Header";
 
 const Approvals: React.FC = () => {
 
-	//const { setDataApproval } = useApprovalContext();
+	const { setDataApproval } = useApprovalContext();
 	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
@@ -18,7 +18,7 @@ const Approvals: React.FC = () => {
 	const closeDialog = useCallback(() => setIsDialogOpen(false), []);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		//setDataApproval(approval);
+		setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
 
