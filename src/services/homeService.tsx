@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { STATUS } from "@models/const/status.const";
+import { HeadersModel } from "@models/common.model";
 
 /**
  * This function returns the list of selected

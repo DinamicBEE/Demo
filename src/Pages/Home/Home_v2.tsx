@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
+import { Box, Button, createListCollection, Field, Grid, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { ParametersSelectedModel, selectOption, TableDataModel } from "@models/common.model";
 import { getCountries, getLocations, getStatus, getSubsidiariesByCountry, getZones } from "@services/catalogService";
 import GeneralInfo from "./components/table/GeneralInfo";
-import { getGeneralReports } from "@services/reportService";
-import { ReportClousingLinesModel, ReportTotalsModel, TotalModel } from "@models/common.clousing.model";
+import { exportCSV_V2, getGeneralReports } from "@services/reportService";
+import { ReportTotalsModel, TotalModel } from "@models/common.clousing.model";
 import TableGeneralReport from "./components/table/TableGeneralReport";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import Loading from "@components/Loading";
@@ -265,6 +265,10 @@ function Home_v2() {
         });
     }
 
+    const handleExportCSV = () => {
+      exportCSV_V2(dataReport.data, dataReport.headers, 1)
+    }
+
     return (
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
                 
@@ -347,7 +351,14 @@ function Home_v2() {
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
-                <GridItem colSpan={1} />
+                <Button
+                  colorPalette="meraPrimary"
+                  onClick={() => {
+                    handleExportCSV();
+                  }}
+                >
+                  Exportar a CSV
+                </Button>
 
                 <Button
                     disabled={formattedDate != '' && selectedZonesIds.length === 0}

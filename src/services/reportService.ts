@@ -8,7 +8,7 @@ import { REPORTSERVICE_CONFIG } from "@models/const/reportsService.const";
 import ExcelJS from 'exceljs';
 import { BANCKS_TITLES } from "@models/const/reportBanck.const";
 import { TABLE_CONFIG } from "@models/const/reportTable.const";
-import { CURRENCIES_INFO, EXTRA_INFO, GENERAL_INFO, SECTIONS_INFO, TENDERS_DATA } from "@models/const/closing.const";
+import { COUNTRY_INFO, CURRENCIES_INFO, EXTRA_INFO, GENERAL_INFO, SECTIONS_INFO, SELLERS_INFO, TENDERS_DATA } from "@models/const/closing.const";
 import { HeadersModel, TableDataModel } from "@models/common.model";
 
 
@@ -394,6 +394,7 @@ export const fetchInitialData = async (): Promise<{ headers: Headers[]; rows: Ro
   }
 };
 
+// DEPRECATED 
 export const confirmRows = async (rows: Row[]): Promise<Row[]> => {
   await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulación de retraso
   return rows.map((row) => ({
@@ -406,7 +407,7 @@ export const confirmRows = async (rows: Row[]): Promise<Row[]> => {
     },
   }));
 };
-
+// DEPRECATED 
 export const applyFilters = async (rows: Row[], filters: any): Promise<Row[]> => {
   await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulación de retraso
   return rows.filter((row) => {
@@ -414,7 +415,7 @@ export const applyFilters = async (rows: Row[], filters: any): Promise<Row[]> =>
     return true;
   });
 };
-
+// DEPRECATED 
 export const resetFilters = async (): Promise<Row[]> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   // Retornar las filas de respaldo
@@ -442,8 +443,6 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
 
     
     const headerfiltered = getHeaders(dataReport[0])
-    
-    console.log("Headers filtrados: ", headerfiltered)
     
     const tableResponse: TableDataModel ={
       headers: headerfiltered,
@@ -529,7 +528,7 @@ const getFormattedDate = (): string => {
   return new Date().toISOString().split('T')[0];
 };
 
-const setupWorksheet = (worksheet: ExcelJS.Worksheet, headers: any[], data: any[]) => {
+export const setupWorksheet = (worksheet: ExcelJS.Worksheet, headers: any[], data: any[]) => {
 
   const headerRow = worksheet.addRow(headers.map(header => header.label));
   headerRow.eachCell((cell) => {
@@ -621,5 +620,43 @@ export async function changeStatus(nextStatusId: number, id: number): Promise<bo
 
   }
 
+
+}
+
+export async function exportCSV_V2(data: ReportClousingLinesModel[], header: HeadersModel[], type: number) {  //TODO: en data agregar el tipo de la tabla de vendedores
+  
+  const workbook = new ExcelJS.Workbook();
+  
+  const base = type === 1 ? ["Zona", "CDC"] : ["Fecha", "Vendedor"]
+  const currentHeader = [...base, ...header.map(item => item.label)]
+  const baseHeader = type === 1 ? COUNTRY_INFO : SELLERS_INFO  
+  const headerObjects = [...baseHeader, ...header]
+
+  const worksheet = workbook.addWorksheet("Cortes_caja_"+ new Date().toISOString().split('T')[0]);
+
+  const headerRow = worksheet.addRow(currentHeader);
+  headerRow.eachCell((cell) => {
+    cell.font = { bold: true };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
+    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+  });
+  
+  data.forEach((row: any) => {
+    const dataRow = worksheet.addRow(headerObjects.map(header => row[header.key] ?? ''));
+    dataRow.eachCell((cell) => {
+      cell.alignment = { vertical: 'top', wrapText: true };
+    });
+  });
+
+  worksheet.columns.forEach(column => {
+    let maxLength = 0;
+    column.eachCell?.({ includeEmpty: true }, (cell) => {
+      const length = cell.value?.toString().length || 0;
+      if (length > maxLength) maxLength = length;
+    });
+    column.width = Math.min(maxLength + 2, 50);
+  });
+
+  await downloadWorkbook(workbook, `Cortes_caja_${new Date().toISOString().split('T')[0]}`);
 
 }

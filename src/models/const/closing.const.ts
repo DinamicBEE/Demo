@@ -1,3 +1,12 @@
+export const COUNTRY_INFO = [
+    { label:"Zona", key: "ubicacion" },
+    { label:"CDC", key: "cdc" },
+]
+
+export const SELLERS_INFO = [
+    { label:"Fecha", key: "closingStartDate" },
+    { label:"Vendedor", key: "employe" },
+]
 
 export const GENERAL_INFO = [
     { label:"Total POS", key: "totalPOS" },
