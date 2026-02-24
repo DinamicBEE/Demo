@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ReportClousingLinesModel } from "./common.clousing.model";
 
 export interface ProtectedRouteProps {
   children: ReactNode;
@@ -75,4 +76,14 @@ export interface ParametersSelectedModel {
   cdc: selectOption[];
   status: selectOption[];
   date?: string;
+}
+
+export interface HeadersModel {
+  label: string;
+  key: string;
+}
+
+export interface TableDataModel {
+  headers: HeadersModel[]
+  data: ReportClousingLinesModel[]
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
-import { ParametersSelectedModel, selectOption } from "@models/common.model";
+import { ParametersSelectedModel, selectOption, TableDataModel } from "@models/common.model";
 import { getCountries, getLocations, getStatus, getSubsidiariesByCountry, getZones } from "@services/catalogService";
 import GeneralInfo from "./components/table/GeneralInfo";
 import { getGeneralReports } from "@services/reportService";
@@ -44,7 +44,7 @@ function Home_v2() {
     const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
     const [showTable, setShowTable] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [dataReport, setDataReport] = useState<ReportClousingLinesModel[]>([] as ReportClousingLinesModel[]);
+    const [dataReport, setDataReport] = useState<TableDataModel>({} as TableDataModel);
     const [isReady, setIsReady] = useState(false);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
@@ -141,7 +141,7 @@ function Home_v2() {
 
       const report = await getGeneralReports(cdcIds, formattedDate, estatusNames);
 
-      const totals = reportTotals(report);
+      const totals = reportTotals(report.data);
       const newTotals: TotalModel = {
         totalPOS: totals.totalPOS,
         totalPhysical: totals.totalPhysical,
@@ -347,16 +347,7 @@ function Home_v2() {
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
-                {/* <GridItem colSpan={1} /> */}
-
-                <Button
-                  colorPalette="meraPrimary"
-                  // onClick={() => {
-                  //   handleExportCSV();
-                  // }}
-                >
-                  Exportar a CSV
-                </Button>
+                <GridItem colSpan={1} />
 
                 <Button
                     disabled={formattedDate != '' && selectedZonesIds.length === 0}

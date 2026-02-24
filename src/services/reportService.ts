@@ -8,6 +8,8 @@ import { REPORTSERVICE_CONFIG } from "@models/const/reportsService.const";
 import ExcelJS from 'exceljs';
 import { BANCKS_TITLES } from "@models/const/reportBanck.const";
 import { TABLE_CONFIG } from "@models/const/reportTable.const";
+import { CURRENCIES_INFO, EXTRA_INFO, GENERAL_INFO, SECTIONS_INFO, TENDERS_DATA } from "@models/const/closing.const";
+import { HeadersModel, TableDataModel } from "@models/common.model";
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -419,7 +421,7 @@ export const resetFilters = async (): Promise<Row[]> => {
   return []; // Cambiar por el respaldo real
 };
 
-export const getGeneralReports = async (cdcids:number[], date:string, status:string[]): Promise<ReportClousingLinesModel[]> => {
+export const getGeneralReports = async (cdcids:number[], date:string, status:string[]): Promise<TableDataModel> => {
   try {
     
     const response = await api.post(GET_REPORT,
@@ -438,15 +440,37 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
       
     })); 
 
+    
+    const headerfiltered = getHeaders(dataReport[0])
+    
+    console.log("Headers filtrados: ", headerfiltered)
+    
+    const tableResponse: TableDataModel ={
+      headers: headerfiltered,
+      data: dataReport
+    }
+
     if(status.length > 0) {
-      return dataReport.filter((item) => status.includes(item.status));
+      return { ...tableResponse, data: tableResponse.data.filter((item) => status.includes(item.status)) };
     }
     
-    return dataReport;
+    return tableResponse;
   } catch (error) {
     console.error("Error al obtener las ubicaciones:", error);
-    return [];
+    return { headers: [], data: [] } as TableDataModel;
   }
+}
+
+const getHeaders = (response: ReportClousingLinesModel): HeadersModel[] => {
+  
+  const currencyHeader = TENDERS_DATA.filter(tender => {
+      const value = response[ tender.key as keyof ReportClousingLinesModel];
+      return value !== undefined && value !== null;
+    }
+  ) 
+ 
+  const headers = [...GENERAL_INFO, ...CURRENCIES_INFO, ...currencyHeader, ...SECTIONS_INFO, ...EXTRA_INFO]
+  return headers
 }
 
 export const getReports = async (request: ReporGeneralRequesttModel): Promise<any[]> => {
