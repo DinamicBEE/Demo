@@ -18,7 +18,7 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
 
           setLoading(true)
           const response = await getReports(reportRequest);
-          
+          console.log(response)
           setReportData(response);
 
           return response;

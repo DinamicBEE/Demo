@@ -12,7 +12,13 @@ interface SortConfig {
   direction: 'asc' | 'desc';
 }
 
-function useSortableTable<T extends SortableItem>(data: T[]) {
+interface DataWithSummary<T extends SortableItem> {
+  summary: T[];
+}
+ 
+ 
+
+function useSortableTable<T extends SortableItem>(data: T[] | DataWithSummary<T>) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
   const handleSort = (key: string) => {
@@ -24,7 +30,13 @@ function useSortableTable<T extends SortableItem>(data: T[]) {
   };
 
   const sortedData = useMemo(() => {
-    let sortableItems = [...data];
+    let sortableItems: any[] = []
+    if(Array.isArray(data)) {
+      sortableItems = [...data];
+    } else  {
+      sortableItems = [...data.summary]
+    }
+    console.log(sortableItems)
 
     if (sortConfig.key !== null) {
       sortableItems.sort((a, b) => {
