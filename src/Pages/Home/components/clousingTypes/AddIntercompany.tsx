@@ -183,7 +183,10 @@ function AddIntercompany({clousingId, isOpen, onClose}: AddIntercompanyProp) {
             <SelectRoot
               collection={tickets}
               value={ticket}
-              onValueChange={(e) => setTicket(e.value)}
+              onValueChange={(e) => {
+                setTicket(e.value);
+                setAmount(e.items[0].amount || 0)
+              }}
             >
               <SelectLabel>Ticket</SelectLabel>
               <SelectTrigger>
