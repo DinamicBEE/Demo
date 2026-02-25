@@ -33,14 +33,18 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
       [reportData]
     );
 
+    const cleanReportData = () => {
+      setReportData([]);
+    }
 
     const value = useMemo(
         () => ({
           reportData,
           loading,
-          getReportData
+          getReportData,
+          cleanReportData
         }),
-        [reportData, loading, getReportData]
+        [reportData, loading, getReportData, cleanReportData]
       );
     return(
         <reportsContext.Provider value={value}>
