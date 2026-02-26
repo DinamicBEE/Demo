@@ -307,8 +307,7 @@ function LoteClosureDialog({
                   lot.status === STATUS.Close ||
                   lot.status === STATUS.WITH_DIFFERENCE ||
                   localLot.isRoleEditable === false ||
-                  localBanks.bank.length === 0 ||
-                  localBanks.bank[0].affiliationList.length === 0
+                  localBanks.bank.length === 0
                 }
                 onClick={() => handleOpenCloseLot(true)}
               >
@@ -320,7 +319,8 @@ function LoteClosureDialog({
                   lot.status === STATUS.Close ||
                   lot.status === STATUS.WITH_DIFFERENCE ||
                   localLot.isRoleEditable === false ||
-                  localBanks.bank.length === 0                }
+                  localBanks.bank.length === 0
+                }
                 onClick={() => handleOpenCloseLot(false)}
                 colorPalette="meraPrimary"
               >
