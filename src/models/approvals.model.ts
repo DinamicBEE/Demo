@@ -79,5 +79,5 @@ export interface filterOptionsProps {
   requestDateEnd: Date;
   closingDateStart: Date;
   closingDateEnd: Date;
-  status: string;
+  status: string[];
 }
