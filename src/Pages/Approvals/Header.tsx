@@ -81,7 +81,7 @@ function Header() {
             requestDateEnd: requestEnd,
             closingDateStart: closingStart,
             closingDateEnd: closingEnd,
-            status: selectedStatus.map(Number).join(','),
+            status: selectedStatus,
             employeeId: selectEmployee ? selectEmployee.id : 0,
             cdc: cdcSelected.map(Number)
         }
