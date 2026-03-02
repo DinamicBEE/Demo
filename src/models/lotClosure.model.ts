@@ -10,7 +10,8 @@ export interface LotClosure {
   statusId: number;
   employeeCreator: string;
   consumerCenter: string;
-  subsidiary: string;
+  subsidiary?: string;
+  zone?: string;
   status: STATUS;
   totalPos: number;
   totalLote: number;

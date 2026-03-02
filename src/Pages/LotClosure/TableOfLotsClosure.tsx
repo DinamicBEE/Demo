@@ -112,16 +112,19 @@ function TableOfLotClosure({
                 <Table.Header>
                   <Table.Row>
                     <Table.ColumnHeader textAlign="center">
-                      CDC
+                      Zona
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
-                      Empresa
+                      CDC
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       Estado
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       Total POS
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader textAlign="center">
+                      Total Corte de Caja
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
                       Total Lote
@@ -137,6 +140,9 @@ function TableOfLotClosure({
                 <Table.Body>
                   {loading && (
                     <Table.Row>
+                      <Table.Cell textAlign="center">
+                        <Skeleton height="20px" />
+                      </Table.Cell>
                       <Table.Cell textAlign="center">
                         <Skeleton height="20px" />
                       </Table.Cell>
@@ -175,6 +181,11 @@ function TableOfLotClosure({
                     visibleItems.map((item) => (
                       <Table.Row key={item.id}>
                         <Table.Cell textAlign="center">
+                          <Text>
+                            {item.zone}
+                          </Text>
+                        </Table.Cell>
+                        <Table.Cell textAlign="center">
                           <Text
                             as="span"
                             cursor="pointer"
@@ -185,15 +196,20 @@ function TableOfLotClosure({
                             {item.consumerCenter}
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="center">
-                          <Text>
-                            {item.subsidiary}
-                          </Text>
-                        </Table.Cell>
+                        
                         <Table.Cell textAlign="center">
                           <Tag.Root colorPalette={statusColor(item.status)}>
                             <Tag.Label>{item.status}</Tag.Label>
                           </Tag.Root>
+                        </Table.Cell>
+                        <Table.Cell textAlign="center">
+                          <Text>
+                            <FormatNumber
+                              value={item.totalPos}
+                              style="currency"
+                              currency="USD"
+                            />
+                          </Text>
                         </Table.Cell>
                         <Table.Cell textAlign="center">
                           <Text>
