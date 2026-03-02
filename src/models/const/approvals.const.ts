@@ -1,5 +1,15 @@
 export const STATUSLABELS =  [
-    { id: 1, label: "Rechazado" },
-    { id: 2, label: "Aprobado" },
+    { id: 1, label: "Rechazada" },
+    { id: 2, label: "Aceptada" },
     { id: 3, label: "En espera" }
-] 
+];
+
+export const REQUEST_TYPE = [
+    { key: "CASH_CLOSURE", label: 'Corte de Caja'}, 
+    { key: 'LOTE', label: 'Cierre de Lote' }
+];
+
+export const STATE_LABELS =  [
+    { key: "Open", label: 'Abierta'}, 
+    { key: 'Close', label: 'Cerrado' }
+];
