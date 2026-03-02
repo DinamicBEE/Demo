@@ -74,7 +74,7 @@ const TableInput = memo(function TableInput({ value, id, currency, keyValue, onC
             if (onChange) {
                 onChange(id, newValue, keyValue);
             }
-        }, 100);
+        }, 500);
     }, [id, keyValue, onChange]);
 
     const handleLocalChange = (event: any) => {

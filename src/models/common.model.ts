@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ReportClousingLinesModel } from "./common.clousing.model";
 
 export interface ProtectedRouteProps {
   children: ReactNode;
@@ -83,4 +84,13 @@ export interface ComboBoxCustomProps {
     onValueChange: (ids: string[]) => void;
     selectedValues: string[];
     disableCondition: boolean;
+}
+export interface HeadersModel {
+  label: string;
+  key: string;
+}
+
+export interface TableDataModel {
+  headers: HeadersModel[]
+  data: ReportClousingLinesModel[]
 }

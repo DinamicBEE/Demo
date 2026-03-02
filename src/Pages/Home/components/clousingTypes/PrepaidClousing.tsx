@@ -190,7 +190,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     
     clientLine.coupons ??= [];
     if (
-      clientLine.coupons.some((c) => c.folioCustom === couponModel.folioCustom)
+      clientLine.coupons.some((c) => c.barCode === couponModel.barCode)
     ) {
       setLoadingAdded(false);
       return toast("Cupón duplicado", "warning");
@@ -249,6 +249,20 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     if (!itemToUpdate) return;
 
     const numericValue = parseFloat(value) || 0;
+
+    if (key === "unitPrice") {
+      const updatePrepaid = prepaidLocal.lines.map((item: PrepaidLineModel) =>
+        item.id === id
+          ? {
+              ...item,
+              [key!]: numericValue,
+            }
+          : item
+      );
+
+      updateData(updatePrepaid);
+      return;
+    }
 
     const updatePrepaid = prepaidLocal.lines.map((item: PrepaidLineModel) =>
       item.id === id
@@ -408,11 +422,19 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
 
                 {/* Precio */}
                 <Table.Cell textAlign="end">
-                  <FormatNumber
+                  <TableInput 
+                    value={item.unitPrice}
+                    id={item.id}
+                    currency={true}
+                    keyValue="unitPrice"
+                    onChange={handleInputTextData}
+                    disabled={data?.closingConfirmation || prepaidLocal?.isRoleEditable === false}
+                  />
+                  {/* <FormatNumber
                     value={item.unitPrice}
                     style="currency"
                     currency="USD"
-                  />
+                  /> */}
                 </Table.Cell>
 
                 {/* Totales */}

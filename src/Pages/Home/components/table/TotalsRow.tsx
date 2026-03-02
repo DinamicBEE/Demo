@@ -5,9 +5,9 @@ function TotalsRow(){
     const { tdcHeader, totals, currHeader } = useClousing();
 
     return(
-      <Table.Row bg="gray.100" fontWeight="bold">
-        <Table.Cell textAlign="center" css={{position:"sticky"}} left="0"></Table.Cell>
-        <Table.Cell textAlign="center" css={{position:"sticky"}} left="87px">Totales</Table.Cell>
+      <Table.Row bg="bg.subtle" fontWeight="bold" css={{position:"sticky !important", bottom:0}}>
+        <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="0"></Table.Cell>
+        <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="100px">Totales</Table.Cell>
         <Table.Cell textAlign="end">
           <FormatNumber
             value={totals.totalPOS}

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Sticky, Table, Tag, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
@@ -14,6 +14,8 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
 import { updateSalesTicket } from "@services/clousingService";
 import { toast } from "@utils/Toast";
+import CheckDetailsDialog from "../notifications/CheckDetailsDialog";
+import "./TableStyle.css";
 
 function TableOfTotals({
   subsidiary,
@@ -31,6 +33,7 @@ function TableOfTotals({
     useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
+  const [isOpenDialogCheck, setIsOpenDialogCheck] = useState(false);
 
   function handleExportCSV() {
 
@@ -59,11 +62,14 @@ function TableOfTotals({
     exportCSV(dataWithTotals, header, tdcHeader, currHeader);
   }
 
-  const openDialog = (item: any) => {
+  const openDialog = (item: ClousingLinesModel) => {
     item.closingConfirmation = STATUS_CLOSED_DIALOG_EXCEPTIONS.includes(item.status.toLowerCase()) ? false : true;
         
     setSelectedEmployee(item);
-    setIsDialogOpen(true);
+    // setIsDialogOpen(true);
+    item.statusId === 8
+      ? setIsOpenDialogCheck(true)
+      : setIsDialogOpen(true);
     setIsEdit(true);
     setDataRow(item);
   };
@@ -145,13 +151,13 @@ function TableOfTotals({
         {sortedData.length >= 1 && (
           <Box>
             <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
-              <Table.Root size="sm" variant="outline" stickyHeader >
+              <Table.Root size="sm" variant="outline" stickyHeader>
                 <Table.Header>
                   <Table.Row zIndex={1}>
-                    <Table.ColumnHeader textAlign="center" css={{position:"sticky"}} left="0">
+                    <Table.ColumnHeader textAlign="center" css={{left: "0px", position: "sticky", zIndex:11, minW:"100px"}} left="0">
                       Fecha
                     </Table.ColumnHeader>
-                    <SortableHeader columnProps={{left: "87px", position: "sticky"}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
+                    <SortableHeader columnProps={{left: "100px", position: "sticky", zIndex: 11, minW: "250px",}} columnKey="employe" label="Vendedor" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPOS" label="Total POS" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="totalPhysical" label="Total Físico" handleSort={handleSort} getSortIcon={getSortIcon} />
                     <SortableHeader columnKey="difference" label="Diferencia" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -189,17 +195,20 @@ function TableOfTotals({
                     
                   </Table.Row>
                 </Table.Header>
-                <Table.Body>
+                <Table.Body  css={{position:"relative !important"}}>
                   {sortedData.map((item: ClousingLinesModel) => (
-                    <Table.Row key={item.id}>
-                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="0" >
+                    <Table.Row key={item.id} className="row_bg">
+                      <Table.Cell textAlign="center" className="ToT_row_column1">
                         <Text>{item.closingStartDate}</Text>
                       </Table.Cell>
-                      <Table.Cell textAlign="center" css={{position:"sticky"}} left="87px">
+                      <Table.Cell textAlign="center" className="ToT_row_column2">
                         <Text
+                          truncate
                           as="span"
                           cursor="pointer"
-                          textDecoration="underline"
+                          _hover={{
+                            textDecoration:"underline"
+                          }}
                           color="blue.500"
                           onClick={() => openDialog(item)}
                         >
@@ -241,6 +250,7 @@ function TableOfTotals({
                         <Tag.Root
                           colorPalette={statusColor(item.status as STATUS)}
                         >
+                          {/* <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto": item.status === "Cheque abierto" ? "Abierto" : item.status}</Tag.Label> */}
                           <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto" : item.status}</Tag.Label>
                         </Tag.Root>
                       </Table.Cell>
@@ -360,8 +370,10 @@ function TableOfTotals({
                       </Table.Cell>
                     </Table.Row>
                   ))}
-                  <TotalsRow></TotalsRow>
                 </Table.Body>
+                <Table.Footer>
+                  <TotalsRow />
+                </Table.Footer>
               </Table.Root>
             </Table.ScrollArea>
             <span> Mostrando 1 a {data.length} de {data.length} Registros </span>
@@ -370,6 +382,15 @@ function TableOfTotals({
 
         {data.length === 0 && <h2>No hay data</h2>}
       </Box>
+
+      <CheckDetailsDialog
+        isOpen={isOpenDialogCheck}
+        closeDialog={(e: boolean) => {
+          setIsOpenDialogCheck(false);
+          closeDialog(e);
+       }}
+        idCashRegisterClosure={selectedEmployee.id || 0}
+      ></CheckDetailsDialog>
 
       <ClousingLayout
         isOpen={isDialogOpen}
