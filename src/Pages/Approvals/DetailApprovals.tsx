@@ -13,12 +13,10 @@ import { HiCheck, HiX } from "react-icons/hi";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
+import { REQUEST_TYPE, STATE_LABELS } from "@models/const/approvals.const";
 
 
 export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, onClose }) => {
-
-  const stateLabel: Record<string, string> = { 'Open': "Abierta", 'Close': "Cerrado" };
-  const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Corte de Lote' };
 
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -99,12 +97,12 @@ export const DetailApprovals: React.FC<DetailApprovalsProps> = memo(({ isOpen, o
 
                   <DataList.Item>
                     <DataList.ItemLabel>Estado</DataList.ItemLabel>
-                    <DataList.ItemValue>{stateLabel[dataApproval.state]}</DataList.ItemValue>
+                    <DataList.ItemValue>{STATE_LABELS.find(item => item.key === dataApproval.state)?.label }</DataList.ItemValue>
                   </DataList.Item>
 
                   <DataList.Item>
                     <DataList.ItemLabel>Tipo de Solicitud</DataList.ItemLabel>
-                    <DataList.ItemValue>{typeRequestLabel[dataApproval.typeRequest]}</DataList.ItemValue>
+                    <DataList.ItemValue>{REQUEST_TYPE.find(type => type.key === dataApproval.typeRequest)?.label}</DataList.ItemValue>
                   </DataList.Item>
 
                   <DataList.Item>

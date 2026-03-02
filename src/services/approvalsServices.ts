@@ -10,17 +10,24 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 
     const response = await api.get(GETLISTAPPROVALS,{
       params: {
-        cdc: filterOptions.cdc,
-        employeeId: filterOptions.employeeId,
-        requestDateStart: filterOptions.requestDateStart,
-        requestDateEnd: filterOptions.requestDateEnd,
-        closingDateStart: filterOptions.closingDateStart,
-        closingDateEnd: filterOptions.closingDateEnd,
-        status: filterOptions.status
+        fSoliIni: filterOptions.requestDateStart,
+        fSoliFin: filterOptions.requestDateEnd,
+        fCorteIni: filterOptions.closingDateStart,
+        fCorteFin: filterOptions.closingDateEnd,
+        empleadoId: filterOptions.employeeId,
+        status: filterOptions.status,
+        cdcId: filterOptions.cdc,
       }
     });
-    const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
-    //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
+    const listPipe = response.data.map((item: any) => {
+      return {
+        ...item,
+        zone: item.zona,
+        closingEmployee: item.empleadoCorte
+      }
+    })
+    const list = listPipe.sort((a: any, b: any) => b.idRequest - a.idRequest);
+
     return list;
 
   } catch (error) {

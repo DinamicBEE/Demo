@@ -68,7 +68,6 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
 
   const getEmployeeList = useCallback( async (subsidiary: number, cdc: number) => {
       if (employeeList.length > 0) {
-        console.log("fetching")
         return employeeList;
       }
 

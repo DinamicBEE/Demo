@@ -43,6 +43,7 @@ function Header() {
             const subsidiariesData = await getSubsidiaries();
             setSubsidiaries(subsidiariesData);
 
+            habdleSearch();
             setIsLoading(false);
         }
 
@@ -73,7 +74,6 @@ function Header() {
 
     const habdleSearch = async () => {
 
-        if (requestStart == null || requestEnd === null || closingStart == null || closingEnd == null) return;
         setIsLoading(true);
 
         const filterSelected: filterOptionsProps = {
@@ -81,12 +81,12 @@ function Header() {
             requestDateEnd: requestEnd,
             closingDateStart: closingStart,
             closingDateEnd: closingEnd,
-            status: selectedStatus,
-            employeeId: selectEmployee ? selectEmployee.id : 0,
+            status: status.find(item => item.value === Number(selectedStatus[0]))?.label || null,
+            employeeId: selectEmployee ? selectEmployee.id : null,
             cdc: cdcSelected.map(Number)
         }
-        console.log(filterSelected);
-        await fectApprovals(filterSelected, false);
+
+        await fectApprovals(filterSelected, true);
 
         setIsLoading(false);
 
@@ -146,7 +146,7 @@ function Header() {
                 <Button
                     colorPalette="meraInfo"
                     onClick={() => habdleSearch()}
-                    disabled={ requestEnd == null || closingEnd == null || cdcSelected.length === 0}
+                    //disabled={ requestEnd == null || closingEnd == null || cdcSelected.length === 0}
                 >
                     Buscar
                 </Button>
