@@ -36,7 +36,7 @@ import {
 } from "@models/approvals.model";
 import { approvalsServices } from "@services/approvalsServices";
 import { getStores, getSubsidiaries, getZones } from "@services/catalogService";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { useApi } from "@hooks/useApi";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import { selectOption } from "@models/common.model";
@@ -53,7 +53,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       onOpen: onOpenConfir,
       onClose: onCloseConfir,
     } = useDisclosure();
-    const { triggerRefresh } = useApprovalsList();
+    const { triggerRefresh } = useApprovalContext();
 
     const [type, setType] = useState<number>(0);
     const [idCDC, setIdCDC] = useState<number>(0);

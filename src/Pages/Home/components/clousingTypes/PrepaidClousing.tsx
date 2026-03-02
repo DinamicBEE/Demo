@@ -190,7 +190,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
     
     clientLine.coupons ??= [];
     if (
-      clientLine.coupons.some((c) => c.folioCustom === couponModel.folioCustom)
+      clientLine.coupons.some((c) => c.barCode === couponModel.barCode)
     ) {
       setLoadingAdded(false);
       return toast("Cupón duplicado", "warning");

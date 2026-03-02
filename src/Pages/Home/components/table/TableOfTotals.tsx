@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Box, Button, FormatNumber, Grid, GridItem, Sticky, Table, Tag, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
 import { Alert } from "@components/ui/alert";
@@ -14,8 +14,8 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
 import { updateSalesTicket } from "@services/clousingService";
 import { toast } from "@utils/Toast";
+import CheckDetailsDialog from "../notifications/CheckDetailsDialog";
 import "./TableStyle.css";
-
 
 function TableOfTotals({
   subsidiary,
@@ -33,6 +33,7 @@ function TableOfTotals({
     useState<ClousingLinesModel>({} as ClousingLinesModel);
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
+  const [isOpenDialogCheck, setIsOpenDialogCheck] = useState(false);
 
   function handleExportCSV() {
 
@@ -61,11 +62,14 @@ function TableOfTotals({
     exportCSV(dataWithTotals, header, tdcHeader, currHeader);
   }
 
-  const openDialog = (item: any) => {
+  const openDialog = (item: ClousingLinesModel) => {
     item.closingConfirmation = STATUS_CLOSED_DIALOG_EXCEPTIONS.includes(item.status.toLowerCase()) ? false : true;
         
     setSelectedEmployee(item);
-    setIsDialogOpen(true);
+    // setIsDialogOpen(true);
+    item.statusId === 8
+      ? setIsOpenDialogCheck(true)
+      : setIsDialogOpen(true);
     setIsEdit(true);
     setDataRow(item);
   };
@@ -246,6 +250,7 @@ function TableOfTotals({
                         <Tag.Root
                           colorPalette={statusColor(item.status as STATUS)}
                         >
+                          {/* <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto": item.status === "Cheque abierto" ? "Abierto" : item.status}</Tag.Label> */}
                           <Tag.Label>{item.status === "Cerrado Starbucks" ? "Abierto" : item.status}</Tag.Label>
                         </Tag.Root>
                       </Table.Cell>
@@ -377,6 +382,15 @@ function TableOfTotals({
 
         {data.length === 0 && <h2>No hay data</h2>}
       </Box>
+
+      <CheckDetailsDialog
+        isOpen={isOpenDialogCheck}
+        closeDialog={(e: boolean) => {
+          setIsOpenDialogCheck(false);
+          closeDialog(e);
+       }}
+        idCashRegisterClosure={selectedEmployee.id || 0}
+      ></CheckDetailsDialog>
 
       <ClousingLayout
         isOpen={isDialogOpen}

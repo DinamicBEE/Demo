@@ -38,6 +38,7 @@ export interface ReportFilterModel {
     reportData: any;
     loading: boolean;
     getReportData: (reportType: ReporGeneralRequesttModel) => Promise<any>;
+    cleanReportData: () => void;
   }
   export interface FilterPropsModel {
     currentReport?: number | null;

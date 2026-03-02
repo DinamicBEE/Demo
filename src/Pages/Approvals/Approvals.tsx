@@ -1,17 +1,19 @@
-import React, { useCallback, useState } from "react";
-import { Box, Heading } from "@chakra-ui/react";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useCallback, useState } from "react";
+import { Box } from "@chakra-ui/react";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval } from "@models/approvals.model";
 import { TableApprovals } from "./TableApprovals";
 import { DetailApprovals } from "./DetailApprovals";
+import Header from "./Header";
+import { ROLES } from "@models/const/menu.consts";
 
-const Approvals: React.FC = () => {
+function Approvals() {
 
-	const { setDataApproval } = useApprovalsList();
+	const { setDataApproval } = useApprovalContext();
+
 	const [isDialogEditOpen, setIsDialogEditOpen] = useState<boolean>(false);
 
 	const openDialogEdit = useCallback((approval: Approval) => {
-		console.log("modal detalles|")
 		setDataApproval(approval);
 		setIsDialogEditOpen(true);
 	}, []);
@@ -22,9 +24,9 @@ const Approvals: React.FC = () => {
 		<>
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
 
-				<Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
-
-				<TableApprovals openEditDialog={openDialogEdit} />
+				<Header />
+				
+				<TableApprovals openEditDialog={openDialogEdit} role={ROLES.COMPTROLLER}/>
 
 			</Box>
 

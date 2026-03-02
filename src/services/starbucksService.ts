@@ -52,7 +52,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         ...line,
         id:line.crcId,
         employee: line.employe,
-        status: getStatus(line.status),
+        status: getStatus(line.status === "En corrección" ? "Close" : line.status === "Cheque abierto" ? "Open" : line.status),
         date: line.closingStartDate,
         total: line.totalPhysical,
         creditCards: line.tdc,
@@ -348,7 +348,7 @@ const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): C
   });
 }
 
-export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{
+export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean, statusId: number ): Promise<string> =>{
 
   const cashPhysical = data.cash.reduce((acc, row) =>(acc+row.total),0);
   const cashPOS = data.cash.reduce((acc, row) =>(acc+row.pos),0);
@@ -356,14 +356,15 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
   const tdcPOS = data.data.totalPOSTDC;
 
   const body: ClousingSaveStarbucksModel ={
-    crcId: clousingId,    
+    crcId: clousingId,
+    statusId:statusId,  
     cash: {
       idCurrencySub: data.data.idCurrencySub,
       electronicTips: data.data.electronicTips,
       tips: data.data.tips,
       total:{
         totalPhysical: cashPhysical,
-        totalPOS: cashPhysical,
+        totalPOS: cashPOS,
         difference: cashPOS - cashPhysical
       },
       lines: data.cash.map(line => {
@@ -371,7 +372,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
           id: line.id,
           idCurrency: line.idCurrency,
           currency: line.currency,
-          totalPOS: line.total,
+          totalPOS: line.pos,
           totalFisico: line.total,
           difference: line.pos - line.total,
           exchangeRate: line.exchangeRate,
@@ -389,7 +390,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
       idCurrencySub: data.data.idCurrencySub,
       total:{
         totalPhysical: tdcPhysical,
-        totalPOS: tdcPhysical,
+        totalPOS: tdcPOS,
         difference: tdcPhysical - tdcPOS
       },
       lines: data.tdc.map(line => {
@@ -397,7 +398,7 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
           id: line.id,
           idBank: line.idBank,
           bank: line.nameBank,
-          POS: line.total,
+          POS: line.pos,
           physical: line.total,
           voucherAmount: line.voucher.length,
           vouchers: line.voucher,

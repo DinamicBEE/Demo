@@ -1,14 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import { EXPECTED_COLUMNS, FIELD_MAPPING, FileResult, ProcessResult } from "@models/adyen.model";
 import { CashLines, CashModel } from "@models/cash.model";
-import { DataServiceModel, ResponseModel } from "@models/common.clousing.model";
+import { checkDetails, DataServiceModel, ResponseModel } from "@models/common.clousing.model";
 import { CustomerLines, CustomerModel } from "@models/customer.model";
 import { EmployeeLine, EmployeeModel, PdfData, PdfRequestNSDto } from "@models/employee.model";
 import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model";
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC, GET_CHECKS_DETAILS } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -253,7 +253,7 @@ export const getSpecialCustomerClousing = async (
       .reduce((acc: number, curr: number) => acc + curr, 0); */
       
     const newTotalFisico = lines
-      .map((line: any) => Number(line.ammountMXN))
+      .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0);
     const newDiff = Number(newTotalFisico - response.data.totalPos);
 
@@ -382,7 +382,7 @@ export const getCouponCatalog = async (
       params: { consumer: clousingId },
     });
 
-    const dateToCompare = formatToYYYYMMDDstring(dateClousing)+"T00:00:00";
+    const dateToCompare = formatToYYYYMMDDstring(dateClousing)+" 00:00:00";
     
     const transformedData = response.data.map((item: CouponCatalogModel) => ({
       ...item,
@@ -1077,3 +1077,20 @@ export const updateSalesTicketCDC = async (startDate: string, cdc: number, id: n
     
   }
 }
+
+export const getCheckDetails = async (idCashRegisterClosure: number): Promise<checkDetails[]> => {
+  if (!idCashRegisterClosure) return [] as checkDetails[];
+  try {
+    const response = await api.get(GET_CHECKS_DETAILS, {
+     params: { idCashRegisterClosure: idCashRegisterClosure }}
+    );
+
+    return response.data;
+
+  } catch( error ) {
+    const axiosError = error as AxiosError;
+    console.error("Error al obtener los detalles del cheque:", axiosError.message);
+    return [] as checkDetails[];
+  }
+}
+

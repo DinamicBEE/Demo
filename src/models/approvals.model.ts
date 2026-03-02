@@ -1,4 +1,5 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { ROLES } from "./const/menu.consts";
 
 export interface Approval {
   idRequest: number;
@@ -12,9 +13,9 @@ export interface Approval {
   comment: string; //en esta atributo se guardaria el comentario del supervisor
   commentSupervisor?: string;
   status: number;
-  zone?: string;
-  cdc?: string;
-  closingEmployee?:string;
+  zone: string;
+  cdc: string;
+  closingEmployee:string;
 }
 
 export interface RequestOpeningForm {
@@ -59,6 +60,7 @@ export interface RegisterApprovalsProps {
 
 export interface TableApprovalsProps {
   openEditDialog: (dataApproval: Approval) => void;
+  role: ROLES;
 }
 
 export interface StateApprovalsProps {
@@ -68,4 +70,14 @@ export interface StateApprovalsProps {
 export interface ClosingListSelectProps {
   register: UseFormRegister<any>; // Tipo genérico para `useForm`
   errors: FieldErrors<any>; // Manejo de errores de `useForm`
+}
+
+export interface filterOptionsProps {
+  cdc: number[];
+  employeeId: number | null;
+  requestDateStart: Date | null;
+  requestDateEnd: Date | null;
+  closingDateStart: Date | null;
+  closingDateEnd: Date | null;
+  status: string | null;
 }

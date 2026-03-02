@@ -1,41 +1,29 @@
 import React, { memo } from "react";
-import { Badge, Table, Text, Textarea, useDisclosure } from "@chakra-ui/react";
+import { Badge, Table, Text, useDisclosure } from "@chakra-ui/react";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { approvalsServices } from "@services/approvalsServices";
-import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
-import { useApprovalsList } from "@context/approvals/approvalsListContext";
+import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
 import { useApi } from "@hooks/useApi";
-import Loading from "@components/Loading";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 import { SortableHeader } from "@utils/table";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
+import { REQUEST_TYPE, STATUSLABELS } from "@models/const/approvals.const";
 
 
-export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog }) => {
+export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog, role }) => {
 
-  const statusLabels: Record<number, string> = { 1: "Rechazado", 2: "Aprobado", 3: "En espera" };
-  const typeRequestLabel: Record<string, string> = { "CASH_CLOSURE": 'Corte de Caja', 'LOTE': 'Cierre de Lote' };
+  const { open, onOpen, onClose } = useDisclosure();
+  const { approvalsList, triggerRefresh } = useApprovalContext();
+  
+  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
 
   const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
   const [message, setMessage] = React.useState<string>();
-
-  const { role } = useApprovalsRolUser();
-  const { open, onOpen, onClose } = useDisclosure();
-  const { approvalsList, fectApprovals, shouldRefetch, triggerRefresh } = useApprovalsList();
-
-  const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
   
-  const { isLoading } = useApi(approvalsServices.getListApprovalsUser, {
-    dependencies: [shouldRefetch],
-    onSuccess: (data) => {
-      fectApprovals(data);
-    }
-  });
-
   const { refetch, isLoading: isLoadingEdit } = useApi(
     () => {
       const dataEdit: RequestUpdateDetails = {
@@ -90,7 +78,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
       />
 
-      {isLoading && <Loading />}
+      {/* {isLoading && <Loading />} */}
 
       <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
         <Table.Root variant="outline">
@@ -98,9 +86,9 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
             <Table.Row>
               {ROLES_APPROVALS.includes(role as ROLES || '') && <Table.ColumnHeader textAlign="center">Acciones</Table.ColumnHeader>}
 
-              {/* <SortableHeader columnKey="zone" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
+              <SortableHeader columnKey="zone" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="cdc" label="Centro de consumo" handleSort={handleSort} getSortIcon={getSortIcon} />
-              <SortableHeader columnKey="closingEmployee" label="Empleado Corte" handleSort={handleSort} getSortIcon={getSortIcon} /> */}
+              <SortableHeader columnKey="closingEmployee" label="Empleado Corte" handleSort={handleSort} getSortIcon={getSortIcon} />
 
               <SortableHeader columnKey="status" label="Estatus" handleSort={handleSort} getSortIcon={getSortIcon} />
               <SortableHeader columnKey="date" label="Fecha solicitud" handleSort={handleSort} getSortIcon={getSortIcon} />
@@ -126,7 +114,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           rounded="full"
                           marginRight='5px'
                           onClick={() => handleOpenConfirm(item, true)}
-                          loading={isLoading}
+                          //loading={isLoading}
                         >
                           Aprobar
                         </Button>
@@ -136,7 +124,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           variant="surface"
                           rounded="full"
                           onClick={() => handleOpenConfirm(item, false)}
-                          loading={isLoading}
+                          //loading={isLoading}
                         >
                           Rechazar
                         </Button>
@@ -148,22 +136,22 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                   </Table.Cell>
                 )}
                 
-                {/* <Table.Cell textAlign="center">{item.zone}</Table.Cell>
+                <Table.Cell textAlign="center">{item.zone}</Table.Cell>
                 <Table.Cell textAlign="center">{item.cdc}</Table.Cell>
-                <Table.Cell textAlign="center">{item.closingEmployee}</Table.Cell> */}
+                <Table.Cell textAlign="center">{item.closingEmployee}</Table.Cell>
 
                 <Table.Cell textAlign="center">
                   <Badge colorPalette={item.status === 3 ? "meraInfo" : item.status === 1 ? "meraError" : "meraSecondary"}>
-                    {statusLabels[item.status]}
+                    {STATUSLABELS.find((status) => status.id === item.status)?.label}
                   </Badge>
                 </Table.Cell>
                 <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.date)}</Table.Cell>
                 <Table.Cell textAlign="center">{item.idRequest}</Table.Cell>
                 <Table.Cell textAlign="center">{item.employee}</Table.Cell>
                 <Table.Cell textAlign="center">{formatToDDMMYYYYstring(item.dateCdc)}</Table.Cell>
-                <Table.Cell textAlign="center">{typeRequestLabel[item.typeRequest]}</Table.Cell>
+                <Table.Cell textAlign="center">{REQUEST_TYPE.find(type => type.key === item.typeRequest)?.label}</Table.Cell>
                 <Table.Cell textAlign="center">{item.reason}</Table.Cell>
-                {/* <Table.Cell textAlign="center"><Textarea disabled autoresize resize={"none"} variant={"flushed"} width={"250px"}>{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Textarea></Table.Cell> */}
+                
                 <Table.Cell textAlign="center"><Text w={"250px"} lineClamp="3">{ROLES_APPROVALS.includes(role as ROLES || '') ? item.comment : item.commentSupervisor}</Text></Table.Cell>
               </Table.Row>
             ))}

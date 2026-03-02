@@ -241,21 +241,21 @@ export const handleBanamexData = (backingData: any): ReportsModels.BanamexModel 
     }
   });
 
-  const totalUsdAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoDolares: number })=> acc + (curr.montoDolares), 0);
-  const totalExchangeRate: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { cambioDolares: number })=> acc + (curr.cambioDolares), 0);
-  const totalRealAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoReal: number })=> acc + (curr.montoReal), 0);
-  const totalMeraAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoCC: number })=> acc + (curr.montoCC), 0);
-  const totalDifference: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { diferencia: number })=> acc + (curr.diferencia), 0);
+  // const totalUsdAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoDolares: number })=> acc + (curr.montoDolares), 0);
+  // const totalExchangeRate: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { cambioDolares: number })=> acc + (curr.cambioDolares), 0);
+  // const totalRealAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoReal: number })=> acc + (curr.montoReal), 0);
+  // const totalMeraAmount: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { montoCC: number })=> acc + (curr.montoCC), 0);
+  // const totalDifference: number = backingData.resumenBanamexResponses.reduce((acc: number, curr: { diferencia: number })=> acc + (curr.diferencia), 0);
 
-  preSummary.push({
-    cdc: "Total",
-    cdcId: 0,
-    usdAmount: totalUsdAmount,
-    exchangeRate: totalExchangeRate,
-    realAmount: totalRealAmount,
-    meraAmount: totalMeraAmount,
-    difference: totalDifference
-  });
+  // preSummary.push({
+  //   cdc: "Total",
+  //   cdcId: 0,
+  //   usdAmount: totalUsdAmount,
+  //   exchangeRate: totalExchangeRate,
+  //   realAmount: totalRealAmount,
+  //   meraAmount: totalMeraAmount,
+  //   difference: totalDifference
+  // });
 
 
   return {

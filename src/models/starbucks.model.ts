@@ -27,6 +27,7 @@ export interface StarbucksTableModel {
     employee: string;
     cdc: string;
     status: STATUS;
+    statusId: number;
     date: string;
     total: number;
     currencies: Currency[];
@@ -133,6 +134,7 @@ export interface DenominationsModel {
 
 export interface ClousingSaveStarbucksModel {
   crcId: number;
+  statusId: number;
   cash: {
     electronicTips: number;
     tips: number;

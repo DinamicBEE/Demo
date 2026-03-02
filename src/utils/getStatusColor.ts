@@ -16,6 +16,9 @@ export const getStatusColor = (status: STATUS) => {
       return "meraError";
     case STATUS.Open:
       return "meraSecondary";
+    case STATUS.OPEN_CHECK:
+      // return "meraSecondary";
+      return "teal";
     case STATUS.ACTIVE:
       return "meraSecondary";
     case STATUS.INACTIVE:
