@@ -52,7 +52,7 @@ export const getStarbucksData = async (cdcId: number, startDate: Date, endDate: 
         ...line,
         id:line.crcId,
         employee: line.employe,
-        status: getStatus(line.status === "En corrección" ? "Close" : line.status),
+        status: getStatus(line.status === "En corrección" ? "Close" : line.status === "Cheque abierto" ? "Open" : line.status),
         date: line.closingStartDate,
         total: line.totalPhysical,
         creditCards: line.tdc,
@@ -348,7 +348,7 @@ const transformCashData = (lines: CashStarbucksModel[], denominations: any[]): C
   });
 }
 
-export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean ): Promise<string> =>{
+export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTableRow, isConfirm: boolean, statusId: number ): Promise<string> =>{
 
   const cashPhysical = data.cash.reduce((acc, row) =>(acc+row.total),0);
   const cashPOS = data.cash.reduce((acc, row) =>(acc+row.pos),0);
@@ -356,7 +356,8 @@ export const saveStarbucksClousing = async (clousingId: number, data:StarbucksTa
   const tdcPOS = data.data.totalPOSTDC;
 
   const body: ClousingSaveStarbucksModel ={
-    crcId: clousingId,    
+    crcId: clousingId,
+    statusId:statusId,  
     cash: {
       idCurrencySub: data.data.idCurrencySub,
       electronicTips: data.data.electronicTips,

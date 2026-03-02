@@ -60,7 +60,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
       setDialogLoading(true);      
       const newLine = {
         ...line,
-        fgUpt: line.total !== 0 ? false : true,
+        fgUpt: ( (line.total !== 0)  || (line.statusId === 9)) ? false : true,
       }
       
       const data = await getDetailStarbucks(newLine, banks, idCurrency);
@@ -275,7 +275,7 @@ function DialogDetails({ isOpen, line, onClose, banks, idCurrency }: StarbucksDe
 
     try {
 
-      const response = await saveStarbucksClousing(line.id, body, isConfirm);
+      const response = await saveStarbucksClousing(line.id, body, isConfirm, line.statusId);
       if (response === "saved cash register closure starbucks") {
         onClose(true);
       }

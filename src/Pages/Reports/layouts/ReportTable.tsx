@@ -9,7 +9,6 @@ import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, Paginati
 import { changeStatus } from "@services/reportService";
 import { PaginatorSize } from "@models/common.const";
 import { selectOption } from "@models/common.model";
-import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import { IoPlay } from "react-icons/io5";
 import { Tooltip } from "@components/ui/tooltip"
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
@@ -47,14 +46,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
     useEffect(() => {
         if(reportData){
             setPage(page);
-            const isException = REPORT_EXECPTION.includes(currentReport);
-            let items: any;
-            if(isException){
-                //TODO falta cambio y manejo de interfaces
-                items = reportData?.summary?.slice(startRange, endRange);
-            } else {
-                items = sortedData?.slice(startRange, endRange);
-            }
+            let items = sortedData?.slice(startRange, endRange);
             setVisibleItems(items || []);
             setCountTable(reportData?.length);
         }

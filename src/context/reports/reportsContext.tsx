@@ -18,7 +18,7 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
 
           setLoading(true)
           const response = await getReports(reportRequest);
-          
+          console.log(response)
           setReportData(response);
 
           return response;
@@ -33,14 +33,18 @@ export function ReportsSectionProvider({ children } : { children : ReactNode }){
       [reportData]
     );
 
+    const cleanReportData = () => {
+      setReportData([]);
+    }
 
     const value = useMemo(
         () => ({
           reportData,
           loading,
-          getReportData
+          getReportData,
+          cleanReportData
         }),
-        [reportData, loading, getReportData]
+        [reportData, loading, getReportData, cleanReportData]
       );
     return(
         <reportsContext.Provider value={value}>
