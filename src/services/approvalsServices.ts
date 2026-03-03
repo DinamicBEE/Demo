@@ -1,8 +1,8 @@
 import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
-import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
-import { STATUSLABELS } from "@models/const/approvals.const";
+import { GETLISTAPPROVALS, GETLISTCLOUSING, GETLISTEMPLOYEES, GETLISTSTATUS, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
 import { location } from "@models/common.model";
 import api from "../api/index";
+import { Employee } from "@models/employee.model";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
@@ -41,9 +41,11 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 export const getStatus = async (): Promise<location[]> => {
   try {
     
-    const status = STATUSLABELS.map((stat: any) => ({
+    const response = await api.get(GETLISTSTATUS);
+
+    const status = response.data.map((stat: any) => ({
       id: stat.id,
-      name: stat.label,
+      name: stat.statusName,
     }));
 
     return status;
@@ -52,6 +54,24 @@ export const getStatus = async (): Promise<location[]> => {
     return [];
   }
 }
+
+export const getEmployees = async (): Promise<Employee[]> => {
+  try {
+
+    const response = await api.get(GETLISTEMPLOYEES);
+
+    const employees = response.data.map((emp: any) => ({
+      id: emp.id,
+      name: emp.employee,
+      employeeNumber: emp.id
+    }));
+
+    return employees;
+  } catch (error) {
+    console.error("Error al obtener la lista de empleados:", error);
+    return [] as unknown as Employee[];
+  }
+};
 
 export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<boolean> => {
   try {
