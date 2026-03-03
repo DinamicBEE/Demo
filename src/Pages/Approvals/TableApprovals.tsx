@@ -1,13 +1,11 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Badge, Table, Text, useDisclosure } from "@chakra-ui/react";
 import { Toaster, toaster } from "@components/ui/toaster";
 import { Button } from "@components/ui/button";
 import { ConfirmDialog } from "./components/ConfirmDialog";
-import { approvalsServices } from "@services/approvalsServices";
-import { useApprovalsRolUser } from "@context/approvals/approvalsRolUserContext";
+import { updateStatusRequest } from "@services/approvalsServices";
 import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { Approval, RequestUpdateDetails, TableApprovalsProps } from "@models/approvals.model";
-import { useApi } from "@hooks/useApi";
 import { ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { formatToDDMMYYYYstring } from "@utils/dateFormatter";
 import { SortableHeader } from "@utils/table";
@@ -23,41 +21,8 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
   const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
 
   const [confirmData, setConfirmData] = React.useState<{ item: Approval; newStatus: boolean } | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [message, setMessage] = React.useState<string>();
-  
-  const { refetch, isLoading: isLoadingEdit } = useApi(
-    () => {
-      const dataEdit: RequestUpdateDetails = {
-        idRequest: confirmData?.item.idRequest || 0,
-        idCashLote: confirmData?.item.idCashBatch || 0,
-        typeRequest: confirmData?.item.typeRequest || '',
-        comment: '', // comentario del supervisor.
-        status: confirmData?.newStatus || false
-      };
-      return approvalsServices.updateStatusRequest(dataEdit)
-    },
-    {
-      autoFetch: false,
-      onSuccess: (data) => {
-
-        toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
-
-        setConfirmData(null);
-        onClose();
-        triggerRefresh();
-
-      },
-      onError: (error) => {
-
-       
-        toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
-
-        setConfirmData(null);
-        onClose();
-        
-      }
-    }
-  );
 
   const handleOpenConfirm = (item: Approval, newStatus: boolean) => {
     setConfirmData({ item, newStatus });
@@ -65,7 +30,29 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
     onOpen();
   };
 
-  const handleConfirm = () => refetch();
+  const handleConfirm = async () => {
+    setLoading(true);
+    const dataEdit: RequestUpdateDetails = {
+      idRequest: confirmData?.item.idRequest || 0,
+      idCashLote: confirmData?.item.idCashBatch || 0,
+      typeRequest: confirmData?.item.typeRequest || '',
+      comment: '',
+      status: confirmData?.newStatus || false
+    };
+    const response = await updateStatusRequest(dataEdit);
+
+    setConfirmData(null);
+    onClose();
+
+    if(response) {
+      toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
+      triggerRefresh();
+    } else {
+      toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
+    }
+
+    setLoading(false);
+  };
 
   return (
     <>
@@ -77,6 +64,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
         onConfirm={handleConfirm}
         message={`¿Estás seguro de que deseas ${message}?`}
         title={message === "Aprobar" ? "Confirmar aprobación" : "Confirmar rechazo"}
+        loading={loading}
       />
 
       {/* {isLoading && <Loading />} */}
@@ -115,7 +103,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           rounded="full"
                           marginRight='5px'
                           onClick={() => handleOpenConfirm(item, true)}
-                          //loading={isLoading}
+                          loading={loading}
                         >
                           Aprobar
                         </Button>
@@ -125,13 +113,13 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
                           variant="surface"
                           rounded="full"
                           onClick={() => handleOpenConfirm(item, false)}
-                          //loading={isLoading}
+                          loading={loading}
                         >
                           Rechazar
                         </Button>
                       </>
                     )}
-                    <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full" onClick={() => openEditDialog(item)}>
+                    <Button marginLeft='10px' size='xs' variant="surface" colorPalette='gray' rounded="full" loading={loading} onClick={() => openEditDialog(item)}>
                       Detalle
                     </Button>
                   </Table.Cell>

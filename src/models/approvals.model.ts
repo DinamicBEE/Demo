@@ -30,7 +30,7 @@ export interface RequestUpdateDetails {
   idCashLote: number;
   idRequest: number;
   typeRequest: string;
-  status: boolean
+  status?: boolean
 }
 
 export interface AprovalsReason {
@@ -79,5 +79,5 @@ export interface filterOptionsProps {
   requestDateEnd: Date | null;
   closingDateStart: Date | null;
   closingDateEnd: Date | null;
-  status: string | null;
+  status: string[] | null;
 }
