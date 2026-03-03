@@ -3,18 +3,18 @@ import { GETLISTAPPROVALS, GETLISTCLOUSING, GETLISTEMPLOYEES, GETLISTSTATUS, GET
 import { location } from "@models/common.model";
 import api from "../api/index";
 import { Employee } from "@models/employee.model";
+import { format } from "date-fns";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
   try {
 
-    console.log(filterOptions.status)
     const response = await api.get(GETLISTAPPROVALS,{
       params: {
-        fSoliIni: filterOptions.requestDateStart,
-        fSoliFin: filterOptions.requestDateEnd,
-        fCorteIni: filterOptions.closingDateStart,
-        fCorteFin: filterOptions.closingDateEnd,
+        fSoliIni: filterOptions.requestDateStart !== null ? format(filterOptions.requestDateStart,"yyyy-MM-dd") : null,
+        fSoliFin: filterOptions.requestDateEnd !== null ? format(filterOptions.requestDateEnd,"yyyy-MM-dd") : null,
+        fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
+        fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
         empleadoId: filterOptions.employeeId,
         status: filterOptions.status?.join(","),
         cdcId: filterOptions.cdc,
