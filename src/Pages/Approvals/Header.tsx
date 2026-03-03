@@ -90,7 +90,6 @@ function Header() {
             cdc: cdcSelected.map(Number)
         }
 
-        console.log(filterSelected)
         await fectApprovals(filterSelected, true);
 
         setIsLoading(false);
