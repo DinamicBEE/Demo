@@ -75,17 +75,22 @@ function Header() {
     const habdleSearch = async () => {
 
         setIsLoading(true);
+        const statusString = selectedStatus.map(item => item.toString())
+
+        const statusSelected = status
+            .filter(item => statusString.includes(item.value.toString())).map(item => item.label) 
 
         const filterSelected: filterOptionsProps = {
             requestDateStart: requestStart,
             requestDateEnd: requestEnd,
             closingDateStart: closingStart,
             closingDateEnd: closingEnd,
-            status: status.find(item => item.value === Number(selectedStatus[0]))?.label || null,
+            status: statusSelected || null,
             employeeId: selectEmployee ? selectEmployee.id : null,
             cdc: cdcSelected.map(Number)
         }
 
+        console.log(filterSelected)
         await fectApprovals(filterSelected, true);
 
         setIsLoading(false);

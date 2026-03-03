@@ -8,6 +8,7 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 
   try {
 
+    console.log(filterOptions.status)
     const response = await api.get(GETLISTAPPROVALS,{
       params: {
         fSoliIni: filterOptions.requestDateStart,
@@ -15,7 +16,7 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
         fCorteIni: filterOptions.closingDateStart,
         fCorteFin: filterOptions.closingDateEnd,
         empleadoId: filterOptions.employeeId,
-        status: filterOptions.status,
+        status: filterOptions.status?.join(","),
         cdcId: filterOptions.cdc,
       }
     });
@@ -52,24 +53,22 @@ export const getStatus = async (): Promise<location[]> => {
   }
 }
 
+export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<boolean> => {
+  try {
+
+    const response = await api.post(UPDATE_REQUEST, data);
+
+    const dataResponse =response.data === "OK" ? true : false;
+    
+    return dataResponse;
+
+  } catch (error: any) {
+    console.error("Error al actualizar el estado de la solicitud:", error);
+    return false;
+  }
+}
+
 export const approvalsServices = {
-
-  //obtiene toda los registros de las solicitudes.
-  // async getListApprovalsUser(): Promise<any> {
-
-  //   try {
-
-  //     const response = await api.get(GETLISTAPPROVALS);
-  //     const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
-  //     //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
-  //     return list;
-
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
-
-  // },
 
   //Guarda un nueva solicitud
   async saveDataRequest(data: RequestOpeningForm): Promise<any> {
@@ -85,17 +84,7 @@ export const approvalsServices = {
   },
 
   //Actualiza la solicitud.
-  async updateStatusRequest(data: RequestUpdateDetails): Promise<any> {
-    try {
 
-      const response = await api.post(UPDATE_REQUEST, data);
-
-      return response.data;
-
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  },
 
   //obtiene el listado de las cajas y lotes.
   async getClosingList(idConsumerCenter: number, date: string, type:number): Promise<AprovalsClousureList[]> {
