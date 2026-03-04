@@ -48,7 +48,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
             setPage(page);
             let items = sortedData?.slice(startRange, endRange);
             setVisibleItems(items || []);
-            setCountTable(reportData?.length);
+            setCountTable(sortedData?.length);
         }
     }, [page, reportData, pageSize, sortedData]);
 

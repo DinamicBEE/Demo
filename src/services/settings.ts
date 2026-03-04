@@ -83,7 +83,9 @@ export const REPORT_VENDES = `${REPORT_BASE}/ventadescuento`;
 export const REPORT_VOIC = `${REPORT_BASE}/getVoidReport`;
 export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 
-export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
+// DEPRECATED 
+//export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
+export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/optBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
 export const GETALLSTORES = `${API_BASE}/subsidiaria/cdc`;
