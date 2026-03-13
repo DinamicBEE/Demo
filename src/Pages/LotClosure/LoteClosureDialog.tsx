@@ -148,7 +148,7 @@ function LoteClosureDialog({
                       value={localLot?.difference}
                       loading={false}
                     />
-                    <Button
+                    {/* <Button
                       onClick={handleUpdateBatch}
                       loading={isLoading}
                       colorPalette="meraWarning"
@@ -163,7 +163,7 @@ function LoteClosureDialog({
                         || localLot.isRoleEditable === false }
                     >
                       Actualizar Lote
-                    </Button>
+                    </Button> */}
                   </Flex>
                   {localBanks.bank.length > 0 &&
                     !loadingBanks &&
