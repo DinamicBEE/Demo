@@ -303,11 +303,12 @@ function LoteClosureDialog({
               <Button
                 colorPalette="meraWarning"
                 disabled={
-                  isLoading ||
-                  lot.status === STATUS.Close ||
-                  lot.status === STATUS.WITH_DIFFERENCE ||
-                  localLot.isRoleEditable === false ||
-                  localBanks.bank.length === 0
+                  (isLoading
+                    || lot.status === STATUS.Close
+                    || lot.status === STATUS.WITH_DIFFERENCE
+                    || localLot.isRoleEditable === false
+                    || localBanks.bank.length === 0)
+                    && localLot.totalPos !== null
                 }
                 onClick={() => handleOpenCloseLot(true)}
               >
@@ -315,11 +316,12 @@ function LoteClosureDialog({
               </Button>
               <Button
                 disabled={
-                  isLoading ||
-                  lot.status === STATUS.Close ||
-                  lot.status === STATUS.WITH_DIFFERENCE ||
-                  localLot.isRoleEditable === false ||
-                  localBanks.bank.length === 0
+                  (isLoading
+                    || lot.status === STATUS.Close
+                    || lot.status === STATUS.WITH_DIFFERENCE
+                    || localLot.isRoleEditable === false
+                    || localBanks.bank.length === 0)
+                    && localLot.totalPos !== null
                 }
                 onClick={() => handleOpenCloseLot(false)}
                 colorPalette="meraPrimary"
