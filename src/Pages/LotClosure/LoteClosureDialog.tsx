@@ -11,12 +11,7 @@ import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
 import { updateBatchClosing } from "@services/lotClosureService";
 
-function LoteClosureDialog({
-  isOpen,
-  onClose,
-  lot,
-  date
-}: LotClosureDialogProps) {
+function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading, error } =
     useLotClosureList();
   const [localBanks, setLocalBanks] = useState<BankUpdate>({ bank: [], bankCopy: []} as BankUpdate);
@@ -303,12 +298,15 @@ function LoteClosureDialog({
               <Button
                 colorPalette="meraWarning"
                 disabled={
-                  (isLoading
-                    || lot.status === STATUS.Close
+                  isLoading
+                  ? true 
+                  : lot.status === STATUS.Close
                     || lot.status === STATUS.WITH_DIFFERENCE
-                    || localLot.isRoleEditable === false
-                    || localBanks.bank.length === 0)
-                    && localLot.totalPos !== null
+                    || localLot.isRoleEditable === false 
+                    ? true
+                    : localBanks.bank.length === 0 || localLot.totalPos === null 
+                      ? false
+                      : false
                 }
                 onClick={() => handleOpenCloseLot(true)}
               >
@@ -316,12 +314,15 @@ function LoteClosureDialog({
               </Button>
               <Button
                 disabled={
-                  (isLoading
-                    || lot.status === STATUS.Close
+                  isLoading
+                  ? true 
+                  : lot.status === STATUS.Close
                     || lot.status === STATUS.WITH_DIFFERENCE
-                    || localLot.isRoleEditable === false
-                    || localBanks.bank.length === 0)
-                    && localLot.totalPos !== null
+                    || localLot.isRoleEditable === false 
+                    ? true
+                    : localBanks.bank.length === 0 || localLot.totalPos === null 
+                      ? false
+                      : false
                 }
                 onClick={() => handleOpenCloseLot(false)}
                 colorPalette="meraPrimary"
