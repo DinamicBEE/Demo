@@ -111,6 +111,7 @@ function TableOfTotals({
         await getInfo( store.id, 0, startDate, endDate, true );
         setLoading(false);
       } else if(jobStatus?.status === "FAILED"){
+        setLoading(false);
         toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
       }
     };
