@@ -96,7 +96,7 @@ function TableOfTotals({
   const updateticket = async () => {
     setLoading(true);
 
-    try {
+     try {
 
       const payload: JobPayload = {
         startDate,
@@ -104,7 +104,12 @@ function TableOfTotals({
         revenueId:sortedData[0].revenueId ||0
       }
       
-      await executeJob(payload);
+      const response = await executeJob(payload);
+
+      if(response.status === "RUNNING"){
+        setLoading(false);
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
 
     } catch (error) {
       toast("Error al actualizar el ticket", "error");
@@ -117,6 +122,7 @@ function TableOfTotals({
         await getInfo( store.id, 0, startDate, endDate, true );
         setLoading(false);
       } else if(jobStatus?.status === "FAILED"){
+        setLoading(false);
         toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
       }
     };
