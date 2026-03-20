@@ -15,7 +15,7 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
         fSoliFin: filterOptions.requestDateEnd !== null ? format(filterOptions.requestDateEnd,"yyyy-MM-dd") : null,
         fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
         fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
-        empleadoId: filterOptions.employeeId,
+        empleadoId: filterOptions.employeeId === 0 ? null : filterOptions.employeeId,
         status: filterOptions.status?.join(","),
         cdcId: filterOptions.cdc.join(","),
       }
