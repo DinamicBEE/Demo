@@ -4,7 +4,7 @@ import { ComboboxContent, ComboboxControl, ComboboxEmpty, ComboboxInput, Combobo
 import { ComboBoxCustomProps, selectOption } from "@models/common.model";
 
 
-function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disableCondition}: ComboBoxCustomProps  ){
+function ComboBoxCustom(  {multiple, options, label, onValueChange, selectedValues, disableCondition}: ComboBoxCustomProps  ){
 
     const [value, setValue] = useState<string[]>([]);
     const { contains } = useFilter({ sensitivity: "base" });
@@ -45,7 +45,7 @@ function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disabl
 
     return (
         <ComboboxRoot
-            multiple
+            multiple={multiple}
             selectionBehavior="preserve"
             openOnClick
             collection={collection}
