@@ -13,3 +13,8 @@ export const STATE_LABELS =  [
     { key: "Open", label: 'Abierta'}, 
     { key: 'Close', label: 'Cerrado' }
 ];
+
+export const ApprovalsReasons = [
+    {label: "Corte de caja", value: 1},
+    {label: "Cierre de lote", value: 2},
+];

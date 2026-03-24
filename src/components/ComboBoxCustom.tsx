@@ -53,7 +53,7 @@ function ComboBoxCustom(  {multiple, options, label, onValueChange, selectedValu
             value={value}
             onValueChange={handleValueChange}
             width="100%"
-            disabled={disableCondition && collection.items.length === 0}
+            disabled={disableCondition || collection.items.length === 0}
             onOpenChange={(e) => { if (e.open) filter(""); } }
         >
             <ComboboxLabel>{label}</ComboboxLabel>
@@ -67,25 +67,27 @@ function ComboBoxCustom(  {multiple, options, label, onValueChange, selectedValu
                 />
             </ComboboxControl>
             <ComboboxContent>
-                <Box p={2}>
-                    <HStack mb={2} justify="space-between" gap="4">
-                        <Button
-                            size="sm"
-                            colorPalette={value.length === collection.items.length ? 'meraWarning' : 'meraPrimary'}
-                            variant="surface"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectAll();
-                            }}
-                        >
-                            { value.length === collection.items.length ?
-                                "Borrar selección"
-                                :
-                                "Seleccionar todos"
-                            }
-                        </Button>
-                    </HStack>
-                </Box>
+                {multiple && (
+                    <Box p={2}>
+                        <HStack mb={2} justify="space-between" gap="4">
+                                <Button
+                                    size="sm"
+                                    colorPalette={value.length === collection.items.length ? 'meraWarning' : 'meraPrimary'}
+                                    variant="surface"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSelectAll();
+                                    }}
+                                >
+                                    { value.length === collection.items.length ?
+                                        "Borrar selección"
+                                        :
+                                        "Seleccionar todos"
+                                    }
+                                </Button>
+                        </HStack>
+                    </Box>
+                )}
                 {collection.items.length > 0 ?
                     (collection.items.map((item) => (
                         <ComboboxItem item={item} key={item.value}

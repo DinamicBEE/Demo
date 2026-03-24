@@ -1,6 +1,6 @@
 import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
 import { GETLISTAPPROVALS, GETLISTCLOUSING, GETLISTEMPLOYEES, GETLISTSTATUS, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
-import { location } from "@models/common.model";
+import { location, selectOption } from "@models/common.model";
 import api from "../api/index";
 import { Employee } from "@models/employee.model";
 import { format } from "date-fns";
@@ -88,6 +88,59 @@ export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<bo
   }
 }
 
+export const getClosingList = async(idConsumerCenter: number, date: string, type:number): Promise<selectOption[]> => {
+  try {      
+    const response = await api.get(GETLISTCLOUSING, {
+      params: {
+        idConsumerCenter: idConsumerCenter,
+        date: date,
+      }
+    });
+
+    const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
+
+    const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+    const result: selectOption[] = filteredData.map((item: any) => {
+      
+      return {
+        value: item.id,
+        label: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
+      }
+
+    });      
+
+    return result
+
+  } catch (error) {
+    console.error(error);
+    return [] as selectOption[];
+  }
+}
+
+export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
+  try {
+
+    const response = await api.get(GETREASONLIST);
+    
+    const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
+
+    const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+    
+    const result: selectOption[] = filteredData.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.reason, 
+      }
+    });
+
+    return result;
+
+  } catch (error) {
+    console.error(error)
+    return [] as selectOption[];
+  }
+}
+
 export const approvalsServices = {
 
   //Guarda un nueva solicitud
@@ -103,61 +156,28 @@ export const approvalsServices = {
     }
   },
 
-  //Actualiza la solicitud.
-
-
-  //obtiene el listado de las cajas y lotes.
-  async getClosingList(idConsumerCenter: number, date: string, type:number): Promise<AprovalsClousureList[]> {
-    try {      
-      const response = await api.get(GETLISTCLOUSING, {
-        params: {
-          idConsumerCenter: idConsumerCenter,
-          date: date,
-        }
-      });
-
-      const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
-
-      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
-      const result: AprovalsClousureList[] = filteredData.map((item: any) => {
-       
-        return {
-          id: item.id,
-          name: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
-        }
- 
-      });      
-
-      return result
-
-    } catch (error) {
-      console.error(error);
-      return [] as AprovalsClousureList[];
-    }
-  },
-
   // obtiene el listado de los motivos.
-  async getReasonsList(type: Number): Promise<AprovalsReason[]> {
-    try {
+  // async getReasonsList(type: Number): Promise<AprovalsReason[]> {
+  //   try {
 
-      const response = await api.get(GETREASONLIST);
+  //     const response = await api.get(GETREASONLIST);
       
-      const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
+  //     const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
 
-      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+  //     const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
       
-      const result: AprovalsReason[] = filteredData.map((item: any) => {
-        return {
-          id: item.id,
-          name: item.reason, 
-        }
-      });
+  //     const result: AprovalsReason[] = filteredData.map((item: any) => {
+  //       return {
+  //         id: item.id,
+  //         name: item.reason, 
+  //       }
+  //     });
 
-      return result;
+  //     return result;
 
-    } catch (error) {
-      console.error(error)
-      return [] as AprovalsReason[];
-    }
-  }
+  //   } catch (error) {
+  //     console.error(error)
+  //     return [] as AprovalsReason[];
+  //   }
+  // }
 }
