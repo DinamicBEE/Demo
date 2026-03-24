@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
-import { Box, Button, Field, Grid, Heading, } from "@chakra-ui/react";
+import { useCallback, useEffect, useState } from "react";
+import { Box, Button, Field, Grid, GridItem, Heading, } from "@chakra-ui/react";
 import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import { selectOption } from "@models/common.model";
 import { Employee } from "@models/employee.model";
-import { filterOptionsProps } from "@models/approvals.model";
+import { filterOptionsProps, HeaderProps } from "@models/approvals.model";
 import FilterEmployee from "@components/FilterEmployee";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 import  DatePicker from "../LotClosure/components/DatePicker";
 import Loading from "@components/Loading";
+import { RegisterApprovals } from "./RegisterApprovals";
+import { APPROVALS_TYPE } from "@models/const/approvals.const";
 
-function Header() {
+function Header({type}:HeaderProps) {
 
     const { getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList, fectApprovals } = useApprovalContext();
 
@@ -29,6 +31,7 @@ function Header() {
     const [zonesSelected, setZonesSelected] = useState<string[]>([]);
     const [cdcSelected, setCDCSelected] = useState<string[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
         
     useEffect( () => {
         async function fetchData() {
@@ -95,68 +98,98 @@ function Header() {
         setIsLoading(false);
 
     };
-     
+
+    const openDialog = useCallback(() => setIsDialogOpen(true), []);
+
+    const closeDialog = useCallback(() => setIsDialogOpen(false), []);
+    
     return (
-        <Box p={6}>
-            
-            {isLoading && <Loading />}
-            
-            <Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
-
-            <Grid
-                templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
-                gap={4}
-                mb={4}
-                w="100%"
-                alignItems="end"
-            >
-                <ComboBoxCustom multiple={false} options={subsidiaries} label="Subsidiarias" onValueChange={setSubSelected} selectedValues={subSelected} disableCondition={false}></ComboBoxCustom>
-
-                <ComboBoxCustom multiple={true} options={zones} label="Zonas" onValueChange={setZonesSelected} selectedValues={zonesSelected} disableCondition={false}></ComboBoxCustom>
+        <>
+            <Box p={6}>
                 
-                <ComboBoxCustom multiple={true} options={cdc} label="Centros de consumo" onValueChange={setCDCSelected} selectedValues={cdcSelected} disableCondition={false}></ComboBoxCustom>
+                {isLoading && <Loading />}
+                
+                <Heading>Solicitud de Ajuste de Caja / Lote Cerrado </Heading>
 
-                <Field.Root>
-                    <Field.Label>Empleado solicitante</Field.Label>
-                    <FilterEmployee
-                        employees={employees}
-                        label={false}
-                        onSelect={setSelectEmployee}
-                        disabled={false}
-                        employeeToEdit={null}
-                    />
-                </Field.Root>
-
-                <Field.Root>
-                    <Field.Label>Fechas de solicitud</Field.Label>
-                    <DatePicker
-                        startDate={requestStart}
-                        endDate={requestEnd}
-                        onChange={setRequestRange}
-                    />
-                </Field.Root>
-
-                <Field.Root>
-                    <Field.Label>Fechas de cierre</Field.Label>
-                    <DatePicker
-                        startDate={closingStart}
-                        endDate={closingEnd}
-                        onChange={setClosingRange}
-                    />
-                </Field.Root>
-
-                <ComboBoxCustom multiple={true} options={status} label="Estatus" onValueChange={setSelectedStatus} selectedValues={selectedStatus} disableCondition={false}></ComboBoxCustom>
-
-                <Button
-                    colorPalette="meraInfo"
-                    onClick={() => habdleSearch()}
-                    //disabled={ requestEnd == null || closingEnd == null || cdcSelected.length === 0}
+                <Grid
+                    templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+                    gap={4}
+                    w="100%"
+                    alignItems="end"
                 >
-                    Buscar
-                </Button>
+                    <ComboBoxCustom multiple={false} options={subsidiaries} label="Subsidiarias" onValueChange={setSubSelected} selectedValues={subSelected} disableCondition={false}></ComboBoxCustom>
 
-            </Grid>
-        </Box>
+                    <ComboBoxCustom multiple={true} options={zones} label="Zonas" onValueChange={setZonesSelected} selectedValues={zonesSelected} disableCondition={false}></ComboBoxCustom>
+                    
+                    <ComboBoxCustom multiple={true} options={cdc} label="Centros de consumo" onValueChange={setCDCSelected} selectedValues={cdcSelected} disableCondition={false}></ComboBoxCustom>
+
+                    <Field.Root>
+                        <Field.Label>Empleado solicitante</Field.Label>
+                        <FilterEmployee
+                            employees={employees}
+                            label={false}
+                            onSelect={setSelectEmployee}
+                            disabled={false}
+                            employeeToEdit={null}
+                        />
+                    </Field.Root>
+
+                    <Field.Root>
+                        <Field.Label>Fechas de solicitud</Field.Label>
+                        <DatePicker
+                            startDate={requestStart}
+                            endDate={requestEnd}
+                            onChange={setRequestRange}
+                        />
+                    </Field.Root>
+
+                    <Field.Root>
+                        <Field.Label>Fechas de cierre</Field.Label>
+                        <DatePicker
+                            startDate={closingStart}
+                            endDate={closingEnd}
+                            onChange={setClosingRange}
+                        />
+                    </Field.Root>
+
+                    <ComboBoxCustom multiple={true} options={status} label="Estatus" onValueChange={setSelectedStatus} selectedValues={selectedStatus} disableCondition={false}></ComboBoxCustom>
+
+                    { type == APPROVALS_TYPE.APPROVALS && (
+                            <Button
+                                colorPalette="meraInfo"
+                                onClick={() => habdleSearch()}
+                            >
+                                Buscar
+                            </Button>
+                        )
+                    }
+
+                    { type == APPROVALS_TYPE.REQUEST && (
+                            <>                        
+                                <GridItem />
+                                <GridItem />
+
+                                <Button
+                                    colorPalette="meraInfo"
+                                    onClick={() => habdleSearch()}
+                                >
+                                    Buscar
+                                </Button>
+
+
+                                <Button colorPalette="meraPrimary" onClick={() => openDialog()}>
+                                    Agregar nueva Solicitud
+                                </Button>
+                            </>
+                        )
+                    }
+
+
+                </Grid>
+            </Box>
+
+            <RegisterApprovals isOpen={isDialogOpen} onClose={closeDialog} />
+        </>
     )
 }
 

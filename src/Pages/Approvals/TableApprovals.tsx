@@ -69,7 +69,7 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
 
       {/* {isLoading && <Loading />} */}
 
-      <Table.ScrollArea rounded='md' paddingTop={'20px'} paddingBottom={'20px'}>
+      <Table.ScrollArea rounded='md' paddingBottom={'20px'}>
         <Table.Root variant="outline">
           <Table.Header>
             <Table.Row>

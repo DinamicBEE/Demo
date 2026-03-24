@@ -155,29 +155,4 @@ export const approvalsServices = {
       throw new Error(error);
     }
   },
-
-  // obtiene el listado de los motivos.
-  // async getReasonsList(type: Number): Promise<AprovalsReason[]> {
-  //   try {
-
-  //     const response = await api.get(GETREASONLIST);
-      
-  //     const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
-
-  //     const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
-      
-  //     const result: AprovalsReason[] = filteredData.map((item: any) => {
-  //       return {
-  //         id: item.id,
-  //         name: item.reason, 
-  //       }
-  //     });
-
-  //     return result;
-
-  //   } catch (error) {
-  //     console.error(error)
-  //     return [] as AprovalsReason[];
-  //   }
-  // }
 }
