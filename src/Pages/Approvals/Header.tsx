@@ -110,11 +110,11 @@ function Header() {
                 w="100%"
                 alignItems="end"
             >
-                <ComboBoxCustom options={subsidiaries} label="Subsidiarias" onValueChange={setSubSelected} selectedValues={subSelected} disableCondition={false}></ComboBoxCustom>
+                <ComboBoxCustom multiple={false} options={subsidiaries} label="Subsidiarias" onValueChange={setSubSelected} selectedValues={subSelected} disableCondition={false}></ComboBoxCustom>
 
-                <ComboBoxCustom options={zones} label="Zonas" onValueChange={setZonesSelected} selectedValues={zonesSelected} disableCondition={false}></ComboBoxCustom>
+                <ComboBoxCustom multiple={true} options={zones} label="Zonas" onValueChange={setZonesSelected} selectedValues={zonesSelected} disableCondition={false}></ComboBoxCustom>
                 
-                <ComboBoxCustom options={cdc} label="Centros de consumo" onValueChange={setCDCSelected} selectedValues={cdcSelected} disableCondition={false}></ComboBoxCustom>
+                <ComboBoxCustom multiple={true} options={cdc} label="Centros de consumo" onValueChange={setCDCSelected} selectedValues={cdcSelected} disableCondition={false}></ComboBoxCustom>
 
                 <Field.Root>
                     <Field.Label>Empleado solicitante</Field.Label>
@@ -145,7 +145,7 @@ function Header() {
                     />
                 </Field.Root>
 
-                <ComboBoxCustom options={status} label="Estatus" onValueChange={setSelectedStatus} selectedValues={selectedStatus} disableCondition={false}></ComboBoxCustom>
+                <ComboBoxCustom multiple={true} options={status} label="Estatus" onValueChange={setSelectedStatus} selectedValues={selectedStatus} disableCondition={false}></ComboBoxCustom>
 
                 <Button
                     colorPalette="meraInfo"

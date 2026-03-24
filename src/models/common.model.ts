@@ -79,6 +79,7 @@ export interface ParametersSelectedModel {
 }
 
 export interface ComboBoxCustomProps {
+    multiple: boolean;
     options: selectOption[];
     label: string;
     onValueChange: (ids: string[]) => void;
