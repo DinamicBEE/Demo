@@ -63,3 +63,10 @@
   width: auto;
   margin-top: 0px;
 }
+
+.separator {
+  width: 80%;
+  height: 4px;
+  border-radius: 12px;
+  background: #7cb44c;
+}
