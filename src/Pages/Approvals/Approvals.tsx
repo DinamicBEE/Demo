@@ -6,6 +6,7 @@ import { TableApprovals } from "./TableApprovals";
 import { DetailApprovals } from "./DetailApprovals";
 import Header from "./Header";
 import { ROLES } from "@models/const/menu.consts";
+import { APPROVALS_TYPE } from "@models/const/approvals.const";
 
 function Approvals() {
 
@@ -24,7 +25,7 @@ function Approvals() {
 		<>
 			<Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
 
-				<Header />
+				<Header type={APPROVALS_TYPE.APPROVALS}/>
 				
 				<TableApprovals openEditDialog={openDialogEdit} role={ROLES.COMPTROLLER}/>
 

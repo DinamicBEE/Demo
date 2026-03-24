@@ -18,3 +18,8 @@ export const ApprovalsReasons = [
     {label: "Corte de caja", value: 1},
     {label: "Cierre de lote", value: 2},
 ];
+
+export enum APPROVALS_TYPE {
+  APPROVALS = 1,
+  REQUEST = 2,
+}
