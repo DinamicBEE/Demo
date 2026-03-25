@@ -141,18 +141,18 @@ export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
   }
 }
 
-export const approvalsServices = {
+export const saveDataRequest = async (data: RequestOpeningForm): Promise<boolean> => {
+  try {
 
-  //Guarda un nueva solicitud
-  async saveDataRequest(data: RequestOpeningForm): Promise<any> {
-    try {
+    const response = await api.post(SAVE_REQUEST, data);
 
-      const response = await api.post(SAVE_REQUEST, data);
-
-      return response.data
-
-    } catch (error: any) {
-      throw new Error(error);
+    if(response.data === 'create'){
+      return true
+    } else {
+      return false
     }
-  },
+
+  } catch (error: any) {
+    return false
+  }
 }

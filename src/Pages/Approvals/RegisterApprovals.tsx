@@ -2,29 +2,21 @@ import React, { memo, useEffect, useState } from "react";
 import { Textarea, useDisclosure, Field, Box, Grid, GridItem } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogActionTrigger, DialogCloseTrigger } from "@components/ui/dialog";
 import { Button } from "@components/ui/button";
-import { Toaster, toaster } from "@components/ui/toaster";
+import { toaster, Toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
-import { approvalsServices, getClosingList, getReasonsList } from "@services/approvalsServices";
+import { saveDataRequest, getClosingList, getReasonsList } from "@services/approvalsServices";
 import { useApprovalContext } from "@context/approvals/approvalsListContext";
-import { useApi } from "@hooks/useApi";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
 import { selectOption } from "@models/common.model";
 import { toast } from "@utils/Toast";
-import Loading from "@components/Loading";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 import { ApprovalsReasons } from "@models/const/approvals.const";
 import "./Approvals.css"
 
-export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
-  ({ isOpen, onClose }) => {
-    const [hasCancelled, setHasCancelled] = useState(false);
-    const {
-      open,
-      onOpen: onOpenConfir,
-      onClose: onCloseConfir,
-    } = useDisclosure();
-    const { triggerRefresh, getSubsidiaries, getZoneList, getCDCs, } = useApprovalContext();
+export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
+    const { open, onOpen, onClose: onCloseConfir } = useDisclosure();
+    const { getSubsidiaries, getZoneList, getCDCs, } = useApprovalContext();
 
     const [date, setDate] = useState<string>("");
     const [textareaValue, setTextareaValue] = useState<string>("");
@@ -56,7 +48,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
           setIntialDate(localDate);
         }
       
-      }, [date])
+      }, [date]);
 
     useEffect(() => {
       async function fetchData() {
@@ -67,43 +59,27 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       fetchData();
     }, []);
 
-    //hook encargado de realizar el guardado de la informacion
-    const { refetch, isLoading } = useApi(
-      () => {
-        setLoading(true);
-        const formData: RequestOpeningForm = {
-          id: idClousing[0],
-          reason: Number(reason[0]),
-          comment: textareaValue,
-        };
-        return approvalsServices.saveDataRequest(formData);
-      },
-      {
-        autoFetch: false,
-        onSuccess: (data) => {
-          if (data == "create") {
-            setLoading(false);
-            onClose();
-            handleCancel(false);
-            triggerRefresh();
-
-            toaster.create({
-              title: `Se guardaron los datos correctamente`,
-              type: "success",
-            });
-          }
-        },
-        onError: (data) => {
-          handleCancel(false);
-          setLoading(false);
-          onClose();
-          toaster.create({
-            title: `No se guardaron los datos correctamente`,
-            type: "error",
-          });
-        },
+    useEffect(() => { 
+      async function fetchCDC() {
+          if(zonesSelected.length === 0) setCDCSelected([]);
+          const cdcData = await getCDCs(zonesSelected.map(Number));
+          setCDC(cdcData);
       }
-    );
+
+      fetchCDC();
+
+    },[zonesSelected]);
+
+    useEffect(() => { 
+      async function fetchZones() {
+          if (subSelected.length === 0) setZonesSelected([]);
+          const zoneData = await getZoneList(subSelected.map(Number));
+          setZones(zoneData);
+      }
+
+      fetchZones();
+
+    },[subSelected]);
 
     useEffect(() => {
       async function fetchClousingList() {
@@ -131,38 +107,33 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       fetchClousingList();
     }, [cdcSelected, date, type]);
 
-    const onSubmitForm = () => onOpenConfir();
+    const handleConfirm = async () => {
+      setLoading(true);
 
-    const handleConfirm = () => refetch();
+      const formData: RequestOpeningForm = {
+        id: idClousing[0],
+        reason: Number(reason[0]),
+        comment: textareaValue,
+      };
+
+      const response = await saveDataRequest(formData);
+      console.log(response)
+      if(response){
+        toaster.create({ title: `Se guardaron los datos correctamente`, type: "success", });
+        onClose();
+        onCloseConfir();
+        handleCancel();
+      } else {
+          toaster.create({ title: `No se guardaron los datos correctamente`, type: "error", });
+      }
+      setLoading(false);
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setTextareaValue(e.target.value);
     };
 
-    useEffect(() => { 
-      async function fetchCDC() {
-          if(zonesSelected.length === 0) setCDCSelected([]);
-          const cdcData = await getCDCs(zonesSelected.map(Number));
-          setCDC(cdcData);
-      }
-
-      fetchCDC();
-
-    },[zonesSelected])
-
-    useEffect(() => { 
-      async function fetchZones() {
-          if (subSelected.length === 0) setZonesSelected([]);
-          const zoneData = await getZoneList(subSelected.map(Number));
-          setZones(zoneData);
-      }
-
-      fetchZones();
-
-    },[subSelected])
-
-    const handleCancel = (flag: boolean) => {
-      setHasCancelled(flag);
+    const handleCancel = () => {
       setType([]);
       setSubSelected([]);
       setZonesSelected([])
@@ -171,6 +142,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       setReason([]);
       setDate("");
       setTextareaValue("");
+      onClose();
     };
 
     return (
@@ -183,17 +155,16 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
           onConfirm={handleConfirm}
           message="¿Estás seguro de que deseas crear una nueva Solcitud?"
           title="Registrar nuevo Solicitud de reapertura de caja/lote."
-          loading={isLoading}
+          loading={loading}
         />
 
         <DialogRoot
           scrollBehavior="inside"
           size="lg"
           open={isOpen}
-          onOpenChange={() => {
-            setHasCancelled(false);
-            onClose();
-          }}
+          // onOpenChange={() => {
+          //   onClose();
+          // }}
           closeOnEscape={false}
           closeOnInteractOutside={false}
         >
@@ -202,7 +173,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
               <DialogTitle fontWeight="medium" fontSize="xl">
                 Registro Solicitud de Ajuste de Caja / Lote Cerrado
               </DialogTitle>
-              <DialogCloseTrigger onClick={() => handleCancel(true) } color="#166534" />
+              <DialogCloseTrigger onClick={() => handleCancel() } color="#166534" />
             </DialogHeader>
             <DialogBody pb="4">
 
@@ -259,38 +230,19 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
 
             </DialogBody>
 
-            <DialogFooter>
-              <DialogActionTrigger asChild>
-                <Button
-                  colorPalette="meraError"
-                  onClick={() => handleCancel(true)}
-                  disabled={isLoading}
-                >
-                  Cancelar
-                </Button>
-              </DialogActionTrigger>
+            <DialogFooter display={"flex"} gap={6} justifyContent="space-evenly">
+              <DialogActionTrigger>
+                <Box display={"flex"} gap={6} justifyContent="space-evenly">
+                  <Button size="md" w={150} colorPalette="meraError" onClick={() => handleCancel()}
+                    disabled={loading}> Cancelar </Button>
 
-              {closingList &&
-                closingList.length !== 0 &&
-                !hasCancelled && (
-                  <Button
-                    colorPalette="meraPrimary"
-                    loading={isLoading}
-                    disabled={isLoading}
-                    onClick={() => onSubmitForm()}
-                  >
-                    Guardar
-                  </Button>
-                )}
+                  <Button size="md" w={150} colorPalette="meraPrimary" loading={loading} disabled={loading || idClousing.length === 0}
+                    onClick={() => onOpen()} > Guardar </Button>
+                </Box>
+              </DialogActionTrigger>
             </DialogFooter>
           </DialogContent>
         </DialogRoot>
-        {loading && (
-                <Box position="fixed" top="50%" left="50%" zIndex={100000}>
-                    <Loading />
-                </Box>
-            )
-            }
       </>
     );
   }
