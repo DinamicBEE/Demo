@@ -253,9 +253,10 @@ export const getSpecialCustomerClousing = async (
       .reduce((acc: number, curr: number) => acc + curr, 0); */
       
     const newTotalFisico = lines
+      .filter((l: any) => Number(l.pax) >= 1)
       .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newDiff = Number(newTotalFisico - response.data.totalPos);
+    const newDiff = Number(newTotalFisico - response.data.totalPos);    
 
     const data = {
       id: clousingId,

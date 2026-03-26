@@ -36,8 +36,6 @@ function useSortableTable<T extends SortableItem>(data: T[] | DataWithSummary<T>
     } else  {
       sortableItems = [...data.summary]
     }
-    console.log(sortableItems)
-
     if (sortConfig.key !== null) {
       sortableItems.sort((a, b) => {
         const aValue = a[sortConfig.key!];
