@@ -344,6 +344,7 @@ export interface CustomerClousingFormProps {
   idCurrency: number;
   idClousing: number;
   isStarbucks: boolean;
+  subId: number;
 }
 
 export interface GeneralInfoProps {

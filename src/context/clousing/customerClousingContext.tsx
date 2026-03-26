@@ -85,14 +85,14 @@ export function CustomerClousingProvider({
     []
   );
 
-  const getCustomerList = useCallback(async () => {
+  const getCustomerList = useCallback(async (subId:number) => {
     
     if(customerList.length > 0) {
       return customerList;
     }
     
     try {
-      const response = await getCustomers(true);
+      const response = await getCustomers(true, subId);
 
       setCustomerList(response);
       return response;

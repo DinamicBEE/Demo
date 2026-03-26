@@ -20,7 +20,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
         label: item.name
       }));
     case "customer":
-      return await getCustomers(false);
+      return await getCustomers(false, null);
     case "errorType":
       return ERROR_TYPES.map(item => ({
         value: item.value,
@@ -105,10 +105,10 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async (isGeneral: boolean): Promise<FilterOption[]> => {
+export const getCustomers = async (isGeneral: boolean, subId:number | null ): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
-      { params: { clientType: isGeneral ? "general" : "especial" } }
+      { params: { clientType: isGeneral ? "general" : "especial", subId } }
     );
     const transformedData = reponse.data.map((customer: any) => {
       return {

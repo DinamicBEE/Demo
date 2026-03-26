@@ -59,7 +59,7 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
       );
 
       if(customers.length === 0){
-        const customersApi = await getCustomers(false);
+        const customersApi = await getCustomers(false, subsidiary.id);
         setCustomers(customersApi);
       }
 
