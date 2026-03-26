@@ -67,7 +67,6 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(
       fetchData();
     }, []);
 
-    //hook encargado de realizar el guardado de la informacion
     const { refetch, isLoading } = useApi(
       () => {
         setLoading(true);
