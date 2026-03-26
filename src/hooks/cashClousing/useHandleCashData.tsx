@@ -55,6 +55,11 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
   }
 
 function handleChangeTips(value: string) {
+  if(isFirstLoad){
+    isFirstLoad.current = false;
+    return;
+  }
+  
   const sanitizedValue = value.replace(/[^\d.]/g, "");
   const newTipAmount = parseFloat(sanitizedValue) || 0;
 
