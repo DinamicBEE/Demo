@@ -35,13 +35,14 @@ function FilterEmployee({
 
   const { contains } = useFilter({ sensitivity: "base" });
 
-  const { collection, filter } = useListCollection({
+  const { collection, filter, reset } = useListCollection({
     initialItems: employeeOptions,
     filter: contains,
     limit: 200,
   });
 
   useEffect(() => {
+    reset();
     collection.setItems(employeeOptions);
   }, [employees]);
 
@@ -62,11 +63,15 @@ function FilterEmployee({
       onSelect(
         employeeSelect ? employeeSelect : ({ id: 0, name: "" } as Employee)
       );
+    } else {
+      onSelect(
+       ({ id: 0, name: "" } as Employee)
+      );
     }
   };
 
   return (
-    <Box>
+    <Box width="100%">
       <FieldRoot>
         {label && <FieldLabel>Empleado</FieldLabel>}
         <ComboboxRoot
