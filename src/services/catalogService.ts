@@ -105,6 +105,7 @@ export const getCurrencies = async (
   }
 };
 
+//TODO: Unifacar servicios getCustomers y getCustomersPrepaid
 export const getCustomers = async (isGeneral: boolean, subId:number | null ): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
