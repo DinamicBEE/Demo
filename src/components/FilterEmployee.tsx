@@ -63,6 +63,10 @@ function FilterEmployee({
       onSelect(
         employeeSelect ? employeeSelect : ({ id: 0, name: "" } as Employee)
       );
+    } else {
+      onSelect(
+       ({ id: 0, name: "" } as Employee)
+      );
     }
   };
 

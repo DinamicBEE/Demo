@@ -1,5 +1,6 @@
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import { ROLES } from "./const/menu.consts";
+import { APPROVALS_TYPE } from "./const/approvals.const";
 
 export interface Approval {
   idRequest: number;
@@ -30,7 +31,7 @@ export interface RequestUpdateDetails {
   idCashLote: number;
   idRequest: number;
   typeRequest: string;
-  status: boolean
+  status?: boolean
 }
 
 export interface AprovalsReason {
@@ -79,5 +80,9 @@ export interface filterOptionsProps {
   requestDateEnd: Date | null;
   closingDateStart: Date | null;
   closingDateEnd: Date | null;
-  status: string | null;
+  status: string[] | null;
+}
+
+export interface HeaderProps {
+  type: APPROVALS_TYPE;
 }

@@ -4,7 +4,7 @@ import { ComboboxContent, ComboboxControl, ComboboxEmpty, ComboboxInput, Combobo
 import { ComboBoxCustomProps, selectOption } from "@models/common.model";
 
 
-function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disableCondition}: ComboBoxCustomProps  ){
+function ComboBoxCustom(  {multiple, options, label, onValueChange, selectedValues, disableCondition}: ComboBoxCustomProps  ){
 
     const [value, setValue] = useState<string[]>([]);
     const { contains } = useFilter({ sensitivity: "base" });
@@ -45,7 +45,7 @@ function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disabl
 
     return (
         <ComboboxRoot
-            multiple
+            multiple={multiple}
             selectionBehavior="preserve"
             openOnClick
             collection={collection}
@@ -53,7 +53,7 @@ function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disabl
             value={value}
             onValueChange={handleValueChange}
             width="100%"
-            disabled={disableCondition && collection.items.length === 0}
+            disabled={disableCondition || collection.items.length === 0}
             onOpenChange={(e) => { if (e.open) filter(""); } }
         >
             <ComboboxLabel>{label}</ComboboxLabel>
@@ -67,25 +67,27 @@ function ComboBoxCustom(  {options, label, onValueChange, selectedValues, disabl
                 />
             </ComboboxControl>
             <ComboboxContent>
-                <Box p={2}>
-                    <HStack mb={2} justify="space-between" gap="4">
-                        <Button
-                            size="sm"
-                            colorPalette={value.length === collection.items.length ? 'meraWarning' : 'meraPrimary'}
-                            variant="surface"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectAll();
-                            }}
-                        >
-                            { value.length === collection.items.length ?
-                                "Borrar selección"
-                                :
-                                "Seleccionar todos"
-                            }
-                        </Button>
-                    </HStack>
-                </Box>
+                {multiple && (
+                    <Box p={2}>
+                        <HStack mb={2} justify="space-between" gap="4">
+                                <Button
+                                    size="sm"
+                                    colorPalette={value.length === collection.items.length ? 'meraWarning' : 'meraPrimary'}
+                                    variant="surface"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSelectAll();
+                                    }}
+                                >
+                                    { value.length === collection.items.length ?
+                                        "Borrar selección"
+                                        :
+                                        "Seleccionar todos"
+                                    }
+                                </Button>
+                        </HStack>
+                    </Box>
+                )}
                 {collection.items.length > 0 ?
                     (collection.items.map((item) => (
                         <ComboboxItem item={item} key={item.value}

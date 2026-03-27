@@ -1,8 +1,9 @@
 import { Approval, AprovalsClousureList, AprovalsReason, filterOptionsProps, RequestOpeningForm, RequestUpdateDetails } from "@models/approvals.model";
-import { GETLISTAPPROVALS, GETLISTCLOUSING, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
-import { STATUSLABELS } from "@models/const/approvals.const";
-import { location } from "@models/common.model";
+import { GETLISTAPPROVALS, GETLISTCLOUSING, GETLISTEMPLOYEES, GETLISTSTATUS, GETREASONLIST, SAVE_REQUEST, UPDATE_REQUEST } from "./settings";
+import { location, selectOption } from "@models/common.model";
 import api from "../api/index";
+import { Employee } from "@models/employee.model";
+import { format } from "date-fns";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
@@ -10,13 +11,13 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 
     const response = await api.get(GETLISTAPPROVALS,{
       params: {
-        fSoliIni: filterOptions.requestDateStart,
-        fSoliFin: filterOptions.requestDateEnd,
-        fCorteIni: filterOptions.closingDateStart,
-        fCorteFin: filterOptions.closingDateEnd,
-        empleadoId: filterOptions.employeeId,
-        status: filterOptions.status,
-        cdcId: filterOptions.cdc,
+        fSoliIni: filterOptions.requestDateStart !== null ? format(filterOptions.requestDateStart,"yyyy-MM-dd") : null,
+        fSoliFin: filterOptions.requestDateEnd !== null ? format(filterOptions.requestDateEnd,"yyyy-MM-dd") : null,
+        fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
+        fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
+        empleadoId: filterOptions.employeeId === 0 ? null : filterOptions.employeeId,
+        status: filterOptions.status?.join(","),
+        cdcId: filterOptions.cdc.join(","),
       }
     });
     const listPipe = response.data.map((item: any) => {
@@ -40,9 +41,11 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 export const getStatus = async (): Promise<location[]> => {
   try {
     
-    const status = STATUSLABELS.map((stat: any) => ({
+    const response = await api.get(GETLISTSTATUS);
+
+    const status = response.data.map((stat: any) => ({
       id: stat.id,
-      name: stat.label,
+      name: stat.statusName,
     }));
 
     return status;
@@ -52,103 +55,104 @@ export const getStatus = async (): Promise<location[]> => {
   }
 }
 
-export const approvalsServices = {
+export const getEmployees = async (): Promise<Employee[]> => {
+  try {
 
-  //obtiene toda los registros de las solicitudes.
-  // async getListApprovalsUser(): Promise<any> {
+    const response = await api.get(GETLISTEMPLOYEES);
 
-  //   try {
+    const employees = response.data.map((emp: any) => ({
+      id: emp.id,
+      name: emp.employee,
+      employeeNumber: emp.id
+    }));
 
-  //     const response = await api.get(GETLISTAPPROVALS);
-  //     const list = response.data.sort((a: any, b: any) => b.idRequest - a.idRequest);
-  //     //TODO: Validar entidades nuevas para requerimiento REQ-SLAPR-004
-  //     return list;
+    return employees;
+  } catch (error) {
+    console.error("Error al obtener la lista de empleados:", error);
+    return [] as unknown as Employee[];
+  }
+};
 
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
+export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<boolean> => {
+  try {
 
-  // },
+    const response = await api.post(UPDATE_REQUEST, data);
 
-  //Guarda un nueva solicitud
-  async saveDataRequest(data: RequestOpeningForm): Promise<any> {
-    try {
+    const dataResponse =response.data === "OK" ? true : false;
+    
+    return dataResponse;
 
-      const response = await api.post(SAVE_REQUEST, data);
+  } catch (error: any) {
+    console.error("Error al actualizar el estado de la solicitud:", error);
+    return false;
+  }
+}
 
-      return response.data
+export const getClosingList = async(idConsumerCenter: number, date: string, type:number): Promise<selectOption[]> => {
+  try {      
+    const response = await api.get(GETLISTCLOUSING, {
+      params: {
+        idConsumerCenter: idConsumerCenter,
+        date: date,
+      }
+    });
 
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  },
+    const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
 
-  //Actualiza la solicitud.
-  async updateStatusRequest(data: RequestUpdateDetails): Promise<any> {
-    try {
-
-      const response = await api.post(UPDATE_REQUEST, data);
-
-      return response.data;
-
-    } catch (error: any) {
-      throw new Error(error);
-    }
-  },
-
-  //obtiene el listado de las cajas y lotes.
-  async getClosingList(idConsumerCenter: number, date: string, type:number): Promise<AprovalsClousureList[]> {
-    try {      
-      const response = await api.get(GETLISTCLOUSING, {
-        params: {
-          idConsumerCenter: idConsumerCenter,
-          date: date,
-        }
-      });
-
-      const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
-
-      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
-      const result: AprovalsClousureList[] = filteredData.map((item: any) => {
-       
-        return {
-          id: item.id,
-          name: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
-        }
- 
-      });      
-
-      return result
-
-    } catch (error) {
-      console.error(error);
-      return [] as AprovalsClousureList[];
-    }
-  },
-
-  // obtiene el listado de los motivos.
-  async getReasonsList(type: Number): Promise<AprovalsReason[]> {
-    try {
-
-      const response = await api.get(GETREASONLIST);
+    const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+    const result: selectOption[] = filteredData.map((item: any) => {
       
-      const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
+      return {
+        value: item.id,
+        label: item.employeeName + " - " +item.date.replace("Fecha: ", ""),
+      }
 
-      const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
-      
-      const result: AprovalsReason[] = filteredData.map((item: any) => {
-        return {
-          id: item.id,
-          name: item.reason, 
-        }
-      });
+    });      
 
-      return result;
+    return result
 
-    } catch (error) {
-      console.error(error)
-      return [] as AprovalsReason[];
+  } catch (error) {
+    console.error(error);
+    return [] as selectOption[];
+  }
+}
+
+export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
+  try {
+
+    const response = await api.get(GETREASONLIST);
+    
+    const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
+
+    const filteredData = response.data.filter((item: any) => item.type.toLowerCase() === newType);
+    
+    const result: selectOption[] = filteredData.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.reason, 
+      }
+    });
+
+    return result;
+
+  } catch (error) {
+    console.error(error)
+    return [] as selectOption[];
+  }
+}
+
+export const saveDataRequest = async (data: RequestOpeningForm): Promise<boolean> => {
+  try {
+
+    const response = await api.post(SAVE_REQUEST, data);
+
+    if(response.data === 'create'){
+      return true
+    } else {
+      return false
     }
+
+  } catch (error: any) {
+    return false
   }
 }
