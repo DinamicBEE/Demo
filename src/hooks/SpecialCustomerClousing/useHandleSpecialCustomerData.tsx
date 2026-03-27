@@ -24,10 +24,12 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     const specialCustomerData = specialCustRef.current;
     
-    const newTotalFisico: number = specialCustomerData.lines.reduce(
+    const newTotalFisico: number = specialCustomerData.lines
+      .filter((line)=> line.pax >=1)
+      .reduce(
         (acc: number, curr: { bill: number; }) => Number(acc) + Number(curr.bill),//Number(curr.ammountMXN),
         0
-    );
+      );
       
     const newDifference = newTotalFisico - specialCustomerData.total.totalPOS;
 
@@ -84,7 +86,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
   const handleUpdateAmountMXN = useCallback((id: number | string, value: string, key?: string) => {
     const numericValue = parseFloat(value.replace(/[^\d.]/g, ""));
     
-    if (isNaN(numericValue) || numericValue <= 0) return;
+    if (isNaN(numericValue) || numericValue < 0) return;
 
     setSpecialCustomer((prev:any) => {
       if (!prev) return prev;
