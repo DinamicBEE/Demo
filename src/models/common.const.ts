@@ -42,3 +42,9 @@ export const PaginatorSize = createListCollection({
     {label: "100", value: 100},
   ]
 })
+
+export enum CUSTOMER_TYPES {
+  CUST_GEN = "general",
+  CUST_ESP = "especial",
+  CUST_PRE = "Prepago"
+}

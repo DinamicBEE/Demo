@@ -15,6 +15,7 @@ import {
 import { ResponseModel } from "@models/common.clousing.model";
 import { FilterOption } from "@models/reports.model";
 import { getCustomers } from "@services/catalogService";
+import { CUSTOMER_TYPES } from "@models/common.const";
 
 const customerContext = createContext<CustomerContextType>(
   {} as CustomerContextType
@@ -92,7 +93,7 @@ export function CustomerClousingProvider({
     }
     
     try {
-      const response = await getCustomers(true, subId);
+      const response = await getCustomers(CUSTOMER_TYPES.CUST_GEN, subId);
 
       setCustomerList(response);
       return response;

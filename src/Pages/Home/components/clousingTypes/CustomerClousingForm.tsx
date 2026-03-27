@@ -25,6 +25,7 @@ import { CurrencyInputNumber } from "@components/NumericInput";
 import { Button } from "@components/ui/button";
 import { useHandleCustomer } from "@hooks/customerClousing/useHandleCustomerData";
 import FilterCustomer from "@components/FilterCustomer";
+import { CUSTOMER_TYPES } from "@models/common.const";
 
 export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
   isOpen,
@@ -45,7 +46,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
   const { data: currencies } = useApi(() =>
     getCurrencies(idCurrency, idClousing)
   );
-  const { data: customer } = useApi(() => getCustomers(true, subId));
+  const { data: customer } = useApi(() => getCustomers(CUSTOMER_TYPES.CUST_GEN, subId));
   const [selectClient, setSelectClient] = useState<{
     value: number;
     label: string;
