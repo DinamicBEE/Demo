@@ -51,7 +51,7 @@ function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogSta
     };
 
     function statusColor(status: STATUS) {
-        const statusValie = (status as STATUS) === STATUS.IN_CORRECTION ? STATUS.Close : status as STATUS;
+        const statusValie = (status as STATUS) === STATUS.IN_CORRECTION ? STATUS.Close : (status as STATUS) === STATUS.OPEN_CHECK ? STATUS.Open : status as STATUS;
         return getStatusColor(statusValie);
     }
 
@@ -119,7 +119,7 @@ function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogSta
                                         tableHeaders.currencies.map((currency, index) => (
                                             <Table.Cell key={index} textAlign="center">
                                                 <FormatNumber
-                                                value={item.currencies.find(c => c.id === currency.id)?.total || 0} 
+                                                value={item.currencies.find((c: any) => c.id === currency.id)?.total || 0} 
                                                 style="currency"
                                                 currency="USD"
                                                 />
@@ -132,7 +132,7 @@ function StarbucksTable({headers, lines, getTableData, idCurrency}:PropDialogSta
                                         tableHeaders.creditCards.map((creditCard, index) => (
                                             <Table.Cell key={index} textAlign="center">
                                                 <FormatNumber
-                                                value={item.creditCards.find(c => c.nameBank === creditCard.nameBank)?.total || 0} 
+                                                value={item.creditCards.find((c: any) => c.nameBank === creditCard.nameBank)?.total || 0} 
                                                 style="currency"
                                                 currency="USD"
                                                 />

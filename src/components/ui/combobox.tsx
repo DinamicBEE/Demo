@@ -7,13 +7,14 @@ import { IoChevronDown } from "react-icons/io5";
 
 interface ComboboxControlProps extends ChakraCombobox.ControlProps {
   clearable?: boolean;
+  disabled?: boolean;
 }
 
 export const ComboboxControl = React.forwardRef<
   HTMLDivElement,
   ComboboxControlProps
 >(function ComboboxControl(props, ref) {
-  const { children, clearable, ...rest } = props;
+  const { children, clearable, disabled, ...rest } = props;
   return (
     <ChakraCombobox.Control
       {...rest}
@@ -44,8 +45,8 @@ export const ComboboxControl = React.forwardRef<
             alignItems: "center",
           }}
         >
-          {clearable && <ComboboxClearTrigger />}
-          <ChakraCombobox.Trigger>
+          {clearable && <ComboboxClearTrigger disabled={disabled}/>}
+          <ChakraCombobox.Trigger disabled={disabled}>
             <IoChevronDown />
           </ChakraCombobox.Trigger>
         </div>
@@ -58,6 +59,7 @@ export const ComboboxInput = React.forwardRef<
   HTMLInputElement,
   ChakraCombobox.InputProps
 >(function ComboboxInput(props, ref) {
+  const { disabled, ...rest } = props;
   return (
     <ChakraCombobox.Input
       {...props}
@@ -70,7 +72,16 @@ export const ComboboxInput = React.forwardRef<
       width="100%"
       _focusVisible={{ outline: "2px solid", outlineColor: "black" }}
       bg={"rgba(0,0,0,0)"}
-    />
+      _disabled={{
+        cursor: "not-allowed",
+        bg: "gray.100",
+        color: "gray.500",
+        _placeholder: {
+          color: "gray.400",
+        },
+      }}
+    >
+    </ChakraCombobox.Input>
   );
 });
 
@@ -78,6 +89,7 @@ const ComboboxClearTrigger = React.forwardRef<
   HTMLButtonElement,
   ChakraCombobox.ClearTriggerProps
 >(function ComboboxClearTrigger(props, ref) {
+  const { disabled, ...rest } = props;
   return (
     <ChakraCombobox.ClearTrigger asChild {...props} ref={ref}>
       <CloseButton
@@ -86,6 +98,10 @@ const ComboboxClearTrigger = React.forwardRef<
         focusVisibleRing="inside"
         focusRingWidth="2px"
         pointerEvents="auto"
+        _disabled={{
+          opacity: 0.5,
+          cursor: "not-allowed",
+        }}
       />
     </ChakraCombobox.ClearTrigger>
   );
@@ -152,11 +168,17 @@ export const ComboboxRoot = React.forwardRef<
   HTMLDivElement,
   ChakraCombobox.RootProps
 >(function ComboboxRoot(props, ref) {
+  const { disabled, ...rest } = props;
   return (
     <ChakraCombobox.Root
       {...props}
       ref={ref}
       positioning={{ sameWidth: true, ...props.positioning }}
+      _disabled={{
+        "& [data-trigger]": {
+          cursor: "not-allowed",
+        },
+      }}
     />
   );
 }) as ChakraCombobox.RootComponent;

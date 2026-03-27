@@ -34,13 +34,6 @@ export enum CLOUSING_KEY {
   INTERCOMPANY = "intercompany"
 }
 
-export const ApprovalsReasons = createListCollection({
-  items: [
-    {label: "Corte de caja", value: 1},
-    {label: "Cierre de lote", value: 2},
-  ]
-})
-
 export const PaginatorSize = createListCollection({
   items: [
     {label: "10", value: 10},

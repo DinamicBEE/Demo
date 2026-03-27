@@ -222,7 +222,7 @@ export const TABLE_CONFIG = [
       { label: "Codigo de comercio", key: "commerceCode" },
       { label: "Cajero", key: "cashier" },
       { label: "Id", key: "id" }, //! revisar
-      { label: "Tipo de moneda recibida", key: "currencuReceivedType" },
+      { label: "Tipo de moneda recibida", key: "currencyReceivedType" },
       { label: "Cantidad recibida", key: "amountReceived" },
       { label: "Importe de compra", key: "purchaseAmount" },
       { label: "Tipo cambio", key: "exchangeRate" },
