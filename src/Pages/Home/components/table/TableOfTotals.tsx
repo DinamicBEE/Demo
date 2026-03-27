@@ -12,7 +12,6 @@ import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
-import { updateSalesTicket } from "@services/clousingService";
 import { toast } from "@utils/Toast";
 import CheckDetailsDialog from "../notifications/CheckDetailsDialog";
 import "./TableStyle.css";
@@ -36,11 +35,7 @@ function TableOfTotals({
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
   const [isOpenDialogCheck, setIsOpenDialogCheck] = useState(false);
-    const {
-    loading: jobLoading,
-    jobStatus,
-    executeJob,
-  } = useJobSSE();
+  const { loading: jobLoading, jobStatus, executeJob } = useJobSSE();
 
   function handleExportCSV() {
 

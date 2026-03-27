@@ -12,7 +12,6 @@ import { SortableHeader } from "@utils/table";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { REQUEST_TYPE, STATUSLABELS } from "@models/const/approvals.const";
 
-
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog, role }) => {
 
   const { open, onOpen, onClose } = useDisclosure();

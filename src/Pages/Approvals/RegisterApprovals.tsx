@@ -162,9 +162,6 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
           scrollBehavior="inside"
           size="lg"
           open={isOpen}
-          // onOpenChange={() => {
-          //   onClose();
-          // }}
           closeOnEscape={false}
           closeOnInteractOutside={false}
         >

@@ -74,3 +74,10 @@ export interface DialogCouponsProps {
   closingConfirmation: boolean;
   onSaveCoupons: (counpons: CouponCatalogModel[]) => void;
 }
+
+export interface NewCustomerProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (line: PrepaidLineModel) => void;
+    subId: number;
+}

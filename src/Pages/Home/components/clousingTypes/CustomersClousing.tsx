@@ -111,7 +111,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const fetchCustomersList = useCallback(async () => {
     if (data?.closingConfirmation) return;
     
-    const customersList = await getCustomerList();
+    const customersList = await getCustomerList(subsidiary.id);
     if (customersList) {
       setCustomersItems(customersList);
     }
@@ -120,7 +120,6 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   useEffect(() => {
     fetchCustomersList();
   }, []);
-
 
   useEffect(() => {
     setPage(page);
@@ -202,12 +201,6 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
             </SelectTrigger>
 
             <SelectContent>
-              {/* {currenciesForSelect &&
-                Array.from(currenciesForSelect).map((item) => (
-                  <SelectItem item={item} key={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))} */}
               {selectItems}
             </SelectContent>
           </SelectRoot>
@@ -345,6 +338,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
         idCurrency={subsidiary.idCurrency}
         idClousing={data?.id ?? 0}
         isStarbucks={isStarbucks}
+        subId={subsidiary.id}
       />
     </>
   );
