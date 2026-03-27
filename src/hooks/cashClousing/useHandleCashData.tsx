@@ -55,14 +55,15 @@ export const useHandleCashData = (cashData: CashModel, setData: any, clousingId:
   }
 
 function handleChangeTips(value: string) {
-  if(isFirstLoad){
+
+  if(isFirstLoad.current === true){
     isFirstLoad.current = false;
     return;
   }
   
   const sanitizedValue = value.replace(/[^\d.]/g, "");
   const newTipAmount = parseFloat(sanitizedValue) || 0;
-
+  console.log("satanizacion", newTipAmount)
   const sumOfCurrencies = cashData.currencies.reduce(
     (acc, curr) => acc + (Number(curr.totalFisico) || 0), 
     0
