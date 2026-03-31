@@ -439,7 +439,7 @@ export const getEmployeeClousing = async (
         totalPhysical: totalPhysical,
         difference: difference,
       },
-      lines: responseAxios.data.map((line: any) => ({
+      lines: responseAxios.data.line.map((line: any) => ({
         ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
       })),
