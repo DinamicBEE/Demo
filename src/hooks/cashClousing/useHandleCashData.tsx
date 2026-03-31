@@ -63,11 +63,10 @@ function handleChangeTips(value: string) {
   
   const sanitizedValue = value.replace(/[^\d.]/g, "");
   const newTipAmount = parseFloat(sanitizedValue) || 0;
-  console.log("satanizacion", newTipAmount)
   const sumOfCurrencies = cashData.currencies.reduce(
     (acc, curr) => acc + (Number(curr.totalFisico) || 0), 
     0
-  );
+  ) ?? 0;
 
   const finalPhysical = sumOfCurrencies - newTipAmount;
 
