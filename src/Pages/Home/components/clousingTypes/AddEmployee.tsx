@@ -45,7 +45,6 @@ import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
 import { toast } from "@utils/Toast";
 import { getTicketListClousing } from "@services/catalogService";
-import { FilterOption } from "@models/reports.model";
 
 function AddEmployee({
   clousingId,
