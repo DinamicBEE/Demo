@@ -95,27 +95,27 @@ export interface ReportClousingLinesModel extends Omit<ClousingLinesModel, "id" 
   mxn: number | null,
   generalTotal: number | null,
   tpvBancomerUsd: number,
-  tpvSbdellMxn:  number,
-  tpvColdpatria: number,
-  tpvAmexcoCop: number,
-  tpvBanamexUsd: number,
-  tpvBancomer: number,
-  tpvAmexco: number,
-  tpvBanamex: number,
-  tpvBbvaCop: number,
-  tpvSbdellUsd: number,
-  tpvBancoColombia: number,
-  sbdellAmexMxn: number,
-  sbdellAmexUsd: number,
-  tpvNetpay: number,
-  webKiosko: number,
-  tpvSantander: number,
-  webappUsd: number,
-  tpvDinners: number,
-  tpvAdyen:  number,
-  tpvAdyenAmex: number,
-  tpvAdyenKiosko: number,
-  tpvKioskoUsd: number,
+  tpvSbdellMxn?:  number,
+  tpvColdpatria?: number,
+  tpvAmexcoCop?: number,
+  tpvBanamexUsd?: number,
+  tpvBancomer?: number,
+  tpvAmexco?: number,
+  tpvBanamex?: number,
+  tpvBbvaCop?: number,
+  tpvSbdellUsd?: number,
+  tpvBancoColombia?: number,
+  sbdellAmexMxn?: number,
+  sbdellAmexUsd?: number,
+  tpvNetpay?: number,
+  webKiosko?: number,
+  tpvSantander?: number,
+  webappUsd?: number,
+  tpvDinners?: number,
+  tpvAdyen?:  number,
+  tpvAdyenAmex?: number,
+  tpvAdyenKiosko?: number,
+  tpvKioskoUsd?: number,
   isStarbucks: boolean,
 };
 
@@ -344,6 +344,7 @@ export interface CustomerClousingFormProps {
   idCurrency: number;
   idClousing: number;
   isStarbucks: boolean;
+  subId: number;
 }
 
 export interface GeneralInfoProps {

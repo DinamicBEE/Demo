@@ -497,6 +497,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         isOpen={isNewCustomerOpen}
         onClose={() => setIsNewCustomerOpen(false)}
         onSave={handleNewCustomer}
+        subId={subsidiaryId}
       />
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex={1000}>

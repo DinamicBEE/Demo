@@ -21,7 +21,7 @@ import {
   SpecialCustomerLines,
   SpecialCustomerModel,
 } from "@models/specialCustome.model";
-import { CLOUSING_KEY } from "@models/common.const";
+import { CLOUSING_KEY, CUSTOMER_TYPES } from "@models/common.const";
 import Loading from "@components/Loading";
 import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
@@ -59,7 +59,7 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
       );
 
       if(customers.length === 0){
-        const customersApi = await getCustomers(false);
+        const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, subsidiary.id);
         setCustomers(customersApi);
       }
 

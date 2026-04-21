@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, FormatNumber, Grid, GridItem, Table, Tag, Text } from "@chakra-ui/react";
 import { exportCSV } from "@services/homeService";
 import { useClousing } from "@context/home/clousingContext";
@@ -12,10 +12,11 @@ import TotalsRow from "./TotalsRow";
 import GeneralInfo from "./GeneralInfo";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
-import { updateSalesTicket } from "@services/clousingService";
 import { toast } from "@utils/Toast";
 import CheckDetailsDialog from "../notifications/CheckDetailsDialog";
 import "./TableStyle.css";
+import { useJobSSE } from "@hooks/useJobSSE";
+import { JobPayload } from "@models/common.model";
 
 function TableOfTotals({
   subsidiary,
@@ -34,6 +35,7 @@ function TableOfTotals({
   const [isEdit, setIsEdit] = useState(false);
   const { sortedData, handleSort, getSortIcon } = useSortableTable<ClousingLinesModel>(data);
   const [isOpenDialogCheck, setIsOpenDialogCheck] = useState(false);
+  const { loading: jobLoading, jobStatus, executeJob } = useJobSSE();
 
   function handleExportCSV() {
 
@@ -89,30 +91,44 @@ function TableOfTotals({
   const updateticket = async () => {
     setLoading(true);
 
-    try {
-      
-      const response = await updateSalesTicket(startDate, endDate, sortedData[0].revenueId ||0);
-  
-      if(response){
-      
-        await getInfo( store.id, 0, startDate, endDate, true );
-      
-      } else {
-        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+     try {
+
+      const payload: JobPayload = {
+        startDate,
+        endDate,
+        revenueId:sortedData[0].revenueId ||0
       }
       
-      setLoading(false);
+      const response = await executeJob(payload);
+
+      if(response.status === "RUNNING"){
+        setLoading(false);
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+
     } catch (error) {
       toast("Error al actualizar el ticket", "error");
-      setLoading(false);
     } 
   }
+
+  useEffect(() => {
+    const handleJobSuccess = async () => {
+      if(jobStatus?.status === "SUCCESS") {
+        await getInfo( store.id, 0, startDate, endDate, true );
+        setLoading(false);
+      } else if(jobStatus?.status === "FAILED"){
+        setLoading(false);
+        toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+    };
+    handleJobSuccess();
+  },[jobLoading, jobStatus])
 
   return (
     <>
       {error && <Alert status="error">{error}</Alert>}
 
-      {loading && (
+      {(loading) && (
         <Box position="fixed" top="50%" left="50%" zIndex={1000}>
           <Loading />
         </Box>

@@ -57,7 +57,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const [customersItems, setCustomersItems] = useState<FilterOption[]>([]);
   const { setFooterData } = useFooter();
   const { getCustomerData, customerLoading, getCustomerList, customer } = useCustomerContext();
-  const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer, updateContext } = useHandleCustomer(
+  const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer, updateContext, handleDeleteCustomer } = useHandleCustomer(
     CustomersData || ({} as CustomerModel),
     setCustomersData,
     data?.id ?? 0
@@ -111,7 +111,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const fetchCustomersList = useCallback(async () => {
     if (data?.closingConfirmation) return;
     
-    const customersList = await getCustomerList();
+    const customersList = await getCustomerList(subsidiary.id);
     if (customersList) {
       setCustomersItems(customersList);
     }
@@ -120,55 +120,6 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   useEffect(() => {
     fetchCustomersList();
   }, []);
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     if (!data) return;
-      
-  //     const customers: ResponseModel = await getCustomerData(data.id, false);
-
-  //     if(!customers.success){
-  //       handleErrorMessage(customers.error)
-  //     }
-
-  //     if (customers?.data.total)
-  //       setFooterData(customers.data.total, data.id, CLOUSING_KEY.CUSTOMER);
-      
-  //     setCustomersData(customers.data);
-
-  //     const items = customers?.data.lines?.slice(startRange, endRange);      
-  //     setVisibleItems(items);
-      
-  //     const currencies = await getCurrencies(subsidiary.idCurrency, data.id);
-
-  //     if (!currencies) {
-  //       setcurrenciesForSelect(
-  //         createListCollection<CurrencyModel>({ items: [] })
-  //       );
-  //     } else {
-  //       let createCurrenciList = createListCollection({ items: currencies });
-  //       setcurrenciesForSelect(createCurrenciList);
-  //     }
-
-  //     setCurrencies(currencies);
-
-  //   }
-
-  //   fetchData();
-  // }, []);//customer
-
-  // useEffect(() => {
-  //   async function fetchCustomers() {
-  //     const customersList = await getCustomerList();
-  //     if (customersList) {
-  //       setCustomersItems(customersList);
-  //     }
-
-  //   }
-  //   if(!data?.closingConfirmation){
-  //     fetchCustomers();
-  //   }
-  // }, [getCustomerList, data?.closingConfirmation]);
 
   useEffect(() => {
     setPage(page);
@@ -181,9 +132,8 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   };
 
   const onDelete = (index: number) => {
-    const newArray = CustomersData.lines.filter((_, i) => i !== index);
-    setCustomersData({ ...CustomersData, lines: newArray });
-    updateContext(); //TODO: Validar metodo de guradado de cambio => Por endpoint o Por preguardado
+    handleDeleteCustomer(index);
+    // updateContext(); //TODO: Validar metodo de guradado de cambio => Por endpoint o Por preguardado
     toast(
       "Guardar o Confirmar corte para que los cambios se apliquen correctamente.",
       "warning",
@@ -251,12 +201,6 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
             </SelectTrigger>
 
             <SelectContent>
-              {/* {currenciesForSelect &&
-                Array.from(currenciesForSelect).map((item) => (
-                  <SelectItem item={item} key={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))} */}
               {selectItems}
             </SelectContent>
           </SelectRoot>
@@ -362,116 +306,6 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
               </Table.Row>
             </Table.Header>
             <Table.Body>
-              {/* {visibleItems?.map((item: CustomerLines) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell textAlign="center">
-                    <FilterCustomer
-                      key={`${item.id}-${customersItems.length}`}
-                      customers={customersItems}
-                      label={false}
-                      customerSelect={item.nameClient}
-                      onSelect={(e) => handleChangeCustomer(e, item.id)}
-                      disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}
-                    ></FilterCustomer>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="center">
-                    <Text>
-                      <TableInput
-                        value={item.coupons}
-                        id={item.id}
-                        currency={false}
-                        onChange={handleCoupons}
-                        disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
-                      />
-                    </Text>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="center">
-                    <SelectRoot
-                      collection={
-                        currenciesForSelect ||
-                        createListCollection<CurrencyModel>({ items: [] })
-                      }
-                      onValueChange={(e) =>
-                        selectCurrency(e.value, item.id, currencies)
-                      }
-                      disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
-                    >
-                      <SelectTrigger>
-                        <SelectValueText
-                          placeholder={
-                            item.currencyLabel || "Seleccionar moneda"
-                          }
-                        />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        {currenciesForSelect &&
-                          Array.from(currenciesForSelect).map((item) => (
-                            <SelectItem item={item} key={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </SelectRoot>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="end">
-                    <Text>
-                      <TableInput
-                        value={item.pax}
-                        id={item.id}
-                        currency={true}
-                        onChange={handleAmountPAX}
-                        disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
-                      />
-                    </Text>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="end">
-                    <Text>
-                      <FormatNumber
-                        value={item.amount}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Text>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="end">
-                    <Text>
-                      <FormatNumber
-                        value={item.exchangeRate}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Text>
-                  </Table.Cell>
-
-                  <Table.Cell textAlign="end">
-                    <Text>
-                      <FormatNumber
-                        value={item.amountMXN}
-                        style="currency"
-                        currency="USD"
-                      />
-                    </Text>
-                  </Table.Cell>
-                  {(!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
-                    <Box color="red.500"  textStyle="lg" >
-                      
-                      <Tooltip
-                        content={`Eliminar cliente: ${item.nameClient}`}
-                        positioning={{ placement: "right-end" }}
-                      >
-                        <TiDelete cursor="pointer" onClick={() => onDelete(index)}/>
-                        
-                      </Tooltip>
-                    </Box>
-                  </Table.Cell>}
-                </Table.Row>
-              ))} */}
               {renderRows}
             </Table.Body>
           </Table.Root>
@@ -504,6 +338,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
         idCurrency={subsidiary.idCurrency}
         idClousing={data?.id ?? 0}
         isStarbucks={isStarbucks}
+        subId={subsidiary.id}
       />
     </>
   );

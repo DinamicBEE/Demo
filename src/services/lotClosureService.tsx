@@ -81,8 +81,9 @@ export const getBanks = async (cdcId: number, date: string) => {
       },
     });
 
-    const transformedData: Bank[] = response.data.map((bank: any) => ({
+    const transformedData: Bank[] = response.data.map((bank: Bank) => ({
       ...bank,
+      affiliationList: bank.affiliationList ?? [],
       batchDetailsId:
         bank.batchDetailsId === null
           ? "BankID-" + uuidv4()

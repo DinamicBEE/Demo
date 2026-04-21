@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { ReportClousingLinesModel } from "./common.clousing.model";
 
 export interface ProtectedRouteProps {
   children: ReactNode;
@@ -75,4 +76,49 @@ export interface ParametersSelectedModel {
   cdc: selectOption[];
   status: selectOption[];
   date?: string;
+}
+
+export interface ComboBoxCustomProps {
+    multiple: boolean;
+    options: selectOption[];
+    label: string;
+    onValueChange: (ids: string[]) => void;
+    selectedValues: string[];
+    disableCondition: boolean;
+}
+export interface HeadersModel {
+  label: string;
+  key: string;
+}
+
+export interface TableDataModel {
+  headers: HeadersModel[]
+  data: ReportClousingLinesModel[]
+}
+
+export interface JobResponse {
+  jobId: string;
+  status: string;
+  message: string;
+  alreadyRunning: boolean;
+}
+
+export interface JobStatus {
+  jobId: string;
+  status: 'RUNNING' | 'SUCCESS' | 'FAILED';
+  progress: number;
+  message: string;
+  result?: any;
+  error?: string;
+}
+
+// export interface JobPayload {
+//   jobType: string;
+//   parameters: Record<string, any>;
+// }
+
+export interface JobPayload {
+    startDate: Date;
+    endDate: Date;
+    revenueId: number;
 }

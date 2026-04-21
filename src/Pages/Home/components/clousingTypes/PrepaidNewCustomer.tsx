@@ -20,21 +20,19 @@ import {
   DialogRoot,
   DialogTitle,
 } from "@components/ui/dialog";
-import { PrepaidLineModel } from "@models/prepaid.model";
-import { getCustomersPrepaid } from "@services/catalogService";
+import { NewCustomerProps, PrepaidLineModel } from "@models/prepaid.model";
+import { getCustomers } from "@services/catalogService";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { BiDollar } from "react-icons/bi";
+import { CUSTOMER_TYPES } from "@models/common.const";
 
 function PrepaidNewCustomer({
   isOpen,
   onClose,
   onSave,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (line: PrepaidLineModel) => void;
-}) {
+  subId
+}: NewCustomerProps ) {
   const [selectedCustomer, setSelectedCustomer] = useState<{
     value: number;
     label: string;
@@ -54,7 +52,7 @@ function PrepaidNewCustomer({
 
     setIsLoading(true);
 
-    getCustomersPrepaid()
+    getCustomers(CUSTOMER_TYPES.CUST_PRE, subId)
       .then((customer) => {
         setCustomers(customer ?? []);
       })

@@ -28,6 +28,8 @@ export const SENDCASHCLOUSING = `${API_BASE}/closure/save`;
 export const ASSEMBLIESCONTROLLER_NS = `${API_BASE}/ns/assemblies`;
 // * Solicitudes de apertura
 export const GETLISTAPPROVALS = `${API_BASE}/request`;
+export const GETLISTSTATUS = `${API_BASE}/request/status`;
+export const GETLISTEMPLOYEES = `${API_BASE}/request/employees`;
 export const SAVE_REQUEST = `${API_BASE}/reason/save`;
 export const UPDATE_REQUEST = `${API_BASE}/supervisor/request`;
 export const GETLISTCLOUSING = `${API_BASE}/reason/listClosing`;
@@ -83,7 +85,9 @@ export const REPORT_VENDES = `${REPORT_BASE}/ventadescuento`;
 export const REPORT_VOIC = `${REPORT_BASE}/getVoidReport`;
 export const REPORT_CUP = `${REPORT_BASE}/anexo`;
 
-export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
+// DEPRECATED 
+//export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/corresponsalBanamex`;
+export const REPORT_BANCK_BANAMEX = `${REPORT_BASE}/optBanamex`;
 export const REPORT_BANCK_SANTANDER = `${REPORT_BASE}/corresponsalSantander`;
 
 export const GETALLSTORES = `${API_BASE}/subsidiaria/cdc`;

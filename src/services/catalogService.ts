@@ -8,6 +8,7 @@ import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, G
 import Cookies from "js-cookie";
 import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
+import { CUSTOMER_TYPES } from "@models/common.const";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -20,7 +21,7 @@ export const getFilterOptions = async (key: string, optional?: any): Promise<Fil
         label: item.name
       }));
     case "customer":
-      return await getCustomers(false);
+      return await getCustomers(CUSTOMER_TYPES.CUST_ESP, null);
     case "errorType":
       return ERROR_TYPES.map(item => ({
         value: item.value,
@@ -105,10 +106,10 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async (isGeneral: boolean): Promise<FilterOption[]> => {
+export const getCustomers = async (type: CUSTOMER_TYPES, subId:number | null ): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
-      { params: { clientType: isGeneral ? "general" : "especial" } }
+      { params: { clientType: type, subId } }
     );
     const transformedData = reponse.data.map((customer: any) => {
       return {
@@ -122,26 +123,6 @@ export const getCustomers = async (isGeneral: boolean): Promise<FilterOption[]> 
     return [] as FilterOption[];
   }
 };
-
-export const getCustomersPrepaid = async () => {
-  try {
-    const reponse = await api.get(
-      CLIENTSPREPAY,
-      { params: { clientType: "Prepago" } }
-    );
-    const transformedData = reponse.data.map((customer: any) => {
-      return {
-        value: customer.id,
-        label: customer.client,
-      };
-    });
-    
-    
-    return transformedData;
-  } catch (error) {
-    return [];
-  }
-}
 
 /**
  * This function gets the list of active employees.

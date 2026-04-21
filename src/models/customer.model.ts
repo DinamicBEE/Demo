@@ -15,7 +15,7 @@ export interface CustomerContextType {
     getCustomerData: (clousingId: number, isRefresh: boolean) => Promise<ResponseModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
     customerRef: React.MutableRefObject<CustomerContext>;
-    getCustomerList: () => Promise<FilterOption[]>;
+    getCustomerList: (subId:number) => Promise<FilterOption[]>;
 }
 
 export interface CustomerContext {

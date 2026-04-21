@@ -253,9 +253,10 @@ export const getSpecialCustomerClousing = async (
       .reduce((acc: number, curr: number) => acc + curr, 0); */
       
     const newTotalFisico = lines
+      .filter((l: any) => Number(l.pax) >= 1)
       .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newDiff = Number(newTotalFisico - response.data.totalPos);
+    const newDiff = Number(newTotalFisico - response.data.totalPos);    
 
     const data = {
       id: clousingId,
@@ -1025,7 +1026,7 @@ export const processFiles = async (
   }
 };
 
-export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue: number) => {
+export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue: number): Promise<ResponseModel> => {
   try {
 
     const startDateFormat = format(startDate, "yyyy-MM-dd");
@@ -1041,13 +1042,24 @@ export const updateSalesTicket = async (startDate: Date, endDate: Date, revenue:
       }
     )
 
-    if(response.status === 200){
-      return true
-    } 
+    if(response.status === 200 || response.status === 202){
+      return {
+        success: true,
+        data: response.data,
+      } as ResponseModel;
+    }
+    
+    return {
+      success: false,
+      data: {},
+    } as ResponseModel; 
 
   } catch (error) {
 
-    return false;
+    return {
+      success: false,
+      data: {},
+    } as ResponseModel;
     
   }
 }
