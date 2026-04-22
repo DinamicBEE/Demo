@@ -44,7 +44,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
 
   const handleSave = () => {
     let newTotalMXN = totalMXN;
-    if(total == (Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100)){
+    if((total * cashClousingSelect.exchangeRate) == cashClousingSelect.totalPOS){
       newTotalMXN = cashClousingSelect.totalPOS;
     }
 
@@ -67,7 +67,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
           <DialogTitle>Lista de Denominaciones</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <Flex gap={4}  mb={4}>
+          <Flex gap={2}  mb={4}>
             <CurrencyInput
               value={Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100}
               name={"POS"}
