@@ -293,7 +293,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                   >
                     <PrepaidClousing
                       data={employee}
-                      subsidiaryId={subsidiary.id}
+                      zoneId={employee.zoneId}
                       cdc={location.id}
                     />
                   </Suspense>

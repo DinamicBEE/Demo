@@ -5,7 +5,7 @@ import {
   Text,
   FormatNumber,
   Input,
-  HStack,
+  HStack
 } from "@chakra-ui/react";
 import {
   PaginationItems,
@@ -20,6 +20,7 @@ import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHand
 import {
   SpecialCustomerLines,
   SpecialCustomerModel,
+  SpecialCustomersClousingProps,
 } from "@models/specialCustome.model";
 import { CLOUSING_KEY, CUSTOMER_TYPES } from "@models/common.const";
 import Loading from "@components/Loading";
@@ -30,7 +31,9 @@ import { handleErrorMessage } from "@utils/getValidationsError";
 
 const pageSize = 10;
 
-function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
+
+
+function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersClousingProps) {
   const [specialCustomer, setSpecialCustomer] =
     useState<SpecialCustomerModel>();
   const [customers, setCustomers] = useState<{ value: number; label: string }[]>(
@@ -59,7 +62,7 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
       );
 
       if(customers.length === 0){
-        const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, subsidiary.id);
+        const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, data.zoneId);
         setCustomers(customersApi);
       }
 

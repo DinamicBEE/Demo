@@ -4,7 +4,7 @@ import { FilterOption } from "./reports.model";
 
 
 export interface CustomersClousingProps {
-  data: ClousingLinesModel | null;
+  data: ClousingLinesModel;
   subsidiary: SubsidiaryModal;
   isStarbucks: boolean;
 }
@@ -15,7 +15,7 @@ export interface CustomerContextType {
     getCustomerData: (clousingId: number, isRefresh: boolean) => Promise<ResponseModel>;
     setCustomerData: (customer:any, clousingId: number) => void;
     customerRef: React.MutableRefObject<CustomerContext>;
-    getCustomerList: (subId:number) => Promise<FilterOption[]>;
+    getCustomerList: (zoneId:number) => Promise<FilterOption[]>;
 }
 
 export interface CustomerContext {

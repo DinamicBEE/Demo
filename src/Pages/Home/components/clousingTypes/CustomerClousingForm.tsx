@@ -34,7 +34,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
   setCustomersData,
   idCurrency,
   idClousing,
-  subId
+  zoneId
 }) => {
   const {
     control,
@@ -46,7 +46,7 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
   const { data: currencies } = useApi(() =>
     getCurrencies(idCurrency, idClousing)
   );
-  const { data: customer } = useApi(() => getCustomers(CUSTOMER_TYPES.CUST_GEN, subId));
+  const { data: customer } = useApi(() => getCustomers(CUSTOMER_TYPES.CUST_GEN, zoneId));
   const [selectClient, setSelectClient] = useState<{
     value: number;
     label: string;

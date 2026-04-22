@@ -106,10 +106,10 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async (type: CUSTOMER_TYPES, subId:number | null ): Promise<FilterOption[]> => {
+export const getCustomers = async (type: CUSTOMER_TYPES, zoneId:number | null ): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
-      { params: { clientType: type, subId } }
+      { params: { clientType: type, zoneId } }
     );
     const transformedData = reponse.data.map((customer: any) => {
       return {

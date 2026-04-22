@@ -1,4 +1,6 @@
-import { ResponseModel, TotalModel } from "./common.clousing.model";
+import { UseTabsReturn } from "@chakra-ui/react";
+import { ClousingLinesModel, ResponseModel, TotalModel } from "./common.clousing.model";
+import { SubsidiaryModal } from "./common.model";
 
 export interface specialCustContextType {
   specialCust: SpecialCustomerModel | {};
@@ -45,4 +47,10 @@ export interface SpecialCustomerModel {
   total: TotalModel;
   lines: SpecialCustomerLines[];
   isRoleEditable?: boolean;
+}
+
+export interface SpecialCustomersClousingProps {
+  data: ClousingLinesModel;
+  subsidiary: SubsidiaryModal;
+  tabs: UseTabsReturn;
 }
