@@ -78,7 +78,7 @@ const TableInput = memo(function TableInput({ value, id, currency, keyValue, onC
     }, [id, keyValue, onChange]);
 
     const handleLocalChange = (event: any) => {
-        const newValue = event.value || '0';
+        const newValue = event.target.value || '0';
         setLocalValue(newValue);
         setIsTyping(true);
         debouncedOnChange(newValue);
@@ -117,7 +117,7 @@ const TableInput = memo(function TableInput({ value, id, currency, keyValue, onC
             decimalScale={currency ? 2 : 0}
             fixedDecimalScale
             value={localValue}
-            onChange={handleLocalChange}
+            onValueChange={handleLocalChange}
             onBlur={handleBlur}
             allowNegative={false}
         />
