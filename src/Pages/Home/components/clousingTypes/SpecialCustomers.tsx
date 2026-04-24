@@ -5,7 +5,8 @@ import {
   Text,
   FormatNumber,
   Input,
-  HStack
+  HStack,
+  useDisclosure
 } from "@chakra-ui/react";
 import {
   PaginationItems,
@@ -28,6 +29,8 @@ import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
 import { ResponseModel } from "@models/common.clousing.model";
 import { handleErrorMessage } from "@utils/getValidationsError";
+import { Button } from "@components/ui/button";
+import ChangeCustomerTickets from "./ChangeCustomerTickets";
 
 const pageSize = 10;
 
@@ -47,6 +50,7 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
       setSpecialCustomer,
       data?.id
     );
+  const { open, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([]);
 
@@ -285,7 +289,9 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
 
   return (
     <Box>
-
+      <Button mb={2} onClick={() => onOpen()} disabled={data.closingConfirmation || specialCustomer?.isRoleEditable === false}>
+        Agregar
+      </Button>
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
           <Table.Header>
@@ -353,6 +359,12 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
           <Loading />
         </Box>
       )}
+
+      <ChangeCustomerTickets
+        crcId={specialCustomer?.id ?? 0} 
+        isOpen={open}
+        onClose={onClose}
+      />
     </Box>
   );
 }

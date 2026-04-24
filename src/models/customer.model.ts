@@ -51,3 +51,15 @@ export interface CustomerForm {
     currency: number, 
     pax: number,
 }
+
+export interface CustomerTicketsModel {
+    idPaymentSale: number;
+    ammount: number;
+    ticketNumber: number;
+}
+
+export interface CustomerTicketsPropsDialogModel {
+    crcId: number;
+    isOpen: boolean;
+    onClose: () => void;
+}

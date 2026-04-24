@@ -2,13 +2,14 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GETALLSTORES, LOCATIONS,
+import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GET_TICKETS_GENERAL, GETALLSTORES, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS, 
   ZONES} from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
+import { CustomerTicketsModel } from "@models/customer.model";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -321,4 +322,17 @@ const getAllStores = async (): Promise<FilterOption[]> => {
     return [] as FilterOption[];
   }
   
+}
+
+export const getTicketsGeneral = async (crcId: number): Promise<CustomerTicketsModel[]> => {
+
+  try {
+    const response = await api.get(GET_TICKETS_GENERAL,{
+      params: { crcId}
+    });
+
+    return response.data as CustomerTicketsModel[];
+  } catch (error) {
+    return [] as CustomerTicketsModel[];
+  }
 }
