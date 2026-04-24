@@ -165,11 +165,11 @@ export const useHandleCustomer = (
         item.id === id
           ? {
               ...item,
-              coupons: parseFloat(value),
-              amount: item.pax > 0 ? parseFloat(value) * item.pax : item.amount,
+              coupons: numericValue,
+              amount: item.pax > 0 ? numericValue * item.pax : item.amount,
               amountMXN:
                 item.pax > 0 && item.exchangeRate > 0
-                  ? parseFloat(value) * item.pax * item.exchangeRate
+                  ? numericValue * item.pax * item.exchangeRate
                   : item.amountMXN,
             }
           : item
