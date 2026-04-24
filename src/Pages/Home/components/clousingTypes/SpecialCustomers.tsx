@@ -34,8 +34,6 @@ import ChangeCustomerTickets from "./ChangeCustomerTickets";
 
 const pageSize = 10;
 
-
-
 function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersClousingProps) {
   const [specialCustomer, setSpecialCustomer] =
     useState<SpecialCustomerModel>();
@@ -53,40 +51,48 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
   const { open, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
   useEffect(() => {
     async function fetchData() {
-      const specialCustomer: ResponseModel = await getSpecialCustData(
-        data?.id,
-        subsidiary.idCurrency,
-        false
-      );
-
-      if(customers.length === 0){
-        const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, data.zoneId);
-        setCustomers(customersApi);
-      }
-
-      
-      if(!specialCustomer.success){
-        handleErrorMessage(specialCustomer.error)
-      }
-      if (specialCustomer)
-        setFooterData(
-          specialCustomer.data.total,
-          data.id,
-          CLOUSING_KEY.SPECIALCUSTOMER
+      setLoading(true)
+      try {
+        const specialCustomer: ResponseModel = await getSpecialCustData(
+          data?.id,
+          subsidiary.idCurrency,
+          false
         );
-      setSpecialCustomer(specialCustomer.data);
-      
-      const items = specialCustomer?.data.lines?.slice(startRange, endRange);
-      setVisibleItems(items);
+  
+        if(customers.length === 0){
+          const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, data.zoneId);
+          setCustomers(customersApi);
+        }
+  
+        
+        if(!specialCustomer.success){
+          handleErrorMessage(specialCustomer.error)
+        }
+        if (specialCustomer)
+          setFooterData(
+            specialCustomer.data.total,
+            data.id,
+            CLOUSING_KEY.SPECIALCUSTOMER
+          );
+        setSpecialCustomer(specialCustomer.data);
+        
+        const items = specialCustomer?.data.lines?.slice(startRange, endRange);
+        setVisibleItems(items);
+      } catch (error) {
+        
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer){ //TODO: agrgar un estado para validar que se esta ejecutando solo una vez
+    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer && !loading){ //TODO: agrgar un estado para validar que se esta ejecutando solo una vez
       fetchData();
     }
   }, [tabs]);
