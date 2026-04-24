@@ -22,40 +22,32 @@ const LotCatalogContext = createContext<LotCatalogContextType>(
 export const useLotCatalogList = () => useContext(LotCatalogContext);
 
 export function LotCatalogProvider({ children }: { children: ReactNode }) {
-  const [comapanies, setCompanies] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] })
-  );
-  const [zones, setZones] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] })
-  );
-  const [locations, setLocations] = useState<ListCollection<selectOption>>(
-    createListCollection<selectOption>({ items: [] })
-  );
+  const [companies, setCompanies] = useState<selectOption[]>([]);
+  const [zones, setZones] = useState<selectOption[]>([]);
+  const [locations, setLocations] = useState<selectOption[]>([]);
   const cachedLocations = useRef<{
-    [key: number]: ListCollection<selectOption>;
+    [key: number]: selectOption[];
   }>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const fetchCompanies = useCallback(async () => {
-    if (comapanies.items.length > 0) return;
+    if (companies.length > 0) return;
     setLoading(true);
     try {
       const response = await getCompanies();
       setCompanies(
-        createListCollection({
-          items: response.map((company: { id: any; name: any; }) => ({
+          response.map((company: { id: any; name: any; }) => ({
             value: company.id,
             label: company.name,
-          })),
         })
-      );
+      ));
     } catch (error) {
       setError(true);
     } finally {
       setLoading(false);
     }
-  }, [comapanies]);
+  }, [companies]);
 
   const fetchZones = useCallback(
     async (companyId: number[]) => {
@@ -63,12 +55,10 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       try {
         const response = await getZones(companyId);
-        const newZones = createListCollection({
-          items: response.map((zone: { id: number; name: string; }) => ({
+        const newZones = response.map((zone: { id: number; name: string; }) => ({
             value: zone.id,
             label: zone.name,
-          })),
-        });
+          }));
         setZones(newZones);
       } catch (error) {
         setError(true);
@@ -85,12 +75,10 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       try {
         const response = await getLocations(zones);
-        const newLocations = createListCollection({
-          items: response.map((location: { id: number; name: string; }) => ({
+        const newLocations = response.map((location: { id: number; name: string; }) => ({
             value: location.id,
             label: location.name,
-          })),
-        });
+          }));
         setLocations(newLocations);
       } catch (error) {
         setError(true);
@@ -103,7 +91,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      comapanies,
+      companies,
       zones,
       locations,
       setLocations,
@@ -113,7 +101,7 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
       fetchZones,
       fetchLocations,
     }),
-    [comapanies, locations, loading, error, fetchCompanies, fetchLocations, setLocations]
+    [companies, locations, loading, error, fetchCompanies, fetchLocations, setLocations]
   );
 
   return (

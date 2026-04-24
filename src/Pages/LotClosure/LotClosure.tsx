@@ -10,6 +10,7 @@ import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
 import { selectOption } from "@models/common.model";
 import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
 import Loading from "@components/Loading";
+import ComboBoxCustom from "@components/ComboBoxCustom";
 
 function LotClosure() {
 
@@ -27,7 +28,7 @@ function LotClosure() {
     }
 
   const { fetchLotClosureData, lotsClosure } = useLotClosureList();
-  const { fetchCompanies, fetchZones, fetchLocations, comapanies, zones, locations, loading } =
+  const { fetchCompanies, fetchZones, fetchLocations, companies, zones, locations, loading } =
     useLotCatalogList();
   const [showTable, setShowTable] = useState(false);
 
@@ -87,7 +88,7 @@ function LotClosure() {
             w="100%"
             alignItems="end"
           >
-            <SelectRoot
+            {/* <SelectRoot
               collection={comapanies}
               size="sm"
               onOpenChange={fetchCompanies}
@@ -133,7 +134,34 @@ function LotClosure() {
                 selectedCDCOptions,
                 !(selectedZoneOptions.length > 0)
               )
-            }
+            } */}
+
+  {/*           <ComboBoxCustom
+              multiple={false}
+              options={companies}
+              label="Subsidiarias"
+              onValueChange={setSubSelected}
+              selectedValues={subSelected}
+              disableCondition={false}
+            ></ComboBoxCustom>
+
+            <ComboBoxCustom
+              multiple={true}
+              options={zones}
+              label="Zonas"
+              onValueChange={setZonesSelected}
+              selectedValues={zonesSelected}
+              disableCondition={false}
+            ></ComboBoxCustom>
+                    
+            <ComboBoxCustom
+              multiple={true}
+              options={locations}
+              label="Centros de consumo"
+              onValueChange={setCDCSelected}
+              selectedValues={cdcSelected}
+              disableCondition={false}
+            ></ComboBoxCustom> */}
 
             <Field.Root>
                 <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
