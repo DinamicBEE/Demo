@@ -59,6 +59,7 @@ export const GET_PREPAID = `${API_BASE}/prepaid/get`;
 export const GET_EXTRAINFO = `${API_BASE}/registerclosure/info-colum`; // Descuentos y taxes de CRC
 export const GET_CHECKS_DETAILS = `${API_BASE}/registerclosure/check-open`;
 export const GET_TICKETS_GENERAL = `${API_BASE}/tickets-general`;
+export const CHANGE_TICKET = `${API_BASE}/tickets-general/special`;
 
 // * Cierrre de Lote
 //export const GET_BATCH = `${BATCH_BASE}/getBatchByDates`;

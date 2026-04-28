@@ -370,6 +370,8 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
         crcId={specialCustomer?.id ?? 0} 
         isOpen={open}
         onClose={onClose}
+        clousingId={data.id}
+        idCurrency={subsidiary.idCurrency}
       />
     </Box>
   );

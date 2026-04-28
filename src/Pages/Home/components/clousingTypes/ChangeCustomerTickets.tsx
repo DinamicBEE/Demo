@@ -1,26 +1,34 @@
 import { useEffect, useState } from "react";
 import { HStack, Skeleton, Table, Text } from "@chakra-ui/react";
 import { DialogBody, DialogCloseTrigger, DialogContent, DialogHeader, DialogRoot, DialogTitle } from "@components/ui/dialog";
-import { CustomerTicketsModel, CustomerTicketsPropsDialogModel } from "@models/customer.model";
-import { getTicketsGeneral } from "@services/catalogService";
 import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
 import { Button } from "@components/ui/button";
+import { toast } from "@utils/Toast";
+import { getTicketsGeneral } from "@services/catalogService";
+import { CustomerTicketsModel, CustomerTicketsPropsDialogModel } from "@models/customer.model";
+import { ChangeTicketGeneralToSpecial } from "@services/clousingService";
+import { useSpecialCustContext } from "@context/clousing/specialCustClousingContext";
+import { useCustomerContext } from "@context/clousing/customerClousingContext";
 
 const pageSize = 10;
 
-export default function ChangeCustomerTickets ({crcId, isOpen, onClose }: CustomerTicketsPropsDialogModel) {
+export default function ChangeCustomerTickets ({crcId, isOpen, onClose, clousingId, idCurrency }: CustomerTicketsPropsDialogModel) {
     
-    const [data, setData] = useState<CustomerTicketsModel[]>([])
-    const [visibleItems, setVisibleItems] = useState<CustomerTicketsModel[]>([])
-    const [loading, setLoading] = useState<boolean>(false)
+    const [data, setData] = useState<CustomerTicketsModel[]>([]);
+    const [visibleItems, setVisibleItems] = useState<CustomerTicketsModel[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [resLoading, setResLoading] = useState<boolean>(false);
     const [page, setPage] = useState(1);
     const startRange = (page - 1) * pageSize;
     const endRange = startRange + pageSize;
 
+    const { getSpecialCustData } = useSpecialCustContext();
+    const { getCustomerData } = useCustomerContext();
+
     useEffect( () => {
         async function fetchData() {
             setLoading(true);
-            console.log("entre", isOpen)
+
             try {
                 if(crcId === 0 && !isOpen) return
                 const response = await getTicketsGeneral(crcId);
@@ -31,8 +39,8 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose }: Custom
                 
             } catch (error) {
 
-                //TODO: Mostrar alerta "No se encontraron Ticketes"
-                
+                toast("No se encontraron Tickets.","warning", "Lista de Tickets");
+
             } finally {
                 setLoading(false);
             }
@@ -49,10 +57,33 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose }: Custom
         setVisibleItems(items);
     },[page])
 
+    const changeTicket = async (id:number) => {
+        setResLoading(true);
+
+        try {
+            const response = await ChangeTicketGeneralToSpecial(id);
+
+            if(response) {
+                await getSpecialCustData(clousingId, idCurrency, true);
+                await getCustomerData(clousingId, true);
+
+                onClose();
+            }  else {
+                toast("No se pudo realizar el cambio del ticket.","error", "Cambio de tickets");
+            }
+            
+        } catch (error) {
+            toast("ha ocurrido un error inesperado, contacte a soporte técnico.","error", "Cambio de tickets");
+        } finally {
+            setResLoading(false);
+        }
+
+    }
+
     return ( 
         <DialogRoot open={isOpen} closeOnEscape={false} closeOnInteractOutside={false} size="lg" scrollBehavior="inside" onOpenChange={() => onClose()}>
             <DialogContent>
-                <DialogHeader bg="#bbf7d0" color="#166534" style={{ borderRadius: '8px 8px 0px 0px' }}>
+                <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
                     <DialogTitle fontWeight="medium" fontSize="xl">
                         Lista de tickets
                     </DialogTitle>
@@ -66,7 +97,7 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose }: Custom
                             <Table.Header>
                                 <Table.Row>
                                     <Table.ColumnHeader textAlign="center">
-                                        <Skeleton loading={loading} variant="shine">
+                                        <Skeleton loading={loading} variant="shine">vaaa
                                             No. de ticket
                                         </Skeleton>
                                     </Table.ColumnHeader>
@@ -96,7 +127,7 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose }: Custom
                                         </Table.Cell>
                                         <Table.Cell>
                                             <Skeleton loading={loading} variant="shine">
-                                                <Button mb={2} colorPalette="meraPrimary">
+                                                <Button mb={2} colorPalette="meraPrimary" loading={resLoading} onClick={() => changeTicket(item.idPaymentSale)}>
                                                     Agregar
                                                 </Button>
                                             </Skeleton>

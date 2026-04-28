@@ -62,4 +62,6 @@ export interface CustomerTicketsPropsDialogModel {
     crcId: number;
     isOpen: boolean;
     onClose: () => void;
+    clousingId: number; 
+    idCurrency: number;
 }
