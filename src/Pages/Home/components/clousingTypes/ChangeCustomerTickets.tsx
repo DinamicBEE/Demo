@@ -48,7 +48,7 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose, clousing
         }
 
         fetchData();
-        console.log("cr", crcId)
+    
     },[crcId, isOpen])
     
     useEffect( () => {
@@ -97,7 +97,7 @@ export default function ChangeCustomerTickets ({crcId, isOpen, onClose, clousing
                             <Table.Header>
                                 <Table.Row>
                                     <Table.ColumnHeader textAlign="center">
-                                        <Skeleton loading={loading} variant="shine">vaaa
+                                        <Skeleton loading={loading} variant="shine">
                                             No. de ticket
                                         </Skeleton>
                                     </Table.ColumnHeader>

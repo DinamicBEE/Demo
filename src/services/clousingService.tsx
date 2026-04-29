@@ -1113,7 +1113,7 @@ export const ChangeTicketGeneralToSpecial = async (id: number): Promise<boolean>
         params: { stId: id }
       }
     );
-    if (response.data === "SE ACTUALIZO CON EXITO") return true
+    if (response.data === "Ticket actualizado con éxito") return true
 
     return false;
     

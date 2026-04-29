@@ -65,13 +65,12 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
           subsidiary.idCurrency,
           false
         );
-  
+
         if(customers.length === 0){
           const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, data.zoneId);
           setCustomers(customersApi);
         }
   
-        
         if(!specialCustomer.success){
           handleErrorMessage(specialCustomer.error)
         }
@@ -103,6 +102,18 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
     setVisibleItems(items);
   }, [specialCustomer, page]);
 
+  const closeModal = async () => {
+    const specialCustomer: ResponseModel = await getSpecialCustData(
+      data?.id,
+      subsidiary.idCurrency,
+      true
+    );
+    
+    console.log('repsonse', specialCustomer)
+    setSpecialCustomer(specialCustomer.data);
+
+    onClose();
+  }
 
   const renderRows = useMemo(() => {
     return visibleItems?.map((item: SpecialCustomerLines) => (
@@ -369,7 +380,7 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersCl
       <ChangeCustomerTickets
         crcId={specialCustomer?.id ?? 0} 
         isOpen={open}
-        onClose={onClose}
+        onClose={closeModal}
         clousingId={data.id}
         idCurrency={subsidiary.idCurrency}
       />
