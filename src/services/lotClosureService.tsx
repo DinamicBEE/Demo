@@ -4,7 +4,9 @@ import Cookies from "js-cookie";
 import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
   GET_BATCH_DETAILS, CONFIRM_BATCH, 
   ASSEMBLIESCONTROLLER_NS,
-  UPDATE_BATCH} from "./settings";
+  UPDATE_BATCH,
+  GET_BATCH_DETAILS_V2,
+  GET_BATCH_V2} from "./settings";
 import { StoreModel } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
@@ -13,6 +15,7 @@ import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { toast } from "@utils/Toast";
 
 export const getLotsClosure = async (
+  consumerCentersId: number[],
   date: string
 ): Promise<LotClosure[]> => {
   const userRole = await loadData.userData.get("userRole");
@@ -21,18 +24,19 @@ export const getLotsClosure = async (
     const dateArray = date.split("-");
     const newFormatDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
 
-    const response = await api.get(GET_BATCH, {
+    const response = await api.get(GET_BATCH_V2, {
       params: {
+        consumerCentersId: consumerCentersId.join(","),
         date: newFormatDate
       },
     });
-    const transformedData = response.data.map((lot: any, index:number) => ({
+    const transformedData = sortData(response.data.map((lot: any, index:number) => ({
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       status: getStatus(lot.status),
       difference: lot.totalLote - lot.totalPos
-    }));    
+    })));    
 
     return transformedData as LotClosure[];
   } catch (error) {
@@ -40,6 +44,12 @@ export const getLotsClosure = async (
     return [] as LotClosure[];
   }
 };
+
+const sortData = (data: any) => {
+  return [...data].sort((a, b) =>
+    a.consumerCenter.localeCompare(b.consumerCenter, "es", { sensitivity: "base" })
+  )
+}
 
 export const getCompanies = async () => {
   try {
@@ -69,15 +79,16 @@ export const getLocations = async (
   }
 };
 
-export const getBanks = async (cdcId: number, date: string) => {
+export const getBanks = async (cdcId: number, date: string, batchId: number | null) => {
   try {
     const [day, month, year] = date.split("-");
     const newFormatDate = `${year}-${month}-${day}`;
 
-    const response = await api.get(GET_BATCH_DETAILS, {
+    const response = await api.get(GET_BATCH_DETAILS_V2, {
       params: {
-        consId: cdcId,
-        startDate: newFormatDate
+        consumerCenterId: cdcId,
+        date: newFormatDate,
+        batchId: batchId || null
       },
     });
 

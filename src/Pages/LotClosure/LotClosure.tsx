@@ -13,43 +13,70 @@ import Loading from "@components/Loading";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 
 function LotClosure() {
+  // Subsidiarias
+  const [subSelected, setSubSelected] = useState<string[]>([]);
+  
+  //Zonas
+  const [selectedZoneOptions, setSelectedZoneOptions] = useState<string[]>([]);
+  // const [zoneIds, setZoneIds] = useState<string[]>([]);
+  
+  //CDC's
+  const [selectedCDCOptions, setSelectedCDCOptions] = useState<string[]>([]);
+  // const [locationId, setLocationId] = useState<number[]>([]);
 
-  const [locationId, setLocationId] = useState<number[]>([]);
-  const [zoneIds, setZoneIds] = useState<number[]>([]);
-
-  const [selectedCDCOptions, setSelectedOptions] = useState<selectOption[]>([]);
-  const [selectedZoneOptions, setSelectedZoneOptions] = useState<selectOption[]>([]);
-
+  //Status
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  
   const [formattedDate, setFormattedDate] = useState<string>('');
   const [initialDate, setInitialDate] = useState<Date | undefined>(undefined);
   const parseDateStringToLocalDate = (dateString: string): Date => {
       const [year, month, day] = dateString.split("-").map(Number);
       return new Date(year, month - 1, day);
     }
-
-  const { fetchLotClosureData, lotsClosure } = useLotClosureList();
-  const { fetchCompanies, fetchZones, fetchLocations, companies, zones, locations, loading } =
+  const { fetchLotClosureData, lotsClosure, loadingBanks } = useLotClosureList();
+  const { getStatusList, fetchCompanies, fetchZones, fetchLocations, status, companies, zones, locations, loading } =
     useLotCatalogList();
   const [showTable, setShowTable] = useState(false);
 
   const search = async () => {
+    setShowTable(true);
     if (lotsClosure.length === 0) {
-      setShowTable(true);
     }
-    await fetchLotClosureData(formattedDate, locationId, false);
+    await fetchLotClosureData(formattedDate, selectedCDCOptions.map(Number), selectedStatus.map(Number),false);
 
   };
 
   useEffect(() => {
+    const initialData = () => {
+      fetchCompanies();
+      getStatusList();
+    }
+    initialData();
+  },[]);
+
+  useEffect(() => { 
+    setSelectedZoneOptions([]);
+    setSelectedCDCOptions([]);
+    fetchZones(subSelected.map(Number));
+    // if (subSelected.length === 0) {
+    //   setSelectedZoneOptions([]);
+    //   setSelectedCDCOptions([]);
+    // } else {
+    // }
+    },[subSelected]);
+
+  useEffect(() => {
     async function loadLocations() {
-      if (zoneIds.length > 0) {
-        setLocationId([]);
-        setSelectedOptions([]);
-        await fetchLocations(zoneIds);
+      if (selectedZoneOptions.length === 0) {
+        setSelectedCDCOptions([]);
+      }
+      else {
+        setSelectedCDCOptions([]);
+        await fetchLocations(selectedZoneOptions.map(Number));
       }
     }
     loadLocations();
-  }, [zoneIds]);
+  }, [selectedZoneOptions]);
 
   useEffect(() => {
     if (formattedDate) {
@@ -57,24 +84,6 @@ function LotClosure() {
       setInitialDate(date);
     }
   }, [formattedDate]);
-  
-  const handleZoneChange = (event: { items: selectOption[] }) => {
-    handleMultiSelectChange({
-        newItems: event.items,
-        currentSelected: selectedZoneOptions,
-        setSelectedOptions: setSelectedZoneOptions,
-        setSelectedIds: setZoneIds
-    });
-  };
-
-  const handleCDCChange = (event: { items: selectOption[] }) => {
-    handleMultiSelectChange({
-        newItems: event.items,
-        currentSelected: selectedCDCOptions,
-        setSelectedOptions: setSelectedOptions,
-        setSelectedIds: setLocationId
-    })
-  };
 
   return (
     <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
@@ -88,56 +97,9 @@ function LotClosure() {
             w="100%"
             alignItems="end"
           >
-            {/* <SelectRoot
-              collection={comapanies}
-              size="sm"
-              onOpenChange={fetchCompanies}
-              onValueChange={(value) => {
-                setZoneIds([]);
-                setSelectedZoneOptions([]);
-                setLocationId([]);
-                setSelectedOptions([]);
-                fetchZones([Number(value.value)])
-              }}
-            >
-              <SelectLabel>Subsidiaria</SelectLabel>
-              <SelectTrigger>
-                <SelectValueText placeholder="Selecciona una subsidiaria" />
-              </SelectTrigger>
-              <SelectContent>
-                {comapanies.items.length > 0 && comapanies.items.map((company) => (
-                  <SelectItem item={company} key={company.value}>
-                    {company.label}
-                  </SelectItem>
-                ))
 
-                }
-
-              </SelectContent>
-            </SelectRoot>
-
-            {renderMultiSelectWithControls(
-                zones,
-                handleZoneChange,
-                "Zonas",
-                "Selecciona una zona",
-                selectedZoneOptions,
-                true
-              )
-            }
-
-            {renderMultiSelectWithControls(
-                locations,
-                handleCDCChange,
-                "Centro de consumo",
-                "Selecciona un centro de consumo",
-                selectedCDCOptions,
-                !(selectedZoneOptions.length > 0)
-              )
-            } */}
-
-  {/*           <ComboBoxCustom
-              multiple={false}
+            <ComboBoxCustom
+              multiple={true}
               options={companies}
               label="Subsidiarias"
               onValueChange={setSubSelected}
@@ -149,8 +111,8 @@ function LotClosure() {
               multiple={true}
               options={zones}
               label="Zonas"
-              onValueChange={setZonesSelected}
-              selectedValues={zonesSelected}
+              onValueChange={setSelectedZoneOptions}
+              selectedValues={selectedZoneOptions}
               disableCondition={false}
             ></ComboBoxCustom>
                     
@@ -158,20 +120,30 @@ function LotClosure() {
               multiple={true}
               options={locations}
               label="Centros de consumo"
-              onValueChange={setCDCSelected}
-              selectedValues={cdcSelected}
-              disableCondition={false}
-            ></ComboBoxCustom> */}
+              onValueChange={setSelectedCDCOptions}
+              selectedValues={selectedCDCOptions}
+              disableCondition={selectedZoneOptions.length === 0}
+            ></ComboBoxCustom>
 
-            <Field.Root>
+            <Field.Root gap={"-1"}>
+                Fecha
                 <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
             </Field.Root>
+
+            <ComboBoxCustom
+              multiple={true}
+              options={status}
+              label="Estatus"
+              onValueChange={setSelectedStatus}
+              selectedValues={selectedStatus}
+              disableCondition={false}
+            ></ComboBoxCustom>
 
             <Button
               colorPalette="meraInfo"
               onClick={search}
               disabled={
-                locationId.length < 0 
+                selectedCDCOptions.length === 0 || loadingBanks 
               }
             >
               Buscar
@@ -181,8 +153,9 @@ function LotClosure() {
       </VStack>
       <TableOfLotClosure
         showTable={showTable}
-        locations={locationId}
+        locations={selectedCDCOptions.map(Number)}
         date={formattedDate}
+        status={selectedStatus.map(Number)}
       />
       { loading && (
           <Box position="fixed" top="50%" left="50%" zIndex={1000}>

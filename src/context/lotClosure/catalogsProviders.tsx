@@ -13,7 +13,7 @@ import {
 } from "@models/lotClosure.model";
 import { createListCollection, ListCollection } from "@chakra-ui/react";
 import { selectOption } from "@models/common.model";
-import { getLocations, getZones } from "@services/catalogService";
+import { getLocations, getStatus, getZones } from "@services/catalogService";
 
 const LotCatalogContext = createContext<LotCatalogContextType>(
   {} as LotCatalogContextType
@@ -22,6 +22,7 @@ const LotCatalogContext = createContext<LotCatalogContextType>(
 export const useLotCatalogList = () => useContext(LotCatalogContext);
 
 export function LotCatalogProvider({ children }: { children: ReactNode }) {
+  const [status, setStatus] = useState<selectOption[]>([]);
   const [companies, setCompanies] = useState<selectOption[]>([]);
   const [zones, setZones] = useState<selectOption[]>([]);
   const [locations, setLocations] = useState<selectOption[]>([]);
@@ -51,7 +52,13 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
 
   const fetchZones = useCallback(
     async (companyId: number[]) => {
-
+      console.log(companyId);
+      if (companyId.length === 0 || companyId === null || companyId === undefined) {
+        
+        setZones([]);
+        setLocations([]);
+        return;
+      }
       setLoading(true);
       try {
         const response = await getZones(companyId);
@@ -89,19 +96,44 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
     [cachedLocations]
   );
 
+    const getStatusList = useCallback(
+      async () => {
+        if (status.length > 0) return status;
+        setLoading(true);
+        try {
+          const response = await getStatus();
+          const data = response.map((status: { id: any; name: any; }) =>{
+            return {
+              value: status.id,
+              label: status.name,
+            }
+          })
+          setStatus(data);
+          setLoading(false);
+          return data;
+        } catch (error) {
+          setLoading(false);
+          //setError(error instanceof Error ? error.message : String(error));
+          throw error;
+        }
+      }, [status]
+    )
+
   const value = useMemo(
     () => ({
+      status,
       companies,
       zones,
       locations,
       setLocations,
       loading,
       error,
+      getStatusList,
       fetchCompanies,
       fetchZones,
       fetchLocations,
     }),
-    [companies, locations, loading, error, fetchCompanies, fetchLocations, setLocations]
+    [status, companies, locations, loading, error, getStatusList, fetchCompanies, fetchLocations, setLocations]
   );
 
   return (

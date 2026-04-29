@@ -1,5 +1,6 @@
 import { Button, Flex, Text, Box, Table, Grid, GridItem, Separator,
-  Skeleton, Spinner } from "@chakra-ui/react";
+  Skeleton, Spinner, 
+  Textarea} from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
@@ -69,7 +70,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.consumerCenterId, date);
+        const banks = await fetchBanks(lot.consumerCenterId, date, Number(lot.id));
         const sortedBanks = [...banks.bank].sort((a, b) => 
           a.bankTerminalName.localeCompare(b.bankTerminalName)
         );
@@ -230,6 +231,15 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                                   </Table.Cell>
                                 </Table.Row>
                               ))}
+                              <Table.Row>
+                                <Table.Cell textAlign={"center"}>Comentario</Table.Cell>
+                                <Table.Cell textAlign={"center"}>
+                                  <Textarea placeholder="Comment..." value={bank.comment}
+                                  onChange={(e) => {
+                                    handleUpdateBankAfilations(bank.bankTerminalId, e.target.value, "comment")
+                                    }}/>
+                                </Table.Cell>
+                              </Table.Row>
                             </Table.Body>
                           </Table.Root>
                         </Table.ScrollArea>
