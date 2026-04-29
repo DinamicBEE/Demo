@@ -13,8 +13,16 @@ import "../styles/Layout.css";
 import { menuItems } from "@models/const/menu.consts";
 import { Tooltip } from "./ui/tooltip";
 import image from "../assets/meraLogo.webp";
+import { useEffect } from "react";
+import { useJobSSE } from "@hooks/useJobSSE";
+
 function Layout() {
   const { logOut, user } = useAuth();
+  const { connectToNotification } = useJobSSE();
+
+  useEffect(() => {
+    connectToNotification();
+  },[])
 
   return (
     <div className="layout">
