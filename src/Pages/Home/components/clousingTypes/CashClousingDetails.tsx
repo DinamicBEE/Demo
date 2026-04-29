@@ -69,7 +69,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
         <DialogBody>
           <Flex gap={2}  mb={4}>
             <CurrencyInput
-              value={Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100}
+              value={
+                cashClousingSelect.exchangeRate === 1 
+                ? cashClousingSelect.totalPOS 
+                : Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100
+              }
               name={"POS"}
               loading={false}
             />
@@ -79,7 +83,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
               loading={false}
             />
             <CurrencyInput
-              value={total - Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100}
+              value={total - (
+                cashClousingSelect.exchangeRate === 1 
+                ? cashClousingSelect.totalPOS 
+                : Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100
+              )}
               name={"Diferencia"}
               loading={false}
             />
