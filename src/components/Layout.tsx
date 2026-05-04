@@ -10,18 +10,20 @@ import {
 import { LuLogOut } from "react-icons/lu";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Layout.css";
-import { menuItems } from "@models/const/menu.consts";
+import { menuItems, ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { Tooltip } from "./ui/tooltip";
 import image from "../assets/meraLogo.webp";
 import { useEffect } from "react";
-import { useJobSSE } from "@hooks/useJobSSE";
+import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
 
 function Layout() {
   const { logOut, user } = useAuth();
-  const { connectToNotification } = useJobSSE();
+  const { connectToNotification, count } = useNotificationSSE();
 
   useEffect(() => {
-    connectToNotification();
+    if(user && ROLES_APPROVALS.includes(user.role as ROLES)){
+      connectToNotification();
+    }
   },[])
 
   return (
@@ -43,7 +45,7 @@ function Layout() {
                     (item) =>
                       user &&
                       user.role &&
-                      item.roles.includes(user.role as string)
+                      item.roles.includes(user.role as ROLES)
                   )
                   .map((item) => (
                     <Box key={item.name} className="menu-link">
@@ -56,6 +58,11 @@ function Layout() {
                       >
                         {item.icon}
                         {item.name}
+                        {item.name === 'Aprobación de solicitud' && (
+                          <div className="notification">
+                            {count}
+                          </div>
+                        )}
                       </NavLink>
                       <Tooltip content={`${item.name}`}>
                         <NavLink

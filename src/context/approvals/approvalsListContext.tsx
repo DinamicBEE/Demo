@@ -8,8 +8,6 @@ import { getRequestList, getStatus } from "@services/approvalsServices";
 
 interface ApprovalsContextType {
   triggerRefresh: () => void;
-  shouldRefetch: boolean;
-  
   fectApprovals: (filterSelected: filterOptionsProps, isRefresh: boolean) => void;
   approvalsList: Approval[];
   setDataApproval: (approval: Approval) => void;
@@ -35,7 +33,7 @@ export const useApprovalContext = () => {
 export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => {
 
   const [approvalsList, setApprovalsList] = useState<Approval[]>([]);
-  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const [filterOptions, setFilterOptions] = useState<filterOptionsProps>({} as filterOptionsProps)
   const [dataApproval, setDataApproval] = useState<Approval>({} as Approval);
   const [employeeList, setEmployeeList] = useState<Employee[]>([]);
   const [subsidiaries, setSubsidiaries] = useState<selectOption[]>([]);
@@ -44,10 +42,11 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const [status, setStatus] = useState<selectOption[]>([]);
 
   const triggerRefresh = () => {
-    setShouldRefetch(prev => !prev); // cambia valor para forzar refetch
+    fectApprovals(filterOptions, true);
   };
 
   const fectApprovals = useCallback( async (filterSelected: filterOptionsProps, isRefresh: boolean) => {
+    setFilterOptions(filterSelected);
     if (approvalsList.length > 0 && !isRefresh) {
       return approvalsList;
     }
@@ -78,7 +77,6 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
 
         return data;
       } catch (error) {
-        //setError(error instanceof Error ? error.message : String(error));
 
         throw error;
       }
@@ -201,13 +199,12 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     fectApprovals,
     setDataApproval,
     triggerRefresh,
-    shouldRefetch,
     getEmployeeList,
     getSubsidiaries,
     getZoneList,
     getCDCs,
     getStatusList
-  }), [approvalsList, setDataApproval, dataApproval, shouldRefetch, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
+  }), [approvalsList, setDataApproval, dataApproval, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
 
   return (
     <ApprovalsListContext.Provider value={value}>
