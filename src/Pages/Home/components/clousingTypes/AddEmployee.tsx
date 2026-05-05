@@ -37,6 +37,7 @@ import {
   EmployeeLine,
   ReasonsModel,
   TicketModel,
+  TicketPaymentMethod,
   reasonPaymentMethods
 } from "@models/employee.model";
 import { useEmployeeContext } from "@context/clousing/employeeClousing";
@@ -45,7 +46,6 @@ import { v4 as uuidv4 } from "uuid";
 import { selectOption } from "@models/common.model";
 import { toast } from "@utils/Toast";
 import { getTicketListClousing } from "@services/catalogService";
-import { FilterOption } from "@models/reports.model";
 
 function AddEmployee({
   clousingId,
@@ -71,10 +71,10 @@ function AddEmployee({
   const [catalogLoading, setCatalogLoading] = useState<boolean>(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [reasons, setReasons] = useState<ListCollection>(
-    createListCollection<selectOption>({ items: [] })
+    createListCollection<selectOption[]>({ items: [] })
   );
   const [tickets, setTickets] = useState<ListCollection>(
-    createListCollection<selectOption>({ items: [] })
+    createListCollection<selectOption[]>({ items: [] })
   );
 
   const {
@@ -171,6 +171,7 @@ function AddEmployee({
 
   useEffect(() => {
     const selectedReason = reasonsList.find(item => item.id === Number(reason[0]));
+    
     if (!selectedReason) {
       setShowTicketSelector(false);
       return;
@@ -182,34 +183,26 @@ function AddEmployee({
     if (!reasonConfig.showTickets) return;
 
     const allowedPaymentMethods = reasonConfig.methods;
-    
-    const filteredTickets = ticketsList.filter(ticket => {
-      return ticket.paymentTypeResponse?.some(payment => 
+
+    const expandedTickets = ticketsList.flatMap((ticket) => {
+      const matches = ticket.paymentTypeResponse?.filter(payment =>
         payment?.paymentMethod && allowedPaymentMethods.includes(payment.paymentMethod)
-      ) ?? false;
+      ) ?? [];
+
+      return matches.map((payment, index) => ({
+        label: `${ticket.ticketNumber}`,
+        value: `${ticket.id}-${index}`, 
+        description: `$${Number(payment.amount).toFixed(2)}`
+      }));
     });
 
-    const ticketCollection = createListCollection({
-      items: filteredTickets.map((ticket) => {
-        
-
-        const paymentMatch = ticket.paymentTypeResponse?.find(payment => 
-          payment?.paymentMethod && allowedPaymentMethods.includes(payment.paymentMethod)
-        );
-
-        const amountDescription = Number(paymentMatch?.amount ?? 0); 
-        
-        return {
-          label: ticket.ticketNumber,
-          value: ticket.id,
-          description: `Cantidad: $${amountDescription.toFixed(2)}` 
-        };
-      }),
+    const ticketCollection: ListCollection = createListCollection({
+      items: expandedTickets,
     });
 
     setTickets(ticketCollection);
     
-  }, [reason])
+  }, [reason]);
 
 
   async function handleData() {
