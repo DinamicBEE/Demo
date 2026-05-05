@@ -56,7 +56,7 @@ function Home_v2() {
 
     useEffect(() => {
         async function fetchData() {
-            
+            setLoading(true);
             try {
                 
                 await Promise.all([
@@ -77,13 +77,16 @@ function Home_v2() {
                         setFormattedDate(savedParams.date ? savedParams.date : '');
                         setInitialDate(savedParams.date ? parseDateStringToLocalDate(savedParams.date) : undefined);
                         setSelectedCountry(savedParams.country ?? {} as selectOption);
+                        setLoading(true);
                         await fetchAndSetData(() => getSubsidiariesByCountry(savedParams.country != undefined ? savedParams.country.label : ""), setSubsidiaries);
                     }
                     setIsInitialLoad(true);
+                    setLoading(false);
                 });
 
                 setIsReady(true);
             } catch (error) {
+                setLoading(false);
                 console.error("Error fetching data:", error);
             }
         }
@@ -183,18 +186,21 @@ function Home_v2() {
 
     useEffect(() => {
       async function updateZone() {
-          if (selectedSubIds.length > 0) {
-              try {
-                if (isInitialLoad) {
-                  setSelectedZonesIds([]);
-                  setSelectedZonesOptions([]);
-                  setSelectedCDCIds([]);
-                  setSelectedCDCOptions([]);
-                }
-                await fetchAndSetData(() => getZones(selectedSubIds), setZones);
+        if (selectedSubIds.length > 0) {
+          try {
+            if (isInitialLoad) {
+              setSelectedZonesIds([]);
+              setSelectedZonesOptions([]);
+              setSelectedCDCIds([]);
+              setSelectedCDCOptions([]);
+            }
+            setLoading(true);
+            await fetchAndSetData(() => getZones(selectedSubIds), setZones);
+            setLoading(false);
               }
               catch (e) {
                 console.error(e);
+                setLoading(false);
               }
               
           } else {
@@ -217,10 +223,13 @@ function Home_v2() {
                     setSelectedCDCIds([]);
                     setSelectedCDCOptions([]);
                   }
+                  setLoading(true);
                   await fetchAndSetData(() => getLocations(selectedZonesIds), setCDC);
+                  setLoading(false);
                 }
                 catch (e) {
                   console.error(e);
+                  setLoading(false);
                 }                
             } else {
               setSelectedCDCIds([]);
@@ -287,9 +296,10 @@ function Home_v2() {
                             value: item.value,
                             label: item.label,
                         }));
-
+                        setLoading(true);
                         setSelectedCountry(selectedCountries[0]);
                         fetchAndSetData(() => getSubsidiariesByCountry(selectedCountries[0].label), setSubsidiaries);
+                        setLoading(false);
                     }}
                 >
                     <SelectLabel fontFamily="heading">
@@ -387,7 +397,6 @@ function Home_v2() {
                     <GeneralInfo isReport={true} totals={totals}></GeneralInfo>
         
                     <TableGeneralReport DataReport={dataReport} Totals={rowtotals} date={formattedDate}></TableGeneralReport>
-           
                 </>
 
             )}

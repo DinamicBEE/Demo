@@ -83,8 +83,11 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
                     <Table.Body>
                         {sortedData.map((row) => (
                             <Table.Row key={row.id} className="row_bg">
-                                <Table.Cell className="row_bg_column1" ><Text truncate> {row.ubicacion} </Text></Table.Cell>
-                                <Table.Cell className="row_bg_column2">
+                                <Table.Cell className="row_bg_column1"><Text truncate> {row.ubicacion} </Text></Table.Cell>
+                                <Table.Cell className="row_bg_column2" truncate
+                                  onClick={() => {
+                                    getDetailsCDC(row.cdcId);
+                                  }}>
                                     <Text
                                         truncate
                                         as="span"

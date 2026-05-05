@@ -11,6 +11,10 @@ export const useHandleAffiliationsData = () => {
     setLocalLot: React.Dispatch<React.SetStateAction<LotClosure>>,
     affiliationKey?: string
   ) => {
+    if (affiliationKey === "comment") {
+      handleBankComment(bankId, inputValue, setLocalBanks);
+      return;
+    }
     const cleanedValue = Number(inputValue.replace(/[^\d.]/g, ""));
     if (cleanedValue < 0) return;
 
@@ -46,6 +50,20 @@ export const useHandleAffiliationsData = () => {
     });
     setLocalBanks((prev) => {return {...prev, bank: banksWithDifference }});
   };
+
+  const handleBankComment = (
+    bankId: number | string,
+    comment: string,
+    setLocalBanks: React.Dispatch<React.SetStateAction<BankUpdate>>) => {      
+      setLocalBanks((prev) => {
+        return {...prev, bank: prev.bank.map(bank => {
+          if(bank.bankTerminalId === bankId) {
+            return {...bank, comment: comment}
+          }
+          return bank;
+        })}
+      })
+    }
 
   // Helper function to calculate total lot for each bank
   const calculateTotalLot = (banks: Bank[]) => {

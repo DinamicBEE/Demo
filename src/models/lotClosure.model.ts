@@ -10,7 +10,8 @@ export interface LotClosure {
   statusId: number;
   employeeCreator: string;
   consumerCenter: string;
-  subsidiary: string;
+  subsidiary?: string;
+  zone?: string;
   status: STATUS;
   totalPos: number;
   totalLote: number;
@@ -40,6 +41,7 @@ export interface Bank {
   difference: number;
   totalBatch: number;
   totalPos: number;
+  comment?: string;
   affiliationList: Afilation[];
   lines?: Afilation[];
 }
@@ -59,6 +61,7 @@ export interface TableLotsClosureProps {
   locations: Array<number>;
   date: string;
   showTable: boolean;
+  status: number[];
 }
 
 export interface DatePickerProps {
@@ -89,20 +92,23 @@ export interface LotClosureContextType {
   setBanks: (banks: BankUpdate) => void;
   fetchLotClosureData: (
     dateRange: string,
-    locationId: Array<number>,
+    locationId: number[],
+    status: number[],
     isRefresh?: boolean
   ) => Promise<void>;
-  fetchBanks: (cdcId: number, date: string) => Promise<BankUpdate>;
+  fetchBanks: (cdcId: number, date: string, batchId: number | null) => Promise<BankUpdate>;
   updateBank: (banks: BankUpdate, lot: LotClosure, isPresave: boolean) => Promise<void>;
 }
 
 export interface LotCatalogContextType {
-  comapanies: ListCollection<selectOption>;
-  zones: ListCollection<selectOption>;
-  locations: ListCollection<selectOption>;
+  status: selectOption[];
+  companies: selectOption[];
+  zones: selectOption[];
+  locations: selectOption[];
   loading: boolean;
   error: boolean;
-  setLocations: (locations: ListCollection<selectOption>) => void;
+  getStatusList: () => void;
+  setLocations: (locations: selectOption[]) => void;
   fetchCompanies: () => Promise<void>;
   fetchZones: (companyId: number[]) => Promise<void>;
   fetchLocations: (zoneIds: number[]) => Promise<void>;

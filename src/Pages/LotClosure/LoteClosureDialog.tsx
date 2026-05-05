@@ -1,5 +1,7 @@
 import { Button, Flex, Text, Box, Table, Grid, GridItem, Separator,
-  Skeleton, Spinner } from "@chakra-ui/react";
+  Skeleton, Spinner, 
+  Textarea,
+  Field} from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
@@ -20,6 +22,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
   const [isLoading, setIsLoading] = useState(false);
+  const [existDiference, setExistDiference] = useState(false);
 
   const handleUpdateBankAfilations = (
     id: number | string,
@@ -36,6 +39,12 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
       key
     );
   };
+
+  useEffect(() => {
+    const existDiference = localBanks.bank.some((bank) => bank.difference !== 0 && bank.comment?.length === 0);
+    setExistDiference(existDiference);
+  }, [localBanks]);
+  
 
   const handleOpenCloseLot = (isPresave: boolean) => {
     setOpenCloseLot(true);
@@ -69,7 +78,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.consumerCenterId, date);
+        const banks = await fetchBanks(lot.consumerCenterId, date, Number(lot.id));
         const sortedBanks = [...banks.bank].sort((a, b) => 
           a.bankTerminalName.localeCompare(b.bankTerminalName)
         );
@@ -233,6 +242,16 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                             </Table.Body>
                           </Table.Root>
                         </Table.ScrollArea>
+                              <Field.Root required={bank.difference !== 0} marginTop={4}>
+                                <Field.Label>Comentario {Number(bank.difference.toFixed(2)) !== 0 &&<Field.RequiredIndicator />}</Field.Label>
+                                <Textarea 
+                                  maxLength={249}
+                                  placeholder={bank.difference+" Comentario requierido si existe diferencia."}
+                                  value={bank.comment}
+                                  onChange={(e) => {
+                                    handleUpdateBankAfilations(bank.bankTerminalId, e.target.value, "comment")
+                                  }}/>
+                              </Field.Root>
                       </Box>
                     ))}
                   {loadingBanks && (
@@ -364,7 +383,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                 Cancelar
               </Button>
               <Button
-                disabled={updateBankLoading}
+                disabled={updateBankLoading || existDiference || localLot.status === STATUS.Close}
                 onClick={() => handleSave()}
                 colorPalette="meraPrimary"
                 width={"auto !important"}

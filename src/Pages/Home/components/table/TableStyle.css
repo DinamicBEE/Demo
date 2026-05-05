@@ -9,7 +9,7 @@
 .row_bg_column2 {
   left: 294px;
   position: sticky;
-  max-width: 294px !important;
+  max-width: max-content !important;
 }
 .ToT_row_column1 {
   left: 0px;
@@ -19,7 +19,7 @@
 .ToT_row_column2 {
   left: 100px;
   position: sticky;
-  min-width: 250px;
+  max-width: max-content !important;
 }
 
 .row_bg td {
