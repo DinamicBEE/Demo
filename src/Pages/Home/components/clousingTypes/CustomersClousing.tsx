@@ -60,7 +60,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   const { handleCoupons, selectCurrency, handleAmountPAX, handleChangeCustomer, updateContext, handleDeleteCustomer } = useHandleCustomer(
     CustomersData || ({} as CustomerModel),
     setCustomersData,
-    data?.id ?? 0
+    data.id
   );
 
   const { open, onOpen, onClose } = useDisclosure();
@@ -109,9 +109,10 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
   }, []);
 
   const fetchCustomersList = useCallback(async () => {
+    if (!data) return;
     if (data?.closingConfirmation) return;
     
-    const customersList = await getCustomerList(subsidiary.id);
+    const customersList = await getCustomerList(data.zoneId);
     if (customersList) {
       setCustomersItems(customersList);
     }
@@ -176,7 +177,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
               id={item.id}
               currency={false}
               onChange={handleCoupons}
-              disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+              disabled={data.closingConfirmation  || CustomersData?.isRoleEditable === false}
             />
           </Text>
         </Table.Cell>
@@ -190,7 +191,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
             onValueChange={(e) =>
               selectCurrency(e.value, item.id, currencies)
             }
-            disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+            disabled={data.closingConfirmation  || CustomersData?.isRoleEditable === false}
           >
             <SelectTrigger>
               <SelectValueText
@@ -213,7 +214,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
               id={item.id}
               currency={true}
               onChange={handleAmountPAX}
-              disabled={data?.closingConfirmation  || CustomersData?.isRoleEditable === false}
+              disabled={data.closingConfirmation  || CustomersData?.isRoleEditable === false}
             />
           </Text>
         </Table.Cell>
@@ -247,7 +248,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
             />
           </Text>
         </Table.Cell>
-        {(!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
+        {(!data.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.Cell textAlign="center">
           <Box color="red.500"  textStyle="lg" >
             
             <Tooltip
@@ -267,14 +268,14 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
     handleCoupons,
     selectCurrency,
     handleAmountPAX,
-    data?.closingConfirmation,
+    data.closingConfirmation,
     CustomersData?.isRoleEditable,
     ])
   
   return (
     <>
       <Box>
-        <Button mb={2} onClick={() => openDialog()} disabled={data?.closingConfirmation || CustomersData?.isRoleEditable === false}>
+        <Button mb={2} onClick={() => openDialog()} disabled={data.closingConfirmation || CustomersData?.isRoleEditable === false}>
           Agregar cliente
         </Button>
         <Table.ScrollArea rounded="md" borderWidth="1px">
@@ -300,7 +301,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
                 <Table.ColumnHeader textAlign="center">
                   Monto MXN
                 </Table.ColumnHeader>
-                { (!data?.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
+                { (!data.closingConfirmation || CustomersData?.isRoleEditable === false) && <Table.ColumnHeader textAlign="center">
                   </Table.ColumnHeader>
                 }
               </Table.Row>
@@ -336,9 +337,9 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
         dataCustomer={CustomersData}
         setCustomersData={setCustomersData}
         idCurrency={subsidiary.idCurrency}
-        idClousing={data?.id ?? 0}
+        idClousing={data.id}
         isStarbucks={isStarbucks}
-        subId={subsidiary.id}
+        zoneId={data.zoneId}
       />
     </>
   );

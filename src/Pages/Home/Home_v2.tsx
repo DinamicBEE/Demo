@@ -363,6 +363,7 @@ function Home_v2() {
 
                 <Button
                   colorPalette="meraPrimary"
+                  disabled={dataReport.data === undefined || dataReport.data.length === 0}
                   onClick={() => {
                     handleExportCSV();
                   }}

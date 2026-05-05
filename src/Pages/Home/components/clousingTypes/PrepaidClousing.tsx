@@ -23,6 +23,7 @@ import { useFooter } from "@context/home/footerClousingContext";
 import { useHeaders } from "@context/home/headerContext";
 import {
   CouponCatalogModel,
+  PrepaidClousingProps,
   PrepaidLineModel,
   PrepaidModel,
 } from "@models/prepaid.model";
@@ -39,7 +40,7 @@ import { TiDelete } from "react-icons/ti";
 
 const pageSize = 10;
 
-function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
+function PrepaidClousing({ data, zoneId, cdc }: PrepaidClousingProps) {
   const [prepaidLocal, setPrepaidLocal] = useState<PrepaidModel>({} as PrepaidModel);
   const [coupons, setCoupons] = useState<CouponCatalogModel[]>([]);
   const [loading, setLoading] = useState(false);
@@ -497,7 +498,7 @@ function PrepaidClousing({ data, subsidiaryId, cdc }: any) {
         isOpen={isNewCustomerOpen}
         onClose={() => setIsNewCustomerOpen(false)}
         onSave={handleNewCustomer}
-        subId={subsidiaryId}
+        zoneId={zoneId}
       />
       {loading && (
         <Box position="fixed" top="50%" left="50%" zIndex={1000}>

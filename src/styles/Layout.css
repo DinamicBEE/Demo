@@ -139,3 +139,15 @@ body {
   }
 }
 
+.notification {
+  position: relative;
+  background-color: red;
+  border-radius: 24px;
+  font-size: 10px;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  color: white;
+  top: -10px;
+  left: -8px;
+}

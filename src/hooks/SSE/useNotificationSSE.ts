@@ -1,16 +1,11 @@
-import { JobPayload, JobResponse, JobStatus } from '@models/common.model';
-import { updateSalesTicket } from '@services/clousingService';
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 
-export const useJobSSE = () => {
-    const [loading, setLoading] = useState(false);
-    const [jobId, setJobId] = useState<string | null>(null);
-    const [jobStatus, setJobStatus] = useState<JobStatus | null>(null);
+export const useNotificationSSE = () => {
     const [error, setError] = useState<string | null>(null);
+    const [count, setCount] = useState<number>(0)
     const eventSourceRef = useRef<EventSource | null>(null);
     const abortControllerRef = useRef<AbortController | null>(null);
-    const isAbortedRef = useRef(false);
 
     useEffect(() => {
         return () => {
@@ -20,7 +15,7 @@ export const useJobSSE = () => {
         };
     }, []);
 
-     const connectToJobStream = useCallback(async (jobId: string) => {
+    const connectToNotification = useCallback(async () => {
         // Cancelar conexión anterior si existe
         if (abortControllerRef.current) {
         abortControllerRef.current.abort();
@@ -32,7 +27,7 @@ export const useJobSSE = () => {
         try {
             const token = Cookies.get("accessToken");
             const response = await fetch(
-                `/api/cash-register-closure/salesTicket/noProduct/stream?jobId=${jobId}`,
+                `/api/cash-register-closure/api/notifications/stream`,
                 {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -90,7 +85,7 @@ export const useJobSSE = () => {
                     if (eventData) {
                         try {
                             const data = JSON.parse(eventData);
-                            handleSSEEvent(eventType, data);
+                            setCount(data);
                         } catch (e) {
                             console.error('Failed to parse SSE data:', e);
                         }
@@ -107,108 +102,27 @@ export const useJobSSE = () => {
             } else {
                 console.error('SSE connection error:', error);
                 setError('Connection error');
-                setLoading(false);
             }
         }
     }, []);
-
-    const handleSSEEvent = (eventType: string, data: any) => {
-        if (abortControllerRef.current?.signal.aborted) {
-            return;
-        }
-    
-        switch(data.status) {
-            case 'RUNNING':
-                setJobStatus(prev => prev ? { ...prev, ...data } : data);
-                break;
-            case 'SUCCESS':
-                setJobStatus(prev => prev ? { ...prev, ...data, status: 'SUCCESS' } : data);
-                setLoading(false);
-                break;
-            case 'FAILED':
-                setError(data.error || 'Job failed');
-                setJobStatus(prev => prev ? { ...prev, ...data, status: 'FAILED' } : data);
-                setLoading(false);
-                break;
-            default:
-                console.log('Unknown event type:', eventType, data);
-        }
-    };
-
-    const startJob = useCallback(async (payload: JobPayload): Promise<JobResponse> => {
-        setLoading(true);
-        setError(null);
-        setJobStatus(null);
-        
-        try {
-
-            const response = await updateSalesTicket(payload.startDate, payload.endDate, payload.revenueId);
-            
-            if (!response) {
-                throw new Error('Failed to start job');
-            }
-            
-            const data: JobResponse = await response.data;
-            setJobId(data.jobId);
-            
-            if (data.alreadyRunning) {
-                setJobStatus({
-                jobId: data.jobId,
-                status: 'RUNNING',
-                progress: 0,
-                message: data.message
-                });
-            }
-            
-            return data;
-            
-        } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
-            setError(errorMessage);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    const executeJob = useCallback(async (payload: JobPayload) => {
-        try {
-        const response = await startJob(payload);
-        
-        if (!response.alreadyRunning) {
-            connectToJobStream(response.jobId);
-        }
-        
-            return response;
-        } catch (err) {
-            console.error('Job execution failed:', err);
-            throw err;
-        }
-    }, [startJob, connectToJobStream]);
 
     const cancelJob = useCallback(() => {
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
             abortControllerRef.current = null;
         }
-        setLoading(false);
-        setJobId(null);
     }, []);
 
-    const resetJob = useCallback(() => {
+    const resetNotification = useCallback(() => {
         cancelJob();
-        setJobStatus(null);
         setError(null);
+        setCount(0);
     }, [cancelJob]);
 
-
     return {
-        loading,
-        jobId,
-        jobStatus,
+        connectToNotification,
+        count,
         error,
-        executeJob,
-        cancelJob,
-        resetJob
-    };
+        resetNotification
+    }
 }

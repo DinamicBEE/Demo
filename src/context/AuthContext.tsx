@@ -6,6 +6,7 @@ import { loadData } from "../indexedDB/localDB";
 import { COOKIE_NAMES } from "@models/common.const";
 import { getRoleName } from "@utils/getRoles";
 import { parameters } from "../indexedDB/parametersDB";
+import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const useAuth = (): AuthContextType => {
@@ -25,6 +26,7 @@ const initialState: AuthState = {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(initialState);
+  const { resetNotification } = useNotificationSSE();
 
   const setAuthState = useCallback((updates: Partial<AuthState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -89,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await loadData.userData.delete("userRole");
       await parameters.parametersSelected.clear();
+      resetNotification();
     } catch (error) {
       console.error("Error al limpiar IndexedDB:", error);
     }
