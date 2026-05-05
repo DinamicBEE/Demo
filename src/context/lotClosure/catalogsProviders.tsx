@@ -11,9 +11,9 @@ import { getCompanies } from "@services/lotClosureService";
 import {
   LotCatalogContextType,
 } from "@models/lotClosure.model";
-import { createListCollection, ListCollection } from "@chakra-ui/react";
 import { selectOption } from "@models/common.model";
-import { getLocations, getStatus, getZones } from "@services/catalogService";
+import { getLocations, getStatusLot, getZones } from "@services/catalogService";
+import { getStatus } from "@utils/getStatus";
 
 const LotCatalogContext = createContext<LotCatalogContextType>(
   {} as LotCatalogContextType
@@ -52,7 +52,6 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
 
   const fetchZones = useCallback(
     async (companyId: number[]) => {
-      console.log(companyId);
       if (companyId.length === 0 || companyId === null || companyId === undefined) {
         
         setZones([]);
@@ -101,11 +100,11 @@ export function LotCatalogProvider({ children }: { children: ReactNode }) {
         if (status.length > 0) return status;
         setLoading(true);
         try {
-          const response = await getStatus();
+          const response = await getStatusLot();
           const data = response.map((status: { id: any; name: any; }) =>{
             return {
               value: status.id,
-              label: status.name,
+              label: getStatus(status.name),
             }
           })
           setStatus(data);

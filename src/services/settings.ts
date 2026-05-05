@@ -75,6 +75,7 @@ export const UPDATE_BATCH = `${BATCH_BASE}/updateBatch`;
 export const GET_REPORT = `${API_BASE}/registerclosure/summary`;
 export const GET_COUNTRIES = `${API_BASE}/subsidiaria/countries`;
 export const GET_STATUS = `${API_BASE}/summary/status`;
+export const GET_STATUS_BATCH = `${API_BASE}/summary/statusBatch`;
 export const REPORT_SYNCERRORS = `${CRC_BASE}/administration/panel/errorControl`;
 export const CHANGE_REPORTSTATUS = `${CRC_BASE}/administration/panel/delete`;
 export const REPORT_DESCOUNTS = `${REPORT_BASE}/discount`;

@@ -2,7 +2,7 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GETALLSTORES, LOCATIONS,
+import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GET_STATUS_BATCH, GETALLSTORES, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS, 
   ZONES} from "./settings";
 import Cookies from "js-cookie";
@@ -259,6 +259,20 @@ export const getZones = async (subIds: number[]): Promise<location[]> => {
 export const getStatus = async (): Promise<location[]> => {
   try {
     const response = await api.get(GET_STATUS);
+    const status = response.data.map((stat: any) => ({
+      id: stat.id,
+      name: stat.status,
+    }));
+    
+    return status;
+  } catch (error) {
+    console.error("Error al obtener los estados:", error);
+    return [];
+  }
+}
+export const getStatusLot = async (): Promise<location[]> => {
+  try {
+    const response = await api.get(GET_STATUS_BATCH);
     const status = response.data.map((stat: any) => ({
       id: stat.id,
       name: stat.status,
