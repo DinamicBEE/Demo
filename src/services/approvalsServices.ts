@@ -16,8 +16,8 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
         fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
         fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
         empleadoId: filterOptions.employeeId === 0 ? null : filterOptions.employeeId,
-        status: filterOptions.status?.join(","),
-        cdcId: filterOptions.cdc.join(","),
+        status: filterOptions.status?.join(",") || null,
+        cdcId: filterOptions.cdc.join(",") || null,
       }
     });
     const listPipe = response.data.map((item: any) => {
