@@ -55,7 +55,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
         const response = await getLotsClosure(locationId, date);
         lostClosureCache.current[date] = response;
         filterDataLots(date, status);
-        console.log(status);        
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
