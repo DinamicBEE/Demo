@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState,
   useMemo, useCallback, useRef } from "react";
 import { getBanks, getLotsClosure, updateBanksDistribution, updateBankService } from "@services/lotClosureService";
-import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest, BankUpdate } from "@models/lotClosure.model";
+import { LotClosureContextType, LotClosure, Bank, LotsClosureContext, BankUpdateRequest, BankUpdate, TotalLots } from "@models/lotClosure.model";
 
 const LotClosureListContext = createContext<LotClosureContextType>(
   {} as LotClosureContextType
@@ -11,6 +11,7 @@ export const useLotClosureList = () => useContext(LotClosureListContext);
 
 export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [lotsClosure, setLotsClosure] = useState<LotClosure[]>([]);
+  const [lotTotals, setLotTotals] = useState<TotalLots>({} as TotalLots);
   const lostClosureCache = useRef<LotsClosureContext>({});
   const [banks, setBanks] = useState<BankUpdate>({} as BankUpdate);
   const [loading, setLoading] = useState(false);
@@ -23,9 +24,10 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     if(status.length > 0) {      
       const filteredLots = lostClosureCache.current[date].filter(
         (lot) => status.includes(lot.statusId));
-      
+      calculateLotTotals(filteredLots);
       setLotsClosure(filteredLots);
     } else {
+      calculateLotTotals(lostClosureCache.current[date]);
       setLotsClosure(lostClosureCache.current[date]);
     }
   }
@@ -37,13 +39,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       status: number[] = [],
       isRefresh?: boolean
     ) => {
-      /* if (
-        lostClosureCache.current[date] &&
-        !isRefresh 
-      ) {
-        filterDataLots(date, locationId);
-        return;
-      } */
       setLoading(true);
       try {
         if (isRefresh) {
@@ -55,7 +50,6 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
         const response = await getLotsClosure(locationId, date);
         lostClosureCache.current[date] = response;
         filterDataLots(date, status);
-        console.log(status);        
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -124,9 +118,24 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     [banks]
   );
 
+  const calculateLotTotals = (lots: LotClosure[]) => {
+    const totals: TotalLots = lots.reduce(
+      (acc, lot) => {
+        acc.totalPos += lot.totalPos;
+        acc.totalClosure += lot.totalLote;
+        acc.totalLote += lot.totalLote;
+        acc.difference += lot.difference;
+        return acc;
+      },
+      { totalPos: 0, totalClosure: 0, totalLote: 0, difference: 0 }
+    );
+    setLotTotals(totals);
+  };
+
   const value = useMemo(
     () => ({
       lotsClosure,
+      lotTotals,
       setLotsClosure,
       lotClosureCache: lostClosureCache.current,
       loadingBanks,
@@ -142,6 +151,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     }),
     [
       lotsClosure,
+      lotTotals,
       setLotsClosure,
       loadingBanks,
       lostClosureCache,

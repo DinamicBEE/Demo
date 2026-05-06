@@ -19,7 +19,7 @@ function TableOfLotClosure({
   showTable,
   status
 }: TableLotsClosureProps) {
-  const { lotsClosure, fetchLotClosureData, loading } = useLotClosureList();
+  const { lotsClosure, fetchLotClosureData, loading, lotTotals } = useLotClosureList();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedLot, setSelectedLot] = useState<LotClosure>({} as LotClosure);
   const [page, setPage] = useState(1);
@@ -140,36 +140,15 @@ function TableOfLotClosure({
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {loading && (
-                    <Table.Row>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell>
-                      {/* <Table.Cell textAlign="center">
-                        <Skeleton height="20px" />
-                      </Table.Cell> */}
-                    </Table.Row>
+                  {loading && Array.from({ length: 12 }).map((_, rowIndex) => (
+                      <Table.Row key={rowIndex}>
+                        {Array.from({ length: 8 }).map((_, colIndex) => (
+                          <Table.Cell key={colIndex} textAlign="center">
+                            <Skeleton height="20px" />
+                          </Table.Cell>
+                        ))}
+                      </Table.Row>
+                    )
                   )}
                   {lotsClosure.length === 0 && !loading && (
                     <Table.Row>
@@ -247,10 +226,39 @@ function TableOfLotClosure({
                     ))}
                 </Table.Body>
                 <Table.Footer>
-                  <Table.Row bg="bg.subtle" fontWeight="bold" css={{position:"sticky !important", bottom:0}}>
+                  <Table.Row bg="bg.subtle" fontWeight="bold" style={{position:"sticky", bottom:0}}>
                     <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="0"></Table.Cell>
                     <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="100px">Totales</Table.Cell>
-
+                    <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="0"></Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber
+                        value={lotTotals.totalPos || 0}
+                        style="currency"
+                        currency="USD"
+                      />
+                    </Table.Cell>                    
+                    <Table.Cell textAlign="end">
+                      <FormatNumber
+                        value={lotTotals.totalClosure || 0}
+                        style="currency"
+                        currency="USD"
+                      />
+                    </Table.Cell>                    
+                    <Table.Cell textAlign="end">
+                      <FormatNumber
+                        value={lotTotals.totalLote || 0}
+                        style="currency"
+                        currency="USD"
+                      />
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      <FormatNumber
+                        value={lotTotals.difference || 0}
+                        style="currency"
+                        currency="USD"
+                      />
+                    </Table.Cell>
+                    <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="0"></Table.Cell>
                   </Table.Row>
                 </Table.Footer>
               </Table.Root>

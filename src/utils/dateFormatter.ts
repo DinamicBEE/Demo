@@ -34,7 +34,19 @@ export const formatToDDMMYYYYstring = (date: string): string => {
  * @return Fecha formateada en formato "DD/MM/YYYY HH:mm:ss"
 */
 export const formatCompleteDate = (completeDate: string): string => {
+  if (!completeDate) return "";
   const [date, time] = completeDate.split(' ');
   const [year, month, day] = date.split('-');
   return `${day}/${month}/${year} ${time}`;
+}
+
+/** Formato de fecha completa de yyyy-MM-ddTHH:mm:ss a DD/MM/YYYY
+ * @param completeDate - Fecha string en formato "YYYY-MM-DDTHH:mm:ss"
+ * @return Fecha formateada en formato "DD/MM/YYYY"
+*/
+export const formatOnlyDate = (completeDate: string): string => {
+  if (!completeDate) return "";
+  const [date, time] = completeDate.split('T');
+  const [year, month, day] = date.split('-');
+  return `${day}/${month}/${year}`;
 }

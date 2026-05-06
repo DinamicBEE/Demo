@@ -81,6 +81,7 @@ export interface LotClosureDialogProps {
 
 export interface LotClosureContextType {
   lotsClosure: LotClosure[];
+  lotTotals: TotalLots;
   lotClosureCache: Record<number, LotClosure[]>;
   banks: BankUpdate;
   bankCache: Record<number, BankUpdate>;
@@ -119,4 +120,11 @@ export type LotsClosureContext = Record<string, LotClosure[]>;
 export interface BankUpdateRequest extends Pick<LotClosure, "id" | "subId" | "consumerCenterId" | "statusId" | "batchDate" | "status"> {
   batchClosureId: number | null;
   batchDetailsRequest: Bank[];
+}
+
+export interface TotalLots {
+  totalPos: number;
+  totalClosure: number;
+  totalLote: number;
+  difference: number;
 }

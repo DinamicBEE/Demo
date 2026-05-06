@@ -58,7 +58,8 @@ export const useHandleAffiliationsData = () => {
       setLocalBanks((prev) => {
         return {...prev, bank: prev.bank.map(bank => {
           if(bank.bankTerminalId === bankId) {
-            return {...bank, comment: comment}
+            const trimedComment = comment.trimStart();
+            return {...bank, comment: trimedComment}
           }
           return bank;
         })}
