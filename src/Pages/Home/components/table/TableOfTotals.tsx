@@ -166,7 +166,7 @@ function TableOfTotals({
 
         {sortedData.length >= 1 && (
           <Box>
-            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
+            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px" mb="8px">
               <Table.Root size="sm" variant="outline" stickyHeader>
                 <Table.Header>
                   <Table.Row zIndex={1}>
@@ -392,7 +392,7 @@ function TableOfTotals({
                 </Table.Footer>
               </Table.Root>
             </Table.ScrollArea>
-            <span> Mostrando 1 a {data.length} de {data.length} Registros </span>
+            <span> Mostrando <span style={{fontWeight: "bold"}}>1</span> a <span style={{fontWeight: "bold"}}>{data.length}</span> de <span style={{fontWeight: "bold"}}>{data.length}</span> Registros </span>
           </Box>
         )}
 

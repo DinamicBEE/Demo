@@ -66,7 +66,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
 
     return (
         <Box>
-            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px">
+            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px" mb="8px">
                 <Table.Root size="sm" variant="outline" stickyHeader>
                     <Table.Header>
                         <Table.Row zIndex={1}>
@@ -127,20 +127,8 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
                     </Table.Footer>
                 </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot
-                pageSize={10}
-                page={page}
-                onPageChange={(e) => {
-                setPage(e.page);
-                }}
-            >
-                <HStack>
-                    <PaginationPrevTrigger />
-                    <PaginationItems />
-                    <PaginationNextTrigger />
-                    <span> Mostrando 1 a {DataReport.data.length} de {DataReport.data.length} Registros </span>
-                </HStack>
-            </PaginationRoot>
+
+            <p className="bt-2"> Mostrando <span style={{fontWeight: "bold"}}>1</span> a <span style={{fontWeight: "bold"}}>{DataReport.data.length}</span> de <span style={{fontWeight: "bold"}}>{DataReport.data.length}</span> Registros </p>
         </Box>
     );
 }

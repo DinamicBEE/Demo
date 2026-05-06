@@ -26,8 +26,9 @@ export const useNotificationSSE = () => {
 
         try {
             const token = Cookies.get("accessToken");
+            const user = Cookies.get("username");
             const response = await fetch(
-                `/api/cash-register-closure/api/notifications/stream`,
+                `/api/cash-register-closure/api/notifications/stream?${user ? `userId=${encodeURIComponent(user)}` : ""}`,
                 {
                 headers: {
                     'Authorization': `Bearer ${token}`,

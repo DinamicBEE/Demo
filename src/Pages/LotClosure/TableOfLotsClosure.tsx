@@ -10,6 +10,7 @@ import { exportCSV } from "../../utils/exportCSV";
 import { LotClosure } from "@models/lotClosure.model";
 import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
+import "./lotStyles.css";
 
 const pageSize = 100;
 function TableOfLotClosure({
@@ -108,14 +109,14 @@ function TableOfLotClosure({
           </Box>
 
           <Box>
-            <Table.ScrollArea rounded="md" borderWidth="1px">
-              <Table.Root size="sm" variant="outline">
+            <Table.ScrollArea rounded="md" borderWidth="1px" h="500px" mb="8px">
+              <Table.Root size="sm" variant="outline" stickyHeader>
                 <Table.Header>
-                  <Table.Row>
-                    <Table.ColumnHeader textAlign="center">
+                  <Table.Row zIndex={1}>
+                    <Table.ColumnHeader textAlign="center" style={{left: "0px", position: "sticky", minWidth: "294px"}}>
                       Zona
                     </Table.ColumnHeader>
-                    <Table.ColumnHeader textAlign="center">
+                    <Table.ColumnHeader textAlign="center" style={{left: "294px", position: "sticky"}}>
                       CDC
                     </Table.ColumnHeader>
                     <Table.ColumnHeader textAlign="center">
@@ -180,13 +181,13 @@ function TableOfLotClosure({
                   {visibleItems.length > 0 &&
                     !loading &&
                     visibleItems.map((item) => (
-                      <Table.Row key={item.id}>
-                        <Table.Cell textAlign="center">
+                      <Table.Row key={item.id} className="row_bg">
+                        <Table.Cell textAlign="center" className="row_bg_column1">
                           <Text>
                             {item.zone}
                           </Text>
                         </Table.Cell>
-                        <Table.Cell textAlign="center">
+                        <Table.Cell textAlign="center" className="row_bg_column2">
                           <Text
                             as="span"
                             cursor="pointer"
@@ -245,20 +246,16 @@ function TableOfLotClosure({
                       </Table.Row>
                     ))}
                 </Table.Body>
+                <Table.Footer>
+                  <Table.Row bg="bg.subtle" fontWeight="bold" css={{position:"sticky !important", bottom:0}}>
+                    <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="0"></Table.Cell>
+                    <Table.Cell textAlign="center" css={{position:"sticky"}} bg="bg.subtle" left="100px">Totales</Table.Cell>
+
+                  </Table.Row>
+                </Table.Footer>
               </Table.Root>
             </Table.ScrollArea>
-            <PaginationRoot
-              count={lotsClosure.length}
-              pageSize={pageSize}
-              page={page}
-              onPageChange={(e) => setPage(e.page)}
-            >
-              <HStack>
-                <PaginationPrevTrigger />
-                <PaginationItems />
-                <PaginationNextTrigger />
-              </HStack>
-            </PaginationRoot>
+            <p className="bt-2"> Mostrando <span style={{fontWeight: "bold"}}>1</span> a <span style={{fontWeight: "bold"}}>{lotsClosure.length}</span> de <span style={{fontWeight: "bold"}}>{lotsClosure.length}</span> Registros </p>
           </Box>
         </Box>
       )}
