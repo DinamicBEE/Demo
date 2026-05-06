@@ -24,6 +24,18 @@ function ComboBoxCustom(  {multiple, options, label, onValueChange, selectedValu
     },[selectedValues])
 
     const handleValueChange = (e: any) => {
+        if(multiple && e.value.length > 2){
+            const lastValue = e.value.at(-1).toString();
+            const arrayWithoutLast = e.value.slice(0, -1)
+            const index = arrayWithoutLast.indexOf(lastValue);
+            if (index > -1) {
+                arrayWithoutLast.splice(index, 1);
+                onValueChange(arrayWithoutLast);
+                setValue(arrayWithoutLast);
+                return;
+            }
+        }
+        
         onValueChange(e.value);
         setValue(e.value);
     };
