@@ -181,6 +181,7 @@ export const updateBanksDistribution = (bankUpdate: BankUpdate): Bank[] => {
       if (unifiedIndex === -1) continue;
 
       const unifiedBank = newBankArray[unifiedIndex];
+      const comment = newBankArray[unifiedIndex].comment || "";
 
       const totalBatchCents = Math.round(unifiedBank.totalBatch * 100);
 
@@ -214,6 +215,7 @@ export const updateBanksDistribution = (bankUpdate: BankUpdate): Bank[] => {
 
         return {
           ...copy,
+          comment: comment,
           totalBatch,
           difference: totalBatch - totalPos,
         };

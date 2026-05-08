@@ -12,7 +12,7 @@ import { TableLotsClosureProps } from "@models/lotClosure.model";
 import { getStatusColor } from "../../utils/getStatusColor";
 import "./lotStyles.css";
 
-const pageSize = 100;
+const pageSize = 150;
 function TableOfLotClosure({
   locations,
   date,
