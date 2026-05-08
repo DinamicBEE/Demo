@@ -505,7 +505,7 @@ const getFormattedDate = (): string => {
   return new Date().toISOString().split('T')[0];
 };
 
-const setupWorksheet = (worksheet: ExcelJS.Worksheet, headers: any[], data: any[]) => {
+export const setupWorksheet = (worksheet: ExcelJS.Worksheet, headers: any[], data: any[], dataKey?: string | null) => {
 
   const headerRow = worksheet.addRow(headers.map(header => header.label));
   headerRow.eachCell((cell) => {
@@ -514,8 +514,17 @@ const setupWorksheet = (worksheet: ExcelJS.Worksheet, headers: any[], data: any[
     cell.alignment = { vertical: 'middle', horizontal: 'center' };
   });
 
-  data.forEach((row: any) => {
+  data.forEach((row: any, index: number) => {
     const dataRow = worksheet.addRow(headers.map(header => row[header.key] ?? ''));
+    if(dataKey != null && dataKey === "commerce"){
+      const rowNum = index + 2;
+      dataRow.getCell(15).value = { formula: `E${rowNum}-F${rowNum}` };
+      dataRow.getCell(16).value = { formula: `O${rowNum}-H${rowNum}` };
+      dataRow.getCell(17).value = { formula: `ROUND(I${rowNum}/G${rowNum}, 2)` };
+      dataRow.getCell(18).value = { formula: `ROUND(P${rowNum}-Q${rowNum}, 2)` };
+      dataRow.commit();
+    }
+
     dataRow.eachCell((cell) => {
       cell.alignment = { vertical: 'top', wrapText: true };
     });
@@ -572,7 +581,7 @@ export const generateBanckReportCSV =async (currentReport: number, reportData: a
   reportSheets?.forEach(sheet => {
     const worksheet = workbook.addWorksheet(sheet.sheetTitle || 'Hoja');
     const data = reportData[sheet.datakey] || [];
-    setupWorksheet(worksheet, sheet.headers, data);
+    setupWorksheet(worksheet, sheet.headers, data, sheet.datakey);
   });
 
   await downloadWorkbook(workbook, `${title}_${date}`);
