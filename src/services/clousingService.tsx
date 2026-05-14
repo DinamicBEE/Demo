@@ -8,7 +8,7 @@ import { IntercompanyLine, IntercompanyModel } from "@models/intercompany.model"
 import { CouponCatalogModel, PrepaidLineModel, PrepaidModel } from "@models/prepaid.model";
 import { SpecialCustomerLines, SpecialCustomerModel } from "@models/specialCustome.model";
 import { BankLineModel, TDCModel, Voucher } from "@models/tdc.model";
-import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC, GET_CHECKS_DETAILS } from "./settings";
+import { CASH, TDC, CLIENTS, EMPLOYEE_INSERT, INTERCOMPANY, SP_CLIENTS, GET_COUPONS, GET_PREPAID, SENDCASHCLOUSING, EMPLOYEEPAYROLLDISCOUNT, UPDATE_SALESTICKET, UPDATE_SALESTICKETCDC, GET_CHECKS_DETAILS, CHANGE_TICKET } from "./settings";
 import api from "../api/index";
 import { format, isValid, isBefore, startOfDay } from "date-fns";
 import Papa from "papaparse";
@@ -1106,3 +1106,20 @@ export const getCheckDetails = async (idCashRegisterClosure: number): Promise<ch
   }
 }
 
+export const ChangeTicketGeneralToSpecial = async (id: number): Promise<boolean> => {
+  try {
+    
+    const response = await api.put(`${CHANGE_TICKET}?stId=${id}`, {
+        params: { stId: id }
+      }
+    );
+    if (response.data === "Ticket actualizado con éxito") return true
+
+    return false;
+    
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error("Error al obtener los detalles del cheque:", axiosError.message);
+    return false;
+  }
+}

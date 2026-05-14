@@ -31,7 +31,7 @@ function PrepaidNewCustomer({
   isOpen,
   onClose,
   onSave,
-  subId
+  zoneId
 }: NewCustomerProps ) {
   const [selectedCustomer, setSelectedCustomer] = useState<{
     value: number;
@@ -52,7 +52,7 @@ function PrepaidNewCustomer({
 
     setIsLoading(true);
 
-    getCustomers(CUSTOMER_TYPES.CUST_PRE, subId)
+    getCustomers(CUSTOMER_TYPES.CUST_PRE, zoneId)
       .then((customer) => {
         setCustomers(customer ?? []);
       })

@@ -1,4 +1,4 @@
-import { ResponseModel, TotalModel } from "./common.clousing.model";
+import { ClousingLinesModel, ResponseModel, TotalModel } from "./common.clousing.model";
 
 export interface PrepaidContextType {
   prepaid: PrepaidModel | {};
@@ -79,5 +79,11 @@ export interface NewCustomerProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (line: PrepaidLineModel) => void;
-    subId: number;
+    zoneId: number;
+}
+
+export interface PrepaidClousingProps {
+  data:ClousingLinesModel, 
+  zoneId: number; 
+  cdc: number;
 }

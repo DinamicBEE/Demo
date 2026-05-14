@@ -64,6 +64,7 @@ export interface ClousingLinesModel {
   isRoleEditable?: boolean;
   modificationUser: string;
   zone: string;
+  zoneId: number;
   revenueId?: number;
 }
 
@@ -344,7 +345,7 @@ export interface CustomerClousingFormProps {
   idCurrency: number;
   idClousing: number;
   isStarbucks: boolean;
-  subId: number;
+  zoneId: number;
 }
 
 export interface GeneralInfoProps {

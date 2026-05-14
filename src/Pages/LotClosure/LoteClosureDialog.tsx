@@ -1,5 +1,7 @@
 import { Button, Flex, Text, Box, Table, Grid, GridItem, Separator,
-  Skeleton, Spinner } from "@chakra-ui/react";
+  Skeleton, Spinner, 
+  Textarea,
+  Field} from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
@@ -10,6 +12,7 @@ import { STATUS } from "@models/const/status.const";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
 import { updateBatchClosing } from "@services/lotClosureService";
+import { formatOnlyDate } from "@utils/dateFormatter";
 
 function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps) {
   const { updateBank, fetchBanks, loadingBanks, updateBankLoading, error } =
@@ -20,6 +23,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
   const [isLoading, setIsLoading] = useState(false);
+  const [existDiference, setExistDiference] = useState(false);
 
   const handleUpdateBankAfilations = (
     id: number | string,
@@ -36,6 +40,12 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
       key
     );
   };
+
+  useEffect(() => {
+    const existDiference = localBanks.bank.some((bank) => bank.difference !== 0 && (bank.comment?.length === 0 || bank.comment === null));
+    setExistDiference(existDiference);
+  }, [localBanks]);
+  
 
   const handleOpenCloseLot = (isPresave: boolean) => {
     setOpenCloseLot(true);
@@ -69,7 +79,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
     const fetchData = async () => {
       if (isOpen) {
         setLocalLot(lot);
-        const banks = await fetchBanks(lot.consumerCenterId, date);
+        const banks = await fetchBanks(lot.consumerCenterId, date, Number(lot.id));
         const sortedBanks = [...banks.bank].sort((a, b) => 
           a.bankTerminalName.localeCompare(b.bankTerminalName)
         );
@@ -112,7 +122,8 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                 direction={{ base: "column", sm: "row" }}
                 gap={2}
               >
-                <Text>{lot.subsidiary}</Text>
+                <Text>{lot.zone}</Text>
+                <Text>{formatOnlyDate(lot.batchDate)}</Text>
                 <Text> Ubicación: {lot.consumerCenter}</Text>
               </Flex>
             </DialogTitle>
@@ -233,6 +244,27 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                             </Table.Body>
                           </Table.Root>
                         </Table.ScrollArea>
+                              <Field.Root
+                                required={bank.difference !== 0}
+                                marginTop={4}
+                                invalid={(bank.difference !== 0 && (bank.comment?.length === 0 || bank.comment === null)) || (bank.comment === undefined || bank.comment?.length >= 250)}>
+                                <Field.Label>Comentario {Number(bank.difference.toFixed(2)) !== 0 &&<Field.RequiredIndicator />}</Field.Label>
+                                <Textarea 
+                                  autoresize
+                                  maxLength={249}
+                                  placeholder={"Ingrese un comentario de ser necesario."}
+                                  value={bank.comment || ""}
+                                  disabled={lot.status === STATUS.Close || lot.status === STATUS.WITH_DIFFERENCE || localLot.isRoleEditable === false}
+                                  onChange={(e) => {
+                                    handleUpdateBankAfilations(bank.bankTerminalId, e.target.value, "comment")
+                                  }}/>
+                                {bank.difference !== 0 && (bank.comment?.length === 0 || bank.comment === null) && (
+                                  <Field.ErrorText>Comentario necesario para confirmar lote.</Field.ErrorText>
+                                )}
+                                {bank.comment === undefined || bank.comment?.length >= 250 && (
+                                  <Field.ErrorText>El comentario no debe exceder los 250 caracteres.</Field.ErrorText>
+                                )}
+                              </Field.Root>
                       </Box>
                     ))}
                   {loadingBanks && (
@@ -284,6 +316,10 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                           </Table.Body>
                         </Table.Root>
                       </Table.ScrollArea>
+                      <Field.Root marginTop={4}>
+                        <Field.Label>Comentario</Field.Label>
+                        <Skeleton w={"100%"} height="80px" />
+                      </Field.Root>
                     </Box>
                   )}
                   {localBanks.bank.length === 0 && !loadingBanks && (
@@ -318,7 +354,8 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                   ? true 
                   : lot.status === STATUS.Close
                     || lot.status === STATUS.WITH_DIFFERENCE
-                    || localLot.isRoleEditable === false 
+                    || localLot.isRoleEditable === false
+                    || existDiference
                     ? true
                     : localBanks.bank.length === 0 || localLot.totalPos === null 
                       ? false

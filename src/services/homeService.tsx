@@ -337,6 +337,7 @@ export function reportTotals(reportData: ReportClousingLinesModel[]): ReportTota
       subsidiariaCurrencyId: 0,
       cdcId: 0,
       zone: "",
+      zoneId: 0,
       modificationUser: ""
     }
   );

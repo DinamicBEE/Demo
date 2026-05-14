@@ -6,6 +6,7 @@ import {
   FormatNumber,
   Input,
   HStack,
+  useDisclosure
 } from "@chakra-ui/react";
 import {
   PaginationItems,
@@ -20,6 +21,7 @@ import { useHandleSpecialCustomer } from "@hooks/SpecialCustomerClousing/useHand
 import {
   SpecialCustomerLines,
   SpecialCustomerModel,
+  SpecialCustomersClousingProps,
 } from "@models/specialCustome.model";
 import { CLOUSING_KEY, CUSTOMER_TYPES } from "@models/common.const";
 import Loading from "@components/Loading";
@@ -27,10 +29,12 @@ import FilterCustomer from "@components/FilterCustomer";
 import { getCustomers } from "@services/catalogService";
 import { ResponseModel } from "@models/common.clousing.model";
 import { handleErrorMessage } from "@utils/getValidationsError";
+import { Button } from "@components/ui/button";
+import ChangeCustomerTickets from "./ChangeCustomerTickets";
 
 const pageSize = 10;
 
-function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
+function SpecialCustomersClousing({ data, subsidiary, tabs }: SpecialCustomersClousingProps) {
   const [specialCustomer, setSpecialCustomer] =
     useState<SpecialCustomerModel>();
   const [customers, setCustomers] = useState<{ value: number; label: string }[]>(
@@ -44,42 +48,50 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
       setSpecialCustomer,
       data?.id
     );
+  const { open, onOpen, onClose } = useDisclosure();
   const [page, setPage] = useState(1);
   const [visibleItems, setVisibleItems] = useState<SpecialCustomerLines[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const startRange = (page - 1) * pageSize;
   const endRange = startRange + pageSize;
 
   useEffect(() => {
     async function fetchData() {
-      const specialCustomer: ResponseModel = await getSpecialCustData(
-        data?.id,
-        subsidiary.idCurrency,
-        false
-      );
-
-      if(customers.length === 0){
-        const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, subsidiary.id);
-        setCustomers(customersApi);
-      }
-
-      
-      if(!specialCustomer.success){
-        handleErrorMessage(specialCustomer.error)
-      }
-      if (specialCustomer)
-        setFooterData(
-          specialCustomer.data.total,
-          data.id,
-          CLOUSING_KEY.SPECIALCUSTOMER
+      setLoading(true)
+      try {
+        const specialCustomer: ResponseModel = await getSpecialCustData(
+          data?.id,
+          subsidiary.idCurrency,
+          false
         );
-      setSpecialCustomer(specialCustomer.data);
-      
-      const items = specialCustomer?.data.lines?.slice(startRange, endRange);
-      setVisibleItems(items);
+
+        if(customers.length === 0){
+          const customersApi = await getCustomers(CUSTOMER_TYPES.CUST_ESP, data.zoneId);
+          setCustomers(customersApi);
+        }
+  
+        if(!specialCustomer.success){
+          handleErrorMessage(specialCustomer.error)
+        }
+        if (specialCustomer)
+          setFooterData(
+            specialCustomer.data.total,
+            data.id,
+            CLOUSING_KEY.SPECIALCUSTOMER
+          );
+        setSpecialCustomer(specialCustomer.data);
+        
+        const items = specialCustomer?.data.lines?.slice(startRange, endRange);
+        setVisibleItems(items);
+      } catch (error) {
+        
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer){ //TODO: agrgar un estado para validar que se esta ejecutando solo una vez
+    if(tabs.value === CLOUSING_KEY.SPECIALCUSTOMER && !specialCustomer && !loading){ //TODO: agrgar un estado para validar que se esta ejecutando solo una vez
       fetchData();
     }
   }, [tabs]);
@@ -90,6 +102,18 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
     setVisibleItems(items);
   }, [specialCustomer, page]);
 
+  const closeModal = async () => {
+    const specialCustomer: ResponseModel = await getSpecialCustData(
+      data?.id,
+      subsidiary.idCurrency,
+      true
+    );
+    
+    console.log('repsonse', specialCustomer)
+    setSpecialCustomer(specialCustomer.data);
+
+    onClose();
+  }
 
   const renderRows = useMemo(() => {
     return visibleItems?.map((item: SpecialCustomerLines) => (
@@ -282,7 +306,9 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
 
   return (
     <Box>
-
+      <Button mb={2} onClick={() => onOpen()} disabled={data.closingConfirmation || specialCustomer?.isRoleEditable === false}>
+        Agregar
+      </Button>
       <Table.ScrollArea rounded="md" borderWidth="1px">
         <Table.Root size="sm" variant="outline">
           <Table.Header>
@@ -350,6 +376,14 @@ function SpecialCustomersClousing({ data, subsidiary, tabs }: any) {
           <Loading />
         </Box>
       )}
+
+      <ChangeCustomerTickets
+        crcId={specialCustomer?.id ?? 0} 
+        isOpen={open}
+        onClose={closeModal}
+        clousingId={data.id}
+        idCurrency={subsidiary.idCurrency}
+      />
     </Box>
   );
 }

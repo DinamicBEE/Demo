@@ -15,7 +15,7 @@ import { SortableHeader } from "@utils/table";
 import { toast } from "@utils/Toast";
 import CheckDetailsDialog from "../notifications/CheckDetailsDialog";
 import "./TableStyle.css";
-import { useJobSSE } from "@hooks/useJobSSE";
+import { useJobSSE } from "@hooks/SSE/useJobSSE";
 import { JobPayload } from "@models/common.model";
 
 function TableOfTotals({

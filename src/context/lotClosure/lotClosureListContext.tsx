@@ -19,10 +19,11 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string>("");
   const bankCache = useRef<{ [key: number]: BankUpdate }>({});
 
-  const filterDataLots = (date: string, locationId: number[]) => {
-    if(locationId.length > 0) {
+  const filterDataLots = (date: string, status: number[]) => {
+    if(status.length > 0) {      
       const filteredLots = lostClosureCache.current[date].filter(
-            (lot) => locationId.includes(lot.consumerCenterId));
+        (lot) => status.includes(lot.statusId));
+      
       setLotsClosure(filteredLots);
     } else {
       setLotsClosure(lostClosureCache.current[date]);
@@ -33,6 +34,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
     async (
       date: string,
       locationId: number[],
+      status: number[] = [],
       isRefresh?: boolean
     ) => {
       /* if (
@@ -50,9 +52,9 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
           setLotsClosure([]);
           lostClosureCache.current = {};
         }
-        const response = await getLotsClosure(date);
+        const response = await getLotsClosure(locationId, date);
         lostClosureCache.current[date] = response;
-        filterDataLots(date, locationId);
+        filterDataLots(date, status);
       } catch (error) {
         setError(error instanceof Error ? error.message : String(error));
 
@@ -71,6 +73,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
       const updateBanks: Bank[] = [];
       const splitedBanks = updateBanksDistribution(localBank);
       updateBanks.push(...splitedBanks);
+      
       try {
         const body: BankUpdateRequest = {
           ...localLotClosure,
@@ -82,8 +85,7 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
               ...line
             })),
           })),
-        };
-
+        };        
         const response = await updateBankService(body, isPresave);
 
         !response ? setError("Error al actualizar detalles de Lotes") : null;
@@ -99,12 +101,12 @@ export function LotClosureProvider({ children }: { children: ReactNode }) {
   );
 
   const fetchBanks = useCallback(
-    async (cdcId: number, date:string) => {
+    async (cdcId: number, date:string, batchId: number | null) => {
       
       // if (bankCache.current[cdcId]) return bankCache.current[cdcId] as BankUpdate; // Cambiar referencia por tipo [key:number]: [key:string]: Bank[] validar formato
       setLoadingBanks(true);
       try {
-        const response: BankUpdate = await getBanks(cdcId, date);
+        const response: BankUpdate = await getBanks(cdcId, date, batchId);
         setBanks(response);   
         bankCache.current[cdcId] = response;
         return response;

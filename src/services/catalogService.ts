@@ -2,13 +2,14 @@ import { CurrencyModel, ExtraInfo } from "@models/common.clousing.model";
 import { StoreModel, SubsidiaryModal, location } from "@models/common.model";
 import { Employee, ReasonsModel, TicketModel } from "@models/employee.model";
 import { FilterOption } from "@models/reports.model";
-import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GETALLSTORES, LOCATIONS,
+import { CLIENTSPREPAY, CURRENCY, EMPLOYEEDELETE, EMPLOYEELIST, GET_COUNTRIES, GET_EXTRAINFO, GET_STATUS, GET_STATUS_BATCH, GET_TICKETS_GENERAL, GETALLSTORES, LOCATIONS,
   REASONLIST, SUBSIDIARIES, TICKETS, 
   ZONES} from "./settings";
 import Cookies from "js-cookie";
 import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
+import { CustomerTicketsModel } from "@models/customer.model";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -106,10 +107,10 @@ export const getCurrencies = async (
   }
 };
 
-export const getCustomers = async (type: CUSTOMER_TYPES, subId:number | null ): Promise<FilterOption[]> => {
+export const getCustomers = async (type: CUSTOMER_TYPES, zoneId:number | null ): Promise<FilterOption[]> => {
   try {
     const reponse = await api.get(CLIENTSPREPAY,
-      { params: { clientType: type, subId } }
+      { params: { clientType: type, zoneId } }
     );
     const transformedData = reponse.data.map((customer: any) => {
       return {
@@ -270,6 +271,20 @@ export const getStatus = async (): Promise<location[]> => {
     return [];
   }
 }
+export const getStatusLot = async (): Promise<location[]> => {
+  try {
+    const response = await api.get(GET_STATUS_BATCH);
+    const status = response.data.map((stat: any) => ({
+      id: stat.id,
+      name: stat.status,
+    }));
+    
+    return status;
+  } catch (error) {
+    console.error("Error al obtener los estados:", error);
+    return [];
+  }
+}
 
 export const getLocations = async (zoneIds: number[]): Promise<location[]> => {
   try {
@@ -321,4 +336,17 @@ const getAllStores = async (): Promise<FilterOption[]> => {
     return [] as FilterOption[];
   }
   
+}
+
+export const getTicketsGeneral = async (crcId: number): Promise<CustomerTicketsModel[]> => {
+
+  try {
+    const response = await api.get(GET_TICKETS_GENERAL,{
+      params: { crcId}
+    });
+
+    return response.data as CustomerTicketsModel[];
+  } catch (error) {
+    return [] as CustomerTicketsModel[];
+  }
 }

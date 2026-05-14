@@ -73,7 +73,7 @@ function Header({type}:HeaderProps) {
 
         fetchCDC();
 
-    },[zonesSelected])
+    },[zonesSelected]);
 
     const habdleSearch = async () => {
 
