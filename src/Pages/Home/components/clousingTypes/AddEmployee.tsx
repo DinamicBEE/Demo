@@ -63,7 +63,7 @@ function AddEmployee({
 
   const [amount, setAmount] = useState<number>(0);
   const [reason, setReason] = useState<number[]>([]);
-  const [ticket, setTicket] = useState<number[]>([]);
+  const [ticket, setTicket] = useState<string[]>([]);
 
   const [isEdited, setIsEdited] = useState<boolean>(false);
 
@@ -145,7 +145,7 @@ function AddEmployee({
             );
 
             if (ticketToSelect) {
-              setTicket([ticketToSelect.id]);
+              setTicket([ticketToSelect.id.toString()]);
             }
           }
         }
@@ -192,7 +192,8 @@ function AddEmployee({
       return matches.map((payment, index) => ({
         label: `${ticket.ticketNumber}`,
         value: `${ticket.id}-${index}`, 
-        description: `$${Number(payment.amount).toFixed(2)}`
+        description: `$${Number(payment.amount).toFixed(2)}`,
+        originalValue: ticket.id
       }));
     });
 
@@ -222,7 +223,7 @@ function AddEmployee({
       (item) => item.id === Number(reason[0])
     );
     const selectedTicket = ticketsList.find(
-      (item) => item.id === Number(ticket[0])
+      (item) => item.id === Number(ticket[0].split("-")[0])
     );
 
     const newEmployee: EmployeeLine = {
@@ -303,16 +304,7 @@ function AddEmployee({
               }
             />
 
-            <Group attached>
-              <InputAddon>Monto</InputAddon>
-              <Input
-                type="number"
-                placeholder="Ingrese el monto"
-                min={0}
-                value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
-              />
-            </Group>
+
 
             <SelectRoot
               collection={reasons}
@@ -326,19 +318,22 @@ function AddEmployee({
                 />
               </SelectTrigger>
               <SelectContent>
-                {reasons.items.map((movie) => (
-                  <SelectItem item={movie} key={movie.value}>
-                    {movie.label}
+                {reasons.items.map((item) => (
+                  <SelectItem item={item} key={item.value}>
+                    {item.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </SelectRoot>
 
-            {showTicketSelector && (
+            {(showTicketSelector && tickets.items.length > 0) && (
               <SelectRoot
                 collection={tickets}
                 value={ticket}
-                onValueChange={(e) => setTicket([Number(e.value)])}
+                onValueChange={(e) => {
+                  setTicket([e.value[0]]);  
+                  setAmount(Number(e.items[0].description.replace("$", "")) || 0)                  
+                }}
               >
                 <SelectLabel>Ticket</SelectLabel>
                 <SelectTrigger>
@@ -351,7 +346,7 @@ function AddEmployee({
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {tickets.items.map((ticket) => (
+                  {tickets.items.map((ticket, index) => (
                     <SelectItem item={ticket} key={ticket.value}>
                       <VStack alignItems={"flex-start"} gap={0}>
                         <SelectItemText>{ticket.label}</SelectItemText>
@@ -364,6 +359,17 @@ function AddEmployee({
                 </SelectContent>
               </SelectRoot>
             )}
+            <Group attached>
+              <InputAddon>Monto</InputAddon>
+              <Input
+                type="number"
+                prefix="$ "
+                placeholder="Ingrese el monto"
+                min={0}
+                value={amount}
+                onChange={(e) => setAmount(parseFloat(e.target.value))}
+              />
+            </Group>
           </Stack>
 
           {catalogLoading && (
@@ -375,15 +381,15 @@ function AddEmployee({
 
         <DialogFooter  >
           <Box>
-           {data != null && (
-            <Button
-              colorPalette="meraError"
-              loading={loading}
-              onClick={() => handleDelete(data?.id!, clousingId)}
-            >
-              Eliminar
-            </Button>
-          )}
+            {data != null && (
+              <Button
+                colorPalette="meraError"
+                loading={loading}
+                onClick={() => handleDelete(data?.id!, clousingId)}
+              >
+                Eliminar
+              </Button>
+            )}
           {
             data == null && (
               <DialogActionTrigger asChild>
