@@ -48,7 +48,6 @@ function CashClousing({ data, idCurrency }: any) {
     }
     
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cashClousing]);
 
   useEffect(() => {
@@ -199,7 +198,11 @@ function CashClousing({ data, idCurrency }: any) {
 
                     <Text>
                       <FormatNumber
-                        value={item.exchangeRate !== 0 ? (item.totalFisico || 0)/ (item.exchangeRate || 0) : 0}
+                        value={item.exchangeRate !== 0 
+                          ? item.exchangeRate === 1 
+                            ? item.totalFisico
+                            : (Math.trunc((item.totalFisico / item.exchangeRate)*100)/100) 
+                          : 0}
                         style="currency"
                         currency="USD"
                       />

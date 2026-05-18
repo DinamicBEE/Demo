@@ -150,7 +150,7 @@ function CustomersClousing({ data, subsidiary, isStarbucks }: CustomersClousingP
         {item.label}
       </SelectItem>
     ));
-  }, []);
+  }, [currenciesForSelect]);
 
   const renderRows = useMemo(() => {
     if (!visibleItems || visibleItems.length === 0) {
