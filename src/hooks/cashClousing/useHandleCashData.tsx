@@ -63,7 +63,7 @@ function handleChangeTips(value: string) {
   
   const sanitizedValue = value.replace(/[^\d.]/g, "");
   const newTipAmount = parseFloat(sanitizedValue) || 0;
-  const sumOfCurrencies = cashData.currencies.reduce(
+  const sumOfCurrencies = cashRef.current.currencies.reduce(
     (acc, curr) => acc + (Number(curr.totalFisico) || 0), 
     0
   );
@@ -72,12 +72,12 @@ function handleChangeTips(value: string) {
 
   const updatedTotal = { 
     totalPhysical: finalPhysical,
-    totalPOS: cashData.total?.totalPOS ?? 0,
-    difference: finalPhysical - (cashData.total?.totalPOS ?? 0),
+    totalPOS: cashRef.current.total?.totalPOS ?? 0,
+    difference: finalPhysical - (cashRef.current.total?.totalPOS ?? 0),
   };
 
   const updatedCashData = { 
-    ...cashData, 
+    ...cashRef.current, 
     tips: newTipAmount, 
     total: updatedTotal 
   };

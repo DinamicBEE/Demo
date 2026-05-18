@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { compression } from "vite-plugin-compression2";
 import react from "@vitejs/plugin-react";
 import path from "path";
@@ -13,6 +13,16 @@ export default defineConfig({
       threshold: 1024,
     })
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
+    css: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+    },
+  },
   define: { global: 'window',},
   build: {
     outDir: 'dist',
