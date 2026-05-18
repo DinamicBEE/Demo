@@ -15,7 +15,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
 
   useEffect(() => {
     if (cashClousingSelect?.denominations) {
-      setDenominations([...cashClousingSelect.denominations]);
+      setDenominations([...cashClousingSelect.denominations]);      
     }
   }, [cashClousingSelect]);
 
@@ -27,7 +27,7 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
     setDenominations(updated);
   };
 
-  const total = denominations.reduce((sum, item) => {
+  const total: number = denominations.reduce((sum, item) => {
     if (item.denomination === "Cambio") {
       return sum + (parseFloat(item.amount) || 0);
     }
@@ -43,8 +43,9 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
   const totalMXN = (total * cashClousingSelect.exchangeRate)
 
   const handleSave = () => {
+
     let newTotalMXN = totalMXN;
-    if(total == (parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)))){
+    if((total) == Math.trunc((cashClousingSelect.totalPOS/cashClousingSelect.exchangeRate)*100)/100){
       newTotalMXN = cashClousingSelect.totalPOS;
     }
 
@@ -64,12 +65,16 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
       <DialogBackdrop />
       <DialogContent>
         <DialogHeader>
-           <DialogTitle>Lista de Denominaciones</DialogTitle>
+          <DialogTitle>Lista de Denominaciones</DialogTitle>
         </DialogHeader>
         <DialogBody>
-          <Flex gap={4}  mb={4}>
+          <Flex gap={2}  mb={4}>
             <CurrencyInput
-              value={parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2))}
+              value={
+                cashClousingSelect.exchangeRate === 1 
+                ? cashClousingSelect.totalPOS 
+                : Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100
+              }
               name={"POS"}
               loading={false}
             />
@@ -79,7 +84,11 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
               loading={false}
             />
             <CurrencyInput
-              value={parseFloat((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate).toFixed(2)) - total}
+              value={total - (
+                cashClousingSelect.exchangeRate === 1 
+                ? cashClousingSelect.totalPOS 
+                : Math.trunc((cashClousingSelect.totalPOS / cashClousingSelect.exchangeRate)*100)/100
+              )}
               name={"Diferencia"}
               loading={false}
             />

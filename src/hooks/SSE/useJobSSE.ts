@@ -175,7 +175,7 @@ export const useJobSSE = () => {
         try {
         const response = await startJob(payload);
         
-        if (!response.alreadyRunning) {
+        if (!response.alreadyRunning && response.jobId !== null) {
             connectToJobStream(response.jobId);
         }
         

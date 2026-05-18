@@ -66,7 +66,7 @@ function handleChangeTips(value: string) {
   const sumOfCurrencies = cashData.currencies.reduce(
     (acc, curr) => acc + (Number(curr.totalFisico) || 0), 
     0
-  );
+  ) ?? 0;
 
   const finalPhysical = sumOfCurrencies - newTipAmount;
 

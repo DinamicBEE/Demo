@@ -98,12 +98,17 @@ function TableOfTotals({
         endDate,
         revenueId:sortedData[0].revenueId ||0
       }
+
       
       const response = await executeJob(payload);
 
       if(response.status === "RUNNING"){
         setLoading(false);
         toast("Se ha realizado una carga previamente espere 5 minutos e intente de nuevo", "error");
+      }
+
+      if(response.status === "SKIPPED"){
+        setLoading(false);
       }
 
     } catch (error) {

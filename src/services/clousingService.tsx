@@ -424,11 +424,11 @@ export const getEmployeeClousing = async (
     const responseAxios = await api.get(EMPLOYEE_INSERT, {
       params: { crcId: clousingId },
     });
-        
-    const totalPhysical = responseAxios.data.reduce(
+
+    const totalPhysical = responseAxios.data.lines?.reduce(
       (acc: number, curr: any) => acc + curr.amount,
       0
-    );
+    ) ?? 0;
     const totalPOS = responseAxios.data.totalPos ?? 0;
     const difference = totalPhysical - totalPOS;
 
@@ -439,10 +439,10 @@ export const getEmployeeClousing = async (
         totalPhysical: totalPhysical,
         difference: difference,
       },
-      lines: responseAxios.data.map((line: any) => ({
+      lines: responseAxios.data.lines?.map((line: any) => ({
         ...line,
         id: line.id === null ? "employee-" + uuidv4() : line.id,
-      })),
+      })) ?? [],
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
     };
 
