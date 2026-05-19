@@ -121,7 +121,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
             >
               <GridItem colSpan={{ base: 1, md: 5 }}>
                 <Flex direction="column" gapY={8}>
-                  <Flex gap={2} direction={{ base: "column", md: "row" }}>
+                  <Flex gap={2} direction={{ base: "column", md: "row" }} >
                     <CurrencyInput
                       name={"Total Micros"}
                       value={localLot?.totalPos}
@@ -141,12 +141,12 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                   {localBanks.bank.length > 0 &&
                     !loadingBanks &&
                     localBanks.bank.map((bank) => (
-                      <Box key={bank.batchDetailsId}>
+                      <Box key={bank.batchDetailsId} >
                         <Text fontWeight="bold" textStyle="md">
                           {bank.bankTerminalName}
                         </Text>
                         <Separator marginTop={4} marginBottom={4} size={"md"} />
-                        <Flex gap={2} direction={{ base: "column", md: "row" }}>
+                        <Flex gap={2} direction={{ base: "column", md: "row" }}  justifyContent="space-between">
                           <CurrencyInput
                             name={"POS"}
                             value={bank.totalPos}

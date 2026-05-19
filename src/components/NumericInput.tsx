@@ -7,7 +7,7 @@ function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
-            <Skeleton loading={loading} width={"100%"}>
+            <Skeleton loading={loading} >
                 <NumericFormat
                     customInput={Input}
                     thousandSeparator=","
@@ -29,7 +29,7 @@ function EditableCurrencyInput({ name, value, loading, onChange, disabled }: Cur
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
-            <Skeleton loading={loading} width={"100%"}>
+            <Skeleton loading={loading} >
                 <NumericFormat
                     disabled={disabled || false}
                     customInput={Input}

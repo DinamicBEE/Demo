@@ -140,7 +140,7 @@ function LotClosure() {
         date={formattedDate}
         status={selectedStatus.map(Number)}
       />
-      { loading && (
+      { loadingBanks && (
           <Box position="fixed" top="50%" left="50%" zIndex={1000}>
               <Loading />
           </Box>

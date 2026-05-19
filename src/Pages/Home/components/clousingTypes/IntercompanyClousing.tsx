@@ -32,7 +32,6 @@ function IntercompanyClousing({data, subsidiaryId, cdc}: IntercompanyClousingPro
   }>({});
 
   const {
-    intercompany,
     getIntercompanyData,
     setIntercompanyData,
     getEmployeesList,

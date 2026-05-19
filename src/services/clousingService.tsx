@@ -354,7 +354,6 @@ export const getPrepaidClousing = async (
 
     return responseData;
   } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
     return {
       success: false,
       data:{
@@ -511,7 +510,6 @@ export const getIntercompanyClousing = async (
 
     return data;
   } catch (error) {
-    console.error("Error al obtener los valores generales:", error);
     return {
       id: clousingId,
       employeeId: 0,
