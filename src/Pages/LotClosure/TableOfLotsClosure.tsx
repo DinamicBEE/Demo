@@ -1,8 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
-import { Box, Button, FormatNumber, Grid, HStack, Skeleton,
-  Table, Tag, Text } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger,
-  PaginationRoot } from "@components/ui/pagination";
+import { Box, Button, FormatNumber, Grid, Skeleton, Table, Tag, Text } from "@chakra-ui/react";
 import LoteClosureDialog from "./LoteClosureDialog";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { STATUS } from "@models/const/status.const";

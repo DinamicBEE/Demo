@@ -1,7 +1,5 @@
 import { Button, Flex, Text, Box, Table, Grid, GridItem, Separator,
-  Skeleton, Spinner, 
-  Textarea,
-  Field} from "@chakra-ui/react";
+  Skeleton, Spinner, Textarea, Field} from "@chakra-ui/react";
 import { CurrencyInput, TableInput } from "@components/NumericInput";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody,
   DialogCloseTrigger, DialogFooter } from "@components/ui/dialog";
@@ -11,7 +9,6 @@ import { Bank, BankUpdate, LotClosure, LotClosureDialogProps } from "@models/lot
 import { STATUS } from "@models/const/status.const";
 import { useEffect, useState } from "react";
 import { toast } from "../../utils/index";
-import { updateBatchClosing } from "@services/lotClosureService";
 import { formatOnlyDate } from "@utils/dateFormatter";
 
 function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps) {
@@ -22,7 +19,6 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
   const [isPresave, setIsPresave] = useState(false);
   const { handleInputData } = useHandleAffiliationsData();
   const [localLot, setLocalLot] = useState<LotClosure>({} as LotClosure);
-  const [isLoading, setIsLoading] = useState(false);
   const [existDiference, setExistDiference] = useState(false);
 
   const handleUpdateBankAfilations = (
@@ -61,19 +57,6 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
       toast(message, "success");
     }
   };
-
-  const handleUpdateBatch = async () => {
-    setIsLoading(true);
-    const batchId = localBanks?.bank[0]?.batchClosureId;
-    const responseStatus = await updateBatchClosing(batchId);
-    if (responseStatus) {
-      toast("Lote actualizado, volver a abrir el diálogo para ver los cambios", "success");
-      onClose(true);
-      setIsLoading(false);
-    } else {
-      setIsLoading(false);
-    }
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -154,22 +137,6 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                       value={localLot?.difference}
                       loading={false}
                     />
-                    {/* <Button
-                      onClick={handleUpdateBatch}
-                      loading={isLoading}
-                      colorPalette="meraWarning"
-                      disabled={
-                        localBanks.bank.length === 0
-                        || localBanks.bank[0].batchClosureId === null
-                        || localBanks.bank[0].affiliationList.length === 0
-                        || loadingBanks
-                        || isLoading
-                        || localLot.status === STATUS.Close
-                        || localLot.status === STATUS.WITH_DIFFERENCE
-                        || localLot.isRoleEditable === false }
-                    >
-                      Actualizar Lote
-                    </Button> */}
                   </Flex>
                   {localBanks.bank.length > 0 &&
                     !loadingBanks &&
@@ -334,9 +301,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
               <Button
                 colorPalette="meraWarning"
                 disabled={
-                  isLoading
-                  ? true 
-                  : lot.status === STATUS.Close
+                  lot.status === STATUS.Close
                     || lot.status === STATUS.WITH_DIFFERENCE
                     || localLot.isRoleEditable === false 
                     ? true
@@ -350,9 +315,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
               </Button>
               <Button
                 disabled={
-                  isLoading
-                  ? true 
-                  : lot.status === STATUS.Close
+                  lot.status === STATUS.Close
                     || lot.status === STATUS.WITH_DIFFERENCE
                     || localLot.isRoleEditable === false
                     || existDiference
