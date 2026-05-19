@@ -1,30 +1,18 @@
 import { useEffect, useState } from "react";
-import { Box, Button, Grid, VStack, HStack, Heading, Flex,
-  Field } from "@chakra-ui/react";
+import { Box, Button, Grid, VStack, HStack, Field } from "@chakra-ui/react";
 import SimpleDatePicker from "./components/SimpleDatePicker";
-import { SelectContent, SelectItem, SelectLabel, SelectRoot,
-  SelectTrigger, SelectValueText } from "@components/ui/select";
 import TableOfLotClosure from "./TableOfLotsClosure";
 import { useLotClosureList } from "@context/lotClosure/lotClosureListContext";
 import { useLotCatalogList } from "@context/lotClosure/catalogsProviders";
-import { selectOption } from "@models/common.model";
-import { handleMultiSelectChange, renderMultiSelectWithControls } from "../../utils/selectManagement";
+
 import Loading from "@components/Loading";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 
 function LotClosure() {
-  // Subsidiarias
-  const [subSelected, setSubSelected] = useState<string[]>([]);
-  
-  //Zonas
-  const [selectedZoneOptions, setSelectedZoneOptions] = useState<string[]>([]);
-  // const [zoneIds, setZoneIds] = useState<string[]>([]);
-  
-  //CDC's
-  const [selectedCDCOptions, setSelectedCDCOptions] = useState<string[]>([]);
-  // const [locationId, setLocationId] = useState<number[]>([]);
 
-  //Status
+  const [subSelected, setSubSelected] = useState<string[]>([]);
+  const [selectedZoneOptions, setSelectedZoneOptions] = useState<string[]>([]);
+  const [selectedCDCOptions, setSelectedCDCOptions] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   
   const [formattedDate, setFormattedDate] = useState<string>('');
@@ -33,7 +21,7 @@ function LotClosure() {
       const [year, month, day] = dateString.split("-").map(Number);
       return new Date(year, month - 1, day);
     }
-  const { fetchLotClosureData, lotsClosure, loadingBanks } = useLotClosureList();
+  const { fetchLotClosureData, lotsClosure, loading: loadingBanks } = useLotClosureList();
   const { getStatusList, fetchCompanies, fetchZones, fetchLocations, status, companies, zones, locations, loading } =
     useLotCatalogList();
   const [showTable, setShowTable] = useState(false);
@@ -58,12 +46,7 @@ function LotClosure() {
     setSelectedZoneOptions([]);
     setSelectedCDCOptions([]);
     fetchZones(subSelected.map(Number));
-    // if (subSelected.length === 0) {
-    //   setSelectedZoneOptions([]);
-    //   setSelectedCDCOptions([]);
-    // } else {
-    // }
-    },[subSelected]);
+  },[subSelected]);
 
   useEffect(() => {
     async function loadLocations() {
