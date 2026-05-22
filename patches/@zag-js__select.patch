@@ -1,0 +1,44 @@
+diff --git a/dist/select.types.d.mts b/dist/select.types.d.mts
+index 42a958861b8490d6c7e06dfc961d7c8201d4341e..f0b898937a176dcdfcf3744391ab756232a3c318 100644
+--- a/dist/select.types.d.mts
++++ b/dist/select.types.d.mts
+@@ -113,7 +113,7 @@ interface SelectProps<T extends CollectionItem = CollectionItem> extends Directi
+     /**
+      * The controlled keys of the selected items
+      */
+-    value?: string[] | undefined;
++    value?: number[] | string[] | undefined;
+     /**
+      * The initial default value of the select when rendered.
+      * Use when you don't need to control the value of the select.
+@@ -205,7 +205,7 @@ interface ItemState {
+     /**
+      * The underlying value of the item
+      */
+-    value: string;
++    value: string | number;
+     /**
+      * Whether the item is disabled
+      */
+@@ -241,7 +241,7 @@ interface SelectApi<T extends PropTypes = PropTypes, V extends CollectionItem =
+     /**
+      * The value of the highlighted item
+      */
+-    highlightedValue: string | null;
++    highlightedValue: string | number | null;
+     /**
+      * The highlighted item
+      */
+diff --git a/dist/select.types.d.ts b/dist/select.types.d.ts
+index 42a958861b8490d6c7e06dfc961d7c8201d4341e..9694043b89f19c6729ddae8e64634cc0ab0c4c9b 100644
+--- a/dist/select.types.d.ts
++++ b/dist/select.types.d.ts
+@@ -113,7 +113,7 @@ interface SelectProps<T extends CollectionItem = CollectionItem> extends Directi
+     /**
+      * The controlled keys of the selected items
+      */
+-    value?: string[] | undefined;
++    value?: number[] | string[] | undefined;
+     /**
+      * The initial default value of the select when rendered.
+      * Use when you don't need to control the value of the select.

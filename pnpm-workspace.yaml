@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
   postinstall-postinstall: true
+patchedDependencies:
+  '@zag-js/select': patches/@zag-js__select.patch

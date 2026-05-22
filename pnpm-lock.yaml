@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@zag-js/select': 9eb21601908ffaef95923ff5b03f617489aa6adba75cba607806beb8e12a3661
+
 importers:
 
   .:
@@ -3244,7 +3247,7 @@ snapshots:
       '@zag-js/rating-group': 1.40.0
       '@zag-js/react': 1.40.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@zag-js/scroll-area': 1.40.0
-      '@zag-js/select': 1.40.0
+      '@zag-js/select': 1.40.0(patch_hash=9eb21601908ffaef95923ff5b03f617489aa6adba75cba607806beb8e12a3661)
       '@zag-js/signature-pad': 1.40.0
       '@zag-js/slider': 1.40.0
       '@zag-js/splitter': 1.40.0
@@ -4528,7 +4531,7 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 1.40.0
 
-  '@zag-js/select@1.40.0':
+  '@zag-js/select@1.40.0(patch_hash=9eb21601908ffaef95923ff5b03f617489aa6adba75cba607806beb8e12a3661)':
     dependencies:
       '@zag-js/anatomy': 1.40.0
       '@zag-js/collection': 1.40.0
