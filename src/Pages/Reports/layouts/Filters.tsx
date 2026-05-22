@@ -1,29 +1,7 @@
-import {
-  Box,
-  Button,
-  createListCollection,
-  Field,
-  Grid,
-  ListCollection,
-  HStack,
-} from "@chakra-ui/react";
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText
-} from "@components/ui/select";
-import {
-  AppliedFilters,
-  FilterConfigModel,
-  FilterData,
-  FilterPropsModel,
-  ReportFilterModel,
-} from "@models/reports.model";
-import { FILTER_LABELS, FilterKey, REPORT_CONFIG
-} from "@models/const/reportFilter.const";
+import { Box, Button, createListCollection, Field, Grid, ListCollection, HStack } from "@chakra-ui/react";
+import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
+import { AppliedFilters, FilterConfigModel, FilterData, FilterPropsModel, ReportFilterModel } from "@models/reports.model";
+import { FILTER_LABELS, FilterKey, REPORT_CONFIG } from "@models/const/reportFilter.const";
 import { useEffect, useMemo, useCallback, useState } from "react";
 import DatePicker from "../../LotClosure/components/DatePicker";
 import { getFilterOptions, getLocations, getZones } from "@services/catalogService";
