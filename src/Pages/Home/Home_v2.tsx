@@ -396,7 +396,7 @@ function Home_v2() {
                 
                     <GeneralInfo isReport={true} totals={totals}></GeneralInfo>
         
-                    <TableGeneralReport DataReport={dataReport} Totals={rowtotals} date={formattedDate}></TableGeneralReport>
+                    <TableGeneralReport DataReport={dataReport} Totals={rowtotals} date={formattedDate} loading={loading}></TableGeneralReport>
                 </>
 
             )}
