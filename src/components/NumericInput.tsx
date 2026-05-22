@@ -1,4 +1,4 @@
-import { Group, HStack, Input, InputAddon, Skeleton } from "@chakra-ui/react";
+import { Box, Group, HStack, Input, InputAddon, Skeleton } from "@chakra-ui/react";
 import { CurrencyInputProps, TableInputProps } from "@models/common.model";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { NumericFormat } from 'react-number-format';
@@ -7,18 +7,19 @@ function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     return (
         <Group>
             <InputAddon>{name}</InputAddon>
-            <Skeleton loading={loading} >
+            <Skeleton loading={loading}>
                 <NumericFormat
-                    customInput={Input}
-                    thousandSeparator=","
-                    decimalSeparator="."
-                    prefix="$ "
-                    textAlign="end"
-                    decimalScale={2}
-                    fixedDecimalScale
-                    value={value || 0}
-                    placeholder={name}
-                    readOnly
+                  width={"100%"}
+                  customInput={Input}
+                  thousandSeparator=","
+                  decimalSeparator="."
+                  prefix="$ "
+                  textAlign="end"
+                  decimalScale={2}
+                  fixedDecimalScale
+                  value={value || 0}
+                  placeholder={name}
+                  readOnly
                 />
             </Skeleton>
         </Group>
