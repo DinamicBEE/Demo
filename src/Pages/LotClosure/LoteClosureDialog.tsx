@@ -146,27 +146,38 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                           {bank.bankTerminalName}
                         </Text>
                         <Separator marginTop={4} marginBottom={4} size={"md"} />
-                        <Flex gap={2} direction={{ base: "column", md: "row" }}  justifyContent="space-between">
-                          <CurrencyInput
-                            name={"POS"}
-                            value={bank.totalPos}
-                            loading={false}
-                          />
-                          <CurrencyInput
-                            name={"Corte caja"}
-                            value={bank.totalPos}
-                            loading={false}
-                          />
-                          <CurrencyInput
-                            name={"Lote"}
-                            value={bank.totalBatch}
-                            loading={false}
-                          />
-                          <CurrencyInput
-                            name={"Diferencia"}
-                            value={bank.difference}
-                            loading={false}
-                          />
+                        <Flex 
+                          gap={2} 
+                          direction={{ base: "column", md: "row" }}
+                          width={"100%"}>
+                          <GridItem colSpan={1} overflowX={"hidden"} width={"100%"} >
+                            <CurrencyInput
+                              name={"POS"}
+                              value={bank.totalPos}
+                              loading={false}
+                            />
+                          </GridItem>
+                          <GridItem colSpan={1} overflowX={"hidden"} width={"100%"} >
+                            <CurrencyInput
+                              name={"Corte caja"}
+                              value={bank.totalPos}
+                              loading={false}
+                            />
+                          </GridItem>
+                          <GridItem colSpan={1} overflowX={"hidden"} width={"100%"} >
+                            <CurrencyInput
+                              name={"Lote"}
+                              value={bank.totalBatch}
+                              loading={false}
+                            />
+                          </GridItem>
+                          <GridItem colSpan={1} overflowX={"hidden"} width={"100%"} >
+                            <CurrencyInput
+                              name={"Diferencia"}
+                              value={bank.difference}
+                              loading={false}
+                            />
+                          </GridItem>
                         </Flex>
 
                         <Table.ScrollArea
