@@ -113,31 +113,40 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
             <DialogCloseTrigger />
           </DialogHeader>
           <DialogBody>
-            <Grid
-              templateColumns={{ base: "1fr", md: "repeat(5, 1fr)" }}
+            <Flex
+              direction={"column"}
+              // templateColumns={{ base: "1fr", md: "repeat(5, 1fr)" }}
               gap={4}
               mb={4}
               w="100%"
             >
-              <GridItem colSpan={{ base: 1, md: 5 }}>
+              <Box >
                 <Flex direction="column" gapY={8}>
-                  <Flex gap={2} direction={{ base: "column", md: "row" }} >
-                    <CurrencyInput
-                      name={"Total Micros"}
-                      value={localLot?.totalPos}
-                      loading={false}
-                    />
-                    <CurrencyInput
-                      name={"Total lote"}
-                      value={localLot?.totalLote}
-                      loading={false}
-                    />
-                    <CurrencyInput
-                      name={"Diferencia"}
-                      value={localLot?.difference}
-                      loading={false}
-                    />
-                  </Flex>
+                  <Grid templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }} gap={2} >
+                    <GridItem colSpan={1} width={"100%"}>
+                      <CurrencyInput
+                        name={"Total Micros"}
+                        value={localLot?.totalPos}
+                        loading={false}
+                      />
+                    </GridItem>
+                    <GridItem colSpan={1} width={"100%"}>
+                      <CurrencyInput
+                        name={"Total lote"}
+                        value={localLot?.totalLote}
+                        loading={false}
+                      />
+                    </GridItem>
+                    <GridItem colSpan={1} width={"100%"}>
+                      <CurrencyInput
+                        name={"Diferencia"}
+                        value={localLot?.difference}
+                        loading={false}
+                      />
+                    </GridItem>
+                    <GridItem colSpan={1} width={"100%"}>
+                    </GridItem>
+                  </Grid>
                   {localBanks.bank.length > 0 &&
                     !loadingBanks &&
                     localBanks.bank.map((bank) => (
@@ -146,9 +155,9 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                           {bank.bankTerminalName}
                         </Text>
                         <Separator marginTop={4} marginBottom={4} size={"md"} />
-                        <Flex 
-                          gap={2} 
-                          direction={{ base: "column", md: "row" }}
+                        <Grid
+                          gridTemplateColumns={{ base: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" }}
+                          gap={2}
                           width={"100%"}>
                           <GridItem colSpan={1} overflowX={"hidden"} width={"100%"} >
                             <CurrencyInput
@@ -178,7 +187,7 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                               loading={false}
                             />
                           </GridItem>
-                        </Flex>
+                        </Grid>
 
                         <Table.ScrollArea
                           rounded="md"
@@ -304,8 +313,8 @@ function LoteClosureDialog({ isOpen, onClose, lot, date }: LotClosureDialogProps
                     <Text>No hay bancos registrados</Text>
                   )}
                 </Flex>
-              </GridItem>
-            </Grid>
+              </Box>
+            </Flex>
           </DialogBody>
           <DialogFooter>
             <Flex gap={2} wrap={"wrap"}>

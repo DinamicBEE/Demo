@@ -5,7 +5,7 @@ import { NumericFormat } from 'react-number-format';
 
 function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     return (
-        <Group>
+        <Group width={"100%"}>
             <InputAddon>{name}</InputAddon>
             <Skeleton loading={loading}>
                 <NumericFormat
