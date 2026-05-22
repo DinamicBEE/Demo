@@ -1,7 +1,5 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, FormatNumber, HStack, Table, Tag, Text } from "@chakra-ui/react";
-import { PaginationItems, PaginationNextTrigger, PaginationPrevTrigger, PaginationRoot } from "@components/ui/pagination";
+import { Box, FormatNumber, Skeleton, Table, Tag, Text } from "@chakra-ui/react";
 import { HomeParamsProps, ReportClousingLinesModel, ReportTotalsModel } from "@models/common.clousing.model";
 import { useClousing } from "@context/home/clousingContext";
 import useSortableTable from "@hooks/useSortableTable/useSortableTable";
@@ -11,9 +9,7 @@ import { SortableHeader } from "@utils/table";
 import "./TableStyle.css";
 import { TableDataModel } from "@models/common.model";
 
-function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataModel, Totals: ReportTotalsModel, date: string}) {
-
-    const [page, setPage] = useState<number>(1);
+function TableGeneralReport({DataReport, Totals, date, loading}: {DataReport: TableDataModel, Totals: ReportTotalsModel, date: string, loading: boolean}) {
     const navigate = useNavigate();
     const { getInfo } = useClousing();
     const { sortedData, handleSort, getSortIcon } = useSortableTable<ReportClousingLinesModel>(DataReport.data);
@@ -72,7 +68,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
                         <Table.Row zIndex={1}>
                             <SortableHeader columnProps={{left: "0px", position: "sticky", minW: "294px"}} columnKey="ubicacion" label="Zona" handleSort={handleSort} getSortIcon={getSortIcon} />
                             <SortableHeader columnProps={{left: "294px", position: "sticky"}}columnKey="cdc" label="CDC" handleSort={handleSort} getSortIcon={getSortIcon} />
-                            {
+                            { 
                                 DataReport.headers.map(header => (
                                     <SortableHeader key={header.key} columnKey={header.key} label={header.label} handleSort={handleSort} getSortIcon={getSortIcon} />
                                 ))
@@ -81,7 +77,17 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {sortedData.map((row) => (
+                        {loading && Array.from({ length: 12 }).map((_, rowIndex) => (
+                                <Table.Row key={rowIndex}>
+                                {Array.from({ length: 12 }).map((_, colIndex) => (
+                                    <Table.Cell key={colIndex} textAlign="center">
+                                    <Skeleton height="20px" />
+                                    </Table.Cell>
+                                ))}
+                                </Table.Row>
+                            )
+                        )}
+                        { sortedData.map((row) => (
                             <Table.Row key={row.id} className="row_bg">
                                 <Table.Cell className="row_bg_column1"><Text truncate> {row.ubicacion} </Text></Table.Cell>
                                 <Table.Cell className="row_bg_column2" truncate
@@ -101,7 +107,7 @@ function TableGeneralReport({DataReport, Totals, date}: {DataReport: TableDataMo
                                         }}
                                     > {row.cdc} </Text>
                                 </Table.Cell>
-                                {
+                                { 
                                     DataReport.headers.map(header =>(
                                         <Table.Cell key={header.key}>
                                             {renderCellContent(header.key as keyof ReportClousingLinesModel, row[header.key as keyof ReportClousingLinesModel])}

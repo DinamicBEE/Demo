@@ -50,7 +50,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
       setSpecialCustData(updateCustomerData, clousingId)
     ]);
 
-  }, []);//specialCustomerData, clousingId, updateTotal, setFooterData, setSpecialCustData
+  }, []);
   
   const debouncedUpdateContext = useDebounce(
     updateContext,
@@ -84,7 +84,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
   }, [setSpecialCustomer,  debouncedUpdateContext]);
 
   const handleUpdateAmountMXN = useCallback((id: number | string, value: string, key?: string) => {
-    const numericValue = parseFloat(value.replace(/[^\d.]/g, ""));
+    const numericValue = parseFloat(value.replace(/[^\d.-]/g, "")) > 0 ? Number(parseFloat(value.replace(/[^\d.]/g, "")).toFixed(2)) : 0;
     
     if (isNaN(numericValue) || numericValue < 0) return;
 
@@ -129,7 +129,7 @@ export const useHandleSpecialCustomer = (specialCustomerData: SpecialCustomerMod
 
     debouncedUpdateContext();
   
-  }, []);//setSpecialCustomer, debouncedUpdateContext
+  }, []);
 
-  return {handleInputTextData, handleUpdateAmountMXN}
+  return {handleInputTextData, handleUpdateAmountMXN, updateContext}
 }

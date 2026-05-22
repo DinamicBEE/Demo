@@ -8,7 +8,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
     "test:watch": "vitest --watch",
     "dev": "vite",
     "dev:back": "vite --mode back",
@@ -16,8 +16,7 @@
     "build:back": "vite build --mode back",
     "start": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "postinstall": "patch-package"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.35.0",
@@ -55,6 +54,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "4.1.6",
     "@vitest/ui": "^4.1.6",
     "eslint": "^10.4.0",
     "eslint-plugin-react": "^7.37.5",
@@ -62,7 +62,6 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
-    "patch-package": "^8.0.1",
     "postinstall-postinstall": "^2.1.0",
     "terser": "^5.47.1",
     "vite": "^8.0.13",
