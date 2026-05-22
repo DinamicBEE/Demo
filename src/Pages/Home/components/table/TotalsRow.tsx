@@ -30,13 +30,6 @@ function TotalsRow(){
           />
         </Table.Cell>
         <Table.Cell />
-        {/* <Table.Cell textAlign="end">
-          <FormatNumber
-            value={totals.extra}
-            style="currency"
-            currency="USD"
-          />
-        </Table.Cell> */}
 
         {currHeader.length > 0 &&
           totals.currencies != undefined &&
