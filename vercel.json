@@ -2,5 +2,8 @@
   "rewrites": [
     { "source": "/api/:path*", "destination": "http://mera-sandbox-alb-39209089.us-east-2.elb.amazonaws.com/:path*" },
     { "source": "/(.*)", "destination": "/" }
-  ]
+  ],
+  "buildCommand": "pnpm build",
+  "installCommand": "pnpm install --ignore-scripts && pnpm patch-package --error-on-fail=false || true",
+  "framework": "vite"
 }
