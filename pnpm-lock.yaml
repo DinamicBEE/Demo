@@ -23,6 +23,9 @@ importers:
       '@types/node':
         specifier: ^25.9.0
         version: 25.9.1
+      '@zag-js/file-utils':
+        specifier: ^1.41.1
+        version: 1.41.1
       axios:
         specifier: ^1.16.1
         version: 1.16.1
@@ -1068,6 +1071,9 @@ packages:
   '@zag-js/dom-query@1.40.0':
     resolution: {integrity: sha512-4J3EO2gHpZ1VZiGLuMlH6G1Tsp4gKB8PPt2yKeNQWYGEXyrHUXrvMhRUzv7Z4/2I1s1tnxlFG4F8ovB3kTpz/Q==}
 
+  '@zag-js/dom-query@1.41.1':
+    resolution: {integrity: sha512-f6hBV6fPc9Ok/Re/tsxqJ8NcgQzsASQ6YoulUKSQnZMGb7tr0Ks1IH3Hjy3+ARXvCaSjgDhPPXt5+bkieur4eg==}
+
   '@zag-js/drawer@1.40.0':
     resolution: {integrity: sha512-N2OR5ZYuTsWkYYmwsNgmL+wfuM3qUxB8GAfo53AWvOh07QUVz1Dvh1WP4km5L6Tkz4UBQZACu8T/ZLyeZ+PdWg==}
 
@@ -1079,6 +1085,9 @@ packages:
 
   '@zag-js/file-utils@1.40.0':
     resolution: {integrity: sha512-BGny4rafiBQ5TPCBXfzbH7lSyFdnoix7brq/+FllKpDqpWPQz0tIsgSZueF/Z8GPTrAkwMKOFI99P7OVhAhRig==}
+
+  '@zag-js/file-utils@1.41.1':
+    resolution: {integrity: sha512-BTRqhSiu+bg7pmKA7suRl/VGveYTmli17xAwpbkHO/3zCSfMMwYbfwLIlwXAairgoTkL4j5bqNt6yOTpSf23hA==}
 
   '@zag-js/floating-panel@1.40.0':
     resolution: {integrity: sha512-e2QXwapCbjLJnU+MAz06CoByj4XJ3sdSBgWF+PSe2X2T8dd/FkZUnaDPaX0yyfyTWKzBbyRRNyon2LMAs8ndHw==}
@@ -1097,6 +1106,9 @@ packages:
 
   '@zag-js/i18n-utils@1.40.0':
     resolution: {integrity: sha512-8D3ki9V81gMKZvtRfNVoHCBDVYjr+WJLBvdfSv3cdOsVM2/E8//xAfYbYzl5Fdmeny3H71fxBNqOX05GN4K6OA==}
+
+  '@zag-js/i18n-utils@1.41.1':
+    resolution: {integrity: sha512-YfKEzNZGun6P0T0BYQ6Xg2VnVrUOkWwDeeqUNhAfQ9mD+ysoZq2ms2/W65glf/je5bdLoXIaePH89ZQJGT4HXQ==}
 
   '@zag-js/image-cropper@1.40.0':
     resolution: {integrity: sha512-bpTCaiUXM0Mh6ddoJ1fA1B/YXp5Fc8LA0hg8CuEByDwGRVKPJ0KotL6QXMF6cEJZ1fcHF3Lcmpbj5Xotfkr4mA==}
@@ -1223,6 +1235,9 @@ packages:
 
   '@zag-js/types@1.40.0':
     resolution: {integrity: sha512-LVvxEyqFv/u9SEe5xdivvG2vYb9cCmbkD+5r6s+IGljpDLaRgv4BYyxEh40ri1ai070tL08ZKmoLfx2/xfvY/A==}
+
+  '@zag-js/types@1.41.1':
+    resolution: {integrity: sha512-xhKEX61yvNa/6yofkNe7IihKyt3JLe4/k5JxaH0hj46V4S2Kac2cNAXPgnWHbl1gXGBcfLr+qLFzo4oLl+VdwA==}
 
   '@zag-js/utils@1.40.0':
     resolution: {integrity: sha512-XUpqDtXfHe7CySjOhLPLj9H8rxbiFUJAGgmBzNdpsGPP4wx12cpOXrpSjRXZ2kMwooMPz/P7RPDBteto8sqhAQ==}
@@ -4285,6 +4300,10 @@ snapshots:
     dependencies:
       '@zag-js/types': 1.40.0
 
+  '@zag-js/dom-query@1.41.1':
+    dependencies:
+      '@zag-js/types': 1.41.1
+
   '@zag-js/drawer@1.40.0':
     dependencies:
       '@zag-js/anatomy': 1.40.0
@@ -4320,6 +4339,10 @@ snapshots:
     dependencies:
       '@zag-js/i18n-utils': 1.40.0
 
+  '@zag-js/file-utils@1.41.1':
+    dependencies:
+      '@zag-js/i18n-utils': 1.41.1
+
   '@zag-js/floating-panel@1.40.0':
     dependencies:
       '@zag-js/anatomy': 1.40.0
@@ -4354,6 +4377,10 @@ snapshots:
   '@zag-js/i18n-utils@1.40.0':
     dependencies:
       '@zag-js/dom-query': 1.40.0
+
+  '@zag-js/i18n-utils@1.41.1':
+    dependencies:
+      '@zag-js/dom-query': 1.41.1
 
   '@zag-js/image-cropper@1.40.0':
     dependencies:
@@ -4673,6 +4700,10 @@ snapshots:
       '@zag-js/utils': 1.40.0
 
   '@zag-js/types@1.40.0':
+    dependencies:
+      csstype: 3.2.3
+
+  '@zag-js/types@1.41.1':
     dependencies:
       csstype: 3.2.3
 

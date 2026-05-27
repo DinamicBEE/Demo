@@ -273,8 +273,9 @@ function EmployeesPayrollDiscountForm({
         onOpenChange={onClose}
       >
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Generación de formato de descuento de nómina</DialogTitle>
+          <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+            <DialogTitle fontWeight="medium" fontSize="xl">Generación de formato de descuento de nómina</DialogTitle>
+            <DialogCloseTrigger onClick={() => onClose()} color="#166534" />
           </DialogHeader>
 
           <DialogBody>
@@ -413,7 +414,6 @@ function EmployeesPayrollDiscountForm({
             </Button>
           </DialogFooter>
 
-          <DialogCloseTrigger onClick={onClose} />
         </DialogContent>
 
       </DialogRoot>

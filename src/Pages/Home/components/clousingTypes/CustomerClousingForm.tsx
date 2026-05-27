@@ -11,6 +11,7 @@ import {
 } from "@components/ui/dialog";
 import { Controller, useForm } from "react-hook-form";
 import {
+  DialogTitle,
   NativeSelectField,
   NativeSelectRoot,
   Stack,
@@ -85,12 +86,11 @@ export const CustomerClousingForm: React.FC<CustomerClousingFormProps> = ({
       <DialogBackdrop />
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmitForm)}>
-          <DialogCloseTrigger />
-
-          <DialogHeader>
-            <Text fontSize="lg" fontWeight="bold">
+          <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+            <DialogTitle fontWeight="medium" fontSize="xl">
               Registro de Nuevo Cliente
-            </Text>
+            </DialogTitle>
+            <DialogCloseTrigger onClick={() => onClose()} color="#166534" />
           </DialogHeader>
 
           <DialogBody>

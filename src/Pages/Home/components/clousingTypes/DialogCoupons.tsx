@@ -76,8 +76,9 @@ function DialogCoupons({
       }}
     >
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Cupones agregados a {client}</DialogTitle>
+        <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+          <DialogTitle fontWeight="medium" fontSize="xl">Cupones agregados a {client}</DialogTitle>
+          <DialogCloseTrigger onClick={() => onClose()} color="#166534" />
         </DialogHeader>
 
         <DialogBody>
@@ -169,7 +170,6 @@ function DialogCoupons({
             </Button>
           </Flex>
         </DialogFooter>
-        <DialogCloseTrigger />
       </DialogContent>
     </DialogRoot>
   );

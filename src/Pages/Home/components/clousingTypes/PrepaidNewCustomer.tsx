@@ -94,8 +94,17 @@ function PrepaidNewCustomer({
       }}
     >
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Nuevo Cliente Complementario</DialogTitle>
+        <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+          <DialogTitle fontWeight="medium" fontSize="xl">Nuevo Cliente Complementario</DialogTitle>
+          <DialogCloseTrigger
+            onClick={() => {
+              setSelectedCustomer(null);
+              setAmount(0);
+              setQuantity(1);
+              onClose();
+            }}
+            color="#166534"
+          />
         </DialogHeader>
 
         <DialogBody>
@@ -178,13 +187,6 @@ function PrepaidNewCustomer({
             </Button>
           </Flex>
         </DialogFooter>
-        <DialogCloseTrigger
-          onClick={() => {
-            setSelectedCustomer(null);
-            setAmount(0);
-            setQuantity(1);
-          }}
-        />
       </DialogContent>
     </DialogRoot>
   );

@@ -64,8 +64,9 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
     >
       <DialogBackdrop />
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Lista de Denominaciones</DialogTitle>
+        <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+          <DialogTitle fontWeight="medium" fontSize="xl">Lista de Denominaciones</DialogTitle>
+          <DialogCloseTrigger onClick={() => onClose()} color="#166534" />
         </DialogHeader>
         <DialogBody>
           <Flex gap={2}  mb={4}>
@@ -169,7 +170,6 @@ export const CashClousingDetails: React.FC<CashClousingDetailsProps> =
             Guardar
           </Button>
         </DialogFooter>
-        <DialogCloseTrigger />
       </DialogContent>
     </DialogRoot>
   );

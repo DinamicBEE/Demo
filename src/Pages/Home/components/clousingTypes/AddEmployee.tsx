@@ -282,12 +282,9 @@ function AddEmployee({
       onOpenChange={() => onClose()}
     >
       <DialogContent>
-        <DialogHeader>
-          {isEdited ? (
-            <DialogTitle>Edición de empleado</DialogTitle>
-          ) : (
-            <DialogTitle>Agregar empleado</DialogTitle>
-          )}
+        <DialogHeader bg="#7ca1ee" color="white" style={{ borderRadius: '6px 6px 0px 0px' }}>
+          <DialogTitle fontWeight="medium" fontSize="xl">{isEdited ? "Edición de empleado" : "Agregar empleado"}</DialogTitle>
+          <DialogCloseTrigger onClick={() => onClose()} color="#166534" />
         </DialogHeader>
 
         <DialogBody>
@@ -407,7 +404,6 @@ function AddEmployee({
           </Button>
         </DialogFooter>
 
-        <DialogCloseTrigger />
       </DialogContent>
     </DialogRoot>
   );
