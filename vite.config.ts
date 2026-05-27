@@ -69,8 +69,8 @@ export default defineConfig({
   server: {
     proxy:{
       "/api":{
-        target: "http://mera-sandbox-alb-39209089.us-east-2.elb.amazonaws.com/",
-        //target: "http://mera-production-alb-384434217.us-east-2.elb.amazonaws.com/",
+        //target: "http://mera-sandbox-alb-39209089.us-east-2.elb.amazonaws.com/",
+        target: "http://mera-production-alb-384434217.us-east-2.elb.amazonaws.com/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false,
