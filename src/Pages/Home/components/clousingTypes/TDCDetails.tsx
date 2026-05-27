@@ -213,7 +213,7 @@ function TDCDetails({ clousingId, lineId, isOpen, onClose, closingConfirmation, 
               />
             </Flex>
             {detailsLocal?.bank?.toLowerCase().includes("adyen") && (
-              <Flex mt={4} width="100%">
+              <Flex mt={4} width="100%" justify="center">
                 <Button
                   colorPalette="meraPrimary"
                   size={"xs"}
