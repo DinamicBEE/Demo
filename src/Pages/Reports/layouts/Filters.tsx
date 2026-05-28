@@ -283,7 +283,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           multiple={true}
           collection={subsidiaries}
           onValueChange={ev => handleSelectsChange(setSelectedSubIds, ev)}
-          value={selectedSubIds}
+          value={selectedSubIds.map(num => num.toString())}
           
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -309,7 +309,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           multiple={true}
           collection={zone}
           onValueChange={ev => handleSelectsChange(setSelectedZone, ev)}
-          value={selectedZone}
+          value={selectedZone.map(num => num.toString())}
           disabled={selectedSubIds.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -336,7 +336,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           multiple={filterKey !== "cdc"}
           collection={cdc}
           onValueChange={ev => handleSelectsChange(setSelectedCDC, ev)}
-          value={selectedCDC}
+          value={selectedCDC.map(num => num.toString())}
           disabled={selectedZone.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -363,7 +363,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           multiple={true}
           collection={createListCollection({ items: filterData[filterKey] || [] })}
           onValueChange={ev => handleSelectsChange(setSelectedErrorType, ev)}
-          value={selectedErrorType}
+          value={selectedErrorType.map(num => num.toString())}
           disabled={filterData["errorType"]?.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -390,7 +390,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
           multiple={true}
           collection={createListCollection({ items: filterData[filterKey] || [] })}
           onValueChange={ev => handleSelectsChange(setSelectedStore, ev)}
-          value={selectedStore}
+          value={selectedStore.map(num => num.toString())}
           disabled={filterData["stores"]?.length === 0}
         >
           <SelectLabel>{FILTER_LABELS[filterKey]}</SelectLabel>
@@ -421,7 +421,7 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
             ? []
             : Array.isArray(selectedValues[filterKey])
               ? selectedValues[filterKey].map(String)
-              : [Number(selectedValues[filterKey])]
+              : [Number(selectedValues[filterKey])].map(num => num.toString())
         }
         disabled={loadingFilters[filterKey]}
       >

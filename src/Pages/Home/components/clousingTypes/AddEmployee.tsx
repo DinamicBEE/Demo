@@ -305,7 +305,7 @@ function AddEmployee({
 
             <SelectRoot
               collection={reasons}
-              value={reason}
+              value={reason.map(num => num.toString())}
               onValueChange={(e) => setReason([Number(e.value[0])])}
             >
               <SelectLabel>Motivo</SelectLabel>
