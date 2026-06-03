@@ -10,6 +10,7 @@ import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
+import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -212,16 +213,19 @@ export const employeeDelete = async (employeeDelId: number): Promise<string> => 
 
 export const getCountries = async (): Promise<location[]> => {
   try {
-    const response = await api.get(GET_COUNTRIES, {
-      params: {
-        user: Cookies.get("username"),
-      }
-    });
+    // const response = await api.get(GET_COUNTRIES, {
+    //   params: {
+    //     user: Cookies.get("username"),
+    //   }
+    // });
+    const response = { data: countriesFake }
 
     const countries = response.data.map((country: string, index: number) => ({
       id: index + 1,
       name: country,
     }));
+    
+    setTimeout(() => {}, 500);
     
     return countries;
   } catch (error) {
@@ -232,25 +236,35 @@ export const getCountries = async (): Promise<location[]> => {
 
 export const getSubsidiariesByCountry = async (country: string): Promise<location[]> => {
   try {
-    const username = Cookies.get("username");
-    const response = await api.get(SUBSIDIARIES, {
-      params: { user: username, country: country },
-    });
+    // const username = Cookies.get("username");
+    // const response = await api.get(SUBSIDIARIES, {
+    //   params: { user: username, country: country },
+    // });
+    const response = { data: subsidiariesFake }
    
+    setTimeout(() => {}, 500);
+
     return response.data;
   } catch (error) {
     console.error("Error al obtener las zonas:", error);
     return [];
   }
 }
+
 export const getZones = async (subIds: number[]): Promise<location[]> => {
   try {
-    const username = Cookies.get("username");
-    const response = await api.get(ZONES, {
-      params: { user: username, subsidiaria: subIds.join(",") },
-    });
+    // const username = Cookies.get("username");
+    // const response = await api.get(ZONES, {
+    //   params: { user: username, subsidiaria: subIds.join(",") },
+    // });
+    const response = { data: zonesFake }
    
-    return response.data;
+    //return response.data;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(response.data);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener las zonas:", error);
     return [];
@@ -259,13 +273,19 @@ export const getZones = async (subIds: number[]): Promise<location[]> => {
 
 export const getStatus = async (): Promise<location[]> => {
   try {
-    const response = await api.get(GET_STATUS);
+    //const response = await api.get(GET_STATUS);
+    const response ={ data: statusFake}
     const status = response.data.map((stat: any) => ({
       id: stat.id,
       name: stat.status,
     }));
     
-    return status;
+    //return status;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(status);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los estados:", error);
     return [];
@@ -288,13 +308,19 @@ export const getStatusLot = async (): Promise<location[]> => {
 
 export const getLocations = async (zoneIds: number[]): Promise<location[]> => {
   try {
-    const idsList = zoneIds.join(",");
+    // const idsList = zoneIds.join(",");
 
-    const response = await api.get(LOCATIONS,{
-      params: { zone: idsList, user: Cookies.get("username") },
+    // const response = await api.get(LOCATIONS,{
+    //   params: { zone: idsList, user: Cookies.get("username") },
+    // });
+    const response = { data: locationsFake }
+
+    //return response.data;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(response.data);
+      }, 1500);
     });
-
-    return response.data;
   } catch (error) {
     console.error("Error al obtener las ubicaciones:", error);
     return [];

@@ -22,7 +22,10 @@ export const loginUser = async (
   password: string
 ): Promise<Tokens> => {
   try {
-    const response = await api.post(SIGNIN, { login, password });
+    //const response = await api.post(SIGNIN, { login, password });
+    const response = { config: { data:  JSON.stringify( { login, password})}, data: { accessToken: "dummyAccessToken", refreshToken: "dummyRefresToken"}}
+
+    setTimeout(() => {}, 500);
 
     const loginInfo = JSON.parse(response.config.data);
 
@@ -38,7 +41,10 @@ export const refreshAuthToken = async (
   refreshToken: string
 ) => {
   try {
-    const response = await api.post( REFRESH, { refreshToken } );
+    //const response = await api.post( REFRESH, { refreshToken } );
+    const response = {data: { accessToken: "dummyAccessToken", refreshToken: "dummyRefresToken"}}
+    setTimeout(() => {}, 500);
+
     return response.data;
   } catch (error: unknown) {
      return handleServiceError(
@@ -50,10 +56,16 @@ export const refreshAuthToken = async (
 
 export const getUserRol = async (): Promise<IRole> => {
   try {
-    const response = await api.get(GETROLE);
+    //const response = await api.get(GETROLE);
+    const response = { data: { userRole: "superadmin"}};
     const result = response;
 
-    return result.data;
+    //return result.data;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(result.data);
+      }, 1000);
+    });
   } catch (error: unknown) {
     return handleServiceError(
       error, 

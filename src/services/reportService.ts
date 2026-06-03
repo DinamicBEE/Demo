@@ -10,6 +10,7 @@ import { BANCKS_TITLES } from "@models/const/reportBanck.const";
 import { TABLE_CONFIG } from "@models/const/reportTable.const";
 import { COUNTRY_INFO, CURRENCIES_INFO, EXTRA_INFO, GENERAL_INFO, SECTIONS_INFO, SELLERS_INFO, TENDERS_DATA } from "@models/const/closing.const";
 import { HeadersModel, TableDataModel } from "@models/common.model";
+import { reportsFake } from "@models/data/home";
 
 
 export const generateReportCSV = (rows: Row[]) => {
@@ -425,14 +426,15 @@ export const resetFilters = async (): Promise<Row[]> => {
 export const getGeneralReports = async (cdcids:number[], date:string, status:string[]): Promise<TableDataModel> => {
   try {
     
-    const response = await api.post(GET_REPORT,
-      {
-        centroConsumo: cdcids,
-        fecha: date,
-      }
-    );
-    
-    const dataReport: ReportClousingLinesModel[] = response.data.totalSummaryResponses.map((item: ReportClousingLinesModel, index: number) => ({
+    // const response = await api.post(GET_REPORT,
+    //   {
+    //     centroConsumo: cdcids,
+    //     fecha: date,
+    //   }
+    // );
+    const response = { data: { totalSummaryResponses: reportsFake }}
+
+    const dataReport: ReportClousingLinesModel[] = response.data.totalSummaryResponses.map((item: any, index: number) => ({ //.map((item: ReportClousingLinesModel, index: number) => ({
       ...item,
       id: index + 1,
       ubicacion: item.ubicacion || "",
@@ -453,7 +455,12 @@ export const getGeneralReports = async (cdcids:number[], date:string, status:str
       return { ...tableResponse, data: tableResponse.data.filter((item) => status.includes(item.status)) };
     }
     
-    return tableResponse;
+    //return tableResponse;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(tableResponse);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener las ubicaciones:", error);
     return { headers: [], data: [] } as TableDataModel;
