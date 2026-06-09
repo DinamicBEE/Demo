@@ -17,6 +17,7 @@ import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
 import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
+import { cashFake } from "@models/data/closure";
 
 /**
  * This function gets the information
@@ -30,12 +31,13 @@ export const getCashClousing = async (
 ): Promise<ResponseModel> => {
   try {
     
-    const response = await api.get(CASH, {
-      params: {
-        crcId: clousingId,
-        idCurrency: idCurrency,
-      },
-    });
+    // const response = await api.get(CASH, {
+    //   params: {
+    //     crcId: clousingId,
+    //     idCurrency: idCurrency,
+    //   },
+    // });
+    const response = { data: cashFake }
     const userRole = await loadData.userData.get("userRole");    
     const cashDataCopy = {
       ...response.data,
@@ -57,7 +59,12 @@ export const getCashClousing = async (
       data: data,
     };
     
-    return responseData;
+    //return responseData;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(responseData);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
 

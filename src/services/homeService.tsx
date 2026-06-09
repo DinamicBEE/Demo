@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { STATUS } from "@models/const/status.const";
+import { closureDataFake } from "@models/data/closure"
 
 /**
  * This function returns the list of selected
@@ -27,17 +28,18 @@ export const getGeneralInfo = async (
     const startDateFormat = format(startDate, "yyyy-MM-dd");
     const endDateFormat = format(endDate, "yyyy-MM-dd");
 
-    const response = await api.get(GET_CLOUSINGS, {
-      params: {
-        consumeCenter: store,
-        startDate: startDateFormat,
-        endDate: endDateFormat,
-        page: page,
-        size: 100,
-        serverId: 42,
-      },
-    });
+    // const response = await api.get(GET_CLOUSINGS, {
+    //   params: {
+    //     consumeCenter: store,
+    //     startDate: startDateFormat,
+    //     endDate: endDateFormat,
+    //     page: page,
+    //     size: 100,
+    //     serverId: 42,
+    //   },
+    // });
     //console.log("response", response);
+    const response ={ data: closureDataFake }
     const totalPOS = response.data.registerClosure.reduce(
       (acc: number, line: any) => acc + line.totalPOS,
       0
@@ -91,7 +93,12 @@ export const getGeneralInfo = async (
       })),
     };
 
-    return transformedData as ClousingModel;
+    //return transformedData as ClousingModel;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(transformedData as ClousingModel);
+      }, 1500);
+    });
   } catch (error) {
     //console.error("Error fetching general info:", error);
     return {

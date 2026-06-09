@@ -11,6 +11,7 @@ import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
+import { extraInfoFake } from "@models/data/closure";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -330,14 +331,20 @@ export const getLocations = async (zoneIds: number[]): Promise<location[]> => {
 export const getExtraInfo = async (cashId: number): Promise<ExtraInfo> => {
   try {
     if (cashId === null) throw new Error("CashClosureID no puede ser nulo");
-    const response = await api.get(GET_EXTRAINFO, {
-      params: {
-        cashId: cashId,
-      },
-    });
+    // const response = await api.get(GET_EXTRAINFO, {
+    //   params: {
+    //     cashId: cashId,
+    //   },
+    // });
+    const response = { data: extraInfoFake}
     const extraInfo = response.data;
     // console.log("ExtraInfo: ", extraInfo);
-    return extraInfo;
+    //return extraInfo;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(extraInfo);
+      }, 1500);
+    });
     
   } catch (error) {
     console.error("Error al obtener la información extra: ", error);
