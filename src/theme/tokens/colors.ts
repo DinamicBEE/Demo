@@ -644,8 +644,8 @@ export const colors = defineTokens.colors({
     },
   },
   meraPalette: {
-    primary: { value: "#008D38" },
-    secondary: { value: "#00B74F" },
+    primary: { value: "#270799" },
+    secondary: { value: "#0752dd" },
     neutrals: {
         dark: { value: "#2D3748" },
         medium: { value: "#718096" },

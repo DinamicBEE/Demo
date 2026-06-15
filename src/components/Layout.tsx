@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Layout.css";
 import { menuItems, ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { Tooltip } from "./ui/tooltip";
-import image from "../assets/meraLogo.webp";
+import image from "../assets/BeInnovation_3.png";
 import { useEffect } from "react";
 import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
 
@@ -53,7 +53,7 @@ function Layout() {
                         to={item.path}
                         className="menu-complete"
                         style={({ isActive }) => ({
-                          color: isActive ? "#66bb6a" : "#000000",
+                          color: isActive ? "#0e2f9b" : "#000000",
                         })}
                       >
                         {item.icon}

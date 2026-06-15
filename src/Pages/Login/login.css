@@ -2,14 +2,16 @@
 .login-page {
   width: 100vw;
   height: 100vh;
-  display: flex;
-  flex-direction: row;
+   display: flex;
+  /* flex-direction: row; */
 }
 
 .login-container {
     background: rgb(241, 245, 249);
     width: 100%;
     justify-content: center;
+    align-items: center;
+    margin: 0;
 }
 
 .login-form-container {
