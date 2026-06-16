@@ -7,12 +7,13 @@ import { GET_BATCH, LOCATIONS, SUBSIDIARIES,
   UPDATE_BATCH,
   GET_BATCH_DETAILS_V2,
   GET_BATCH_V2} from "./settings";
-import { StoreModel } from "@models/common.model";
+import { StoreModel, location } from "@models/common.model";
 import api from "../api";
 import { getStatus } from "../utils/getStatus";
 import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { toast } from "@utils/Toast";
+import { subsidiariesFake } from "@models/data/home";
 
 export const getLotsClosure = async (
   consumerCentersId: number[],
@@ -51,14 +52,20 @@ const sortData = (data: any) => {
   )
 }
 
-export const getCompanies = async () => {
+export const getCompanies = async (): Promise<location[]> => {
   try {
     const username = Cookies.get("username");
-    const response = await api.get(SUBSIDIARIES, {
-      params: { user: username },
-    });
+    // const response = await api.get(SUBSIDIARIES, {
+    //   params: { user: username },
+    // });
+    const response = { data: subsidiariesFake }
 
-    return Promise.resolve(response.data);
+    //return Promise.resolve(response.data);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(response.data);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [];

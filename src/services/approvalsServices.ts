@@ -4,22 +4,24 @@ import { location, selectOption } from "@models/common.model";
 import api from "../api/index";
 import { Employee } from "@models/employee.model";
 import { format } from "date-fns";
+import { approvalsListFate, approvalsStatusFake } from "@models/data/approvals";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
   try {
 
-    const response = await api.get(GETLISTAPPROVALS,{
-      params: {
-        fSoliIni: filterOptions.requestDateStart !== null ? format(filterOptions.requestDateStart,"yyyy-MM-dd") : null,
-        fSoliFin: filterOptions.requestDateEnd !== null ? format(filterOptions.requestDateEnd,"yyyy-MM-dd") : null,
-        fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
-        fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
-        empleadoId: filterOptions.employeeId === 0 ? null : filterOptions.employeeId,
-        status: filterOptions.status?.join(",") || null,
-        cdcId: filterOptions.cdc.join(",") || null,
-      }
-    });
+    // const response = await api.get(GETLISTAPPROVALS,{
+    //   params: {
+    //     fSoliIni: filterOptions.requestDateStart !== null ? format(filterOptions.requestDateStart,"yyyy-MM-dd") : null,
+    //     fSoliFin: filterOptions.requestDateEnd !== null ? format(filterOptions.requestDateEnd,"yyyy-MM-dd") : null,
+    //     fCorteIni: filterOptions.closingDateStart !== null ? format(filterOptions.closingDateStart,"yyyy-MM-dd") : null,
+    //     fCorteFin: filterOptions.closingDateEnd !== null ? format(filterOptions.closingDateEnd,"yyyy-MM-dd") : null,
+    //     empleadoId: filterOptions.employeeId === 0 ? null : filterOptions.employeeId,
+    //     status: filterOptions.status?.join(",") || null,
+    //     cdcId: filterOptions.cdc.join(",") || null,
+    //   }
+    // });
+    const response = { data: approvalsListFate }
     const listPipe = response.data.map((item: any) => {
       return {
         ...item,
@@ -29,7 +31,13 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
     })
     const list = listPipe.sort((a: any, b: any) => b.idRequest - a.idRequest);
 
-    return list;
+    //return list;
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(list);
+      }, 1500);
+    });
 
   } catch (error) {
     console.error(error);
@@ -41,14 +49,20 @@ export const getRequestList = async (filterOptions: filterOptionsProps): Promise
 export const getStatus = async (): Promise<location[]> => {
   try {
     
-    const response = await api.get(GETLISTSTATUS);
+    //const response = await api.get(GETLISTSTATUS);
+    const response = { data: approvalsStatusFake }
 
     const status = response.data.map((stat: any) => ({
       id: stat.id,
       name: stat.statusName,
     }));
 
-    return status;
+    //return status;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(status);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los estados:", error);
     return [];

@@ -12,6 +12,7 @@ import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
 import { extraInfoFake } from "@models/data/closure";
+import { employeesFake } from "@models/data/approvals";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -139,13 +140,19 @@ export const getEmployees = async (
     if (subId === null || cdc === null)
       throw new Error("Error al obtener la lista de empleados");
 
-    const response = await api.get(EMPLOYEELIST, {
-      params: { subsidiarieId: subId, consumerCenterId: cdc },
-    });
+    // const response = await api.get(EMPLOYEELIST, {
+    //   params: { subsidiarieId: subId, consumerCenterId: cdc },
+    // });
+    const response = { data: employeesFake }
 
     const employees = response.data;
 
-    return employees;
+    //return employees;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(employees);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener la lista de empleados:", error);
     return [] as unknown as Employee[];
