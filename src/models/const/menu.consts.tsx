@@ -1,6 +1,6 @@
 import { LuClipboardCheck, LuClipboardList, LuContainer } from "react-icons/lu";
 import { PiCashRegisterLight } from "react-icons/pi";
-import { SiStarbucks } from "react-icons/si";
+import { LuBrainCircuit } from "react-icons/lu";
 import { VscGraph } from "react-icons/vsc";
 
 export enum ROLES {
@@ -31,5 +31,5 @@ export const menuItems = [
   //{ name: 'Generación de reportes', path: '/reportviewer', icon:<VscGraph />, roles: ['ADMIN', 'USER', 'admin', 'user'] },
   { name: 'Reportes', path: '/reports', icon:<VscGraph />, roles: [ROLES.ADMIN, ROLES.SUPERVISOR_CDC, ROLES.REVENUE_MANAGER, ROLES.COMPTROLLER, ROLES.ADMIN_REPORTS] },//, ROLES.GENERAL_ZONE
   //{ name: 'Gestión de moneda', path: '/currencymanagement', icon:<MdCurrencyExchange />, roles: ['admin', 'user'] },
-  { name: 'Corte de caja Starbucks', path: '/starbucks', icon:<SiStarbucks />, roles: [ROLES.ADMIN, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER] },
+  { name: 'Corte de Caja Simple', path: '/starbucks', icon:<LuBrainCircuit />, roles: [ROLES.ADMIN, ROLES.GENERAL_ZONE, ROLES.REVENUE_MANAGER] },
 ];
