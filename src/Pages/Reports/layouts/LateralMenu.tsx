@@ -10,8 +10,8 @@ import { ROLES } from "@models/const/menu.consts";
 
 
 function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPropsModel) {
-  const activeBg = useColorModeValue('green.50', 'green.900');
-  const activeColor = useColorModeValue('green.700', 'green.200');
+  const activeBg = useColorModeValue('blue.50', 'blue.900');
+  const activeColor = useColorModeValue('blue.700', 'blue.200');
   const inactiveColor = useColorModeValue('rgb(45, 55, 72)', 'gray.200');
   const [localMenu, setLocalMenu] = useState(MENU_CONFIG)
 
@@ -47,7 +47,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
     >
       <Drawer.Trigger >
         <HStack cursor="pointer" _hover={{textDecoration:"underline"}}
-            color="green.500" fontWeight={400}>
+            color="blue.500" fontWeight={400}>
           <Box >
                 <RiMenuUnfold3Line />
           </Box>
@@ -89,7 +89,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
                         mb={"8px"}
                         color={isActive(item.reportCode) ? activeColor : inactiveColor}
                         bg={isActive(item.reportCode) ? activeBg : 'transparent'}
-                        _hover={{ color: "green.500", cursor: "pointer" }}
+                        _hover={{ color: "blue.500", cursor: "pointer" }}
                         justifyContent="space-between"
                         textAlign="left"
                         px={3}
@@ -114,7 +114,7 @@ function LateralMenu({ open, setOpen, currentReport, onReportClick  }: ReportsPr
                               justifyContent="space-between"
                               color={isActive(subItem.reportCode) ? activeColor : inactiveColor}
                               bg={isActive(subItem.reportCode) ? activeBg : 'transparent'}
-                              _hover={{ color: "green.500", cursor: "pointer" }}
+                              _hover={{ color: "blue.500", cursor: "pointer" }}
                               px={3}
                               py={2}
                               borderRadius="md"

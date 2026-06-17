@@ -102,7 +102,7 @@ function StarbucksClosure() {
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
             <VStack align="start">
                 <Heading>
-                    Portal de Starbucks
+                    Portal de Simple
                 </Heading>
 
                 <HStack w="100%">

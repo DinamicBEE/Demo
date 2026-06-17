@@ -5,7 +5,7 @@ import { Field } from "@components/ui/field";
 import { PasswordInput } from "@components/ui/password-input";
 import { Button } from "@components/ui/button";
 import { useAuth } from "@context/AuthContext";
-import image from "../../assets/meraClean.webp";
+import image from "../../assets/BeInnovation_4.png";
 import "./login.css";
 
 function Login() {
@@ -44,7 +44,7 @@ function Login() {
               y2="100%"
               id="ffflux-gradient"
             >
-              <stop stopColor="#3d6e3a" stopOpacity="1" offset="0%" ></stop>
+              <stop stopColor="#3a486e" stopOpacity="1" offset="0%" ></stop>
               <stop stopColor="#6ac7f3" stopOpacity="1" offset="100%"></stop>
             </linearGradient>
             <filter
@@ -102,14 +102,14 @@ function Login() {
 
         </svg>
 
-        <Box className="login-aside">
+        {/* <Box className="login-aside">
           <VStack className="aside-items-container">
             <Text className="login-phrase">
               Corte de caja Mera <span style={{ color: "red" }}> VERSION DE PRUEBA</span>. <br />
               Si desea ingresar a la versión completa, ingrese en: <br /> <a style={{ color: "red" }} href="https://mera-corte-caja.vercel.app/"> Mera-corte-caja </a>
             </Text>
           </VStack>
-        </Box>
+        </Box> */}
 
         <HStack className="login-container">
           <Box display="flex" justifyContent="center" alignItems="center" p={4} >
