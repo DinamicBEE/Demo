@@ -13,6 +13,7 @@ import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
 import { extraInfoFake } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
+import { loteStats } from "@models/data/lote";
 
 
 export const getFilterOptions = async (key: string, optional?: any): Promise<FilterOption[]> =>{
@@ -301,13 +302,19 @@ export const getStatus = async (): Promise<location[]> => {
 }
 export const getStatusLot = async (): Promise<location[]> => {
   try {
-    const response = await api.get(GET_STATUS_BATCH);
+    //const response = await api.get(GET_STATUS_BATCH);
+    const response = { data: loteStats };
     const status = response.data.map((stat: any) => ({
       id: stat.id,
       name: stat.status,
     }));
     
-    return status;
+    //return status;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(status);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los estados:", error);
     return [];

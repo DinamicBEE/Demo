@@ -438,3 +438,36 @@ export const approvalsListFate = [
     cdc: "CDC ALTIPLANO METRO ESTE INTERLOMAS",
   },
 ];
+
+export const reasonTypes = [
+  {
+    id: 5,
+    reason: "Error en la carga del lote de ventas",
+    type: "LOTE",
+  },
+  {
+    id: 6,
+    reason: "Inconsistencia en el lote de devoluciones",
+    type: "LOTE",
+  },
+  {
+    id: 7,
+    reason: "Lote de transacciones pendientes de conciliar",
+    type: "LOTE",
+  },
+  {
+    id: 8,
+    reason: "Diferencia en el conteo de billetes de alta denominación",
+    type: "CASH_CLOSURE",
+  },
+  {
+    id: 9,
+    reason: "Ajuste por diferencia en el fondo de caja inicial",
+    type: "CASH_CLOSURE",
+  },
+  {
+    id: 10,
+    reason: "Discrepancia en el total de ventas con tarjeta",
+    type: "CASH_CLOSURE",
+  },
+];

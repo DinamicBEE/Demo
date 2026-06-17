@@ -4,7 +4,7 @@ import { location, selectOption } from "@models/common.model";
 import api from "../api/index";
 import { Employee } from "@models/employee.model";
 import { format } from "date-fns";
-import { approvalsListFate, approvalsStatusFake } from "@models/data/approvals";
+import { approvalsListFate, approvalsStatusFake, reasonTypes } from "@models/data/approvals";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
@@ -134,7 +134,8 @@ export const getClosingList = async(idConsumerCenter: number, date: string, type
 export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
   try {
 
-    const response = await api.get(GETREASONLIST);
+    //const response = await api.get(GETREASONLIST);
+    const response = { data: reasonTypes };
     
     const newType = type === 1 ? "cash_closure" : type === 2 ? "lote": "";
 
@@ -147,7 +148,12 @@ export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
       }
     });
 
-    return result;
+    //return result;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(result);
+      }, 1500);
+    });
 
   } catch (error) {
     console.error(error)
