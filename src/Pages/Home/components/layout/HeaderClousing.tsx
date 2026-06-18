@@ -94,7 +94,7 @@ function HeaderClousing({
     <>
       <Box>
         <Grid
-          templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+          templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
           gap={4}
           mb={4}
         >
@@ -119,12 +119,12 @@ function HeaderClousing({
             </Skeleton>
           </Group>
 
-          <Group>
+          {/* <Group>
             <InputAddon>Fecha</InputAddon>
             <Skeleton loading={false} width={"100%"}>
               <Input value={memoizedHeaderProps.date} placeholder="Fecha" readOnly />
             </Skeleton>
-          </Group>
+          </Group> */}
 
           {/* Inputs de moneda */}
           <CurrencyInput
@@ -145,7 +145,7 @@ function HeaderClousing({
             loading={false}
           />
 
-          <CurrencyInput
+          {/* <CurrencyInput
             name={"Dif. cupones"}
             value={memoizedHeaderProps?.differenceCupons ?? 0}
             loading={false}
@@ -163,7 +163,7 @@ function HeaderClousing({
             disabled={closingConfirmation}
             onChange={handleDiscountInputChange}
             loading={false} 
-          />
+          /> 
 
           <Button
             onClick={() => updateticket()}
@@ -171,7 +171,7 @@ function HeaderClousing({
             disabled={closingConfirmation}
           >
             Actualizar ventas
-          </Button>
+          </Button>*/}
         </Grid>
       </Box>
       {loading && (

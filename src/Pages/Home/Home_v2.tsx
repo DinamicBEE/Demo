@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Button, createListCollection, Field, Grid, ListCollection } from "@chakra-ui/react";
+import { Box, Button, createListCollection, Field, Grid, GridItem, ListCollection } from "@chakra-ui/react";
 import { SelectContent, SelectItem, SelectLabel, SelectRoot, SelectTrigger, SelectValueText } from "@components/ui/select";
 import { ParametersSelectedModel, selectOption, TableDataModel } from "@models/common.model";
 import { getCountries, getLocations, getStatus, getSubsidiariesByCountry, getZones } from "@services/catalogService";
@@ -282,13 +282,13 @@ function Home_v2() {
         <Box p={6} boxShadow="xl" borderRadius="lg" bg="white">
                 
             <Grid
-                templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+                templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
                 gap={4}
                 mb={4}
                 w="100%"
                 alignItems="end"
             >
-                <SelectRoot
+                {/* <SelectRoot
                     collection={countries}
                     value={selectedCountry?.value ? [selectedCountry.value] : []}
                     onValueChange={(event) => {
@@ -315,7 +315,7 @@ function Home_v2() {
                         </SelectItem>
                     ))}
                     </SelectContent>
-                </SelectRoot>
+                </SelectRoot> */}
             
                 {renderMultiSelectWithControls(
                     subsidiaries,
@@ -356,11 +356,14 @@ function Home_v2() {
                   )
                 }
 
+
                 <Field.Root>
                     <Field.Label>Fecha</Field.Label>
                     <SimpleDatePicker onDateChange={setFormattedDate} initialDate={initialDate}></SimpleDatePicker>
                 </Field.Root>
 
+                <GridItem colSpan={1}></GridItem>
+                
                 <Button
                   colorPalette="meraPrimary"
                   disabled={dataReport.data === undefined || dataReport.data.length === 0}
