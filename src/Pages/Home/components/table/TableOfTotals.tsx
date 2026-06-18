@@ -151,21 +151,24 @@ function TableOfTotals({
             w="100%"
           >
             <GridItem colSpan={1}></GridItem>
-            <Button
-              colorPalette="meraPrimary"
-              onClick={() => {
-                handleExportCSV();
-              }}
-            >
-              Exportar a CSV
-            </Button>
+            <GridItem colSpan={2}>
+              <Button
+                width="100%"
+                colorPalette="meraPrimary"
+                onClick={() => {
+                  handleExportCSV();
+                }}
+              >
+                Exportar a CSV
+              </Button>
+            </GridItem>
 
-            <Button
+            {/* <Button
               colorPalette="meraInfo"
               onClick={() => updateticket()}
             >
               Actualizar ventas
-            </Button>
+            </Button> */}
           </Grid>
         </Box>
 

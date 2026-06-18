@@ -18,7 +18,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
             {!isReport && (
 
                 <Grid
-                templateColumns={{ base: "1fr", md: "repeat(4, 1fr)" }}
+                templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
                 gap={4}
                 mb={4}
                 >
@@ -43,8 +43,9 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                             />
                         </Skeleton>
                     </Group>
+                    <GridItem colSpan={1}></GridItem>
 
-                    <Group>
+                    {/* <Group>
                         <InputAddon>Fecha</InputAddon>
                         <Skeleton loading={loading} >
                         <Input
@@ -63,7 +64,7 @@ function GeneralInfo({subsidiary, store, isReport, totals}: GeneralInfoProps) {
                             defaultValue={localHeader.time}
                         />
                         </Skeleton>
-                    </Group>
+                    </Group> */}
 
                     <CurrencyInput
                         name={"Total POS"}

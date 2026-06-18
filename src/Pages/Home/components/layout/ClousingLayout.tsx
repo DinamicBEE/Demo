@@ -168,7 +168,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <RiUserStarFill />
-                      Clientes especiales
+                      Asociado
                     </Flex>
 
                     <Text color="fg.muted">
@@ -217,7 +217,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
-                <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
+                {/* <Tabs.Trigger value={CLOUSING_KEY.INTERCOMPANY}>
                   <Flex direction="column">
                     <Flex gap="4" align="center">
                       <LiaUsersSolid />
@@ -234,7 +234,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                         : "$ " + 0}
                     </Text>
                   </Flex>
-                </Tabs.Trigger>
+                </Tabs.Trigger> */}
               </Tabs.List>
 
               <Tabs.Content value={CLOUSING_KEY.CASH}>
