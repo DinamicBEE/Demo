@@ -84,7 +84,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Corte de Caja {employee?.employe} {employee?.closingConfirmation ? " (Cerrado)" : " (Abierto)"} </DialogTitle>
+            <DialogTitle color={"meraInfo.fg"}>Corte de Caja {employee?.employe} {employee?.closingConfirmation ? " (Cerrado)" : " (Abierto)"} </DialogTitle>
             <Box>
               <HeaderClousing
                 location={location}
@@ -107,7 +107,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               variant="outline"
               defaultValue={value}
               unmountOnExit
-              colorPalette="green"
+              colorPalette="meraPrimary"
               justify="center"
               size="lg"
               value={tabs}
@@ -115,7 +115,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
               <Tabs.List>
                 <Tabs.Trigger value={CLOUSING_KEY.CASH}>
                   <Flex direction="column">
-                    <Flex gap="4" align="center">
+                    <Flex gap="4" align="center" color={"blue.800"}>
                       <IoCashOutline />
                       Efectivo
                     </Flex>
