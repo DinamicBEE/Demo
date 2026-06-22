@@ -10,8 +10,8 @@ import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
-import { countriesFake, currencyFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
-import { clientsFakeData, extraInfoFake, monedas } from "@models/data/closure";
+import { countriesFake, currencyFake, employeeReasonFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
+import { clientsFakeData, employeeTicketsFake, extraInfoFake, monedas } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
 import { loteStats } from "@models/data/lote";
 
@@ -183,13 +183,19 @@ export const getReasonClousing = async (
     if (subId === null || cdc === null)
       throw new Error("Error al obtener la lista de motivos");
 
-    const response = await api.get(REASONLIST, {
-      params: { subsidiarieId: subId, consumerCenterId: cdc },
-    });
+    // const response = await api.get(REASONLIST, {
+    //   params: { subsidiarieId: subId, consumerCenterId: cdc },
+    // });
+    const response = { data: employeeReasonFake }
 
     const reasons = response.data;
 
-    return reasons;
+    //return reasons;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(reasons);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener la lista de motivos:", error);
     return [] as unknown as ReasonsModel[];
@@ -202,13 +208,19 @@ export const getTicketListClousing = async (
   try {
     if (cdc === null) throw new Error("Error al obtener la lista de  tickets");
     
-    const response = await api.get(TICKETS, {
-      params: { crcId: cdc },
-    });
+    // const response = await api.get(TICKETS, {
+    //   params: { crcId: cdc },
+    // });
+    const response = { data: employeeTicketsFake }
 
     const reasons = response.data;
 
-    return reasons;
+    //return reasons;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(reasons);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener la lista de tickets:", error);
     return [] as unknown as TicketModel[];

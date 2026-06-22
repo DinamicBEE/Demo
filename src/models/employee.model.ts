@@ -55,7 +55,7 @@ export interface ReasonsModel {
 export interface TicketModel {
     id: number;
     ticketNumber: string;
-    date: string;
+    ticketDate: string;
     paymentTypeResponse: TicketPaymentMethod[];
 }
 
@@ -124,7 +124,7 @@ export const reasonPaymentMethods: Record<string, { methods: string[]; showTicke
   "CUPÓN EXTRAVIADO": { methods: ["CxcEspecial", "CxcGeneral", "PREPAGO"], showTickets: true },
   "VOUCHER EXTRAVIADO": { methods: ["TDC"], showTickets: true },
   "DIFERENCIA EN EFECTIVO": { methods: [], showTickets: false },
-  "DIFERENCIA EN INVENTARIO": { methods: ["CxcEmpleados"], showTickets: true },
+  "DIFERENCIA EN INVENTARIO": { methods: ["TDC"], showTickets: true },
   "MALA ELABORACIÓN DEL PRODUCTO": { methods: [], showTickets: false }
 };
 
