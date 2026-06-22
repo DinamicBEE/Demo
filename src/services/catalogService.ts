@@ -11,7 +11,7 @@ import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
-import { extraInfoFake } from "@models/data/closure";
+import { clientsFakeData, extraInfoFake, monedas } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
 import { loteStats } from "@models/data/lote";
 
@@ -92,19 +92,21 @@ export const getCurrencies = async (
   idCashClosure: number
 ): Promise<CurrencyModel[]> => {
   try {
-    const response = await api.get(CURRENCY, {
-      params: { idCurrency: currencyId, idCashClosure },
-    });
+    // const response = await api.get(CURRENCY, {
+    //   params: { idCurrency: currencyId, idCashClosure },
+    // });
 
-    const currencyResponse = response.data.map((curr: any) => {
-      return {
-        value: curr.id,
-        label: curr.name,
-        exchangeRate: parseFloat(curr.exchange),
-      };
-    });
+    // const currencyResponse = response.data.map((curr: any) => {
+    //   return {
+    //     value: curr.id,
+    //     label: curr.name,
+    //     exchangeRate: parseFloat(curr.exchange),
+    //   };
+    // });
 
-    return currencyResponse;
+    const response = monedas;
+
+    return response;
   } catch (error) {
     console.error("Error al obtener los tipos de monedas: ", error);
     return [] as unknown as CurrencyModel[];
@@ -113,17 +115,21 @@ export const getCurrencies = async (
 
 export const getCustomers = async (type: CUSTOMER_TYPES, zoneId:number | null ): Promise<FilterOption[]> => {
   try {
-    const reponse = await api.get(CLIENTSPREPAY,
-      { params: { clientType: type, zoneId } }
-    );
-    const transformedData = reponse.data.map((customer: any) => {
-      return {
-        value: customer.id,
-        label: customer.client,
-      };
-    });
+    // const reponse = await api.get(CLIENTSPREPAY,
+    //   { params: { clientType: type, zoneId } }
+    // );
+    // const transformedData = reponse.data.map((customer: any) => {
+    //   return {
+    //     value: customer.id,
+    //     label: customer.client,
+    //   };
+    // });
+
+    const response = clientsFakeData
+
+    setTimeout(() => {}, 500);
         
-    return transformedData;
+    return response;
   } catch (error) {
     return [] as FilterOption[];
   }
