@@ -105,7 +105,7 @@ export const reportsFake = [
     mxn: 5076.83,
     usd: 7850.0,
     eur: 0,
-    
+
     customer: 1250,
     specialCustomer: 7750,
     prepaid: 3680.0,
@@ -133,7 +133,7 @@ export const reportsFake = [
     mxn: 0,
     usd: 12500.0,
     eur: 8950.5,
-    
+
     customer: 2450,
     specialCustomer: 8450,
     prepaid: 5200.0,
@@ -161,7 +161,7 @@ export const reportsFake = [
     mxn: 0,
     usd: 13283.58,
     eur: 0,
-    
+
     customer: 1890,
     specialCustomer: 5120,
     prepaid: 4300.0,
@@ -666,5 +666,38 @@ export const currencyFake = [
     name: "USD",
     symbol: "USD",
     exchange: "17.00",
+  },
+];
+
+export const employeeReasonFake = [
+  {
+    id: 1,
+    reasonName: "CONSUMO EMPLEADO",
+    useCase: "A",
+  },
+  {
+    id: 2,
+    reasonName: "GASTOS DE VIAJE",
+    useCase: "A",
+  },
+  {
+    id: 3,
+    reasonName: "COMPRAS INTERNAS",
+    useCase: "A",
+  },
+  {
+    id: 4,
+    reasonName: "AJUSTES POR DEVOLUCIONES",
+    useCase: "B",
+  },
+  {
+    id: 5,
+    reasonName: "DIFERENCIA EN INVENTARIO",
+    useCase: "B",
+  },
+  {
+    id: 6,
+    reasonName: "REEMBOLSOS A CLIENTES",
+    useCase: "B",
   },
 ];

@@ -1135,3 +1135,12 @@ export const tdcFake = {
     diferenciaCupones: 0,
   },
 };
+
+export const prepaidFake = {
+  prepagoResponse: [],
+  totalDifference: 15120,
+  totalPhysical: 0,
+  totalPos: 15120
+}
+
+export const prapaidTicketsFake = []
