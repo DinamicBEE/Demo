@@ -60,7 +60,8 @@ function Home_v2() {
             try {
                 
                 await Promise.all([
-                    fetchAndSetData(getCountries, setCountries),
+                    //fetchAndSetData(getCountries, setCountries),
+                    fetchAndSetData(() => getSubsidiariesByCountry("Mexico"), setSubsidiaries),
                     fetchAndSetData(getStatus, setStatus),
                 ]).then(async () => {
                     const parametersPromise = await parameters.parametersSelected.get('parametersSelected');

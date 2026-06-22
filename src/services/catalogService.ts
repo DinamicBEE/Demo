@@ -10,7 +10,7 @@ import api from "../api/index";
 import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
-import { countriesFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
+import { countriesFake, currencyFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
 import { extraInfoFake } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
 import { loteStats } from "@models/data/lote";
@@ -92,9 +92,10 @@ export const getCurrencies = async (
   idCashClosure: number
 ): Promise<CurrencyModel[]> => {
   try {
-    const response = await api.get(CURRENCY, {
-      params: { idCurrency: currencyId, idCashClosure },
-    });
+    // const response = await api.get(CURRENCY, {
+    //   params: { idCurrency: currencyId, idCashClosure },
+    // });
+    const response = { data: currencyFake }
 
     const currencyResponse = response.data.map((curr: any) => {
       return {
@@ -104,7 +105,12 @@ export const getCurrencies = async (
       };
     });
 
-    return currencyResponse;
+    //return currencyResponse;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(currencyResponse);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los tipos de monedas: ", error);
     return [] as unknown as CurrencyModel[];

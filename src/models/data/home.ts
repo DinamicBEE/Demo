@@ -1032,3 +1032,36 @@ export const reportsFake = [
     isStarbucks: false,
   },
 ];
+
+export const currencyFake = [
+  {
+    id: 1,
+    name: "CAD",
+    symbol: "CAD",
+    exchange: "12.00",
+  },
+  {
+    id: 3,
+    name: "EUR",
+    symbol: "EUR",
+    exchange: "20.00",
+  },
+  {
+    id: 4,
+    name: "GBP",
+    symbol: "GBP",
+    exchange: "23.00",
+  },
+  {
+    id: 5,
+    name: "MXN",
+    symbol: "MXN",
+    exchange: "1.00",
+  },
+  {
+    id: 6,
+    name: "USD",
+    symbol: "USD",
+    exchange: "17.00",
+  },
+];

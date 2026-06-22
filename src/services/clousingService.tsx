@@ -17,7 +17,7 @@ import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
 import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
-import { cashFake } from "@models/data/closure";
+import { cashFake, tdcFake } from "@models/data/closure";
 
 /**
  * This function gets the information
@@ -89,9 +89,10 @@ export const getTDCClousing = async (
 ): Promise<TDCModel> => {
 
   try {
-    const response = await api.get(TDC, {
-      params: { crcId: clousingId, idCurrency: idCurrency },
-    });   
+    // const response = await api.get(TDC, {
+    //   params: { crcId: clousingId, idCurrency: idCurrency },
+    // });
+    const response = { data: tdcFake }   
     const userRole = await loadData.userData.get("userRole");
     const newResponse = {
       ...response.data,
@@ -142,7 +143,12 @@ export const getTDCClousing = async (
         linesCopy: newResponse.lines
       }
 
-      return copy
+      //return copy
+      return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(copy);
+        }, 1500);
+      });
     } else {
       return {
         ...newResponse,
