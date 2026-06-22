@@ -230,7 +230,9 @@ export const useHandleCustomer = (
 
       return {
         ...prev,
-        lines: [...prev.lines, newRecord],
+        lines: prev.lines !== undefined && prev.lines.length > 0
+          ?[...prev.lines, newRecord]
+          : [newRecord],
       };
     });
 
