@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Box, Grid, Group, Input, InputAddon, Button, Skeleton } from "@chakra-ui/react";
+import { Box, Grid, Group, Input, InputAddon, Button, Skeleton, Image, Flex } from "@chakra-ui/react";
 import { useHeaders } from "@context/home/headerContext";
 import { ClousingHeadersProps, HeaderData } from "@models/common.clousing.model";
 import { CurrencyInput, EditableCurrencyInput } from "@components/NumericInput";
@@ -92,11 +92,12 @@ function HeaderClousing({
 
   return (
     <>
-      <Box>
+      <Flex gap={4}>
         <Grid
           templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }}
           gap={4}
           mb={4}
+          width={"100%"}
         >
           <Group>
             <InputAddon>CDC</InputAddon>
@@ -173,7 +174,8 @@ function HeaderClousing({
             Actualizar ventas
           </Button>*/}
         </Grid>
-      </Box>
+        <Image height={"90px"} src={"src/assets/BeInnovation_3.png"}/>
+      </Flex>
       {loading && (
         <Box position="fixed" top="50%" left="50%"  zIndex={1000}>
           <Loading />

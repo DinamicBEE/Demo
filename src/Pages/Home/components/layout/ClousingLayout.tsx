@@ -126,7 +126,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                       cashRef.current[employee.id]?.total?.totalPhysical !==
                         undefined
                         ? "$ " + cashRef.current[employee.id].total?.totalPhysical.toFixed(2)
-                        : "$ " + 0}
+                        : "$ " + "0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
@@ -142,7 +142,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                       tdcRef != undefined &&
                       tdcRef.current[employee.id]?.total?.totalPhysical !== undefined
                         ? "$ " + tdcRef.current[employee.id].total?.totalPhysical.toFixed(2)
-                        : "$ " + 0}
+                        : "$ " + "0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>
@@ -213,7 +213,7 @@ function ClousingLayout({isOpen, onClose, employee, location, subsidiary, isStar
                         undefined
                         ? "$ " +
                           employeeRef.current[employee.id].total?.totalPhysical.toFixed(2)
-                        : "$ " + 0}
+                        : "$ " + "0.00"}
                     </Text>
                   </Flex>
                 </Tabs.Trigger>

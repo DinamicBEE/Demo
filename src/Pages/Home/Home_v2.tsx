@@ -60,7 +60,8 @@ function Home_v2() {
             try {
                 
                 await Promise.all([
-                    fetchAndSetData(getCountries, setCountries),
+                    fetchAndSetData(() => getSubsidiariesByCountry(""), setSubsidiaries),
+                    // fetchAndSetData(getCountries, setCountries),
                     fetchAndSetData(getStatus, setStatus),
                 ]).then(async () => {
                     const parametersPromise = await parameters.parametersSelected.get('parametersSelected');
@@ -323,7 +324,7 @@ function Home_v2() {
                     "Subsidiaria",
                     "Selecciona una Subsidiaria",
                     selectedSubsidiaries,
-                    !selectedCountry?.value
+                    false
                   )
                 }
                 

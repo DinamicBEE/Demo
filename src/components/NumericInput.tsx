@@ -5,9 +5,9 @@ import { NumericFormat } from 'react-number-format';
 
 function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
     return (
-        <Group width={"100%"}>
+        <Group width={"100%"} overflowX={"hidden"}>
             <InputAddon>{name}</InputAddon>
-            <Skeleton loading={loading}>
+            <Skeleton loading={loading} width={"100%"}>
                 <NumericFormat
                   width={"100%"}
                   customInput={Input}
@@ -28,9 +28,9 @@ function CurrencyInput({ name, value, loading }: CurrencyInputProps) {
 
 function EditableCurrencyInput({ name, value, loading, onChange, disabled }: CurrencyInputProps) {
     return (
-        <Group>
+        <Group width={"100%"} overflowX={"hidden"}>
             <InputAddon>{name}</InputAddon>
-            <Skeleton loading={loading} >
+            <Skeleton loading={loading}  width={"100%"}>
                 <NumericFormat
                     disabled={disabled || false}
                     customInput={Input}
