@@ -12,7 +12,7 @@ export const REPORT_CONFIG = [
     multicdc: false,
     customer: false,
     errorType: true,
-    stores: true
+    stores: true,
   },
   {
     report: REPORT_KEY.REPDES_01,

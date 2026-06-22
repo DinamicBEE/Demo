@@ -11,6 +11,7 @@ function Reports() {
   const { cleanReportData } =  useReportsContext();
   const [open, setOpen] = useState(false);
   const [currentReport, setCurrentReport] = useState<number | null>(REPORT_KEY.REPMIX_01);
+  const [page, setPage] = useState<number>(1);
   const [reportName, setReportName] = useState<string>('Reporte no seleccionado')
   
   // Función para manejar el cambio de reporte
@@ -36,9 +37,9 @@ function Reports() {
         <Heading paddingLeft={4}> {reportName} </Heading>
       </VStack>
       
-      <Filters currentReport={currentReport} reportName={handleReportNameChange}/>
+      <Filters currentReport={currentReport} reportName={handleReportNameChange} page={page}/>
       
-      { currentReport !== null && <ReportTable currentReport={currentReport} /> }
+      { currentReport !== null && <ReportTable currentReport={currentReport} setPageC={setPage} /> }
 
     </Box>
   );

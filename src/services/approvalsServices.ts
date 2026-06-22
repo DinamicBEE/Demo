@@ -68,7 +68,7 @@ export const getStatus = async (): Promise<location[]> => {
     return [];
   }
 }
-
+//DEPRECATED: La funcion no se utiliza.
 export const getEmployees = async (): Promise<Employee[]> => {
   try {
 

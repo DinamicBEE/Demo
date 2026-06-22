@@ -13,7 +13,7 @@ import SimpleDatePicker from "../../LotClosure/components/SimpleDatePicker";
 import { REPORT_EXECPTION } from "@models/const/reportsService.const";
 import Loading from "@components/Loading";
 
-function Filters({ currentReport, reportName }: FilterPropsModel) {
+function Filters({ currentReport, reportName, page }: FilterPropsModel) {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
   const [startDate, endDate] = dateRange;
   const [selectedValues, setSelectedValues] = useState<ReportFilterModel>({} as ReportFilterModel);
@@ -193,10 +193,11 @@ function Filters({ currentReport, reportName }: FilterPropsModel) {
         allFilters[filterKey] = selectedValues[filterKey] || null;
       }
     });
-    //console.log(allFilters)
+    
     await getReportData({
       report: currentReport ?? 0,
-      filterOpction: allFilters
+      filterOpction: allFilters,
+      pagination: currentReport === 100 ? { page: page, size: 1000 } : undefined
     });
     setLoading(false)
   }, [filterConfig, selectedCDC, selectedErrorType, selectedStore, startDate, endDate, selectedValues, currentReport, getReportData, formattedDate]);

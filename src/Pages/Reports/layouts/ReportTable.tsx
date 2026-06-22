@@ -15,7 +15,7 @@ import useSortableTable from "@hooks/useSortableTable/useSortableTable";
 import { SortableHeader } from "@utils/table";
 
 
-function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentReport: number}) {
+function ReportTable<K extends keyof ReportTypeMap>({currentReport, setPageC}: { currentReport: number, setPageC: React.Dispatch<React.SetStateAction<number>>}) {
     const [headers, setHeaders] = useState<HeaderReportModel<ReportTypeMap[K]>[]>([]);
     const [visibleItems, setVisibleItems] = useState<ReportTypeMap[K][]>([]);
     const [countTable, setCountTable] = useState<number>(0)
@@ -191,6 +191,7 @@ function ReportTable<K extends keyof ReportTypeMap>({currentReport}: { currentRe
                 page={page}
                 onPageChange={(e) => {
                 setPage(e.page);
+                setPageC(e.page);
                 }}
             >
                 <HStack justify="end">

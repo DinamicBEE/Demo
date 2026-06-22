@@ -20,6 +20,7 @@ export interface TablePropsModel {
 export interface ReporGeneralRequesttModel {
   report: number;
   filterOpction: AppliedFilters;
+  pagination?:{ page?: number; size?: number }
 }
 
 export interface ReportFilterModel {
@@ -43,6 +44,7 @@ export interface ReportFilterModel {
   export interface FilterPropsModel {
     currentReport?: number | null;
     reportName: (name: string) => void;
+    page: number;
 }
 
 export interface FilterOption {

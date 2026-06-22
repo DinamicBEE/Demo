@@ -67,13 +67,19 @@ export const KEYSPARAMS_CONFIG: FilterParams = {
       { paramsKey: "dateOfReport", filterKey: "date" },
     ],
   },
+  [REPORT_KEY.REPSYNC_ERRORS]: {
+    params: [
+      { paramsKey: "page", filterKey: "page" },
+      { paramsKey: "size", filterKey: "size" },
+    ],
+  },
 };
 
 export const REPORTSERVICE_CONFIG = [
   {
     report: REPORT_KEY.REPSYNC_ERRORS,
     url: SETTINGS.REPORT_SYNCERRORS,
-    keysParams: null,
+    keysParams: KEYSPARAMS_CONFIG[REPORT_KEY.REPSYNC_ERRORS].params,
     handleData: reportHandlers.handleSyncErrorsData,
   },
   {

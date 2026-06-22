@@ -49,8 +49,8 @@ export interface BankLineModel {
 }
 
 export interface TDCModel {
-  id: number;
-  employeId: number;
+  id?: number;
+  employeId?: number;
   total: TotalModel;
   lines: BankLineModel[];
   linesCopy?: BankLineModel[];
