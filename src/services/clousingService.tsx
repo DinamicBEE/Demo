@@ -17,7 +17,7 @@ import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
 import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
-import { cashFake, tdcFake } from "@models/data/closure";
+import { cashFake, employeeFake, prapaidTicketsFake, prepaidFake, tdcFake } from "@models/data/closure";
 
 /**
  * This function gets the information
@@ -320,9 +320,10 @@ export const getPrepaidClousing = async (
   // console.log(clousingId)
   const userRole = await loadData.userData.get("userRole");
   try {
-    const response = await api.get(GET_PREPAID, {
-      params: { idCashRegisterClosure: clousingId },
-    });
+    // const response = await api.get(GET_PREPAID, {
+    //   params: { idCashRegisterClosure: clousingId },
+    // });
+    const response = { data: prepaidFake }
 
     const validLines = response.data.prepagoResponse.filter(
       (line: PrepaidLineModel) => typeof line.id === "number" && line.id !== 0
@@ -365,7 +366,12 @@ export const getPrepaidClousing = async (
       data: data,
     }
 
-    return responseData;
+    //return responseData;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(responseData);
+      }, 1500);
+    });
   } catch (error) {
     return {
       success: false,
@@ -391,20 +397,21 @@ export const getCouponCatalog = async (
 
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const response = await api.get(GET_COUPONS, {
-      params: { consumer: clousingId },
-    });
+    // const response = await api.get(GET_COUPONS, {
+    //   params: { consumer: clousingId },
+    // });
+    const response = { data: prapaidTicketsFake }
 
     const dateToCompare = formatToYYYYMMDDstring(dateClousing)+" 00:00:00";
     
-    const transformedData = response.data.map((item: CouponCatalogModel) => ({
+    const transformedData = response.data.map((item: any) => ({
       ...item,
       // Generate new UUID for null IDs, otherwise keep existing ID
       folioCustom: item.folio.split("_")[1],
       clientCustom: item.client
         .replace(/^\d+\s+/, "") // Remove leading numbers and spaces
         .toLowerCase() // Convert all to lowercase
-        .replace(/^(.)/, (match) => match.toUpperCase()), // Eliminar números al inicio
+        .replace(/^(.)/, (match: string) => match.toUpperCase()), // Eliminar números al inicio
       validityDateCustom: format(new Date(item.validityDate), "dd/MM/yyyy"),
       isExpired: isBefore(
         (new Date(item.validityDate)),
@@ -412,7 +419,12 @@ export const getCouponCatalog = async (
       ),
     }));    
     
-    return transformedData;
+    //return transformedData;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(transformedData);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as CouponCatalogModel[];
@@ -433,9 +445,10 @@ export const getEmployeeClousing = async (
   const userRole = await loadData.userData.get("userRole");
   try {
     //const response = await axios.get(`${API_CATALOG}/9a5fb626-1da1-4914-9569-5c84c649f995`);
-    const responseAxios = await api.get(EMPLOYEE_INSERT, {
-      params: { crcId: clousingId },
-    });
+    // const responseAxios = await api.get(EMPLOYEE_INSERT, {
+    //   params: { crcId: clousingId },
+    // });
+    const responseAxios = { data: employeeFake }
 
     const totalPhysical = responseAxios.data.lines?.reduce(
       (acc: number, curr: any) => acc + curr.amount,
@@ -464,7 +477,12 @@ export const getEmployeeClousing = async (
       ...response,
     };
 
-    return data;
+    //return data;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(data);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener los valores generales:", error);
     return [] as unknown as EmployeeModel;
