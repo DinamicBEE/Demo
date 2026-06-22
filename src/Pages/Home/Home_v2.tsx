@@ -324,7 +324,7 @@ function Home_v2() {
                     "Subsidiaria",
                     "Selecciona una Subsidiaria",
                     selectedSubsidiaries,
-                    !selectedCountry?.value
+                    false
                   )
                 }
                 

@@ -20,15 +20,12 @@ export const SECTIONS_INFO = [
     { label:"Clientes Especiales", key: "specialCustomer" },
     { label:"Prepago", key: "prepaid" },
     { label:"CXC Empleados", key: "employees" },
-    { label:"Intercompañia", key: "intercompany" },
 ]
 
 export const CURRENCIES_INFO =[
     { label:"MXN", key: "mxn" },
     { label:"USD", key: "usd" },
     { label:"EUR", key: "eur" },
-    { label:"LIB", key: "lib" },
-    { label:"CAN", key: "can" },
 ]
 
 export const EXTRA_INFO = [
