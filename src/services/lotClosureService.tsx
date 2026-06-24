@@ -14,6 +14,7 @@ import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { toast } from "@utils/Toast";
 import { subsidiariesFake } from "@models/data/home";
+import { loteClosureFake } from "@models/data/lote";
 
 export const getLotsClosure = async (
   consumerCentersId: number[],
@@ -25,12 +26,14 @@ export const getLotsClosure = async (
     const dateArray = date.split("-");
     const newFormatDate = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`;
 
-    const response = await api.get(GET_BATCH_V2, {
-      params: {
-        consumerCentersId: consumerCentersId.join(","),
-        date: newFormatDate
-      },
-    });
+    // const response = await api.get(GET_BATCH_V2, {
+    //   params: {
+    //     consumerCentersId: consumerCentersId.join(","),
+    //     date: newFormatDate
+    //   },
+    // });
+    const response = { data: loteClosureFake }
+
     const transformedData = sortData(response.data.map((lot: any, index:number) => ({
       ...lot, 
       id: lot.id === null ? "LoteClosure-" + uuidv4() : lot.id, 
@@ -39,7 +42,12 @@ export const getLotsClosure = async (
       difference: lot.totalLote - lot.totalPos
     })));    
 
-    return transformedData as LotClosure[];
+    //return transformedData as LotClosure[];
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(transformedData as LotClosure[]);
+      }, 1500);
+    });
   } catch (error) {
     console.error("Error al obtener las Subsidiarias: ", error);
     return [] as LotClosure[];
