@@ -4,7 +4,7 @@ import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, Dialo
 import { Button } from "@components/ui/button";
 import { toaster, Toaster } from "@components/ui/toaster";
 import { ConfirmDialog } from "./components/ConfirmDialog";
-import { RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
+import { Approval, RegisterApprovalsProps, RequestOpeningForm } from "@models/approvals.model";
 import { saveDataRequest, getClosingList, getReasonsList } from "@services/approvalsServices";
 import { useApprovalContext } from "@context/approvals/approvalsListContext";
 import SimpleDatePicker from "../LotClosure/components/SimpleDatePicker";
@@ -16,7 +16,7 @@ import "./Approvals.css"
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
     const { open, onOpen, onClose: onCloseConfir } = useDisclosure();
-    const { getSubsidiaries, getZoneList, getCDCs, } = useApprovalContext();
+    const { getSubsidiaries, getZoneList, getCDCs, newElementApprovalsList } = useApprovalContext();
 
     const [date, setDate] = useState<string>("");
     const [textareaValue, setTextareaValue] = useState<string>("");
@@ -115,10 +115,26 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
         reason: Number(reason[0]),
         comment: textareaValue,
       };
+      const newElement: Approval = {
+        idRequest: 99999,
+        comment: textareaValue,
+        status: 3,
+        zone: zones.find((zone) => zone.value === Number(zonesSelected[0]))?.label || "",
+        cdc: cdc.find((item) => item.value === Number(cdcSelected[0]))?.label || "",
+        closingEmployee: subsidiaries.find((sub) => sub.value === Number(subSelected[0]))?.label || "",
+        employee: "Administrador",
+        date: new Date().toISOString(),
+        dateCdc: date,
+        idCashBatch: Number(idClousing[0]),
+        state: "Pendiente",
+        typeRequest: ApprovalsReasons.find((item) => item.value === Number(type[0]))?.label || "",
+        reason: reasonsListFilter.find((item) => item.value === Number(reason[0]))?.label || "",
+      }
 
       const response = await saveDataRequest(formData);
-      console.log(response)
+
       if(response){
+        newElementApprovalsList(newElement)
         toaster.create({ title: `Se guardaron los datos correctamente`, type: "success", });
         onClose();
         onCloseConfir();

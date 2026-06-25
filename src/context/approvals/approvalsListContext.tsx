@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useContext, useMemo, useState, useCallback } from "react";
-import { Approval, filterOptionsProps } from "@models/approvals.model";
+import { createContext, ReactNode, useContext, useMemo, useState, useCallback, useRef } from "react";
+import { Approval, filterOptionsProps, RequestUpdateDetails } from "@models/approvals.model";
 import { getEmployees, getLocations, getZones } from "@services/catalogService";
 import { Employee } from "@models/employee.model";
 import { selectOption } from "@models/common.model";
@@ -17,6 +17,8 @@ interface ApprovalsContextType {
   getZoneList: (subIds: number[]) => Promise<selectOption[]>;
   getCDCs: (zonesIds: number[]) => Promise<selectOption[]>;
   getStatusList: () => Promise<selectOption[]>;
+  newElementApprovalsList: (updatedApproval: Approval) => void;
+  updateApprovalList: (update: RequestUpdateDetails) => Promise<boolean>;
 }
 
 const ApprovalsListContext = createContext<ApprovalsContextType | null>(null);
@@ -40,16 +42,23 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const [zones, setZones] = useState<selectOption[]>([]);
   const [cdc, setCDC] = useState<selectOption[]>([]);
   const [status, setStatus] = useState<selectOption[]>([]);
+  const approvalRef = useRef<Approval>({} as Approval)
 
   const triggerRefresh = () => {
     fectApprovals(filterOptions, true);
   };
 
   const fectApprovals = useCallback( async (filterSelected: filterOptionsProps, isRefresh: boolean) => {
+
     setFilterOptions(filterSelected);
-    if (approvalsList.length > 0 && !isRefresh) {
+    if (approvalsList.length > 0 ) {//&& !isRefresh
       return approvalsList;
     }
+
+    // if (approvalsList.length > 0 && isRefresh && approvalRef.current.idRequest) {
+    //   return approvalsList;
+    // }
+
     try {
 
       const approvals = await getRequestList(filterSelected);
@@ -193,6 +202,28 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     }, [status]
   )
 
+  const newElementApprovalsList = useCallback ((updatedApproval: Approval) => {
+    approvalsList.unshift(updatedApproval);
+    approvalRef.current = updatedApproval;
+  }, [approvalsList]);
+
+  const updateApprovalList = useCallback(async (update: RequestUpdateDetails): Promise<boolean> => {
+    setApprovalsList((prevApprovalsList: Approval[]) => {
+      const updatedList: Approval[] = prevApprovalsList.map((approval): Approval => {
+        if (approval.idRequest === update.idRequest) {
+          return {
+            ...approval,
+            status: update.status === true ? 2 : 1,
+            closingDate: new Date().toISOString(),
+          } as Approval;
+        }
+        return approval;
+      });
+      return updatedList;
+    });
+    return true;
+  },[]);
+
   const value = useMemo(() => ({
     approvalsList,
     dataApproval,
@@ -203,8 +234,10 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     getSubsidiaries,
     getZoneList,
     getCDCs,
-    getStatusList
-  }), [approvalsList, setDataApproval, dataApproval, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList]);
+    getStatusList,
+    newElementApprovalsList,
+    updateApprovalList
+  }), [approvalsList, setDataApproval, dataApproval, getEmployeeList, getSubsidiaries, getZoneList, getCDCs, getStatusList, newElementApprovalsList, updateApprovalList]);
 
   return (
     <ApprovalsListContext.Provider value={value}>

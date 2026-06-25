@@ -471,3 +471,90 @@ export const reasonTypes = [
     type: "CASH_CLOSURE",
   },
 ];
+
+export const closingListFake = [
+  {
+    id: 28883,
+    employeeName: "KARINA MORENO SANCHEZ",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28884,
+    employeeName: "JOSE LUIS RAMIREZ GONZALEZ",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28885,
+    employeeName: "MARIA FERNANDA CASTILLO PEREZ",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28886,
+    employeeName: "CARLOS ALBERTO MENDOZA LOPEZ",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28887,
+    employeeName: "ANA SOFIA GARCIA TORRES",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28888,
+    employeeName: "PEDRO ANTONIO VARGAS RODRIGUEZ",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28889,
+    employeeName: "LAURA PATRICIA DIAZ MARTINEZ",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28890,
+    employeeName: "MIGUEL ANGEL HERNANDEZ CRUZ",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28891,
+    employeeName: "VERONICA ALEJANDRA FLORES JIMENEZ",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28892,
+    employeeName: "ROBERTO CARLOS NAVARRO SILVA",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28893,
+    employeeName: "DIANA CAROLINA REYES CASTRO",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28894,
+    employeeName: "GERARDO ENRIQUE ORTIZ ROMERO",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28895,
+    employeeName: "ELENA PATRICIA RUIZ AGUILAR",
+    type: "Batch",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+  {
+    id: 28896,
+    employeeName: "JUAN MANUEL SANCHEZ GOMEZ",
+    type: "Corte",
+    date: "Fecha: 24-06-26 00:00:00 AM",
+  },
+];
