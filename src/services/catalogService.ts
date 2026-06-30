@@ -11,7 +11,7 @@ import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, currencyFake, employeeReasonFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
-import { clientsFakeData, employeeTicketsFake, extraInfoFake } from "@models/data/closure";
+import { clientsFakeData, employeeTicketsFake, especialTogGeneralTicketFake, extraInfoFake } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
 import { loteStats } from "@models/data/lote";
 
@@ -410,9 +410,10 @@ const getAllStores = async (): Promise<FilterOption[]> => {
 export const getTicketsGeneral = async (crcId: number): Promise<CustomerTicketsModel[]> => {
 
   try {
-    const response = await api.get(GET_TICKETS_GENERAL,{
-      params: { crcId}
-    });
+    // const response = await api.get(GET_TICKETS_GENERAL,{
+    //   params: { crcId}
+    // });
+    const response = { data: especialTogGeneralTicketFake }
 
     return response.data as CustomerTicketsModel[];
   } catch (error) {
