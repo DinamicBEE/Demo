@@ -176,6 +176,10 @@ export function ClousingProvider({ children }: { children: ReactNode }) {
     [originalData]
   );
 
+  const updateDataRow = useCallback(()=> {
+
+  },[]);
+
   const value = useMemo(
     () => ({
       header,

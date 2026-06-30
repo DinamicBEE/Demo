@@ -13,6 +13,7 @@ import { toast } from "@utils/Toast";
 import ComboBoxCustom from "@components/ComboBoxCustom";
 import { ApprovalsReasons } from "@models/const/approvals.const";
 import "./Approvals.css"
+import { useAuth } from "@context/AuthContext";
 
 export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpen, onClose }) => {
     const { open, onOpen, onClose: onCloseConfir } = useDisclosure();
@@ -36,6 +37,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
     const [type, setType] = useState<string[]>([]);
     const [idClousing, setIdClousing] = useState<string[]>([]);
     const [reason, setReason] = useState<string[]>([]);
+    const { setCount } = useAuth();
     
     const parseDateStringToLocalDate = (dateString: string): Date => {
       const [year, month, day] = dateString.split("-").map(Number);
@@ -135,6 +137,7 @@ export const RegisterApprovals: React.FC<RegisterApprovalsProps> = memo(({ isOpe
 
       if(response){
         newElementApprovalsList(newElement)
+        setCount((prev) => prev + 1);
         toaster.create({ title: `Se guardaron los datos correctamente`, type: "success", });
         onClose();
         onCloseConfir();

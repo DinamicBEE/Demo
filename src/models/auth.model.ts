@@ -9,6 +9,8 @@ export interface AuthContextType {
     error: string | null;
     isLoading: boolean;
     user: IUser | null;
+    count: number;
+    setCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export interface IUser {

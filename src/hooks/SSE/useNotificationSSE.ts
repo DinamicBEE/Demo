@@ -123,6 +123,7 @@ export const useNotificationSSE = () => {
     return {
         connectToNotification,
         count,
+        setCount,
         error,
         resetNotification
     }

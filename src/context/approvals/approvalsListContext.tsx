@@ -5,6 +5,7 @@ import { Employee } from "@models/employee.model";
 import { selectOption } from "@models/common.model";
 import { getCompanies } from "@services/lotClosureService";
 import { getRequestList, getStatus } from "@services/approvalsServices";
+import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
 
 interface ApprovalsContextType {
   triggerRefresh: () => void;
@@ -35,6 +36,7 @@ export const useApprovalContext = () => {
 export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => {
 
   const [approvalsList, setApprovalsList] = useState<Approval[]>([]);
+  const [approvalsFilter, setApprovalsFilter] = useState<Approval[]>([]);
   const [filterOptions, setFilterOptions] = useState<filterOptionsProps>({} as filterOptionsProps)
   const [dataApproval, setDataApproval] = useState<Approval>({} as Approval);
   const [employeeList, setEmployeeList] = useState<Employee[]>([]);
@@ -51,8 +53,10 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   const fectApprovals = useCallback( async (filterSelected: filterOptionsProps, isRefresh: boolean) => {
 
     setFilterOptions(filterSelected);
-    if (approvalsList.length > 0 ) {//&& !isRefresh
-      return approvalsList;
+    if (approvalsFilter.length > 0 ) {//&& !isRefresh
+      const response = await filterApprovals(filterSelected, approvalsFilter);
+      setApprovalsList(response);
+      return response;
     }
 
     // if (approvalsList.length > 0 && isRefresh && approvalRef.current.idRequest) {
@@ -62,10 +66,13 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
     try {
 
       const approvals = await getRequestList(filterSelected);
+      setApprovalsFilter(approvals);
       
-      setApprovalsList(approvals); 
-
-      return approvals;
+      const response = await filterApprovals(filterSelected, approvals);
+      
+      setApprovalsList(response); 
+      
+      return response;
 
     } catch (error) {
       throw error;
@@ -73,6 +80,61 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
 
   }, [approvalsList]);
 
+  const filterApprovals = useCallback((filterSelected: filterOptionsProps, approvals: Approval[]) => {
+
+    let filteredList = approvals;
+    console.log("filterOptions", filterSelected)
+    if (filterSelected.cdc && filterSelected.cdc.length > 0) {
+      filteredList = filteredList.filter((item: Approval) => 
+        filterSelected.cdc.some(cdcValue => cdcValue.toString() === item.cdc)
+      );
+    }
+    console.log("1", filteredList)
+    if (filterSelected.employeeId !== null && filterSelected.employeeId !== undefined) {
+      filteredList = filteredList.filter((item: Approval) => 
+        item.employee === filterSelected.employeeId
+      );
+    }
+console.log("2", filteredList)
+    if (filterSelected.requestDateStart !== null && filterSelected.requestDateStart !== undefined) {
+      filteredList = filteredList.filter((item: Approval) => {
+        const itemDate = new Date(item.date);
+        return itemDate >= filterSelected.requestDateStart!;
+      });
+    }
+console.log("3", filteredList)
+    if (filterSelected.requestDateEnd !== null && filterSelected.requestDateEnd !== undefined) {
+      filteredList = filteredList.filter((item: Approval) => {
+        const itemDate = new Date(item.date);
+        return itemDate <= filterSelected.requestDateEnd!;
+      });
+    }
+console.log("4", filteredList)
+    if (filterSelected.closingDateStart !== null && filterSelected.closingDateStart !== undefined) {
+      filteredList = filteredList.filter((item: Approval) => {
+        const itemClosingDate = new Date(item.dateCdc);
+        return itemClosingDate >= filterSelected.closingDateStart!;
+      });
+    }
+
+    if (filterSelected.closingDateEnd !== null && filterSelected.closingDateEnd !== undefined) {
+      filteredList = filteredList.filter((item: Approval) => {
+        const itemClosingDate = new Date(item.dateCdc);
+        return itemClosingDate <= filterSelected.closingDateEnd!;
+      });
+    }
+
+    if (filterSelected.status && filterSelected.status.length > 0) {
+      filteredList = filteredList.filter((item: Approval) => 
+        filterSelected.status!.some(statusValue => statusValue === item.status)
+      );
+    }
+
+    const sortedList = filteredList.sort((a: Approval, b: Approval) => b.idRequest - a.idRequest);
+console.log("0", sortedList)
+    return sortedList;
+    
+  }, []);
 
   const getEmployeeList = useCallback( async (subsidiary: number, cdc: number) => {
       if (employeeList.length > 0) {
@@ -203,8 +265,19 @@ export const ApprovalsListProvider = ({ children }: { children: ReactNode }) => 
   )
 
   const newElementApprovalsList = useCallback ((updatedApproval: Approval) => {
-    approvalsList.unshift(updatedApproval);
+    // console.log(count)
+    // setCount(5);
+    //approvalsList.unshift(updatedApproval);
     approvalRef.current = updatedApproval;
+    setApprovalsFilter((prevApprovalsFilter: Approval[]) => {
+      const updatedFilterList: Approval[] = [updatedApproval, ...prevApprovalsFilter];
+      return updatedFilterList;
+    });
+    setApprovalsList((prevApprovalsList: Approval[]) => {
+      const updatedList: Approval[] = [updatedApproval, ...prevApprovalsList];
+      return updatedList;
+    });
+    //console.log(count)
   }, [approvalsList]);
 
   const updateApprovalList = useCallback(async (update: RequestUpdateDetails): Promise<boolean> => {

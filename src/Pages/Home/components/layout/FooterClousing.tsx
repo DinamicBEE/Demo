@@ -91,17 +91,17 @@ function FooterClousing({
 
     if (response === "response") {
 
-      if (isConfirm === true) {
-        delete cashRef.current[clousingId];
-        delete customerRef.current[clousingId];
-        delete specialCustRef.current[clousingId];
-        delete prepaidRef.current[clousingId];
-        delete tdcRef.current[clousingId];
-        delete headerRef.current[clousingId];
-        setCoupons({} as any);
-        setEmployee({} as any);
-        setIntercompany({} as any);
-      }
+      // if (isConfirm === true) {
+      //   delete cashRef.current[clousingId];
+      //   delete customerRef.current[clousingId];
+      //   delete specialCustRef.current[clousingId];
+      //   delete prepaidRef.current[clousingId];
+      //   delete tdcRef.current[clousingId];
+      //   delete headerRef.current[clousingId];
+      //   setCoupons({} as any);
+      //   setEmployee({} as any);
+      //   setIntercompany({} as any);
+      // }
       closeDialog(true);
     }
     setloading(false);

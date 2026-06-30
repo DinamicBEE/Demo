@@ -27,6 +27,7 @@ const initialState: AuthState = {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>(initialState);
   const { resetNotification } = useNotificationSSE();
+  const [ count, setCount ] = useState<number>(0)
 
   const setAuthState = useCallback((updates: Partial<AuthState>) => {
     setState(prev => ({ ...prev, ...updates }));
@@ -158,13 +159,17 @@ const contextValue = useMemo(() => ({
     isLoading: state.isLoading,
     handleLogin,
     logOut,
+    count, 
+    setCount
   }), [
     state.isAuthenticated, 
     state.error, 
     state.user, 
     state.isLoading, 
     handleLogin, 
-    logOut
+    logOut,
+    count, 
+    setCount
   ]);
 
   return (

@@ -76,12 +76,12 @@ function Header({type}:HeaderProps) {
     },[zonesSelected]);
 
     const habdleSearch = async () => {
-
         setIsLoading(true);
+        console.log("entre")
         const statusString = selectedStatus.map(item => item.toString())
 
         const statusSelected = status
-            .filter(item => statusString.includes(item.value.toString())).map(item => item.label) 
+            .filter(item => statusString.includes(item.value.toString())).map(item => item.value) 
 
         const filterSelected: filterOptionsProps = {
             requestDateStart: requestStart,
@@ -89,12 +89,12 @@ function Header({type}:HeaderProps) {
             closingDateStart: closingStart,
             closingDateEnd: closingEnd,
             status: statusSelected || null,
-            employeeId: selectEmployee ? selectEmployee.id : null,
+            employeeId: selectEmployee ? selectEmployee.name : null,
             cdc: cdcSelected.map(Number)
         }
 
         await fectApprovals(filterSelected, true);
-
+console.log("sali")
         setIsLoading(false);
 
     };

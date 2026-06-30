@@ -14,15 +14,16 @@ import { menuItems, ROLES, ROLES_APPROVALS } from "@models/const/menu.consts";
 import { Tooltip } from "./ui/tooltip";
 import image from "../assets/BeInnovation_3.png";
 import { useEffect } from "react";
-import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
+//import { useNotificationSSE } from "@hooks/SSE/useNotificationSSE";
 
 function Layout() {
-  const { logOut, user } = useAuth();
-  const { connectToNotification, count } = useNotificationSSE();
+  const { logOut, user, count, setCount } = useAuth();
+  //const { count, setCount } = useNotificationSSE();
 
   useEffect(() => {
     if(user && ROLES_APPROVALS.includes(user.role as ROLES)){
-      connectToNotification();
+      //connectToNotification();
+      setCount(4);
     }
   },[])
 
