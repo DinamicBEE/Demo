@@ -375,7 +375,7 @@ export interface DataServiceModel {
     customer: CustomerModel;
     specialCustomer: SpecialCustomerModel;
     prepaid: PrepaidModel;
-    intercompany: IntercompanyModel;
+    //intercompany: IntercompanyModel;
     clousingId: number;
     idCurrency: number;
     discountPhysical: number;

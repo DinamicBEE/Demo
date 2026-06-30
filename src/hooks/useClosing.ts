@@ -25,7 +25,7 @@ export const useClosing = () => {
   const { getEmployeetData } = useEmployeeContext();
   const { getPrepaidData } = usePrepaidContext();
   const { getTDCData } = useTDCContext();
-  const { getIntercompanyData } = useIntercompanyContext();
+  //const { getIntercompanyData } = useIntercompanyContext();
   const { updateTotal, header, updateHeaderState } = useHeaders();
 
   const prepareUpdate = useCallback((
@@ -61,12 +61,12 @@ export const useClosing = () => {
 
     try {
 
-      const [customer, specialCustomer, prepaid, tdc, intercompany, employeeT, cash] = await Promise.all([
+      const [customer, specialCustomer, prepaid, tdc, employeeT, cash] = await Promise.all([
         getCustomerData(employeeId, isRefresh),
         getSpecialCustData(employeeId, idCurrency, isRefresh),
         getPrepaidData(employeeId, closingStartDate ?? "", isRefresh),
         getTDCData(employeeId, idCurrency, isStarbucks, isRefresh),
-        getIntercompanyData(employeeId, isRefresh),
+        //getIntercompanyData(employeeId, isRefresh),
         getEmployeetData(employeeId, isRefresh),
         getCashData(employeeId, idCurrency, isRefresh),
       ]);
@@ -77,7 +77,7 @@ export const useClosing = () => {
         prepareUpdate(specialCustomer.data, CLOUSING_KEY.SPECIALCUSTOMER, employeeId),
         prepareUpdate(prepaid.data, CLOUSING_KEY.PREPAID, employeeId),
         prepareUpdate(tdc, CLOUSING_KEY.TDC, employeeId),
-        prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY, employeeId),
+        //prepareUpdate(intercompany, CLOUSING_KEY.INTERCOMPANY, employeeId),
         prepareUpdate(employeeT, CLOUSING_KEY.EMPLOYEE, employeeId),
       ].filter(Boolean) as ClosingUpdate[];
       
@@ -115,7 +115,7 @@ export const useClosing = () => {
     getEmployeetData,
     getPrepaidData,
     getTDCData,
-    getIntercompanyData,
+    //getIntercompanyData,
     prepareUpdate
   ]);
 

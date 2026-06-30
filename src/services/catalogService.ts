@@ -11,7 +11,7 @@ import { ERROR_TYPES } from "@models/const/reports.const";
 import { CUSTOMER_TYPES } from "@models/common.const";
 import { CustomerTicketsModel } from "@models/customer.model";
 import { countriesFake, currencyFake, employeeReasonFake, locationsFake, statusFake, subsidiariesFake, zonesFake } from "@models/data/home";
-import { clientsFakeData, employeeTicketsFake, extraInfoFake, monedas } from "@models/data/closure";
+import { clientsFakeData, employeeTicketsFake, extraInfoFake } from "@models/data/closure";
 import { employeesFake } from "@models/data/approvals";
 import { loteStats } from "@models/data/lote";
 

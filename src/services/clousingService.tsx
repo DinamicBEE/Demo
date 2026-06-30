@@ -17,7 +17,7 @@ import { loadData } from "../indexedDB/localDB";
 import { ROLES, ROLES_EDIT } from "@models/const/menu.consts";
 import { AxiosError } from "axios";
 import { formatToYYYYMMDDstring } from "@utils/dateFormatter";
-import { cashFake, employeeFake, prapaidTicketsFake, prepaidFake, tdcFake } from "@models/data/closure";
+import { cashFake, clientsResponseFake, employeeFake, prapaidTicketsFake, prepaidFake, specialClientsFake, tdcFake } from "@models/data/closure";
 
 /**
  * This function gets the information
@@ -173,12 +173,13 @@ export const getCustomerClousing = async (
 ): Promise<ResponseModel> => {
   const userRole = await loadData.userData.get("userRole");
   try {
-    const response = await api.get(CLIENTS, {
-      params: { idCashRegisterClosure: clousingId },
-    });
+    const response = clientsResponseFake
+    // const response = await api.get(CLIENTS, {
+    //   params: { idCashRegisterClosure: clousingId },
+    // });
 
-    //console.log(response)
-    const lines = response.data.generalClientResponseList.map((line: any) => {
+    // //console.log(response)
+    const lines = response.generalClientResponseList.map((line: any) => {
 
       const { amountMx, coupons, ...restOfLine } = line;
 
@@ -200,15 +201,15 @@ export const getCustomerClousing = async (
       (acc: number, curr: { amountMXN: number }) => acc + curr.amountMXN,
       0
     );
-    const newDifference = newTotalFisico - (response.data.totalPos ?? 0);
+    const newDifference = newTotalFisico - (response.totalPos ?? 0);
     const data: CustomerModel = {
       id: clousingId,
       isRoleEditable: userRole?.value ? ROLES_EDIT.includes(userRole.value as ROLES) : false,
       total: {
         difference: newDifference,//response.data.totalPhysical - response.data.totalPos,
-        totalPOS: response.data.totalPos ?? 0,
-        totalPhysical: response.data.totalPhysical ?? 0,
-        differenceCupons: response.data.diferenciaCupones ?? 0,
+        totalPOS: response.totalPos ?? 0,
+        totalPhysical: response.totalPhysical ?? 0,
+        differenceCupons: response.diferenciaCupones ?? 0,
       },
       lines: [...lines],
     };
@@ -217,6 +218,7 @@ export const getCustomerClousing = async (
       data: data,
     };
 
+    // return responseData;
     return responseData;
   } catch (error: any) {
     const responseData: ResponseModel = {
@@ -250,10 +252,8 @@ export const getSpecialCustomerClousing = async (
 ): Promise<ResponseModel> => {
   const userRole = await loadData.userData.get("userRole");
   try {
-    const response = await api.get(SP_CLIENTS, {
-      params: { idCashRegisterClosure: clousingId, idCurrency },
-    });
-    const lines = response.data.specialClientResponses.map(
+    const response = specialClientsFake;
+    const lines = response.specialClientResponses.map(
       (line: any) => ({
         ...line,
         id: line.id === null ? "customerSpecial-" + uuidv4() : line.id,
@@ -269,12 +269,12 @@ export const getSpecialCustomerClousing = async (
       .filter((l: any) => Number(l.pax) >= 1)
       .map((line: any) => Number(line.bill))
       .reduce((acc: number, curr: number) => acc + curr, 0);
-    const newDiff = Number(newTotalFisico - response.data.totalPos);    
+    const newDiff = Number(newTotalFisico - response.totalPos);    
 
     const data = {
       id: clousingId,
       total: {
-        totalPOS: response.data.totalPos ?? 0,
+        totalPOS: response.totalPos ?? 0,
         totalPhysical: newTotalFisico ?? 0,
         difference: newDiff ?? 0,
       },
@@ -750,14 +750,14 @@ export const sendCashClousing = async (dataService: DataServiceModel, isConfirm:
           diferenciaCupones: 0,
         },
       },
-      intercompany: {
-        lines: mapIntercompanyLines(dataService.intercompany != undefined ? dataService.intercompany.lines : []),
-        total: dataService.intercompany != undefined && dataService.intercompany.total ? dataService.intercompany.total : {
-          totalPOS: 0,
-          totalPhysical: 0,
-          difference: 0,
-        },
-      },
+      // intercompany: {
+      //   lines: mapIntercompanyLines(dataService.intercompany != undefined ? dataService.intercompany.lines : []),
+      //   total: dataService.intercompany != undefined && dataService.intercompany.total ? dataService.intercompany.total : {
+      //     totalPOS: 0,
+      //     totalPhysical: 0,
+      //     difference: 0,
+      //   },
+      // },
       specialCustomer: {
         lines: mapSpecialCustomerLines(dataService.specialCustomer != undefined ? dataService.specialCustomer.lines : []),
         total: dataService.specialCustomer != undefined && dataService.specialCustomer.total ? dataService.specialCustomer.total : {

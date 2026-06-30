@@ -48,7 +48,7 @@ function FooterClousing({
   const { customerRef } = useCustomerContext();
   const { specialCustRef } = useSpecialCustContext();
   const { setEmployee, employeeRef } = useEmployeeContext();
-  const { setIntercompany, intercompanyRef } = useIntercompanyContext();
+  //const { setIntercompany, intercompanyRef } = useIntercompanyContext();
   const { prepaidRef, setCoupons } = usePrepaidContext();
   const { header, headerRef } = useHeaders();
 
@@ -70,7 +70,7 @@ function FooterClousing({
     const customer = customerRef.current[clousingId];
     const specialCustomer = specialCustRef.current[clousingId];
     const prepaid = prepaidRef.current[clousingId];
-    const intercompany = intercompanyRef.current[clousingId];
+    //const intercompany = intercompanyRef.current[clousingId];
     const employee = employeeRef.current[clousingId];
 
     const dataService = {
@@ -79,7 +79,7 @@ function FooterClousing({
       customer,
       specialCustomer,
       prepaid,
-      intercompany,
+      //intercompany,
       clousingId,
       idCurrency,
       discountPhysical: headerRef.current[clousingId]?.discountPhysical || 0,

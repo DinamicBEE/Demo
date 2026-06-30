@@ -160,6 +160,6 @@ export interface ClousingSave {
   specialCustomer: SpecialCustomer;
   employee: Employee;
   prepaid: Prepaid;
-  intercompany: Intercompany;
+  //intercompany: Intercompany;
   currencies: Currency[];
 }
