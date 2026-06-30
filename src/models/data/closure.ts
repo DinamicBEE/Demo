@@ -793,11 +793,172 @@ export const clientsFakeData = [
   { value: 100, label: "Aerotransportes" },
 ];
 
-export const monedas = [
-  { label: "MXN - Peso Mexicano", value: 1, exchangeRate: 1 },
-  { label: "USD - Dólar Estadounidense", value: 2, exchangeRate: 17 },
-  { label: "EUR - Euro", value: 3, exchangeRate: 20 },
-];
+export const clientsResponseFake = {
+    "generalClientResponseList": [
+        {
+            "id": 55031,
+            "nameClient": "American Airlines",
+            "coupons": "52",
+            "currency": "USD",
+            "currencyId": 6,
+            "pax": "21.50",
+            "amount": "1118.00",
+            "exchangeRate": "17.00",
+            "amountMx": "19006.00",
+            "idClient": 1,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55032,
+            "nameClient": "Delta Air Lines",
+            "coupons": "52",
+            "currency": "USD",
+            "currencyId": 6,
+            "pax": "22.00",
+            "amount": "1144.00",
+            "exchangeRate": "17.00",
+            "amountMx": "19448.00",
+            "idClient": 2,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55046,
+            "nameClient": "Aeroméxico",
+            "coupons": "60",
+            "currency": "MXN",
+            "currencyId": 1,
+            "pax": "25.00",
+            "amount": "1500.00",
+            "exchangeRate": "1.00",
+            "amountMx": "1500.00",
+            "idClient": 12,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55047,
+            "nameClient": "Avianca",
+            "coupons": "44",
+            "currency": "COP",
+            "currencyId": 7,
+            "pax": "18.20",
+            "amount": "800.80",
+            "exchangeRate": "0.0042",
+            "amountMx": "3.36",
+            "idClient": 16,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55048,
+            "nameClient": "Copa Airlines",
+            "coupons": "38",
+            "currency": "PAB",
+            "currencyId": 12,
+            "pax": "16.75",
+            "amount": "636.50",
+            "exchangeRate": "17.00",
+            "amountMx": "10820.50",
+            "idClient": 15,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55049,
+            "nameClient": "United Airlines",
+            "coupons": "41",
+            "currency": "USD",
+            "currencyId": 6,
+            "pax": "19.50",
+            "amount": "799.50",
+            "exchangeRate": "17.00",
+            "amountMx": "13591.50",
+            "idClient": 3,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55050,
+            "nameClient": "Air Canada",
+            "coupons": "55",
+            "currency": "USD",
+            "currencyId": 6,
+            "pax": "17.00",
+            "amount": "1265.00",
+            "exchangeRate": "12.50",
+            "amountMx": "15812.50",
+            "idClient": 10,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55051,
+            "nameClient": "Volaris",
+            "coupons": "48",
+            "currency": "MXN",
+            "currencyId": 1,
+            "pax": "21.30",
+            "amount": "1022.40",
+            "exchangeRate": "1.00",
+            "amountMx": "1022.40",
+            "idClient": 13,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55052,
+            "nameClient": "Viva Aerobus",
+            "coupons": "50",
+            "currency": "MXN",
+            "currencyId": 1,
+            "pax": "22.00",
+            "amount": "1100.00",
+            "exchangeRate": "1.00",
+            "amountMx": "1100.00",
+            "idClient": 14,
+            "diferenciaCupones": 0
+        },
+        {
+            "id": 55053,
+            "nameClient": "Mexicana de Aviación",
+            "coupons": "57",
+            "currency": "MXN",
+            "currencyId": 1,
+            "pax": "24.50",
+            "amount": "1396.50",
+            "exchangeRate": "1.00",
+            "amountMx": "1396.50",
+            "idClient": 33,
+            "diferenciaCupones": 0
+        }
+    ],
+    "totalPos": 38454,
+    "totalPhysical": 38454,
+    "totalDifference": 0,
+    "diferenciaCupones": 0
+}
+
+export const specialClientsFake = {
+    "specialClientResponses": [
+        {
+            "id": 4961,
+            "check": "5235",
+            "bill": "50.00",
+            "couponPrice": "50.00",
+            "difference": "0.00",
+            "exchangeRate": "17.00",
+            "client": "Viva Aerobus",
+            "pax": "1.00",
+            "couponFolio": "00126185930621",
+            "couponFolioUSD": "",
+            "ammount": "50.00",
+            "ammountUSD": "0.00",
+            "flight": "3966",
+            "passengerName": "MARIA MADERA",
+            "ammountMXN": "50.00",
+            "passengerNum": "",
+            "clientId": 14,
+            "guestCheckId": 46395288
+        }
+    ],
+    "totalPos": 50,
+    "totalPhysical": 50,
+    "totalDifference": 0
+}
 
 export const tdcFake = {
   lines: [
