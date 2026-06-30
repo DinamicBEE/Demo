@@ -4,7 +4,7 @@ import { location, selectOption } from "@models/common.model";
 import api from "../api/index";
 import { Employee } from "@models/employee.model";
 import { format } from "date-fns";
-import { approvalsListFate, approvalsStatusFake, reasonTypes } from "@models/data/approvals";
+import { approvalsListFate, approvalsStatusFake, closingListFake, reasonTypes } from "@models/data/approvals";
 
 export const getRequestList = async (filterOptions: filterOptionsProps): Promise<Approval[]> => {
 
@@ -90,7 +90,7 @@ export const getEmployees = async (): Promise<Employee[]> => {
 export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<boolean> => {
   try {
 
-    const response = await api.post(UPDATE_REQUEST, data);
+    const response = { data: "OK" }//await api.post(UPDATE_REQUEST, data);
 
     const dataResponse =response.data === "OK" ? true : false;
     
@@ -104,12 +104,13 @@ export const updateStatusRequest = async(data: RequestUpdateDetails): Promise<bo
 
 export const getClosingList = async(idConsumerCenter: number, date: string, type:number): Promise<selectOption[]> => {
   try {      
-    const response = await api.get(GETLISTCLOUSING, {
-      params: {
-        idConsumerCenter: idConsumerCenter,
-        date: date,
-      }
-    });
+    // const response = await api.get(GETLISTCLOUSING, {
+    //   params: {
+    //     idConsumerCenter: idConsumerCenter,
+    //     date: date,
+    //   }
+    // });
+    const response = { data: closingListFake }    
 
     const newType = type === 1 ? "corte" : type === 2 ? "batch": "";
 
@@ -123,7 +124,12 @@ export const getClosingList = async(idConsumerCenter: number, date: string, type
 
     });      
 
-    return result
+    //return result
+    return new Promise((resolve) => {
+      setTimeout(() => {
+          resolve(result);
+      }, 1500);
+    });
 
   } catch (error) {
     console.error(error);
@@ -164,7 +170,8 @@ export const getReasonsList = async(type: Number): Promise<selectOption[]> => {
 export const saveDataRequest = async (data: RequestOpeningForm): Promise<boolean> => {
   try {
 
-    const response = await api.post(SAVE_REQUEST, data);
+    //const response = await api.post(SAVE_REQUEST, data);
+    const response = { data: 'create' }
 
     if(response.data === 'create'){
       return true

@@ -19,7 +19,10 @@ function Approvals() {
 		setIsDialogEditOpen(true);
 	}, []);
 
-	const closeDialogEdit = useCallback(() => setIsDialogEditOpen(false), []);
+	const closeDialogEdit = useCallback(() => {
+		
+		setIsDialogEditOpen(false);
+	}, []);
 
 	return (
 		<>

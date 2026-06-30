@@ -15,7 +15,7 @@ import { REQUEST_TYPE, STATUSLABELS } from "@models/const/approvals.const";
 export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDialog, role }) => {
 
   const { open, onOpen, onClose } = useDisclosure();
-  const { approvalsList, triggerRefresh } = useApprovalContext();
+  const { approvalsList, triggerRefresh, updateApprovalList } = useApprovalContext();
   
   const { sortedData, handleSort, getSortIcon } = useSortableTable<Approval>(approvalsList);
 
@@ -38,14 +38,14 @@ export const TableApprovals: React.FC<TableApprovalsProps> = memo(({ openEditDia
       comment: '',
       status: confirmData?.newStatus || false
     };
-    const response = await updateStatusRequest(dataEdit);
+    const response = await updateApprovalList(dataEdit);
 
     setConfirmData(null);
     onClose();
 
     if(response) {
       toaster.create({ title: `Se actualizo los datos correctamente`, type: 'success' });
-      triggerRefresh();
+      //triggerRefresh();
     } else {
       toaster.create({ title: `No se actualizo los datos correctamente`, type: 'error' });
     }
